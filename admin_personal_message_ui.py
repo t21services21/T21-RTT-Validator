@@ -64,17 +64,24 @@ def render_personal_message_ui():
             # Compose message
             st.subheader("✍️ Compose Message")
             
+            # Initialize session state for templates
+            if 'template_subject' not in st.session_state:
+                st.session_state.template_subject = ""
+            if 'template_message' not in st.session_state:
+                st.session_state.template_message = ""
+            
             # Subject
             subject = st.text_input(
                 "Subject:",
+                value=st.session_state.template_subject,
                 placeholder="e.g., Welcome to T21 Services!",
-                help="Keep it clear and engaging",
-                key="personal_msg_subject"
+                help="Keep it clear and engaging"
             )
             
             # Message body
             message = st.text_area(
                 "Message:",
+                value=st.session_state.template_message,
                 placeholder=f"""Hello {selected_student['full_name']},
 
 I wanted to reach out personally to...
@@ -82,16 +89,14 @@ I wanted to reach out personally to...
 Best regards,
 T21 Services Team""",
                 height=300,
-                help="Write your personalized message. HTML supported.",
-                key="personal_msg_body"
+                help="Write your personalized message. HTML supported."
             )
             
             # From name
             from_admin = st.text_input(
                 "From (Your Name):",
                 value="T21 Admin",
-                help="Your name as it appears in the email",
-                key="personal_msg_from"
+                help="Your name as it appears in the email"
             )
             
             st.markdown("---")
@@ -136,8 +141,8 @@ T21 Services Team""",
                                 st.balloons()
                                 
                                 # Clear form
-                                st.session_state.personal_msg_subject = ""
-                                st.session_state.personal_msg_body = ""
+                                st.session_state.template_subject = ""
+                                st.session_state.template_message = ""
                             else:
                                 st.error("❌ Failed to send message. Please check SendGrid configuration.")
             
@@ -164,13 +169,12 @@ T21 Services Team""",
                     "💡 Feature Announcement",
                     "🤝 Thank You Message",
                     "❓ Check-in / Support"
-                ],
-                key="personal_msg_template"
+                ]
             )
             
             if template_choice == "👋 Welcome & Introduction":
-                st.session_state.personal_msg_subject = f"Welcome to T21 Services, {selected_student['full_name']}!"
-                st.session_state.personal_msg_body = f"""Hello {selected_student['full_name']},
+                st.session_state.template_subject = f"Welcome to T21 Services, {selected_student['full_name']}!"
+                st.session_state.template_message = f"""Hello {selected_student['full_name']},
 
 I wanted to personally welcome you to the T21 RTT Training Platform!
 
@@ -186,8 +190,8 @@ Best regards,
                 st.rerun()
             
             elif template_choice == "⏰ Trial Ending Reminder":
-                st.session_state.personal_msg_subject = f"{selected_student['full_name']}, Your Trial is Ending Soon!"
-                st.session_state.personal_msg_body = f"""Hi {selected_student['full_name']},
+                st.session_state.template_subject = f"{selected_student['full_name']}, Your Trial is Ending Soon!"
+                st.session_state.template_message = f"""Hi {selected_student['full_name']},
 
 I noticed your trial is ending soon, and I wanted to reach out personally.
 
@@ -203,8 +207,8 @@ Best regards,
                 st.rerun()
             
             elif template_choice == "🎁 Exclusive Upgrade Offer":
-                st.session_state.personal_msg_subject = f"Exclusive Offer for You, {selected_student['full_name']}!"
-                st.session_state.personal_msg_body = f"""Hi {selected_student['full_name']},
+                st.session_state.template_subject = f"Exclusive Offer for You, {selected_student['full_name']}!"
+                st.session_state.template_message = f"""Hi {selected_student['full_name']},
 
 I have an exclusive offer just for you!
 
@@ -223,8 +227,8 @@ Best regards,
                 st.rerun()
             
             elif template_choice == "💡 Feature Announcement":
-                st.session_state.personal_msg_subject = "Exciting New Feature Just for You!"
-                st.session_state.personal_msg_body = f"""Hi {selected_student['full_name']},
+                st.session_state.template_subject = "Exciting New Feature Just for You!"
+                st.session_state.template_message = f"""Hi {selected_student['full_name']},
 
 I'm excited to share that we've just launched a new feature that I think you'll love!
 
@@ -240,8 +244,8 @@ Best regards,
                 st.rerun()
             
             elif template_choice == "🤝 Thank You Message":
-                st.session_state.personal_msg_subject = f"Thank You, {selected_student['full_name']}!"
-                st.session_state.personal_msg_body = f"""Hi {selected_student['full_name']},
+                st.session_state.template_subject = f"Thank You, {selected_student['full_name']}!"
+                st.session_state.template_message = f"""Hi {selected_student['full_name']},
 
 I just wanted to say thank you for being part of the T21 Services community!
 
@@ -257,8 +261,8 @@ Best regards,
                 st.rerun()
             
             elif template_choice == "❓ Check-in / Support":
-                st.session_state.personal_msg_subject = f"How Are You Doing, {selected_student['full_name']}?"
-                st.session_state.personal_msg_body = f"""Hi {selected_student['full_name']},
+                st.session_state.template_subject = f"How Are You Doing, {selected_student['full_name']}?"
+                st.session_state.template_message = f"""Hi {selected_student['full_name']},
 
 I wanted to check in and see how your learning experience has been so far.
 
