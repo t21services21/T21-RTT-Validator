@@ -38,6 +38,7 @@ from module_access_control import get_accessible_modules, can_access_module
 from admin_module_access_ui import render_module_access_admin
 from admin_bulk_email import render_bulk_email_ui
 from admin_trial_automation_ui import render_trial_automation_ui
+from admin_personal_message_ui import render_personal_message_ui
 from lms_course_manager import render_course_manager_ui
 from lms_student_portal import render_student_lms_portal
 import hashlib
@@ -3041,10 +3042,11 @@ elif tool == "🔧 Admin Panel":
             st.header("🔧 Admin Panel")
             
             # Create tabs for different admin functions
-            admin_tab1, admin_tab2, admin_tab3, admin_tab4, admin_tab5 = st.tabs([
+            admin_tab1, admin_tab2, admin_tab3, admin_tab4, admin_tab5, admin_tab6 = st.tabs([
                 "👥 User Management", 
                 "🔐 Module Access Control", 
-                "📧 Bulk Email", 
+                "📧 Bulk Email",
+                "💬 Personal Message",
                 "⏰ Trial Automation",
                 "📚 LMS Courses"
             ])
@@ -3059,9 +3061,12 @@ elif tool == "🔧 Admin Panel":
                 render_bulk_email_ui()
             
             with admin_tab4:
-                render_trial_automation_ui()
+                render_personal_message_ui()
             
             with admin_tab5:
+                render_trial_automation_ui()
+            
+            with admin_tab6:
                 render_course_manager_ui()
         else:
             st.error("⛔ Access Denied - Admin or Staff privileges required")

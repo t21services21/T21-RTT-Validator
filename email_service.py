@@ -317,6 +317,40 @@ def send_bulk_email(to_emails, subject, message):
     return success_count, failed_emails
 
 
+def send_personal_message(user_email, user_name, subject, message, from_admin="T21 Admin"):
+    """Send personalized message to a specific user"""
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+            <h1 style="color: #0066cc;">Message from T21 Services</h1>
+            
+            <p>Hi {user_name},</p>
+            
+            <div style="background-color: #f9f9f9; padding: 20px; border-left: 4px solid #0066cc; margin: 20px 0;">
+                {message}
+            </div>
+            
+            <p>If you have any questions, feel free to reply to this email.</p>
+            
+            <p>Best regards,<br>
+            <strong>{from_admin}</strong><br>
+            T21 Services Team</p>
+            
+            <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
+            <p style="font-size: 12px; color: #666;">
+                © 2025 T21 Services. All rights reserved.<br>
+                64 Upper Parliament Street, Liverpool, L8 7LF, United Kingdom
+            </p>
+        </div>
+    </body>
+    </html>
+    """
+    
+    return send_email(user_email, subject, html_content)
+
+
 def generate_reset_code():
     """Generate 6-digit reset code"""
     return ''.join(random.choices(string.digits, k=6))
