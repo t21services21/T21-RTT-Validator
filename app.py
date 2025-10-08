@@ -36,6 +36,8 @@ from admin_management import load_users_db, save_users_db
 from admin_panel_ui import render_admin_panel
 from module_access_control import get_accessible_modules, can_access_module
 from admin_module_access_ui import render_module_access_admin
+from admin_bulk_email import render_bulk_email_ui
+from admin_trial_automation_ui import render_trial_automation_ui
 import hashlib
 import pandas as pd
 # Page configuration
@@ -111,22 +113,38 @@ if not st.session_state.logged_in:
                         # Try old student database
                         success, message, user_license = login_student(email, password)
                         if success:
-                            st.session_state.logged_in = True
-                            st.session_state.user_license = user_license
-                            st.session_state.user_email = email
-                            st.success(message)
-                            st.rerun()
+                            # Check if trial expired
+                            if user_license.role == "trial" and not user_license.is_active():
+                                st.error("❌ Your 48-hour trial has expired!")
+                                st.warning("⬆️ Please upgrade to continue using the platform.")
+                                st.info("💰 **Upgrade Options:**\n- Basic: £299 / 3 months\n- Professional: £599 / 6 months\n- Premium: £999 / 12 months")
+                                if st.button("📧 Contact Admin to Upgrade"):
+                                    st.info("📧 Email: admin@t21services.co.uk")
+                            else:
+                                st.session_state.logged_in = True
+                                st.session_state.user_license = user_license
+                                st.session_state.user_email = email
+                                st.success(message)
+                                st.rerun()
                         else:
                             st.error(message)
                 else:
                     # Try old student database
                     success, message, user_license = login_student(email, password)
                     if success:
-                        st.session_state.logged_in = True
-                        st.session_state.user_license = user_license
-                        st.session_state.user_email = email
-                        st.success(message)
-                        st.rerun()
+                        # Check if trial expired
+                        if user_license.role == "trial" and not user_license.is_active():
+                            st.error("❌ Your 48-hour trial has expired!")
+                            st.warning("⬆️ Please upgrade to continue using the platform.")
+                            st.info("💰 **Upgrade Options:**\n- Basic: £299 / 3 months\n- Professional: £599 / 6 months\n- Premium: £999 / 12 months")
+                            if st.button("📧 Contact Admin to Upgrade", key="contact_admin_2"):
+                                st.info("📧 Email: admin@t21services.co.uk")
+                        else:
+                            st.session_state.logged_in = True
+                            st.session_state.user_license = user_license
+                            st.session_state.user_email = email
+                            st.success(message)
+                            st.rerun()
                     else:
                         st.error(message)
             else:
@@ -323,6 +341,26 @@ if st.session_state.user_license:
         st.session_state.user_license = None
         st.session_state.user_email = None
         st.rerun()
+
+st.sidebar.markdown("---")
+
+# Enhanced Trial Status Display
+user_license = st.session_state.user_license
+if hasattr(user_license, 'role') and user_license.role == "trial":
+    days_remaining = user_license.days_remaining()
+    hours_remaining = days_remaining * 24
+    
+    if hours_remaining <= 0:
+        st.sidebar.error("⏰ **TRIAL EXPIRED!**")
+        st.sidebar.warning("Please upgrade to continue")
+    elif hours_remaining <= 6:
+        st.sidebar.error(f"⏰ **{int(hours_remaining)} HOURS LEFT!**")
+        st.sidebar.warning("⚠️ Upgrade NOW!")
+    elif hours_remaining <= 24:
+        st.sidebar.warning(f"⏰ **{int(hours_remaining)} hours remaining**")
+        st.sidebar.info("Consider upgrading soon!")
+    else:
+        st.sidebar.info(f"⏰ Trial: {int(hours_remaining)} hours left")
 
 st.sidebar.markdown("---")
 
@@ -2617,14 +2655,115 @@ Followed strict infection control and safeguarding procedures"""
 # TOOL 11: DASHBOARD & ANALYTICS (NEW!)
 # ============================================
 elif tool == "📈 Dashboard & Analytics":
-    st.header("📈 Performance Dashboard")
+    st.header("📈 Your Dashboard")
     
-    validator_initials = st.text_input("Your Initials (to filter stats):", value="", max_chars=3)
+    user_license = st.session_state.user_license
+    user_info = get_student_info(st.session_state.user_email)
+    
+    # Trial Countdown (if trial user)
+    if hasattr(user_license, 'role') and user_license.role == "trial":
+        days_remaining = user_license.days_remaining()
+        hours_remaining = days_remaining * 24
+        
+        st.markdown("### ⏰ Trial Status")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            if hours_remaining <= 0:
+                st.error("### ❌ EXPIRED")
+                st.markdown("**Your trial has ended**")
+            elif hours_remaining <= 6:
+                st.error(f"### ⏰ {int(hours_remaining)}h")
+                st.markdown("**URGENT: Expires soon!**")
+            elif hours_remaining <= 24:
+                st.warning(f"### ⏰ {int(hours_remaining)}h")
+                st.markdown("**Less than 1 day left**")
+            else:
+                st.info(f"### ⏰ {int(hours_remaining)}h")
+                st.markdown(f"**{days_remaining:.1f} days remaining**")
+        
+        with col2:
+            st.metric("Plan", "48-Hour Trial")
+            st.caption("Free access to explore")
+        
+        with col3:
+            if hours_remaining <= 6:
+                st.error("### ⚠️ UPGRADE NOW!")
+                if st.button("⬆️ View Upgrade Options", type="primary"):
+                    st.session_state.show_upgrade = True
+                    st.rerun()
+            else:
+                st.info("### 💡 Enjoying it?")
+                st.caption("Upgrade for unlimited access")
+        
+        # Progress bar
+        total_hours = 48
+        progress = max(0, min(1, hours_remaining / total_hours))
+        st.progress(progress)
+        
+        if hours_remaining > 0:
+            st.caption(f"⏱️ Trial expires in {int(hours_remaining)} hours ({int(hours_remaining * 60)} minutes)")
+        else:
+            st.caption("❌ Trial expired - Please upgrade to continue")
+        
+        st.markdown("---")
+    
+    # Account Overview
+    st.subheader("👤 Account Overview")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric("Role", user_license.role.title())
+    
+    with col2:
+        status = "Active" if user_license.is_active() else "Expired"
+        st.metric("Status", status)
+    
+    with col3:
+        if user_info:
+            from datetime import datetime
+            created = datetime.fromisoformat(user_info['created_at'])
+            days_member = (datetime.now() - created).days
+            st.metric("Member", f"{days_member} days")
+    
+    with col4:
+        total_logins = user_license.usage.get('total_logins', 0)
+        st.metric("Total Logins", total_logins)
+    
+    st.markdown("---")
+    
+    # Usage Today
+    st.subheader("📊 Today's Activity")
+    
+    usage = user_license.usage
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        validations_today = usage.get('validations_today', 0)
+        st.metric("Validations Today", validations_today)
+    
+    with col2:
+        quiz_completed = usage.get('quizzes_completed_today', 0)
+        st.metric("Quizzes Completed", quiz_completed)
+    
+    with col3:
+        ai_questions = usage.get('ai_questions_today', 0)
+        st.metric("AI Tutor Questions", ai_questions)
+    
+    st.markdown("---")
+    
+    # Performance Stats
+    validator_initials = st.text_input("Your Initials (to filter validation stats):", value="", max_chars=3)
     
     if validator_initials:
         stats = get_dashboard_stats(validator_initials=validator_initials.upper())
     else:
         stats = get_dashboard_stats()
+    
+    st.subheader("📈 Validation Performance")
     
     # Key Metrics
     col1, col2, col3, col4 = st.columns(4)
@@ -2898,13 +3037,24 @@ elif tool == "🔧 Admin Panel":
             st.header("🔧 Admin Panel")
             
             # Create tabs for different admin functions
-            admin_tab1, admin_tab2 = st.tabs(["👥 User Management", "🔐 Module Access Control"])
+            admin_tab1, admin_tab2, admin_tab3, admin_tab4 = st.tabs([
+                "👥 User Management", 
+                "🔐 Module Access Control", 
+                "📧 Bulk Email", 
+                "⏰ Trial Automation"
+            ])
             
             with admin_tab1:
                 render_admin_panel(st.session_state.user_email)
             
             with admin_tab2:
                 render_module_access_admin()
+            
+            with admin_tab3:
+                render_bulk_email_ui()
+            
+            with admin_tab4:
+                render_trial_automation_ui()
         else:
             st.error("⛔ Access Denied - Admin or Staff privileges required")
     else:
