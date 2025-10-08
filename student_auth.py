@@ -7,13 +7,16 @@ Features:
 - License activation
 - Session management
 - Password hashing
+- Email notifications
+- Password reset
 """
 
 import hashlib
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from access_control import UserLicense, generate_license_key
+from email_service import send_welcome_email, generate_reset_code, send_password_reset_email
 
 # ============================================
 # USER DATABASE (Simple JSON storage)

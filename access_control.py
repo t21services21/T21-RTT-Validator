@@ -20,8 +20,8 @@ import json
 
 ROLES = {
     "trial": {
-        "name": "Trial Access",
-        "duration_days": 7,
+        "name": "48-Hour Trial Access",
+        "duration_days": 2,
         "price": 0,
         "features": {
             "pathway_validator": True,

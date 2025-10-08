@@ -6,3 +6,4 @@ python-dateutil
 PyPDF2
 python-docx
 openai>=1.0.0
+sendgrid>=6.10.0
