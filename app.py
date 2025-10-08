@@ -2059,18 +2059,24 @@ Just paste ANY job description here!"""
                 
                 # ===== EXAMPLE ANSWERS =====
                 st.markdown("---")
-                st.subheader("💡 Example Answers (STAR Method)")
+                st.subheader("💡 Example Answers (AI-Powered with STAR Method)")
+                st.info("🤖 **Powered by GPT-4** - Intelligent, detailed answers for each question!")
                 
                 if result['example_answers']:
                     for i, answer in enumerate(result['example_answers'], 1):
-                        with st.expander(f"Example Answer #{i}: {answer['question']}", expanded=False):
-                            st.markdown("**Example Answer:**")
-                            st.info(answer['example_answer'])
+                        with st.expander(f"📝 Answer #{i}: {answer['question']}", expanded=(i==1)):
+                            # GPT-4 generated answers have 'answer' field, old ones have 'example_answer'
+                            answer_text = answer.get('answer', answer.get('example_answer', ''))
+                            st.markdown(answer_text)
                             
+                            # Old format tips
                             if answer.get('tips'):
-                                st.markdown("**Tips:**")
+                                st.markdown("---")
+                                st.markdown("**Additional Tips:**")
                                 for tip in answer['tips']:
                                     st.markdown(f"- ✅ {tip}")
+                else:
+                    st.warning("⚠️ No example answers generated. Please try regenerating the prep pack.")
                 
                 # ===== PREPARATION TIPS =====
                 st.markdown("---")

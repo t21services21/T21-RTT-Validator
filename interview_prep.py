@@ -15,6 +15,14 @@ Supports:
 
 import json
 from datetime import datetime
+import streamlit as st
+
+# OpenAI integration for intelligent answer generation
+try:
+    from openai import OpenAI
+    OPENAI_AVAILABLE = True
+except ImportError:
+    OPENAI_AVAILABLE = False
 
 def analyze_job_description(job_title, job_description, company_name=""):
     """
@@ -72,8 +80,8 @@ def analyze_job_description(job_title, job_description, company_name=""):
     # Generate preparation tips
     prep_tips = generate_prep_tips(job_title, found_skills)
     
-    # Generate example answers
-    example_answers = generate_example_answers(questions[:5])  # Top 5 questions
+    # Generate example answers using GPT-4 for ALL questions (intelligent AI answers)
+    example_answers = generate_ai_powered_answers(questions, job_title, job_description)
     
     return {
         'job_title': job_title,
@@ -432,6 +440,86 @@ def generate_questions(job_title, skills, job_desc):
     questions.sort(key=lambda x: float(x['likelihood'].replace('%', '')), reverse=True)
     
     return questions
+
+
+def generate_ai_powered_answers(questions, job_title, job_description):
+    """Generate intelligent answers for ALL interview questions using GPT-4"""
+    
+    if not OPENAI_AVAILABLE:
+        # Fallback to basic answers
+        return generate_example_answers(questions[:5])
+    
+    try:
+        # Get API key
+        api_key = st.secrets.get("OPENAI_API_KEY")
+        if not api_key:
+            return generate_example_answers(questions[:5])
+        
+        # Initialize OpenAI client
+        client = OpenAI(api_key=api_key)
+        
+        all_answers = []
+        
+        # Generate answers for top 15 most likely questions (balance between quality and API cost)
+        for q in questions[:15]:
+            try:
+                # Create prompt for GPT-4
+                prompt = f"""You are an expert interview coach helping a candidate prepare for a {job_title} interview.
+
+Job Description:
+{job_description[:500]}
+
+Interview Question: {q['question']}
+Question Category: {q['category']}
+Why it's asked: {q['why_asked']}
+
+Provide an excellent example answer that:
+1. Uses STAR method if it's a competency/scenario question (Situation, Task, Action, Result)
+2. Is specific and detailed with examples
+3. Demonstrates relevant skills and experience
+4. Is professional and appropriate for {job_title} role
+5. Is 150-250 words long
+6. Includes 2-3 practical tips at the end
+
+Format:
+**Example Answer:**
+[Your detailed answer here]
+
+**Tips:**
+- [Tip 1]
+- [Tip 2]
+- [Tip 3]"""
+
+                # Call GPT-4
+                response = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": "You are an expert interview coach with deep knowledge of NHS, healthcare, education, and administrative roles. You provide detailed, professional example answers using STAR method where appropriate."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    max_tokens=500,
+                    temperature=0.7
+                )
+                
+                answer_text = response.choices[0].message.content
+                
+                all_answers.append({
+                    'question': q['question'],
+                    'category': q['category'],
+                    'answer': answer_text
+                })
+                
+            except Exception as e:
+                # If individual question fails, continue with next
+                print(f"Error generating answer for question: {e}")
+                continue
+        
+        return all_answers
+        
+    except Exception as e:
+        # Fallback to basic answers if GPT-4 fails
+        print(f"GPT-4 error in interview prep: {e}")
+        return generate_example_answers(questions[:5])
 
 
 def generate_example_answers(questions):
