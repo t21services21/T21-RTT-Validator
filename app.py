@@ -30,7 +30,7 @@ from access_control import UserLicense, ROLES, check_feature_access
 from student_auth import (login_student, register_student, hash_password,
                           list_all_students, upgrade_student, extend_student_license,
                           request_password_reset, verify_reset_code, reset_password)
-from access_control import UserAccount, USER_TYPES
+from advanced_access_control import UserAccount, USER_TYPES
 from admin_management import load_users_db, save_users_db
 from admin_panel_ui import render_admin_panel
 import hashlib
