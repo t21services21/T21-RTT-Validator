@@ -23,20 +23,19 @@ from cv_builder import (generate_cv_data, generate_professional_summary, format_
 from interactive_learning import (INTERACTIVE_QUIZZES, BADGES, check_answer as check_quiz_answer, 
                                   get_all_categories, get_quiz_by_difficulty,
                                   StudentProgress, get_leaderboard, add_to_leaderboard)
-from interactive_reports import (generate_student_progress_report, generate_csv_export, 
                                  format_report_for_print)
 from certification_system import (generate_exam, grade_exam, generate_certificate, 
                                   format_certificate_html, verify_certificate)
 from ai_tutor import (answer_question, get_code_info, generate_related_quiz, ChatHistory)
 from access_control import UserLicense, ROLES, check_feature_access
-from student_auth import (register_student, login_student, activate_license, 
-                          get_student_info, upgrade_student)
-from advanced_access_control import UserAccount, USER_TYPES
+from student_auth import (login_student, register_student, hash_password,
+                          list_all_students, upgrade_student, extend_student_license,
+                          request_password_reset, verify_reset_code, reset_password)
+from access_control import UserAccount, USER_TYPES
 from admin_management import load_users_db, save_users_db
 from admin_panel_ui import render_admin_panel
 import hashlib
 import pandas as pd
-
 # Page configuration
 st.set_page_config(
     page_title="T21 RTT Pathway Intelligence",
@@ -130,10 +129,64 @@ if not st.session_state.logged_in:
                         st.error(message)
             else:
                 st.warning("Please enter email and password")
+        
+        st.markdown("---")
+        
+        # Password Reset Section
+        with st.expander("🔐 Forgot Password?"):
+            st.write("**Reset your password in 3 easy steps:**")
+            
+            reset_email = st.text_input("Enter your email address:", key="reset_email")
+            
+            if 'reset_step' not in st.session_state:
+                st.session_state.reset_step = 1
+            
+            if st.session_state.reset_step == 1:
+                if st.button("📧 Send Reset Code"):
+                    if reset_email:
+                        success, message = request_password_reset(reset_email)
+                        if success:
+                            st.success(message)
+                            st.session_state.reset_step = 2
+                            st.rerun()
+                        else:
+                            st.error(message)
+                    else:
+                        st.warning("Please enter your email")
+            
+            elif st.session_state.reset_step == 2:
+                st.info(f"✅ Reset code sent to {reset_email}")
+                reset_code = st.text_input("Enter 6-digit code from email:", max_chars=6, key="reset_code")
+                new_password = st.text_input("New Password:", type="password", key="reset_new_password")
+                confirm_password = st.text_input("Confirm New Password:", type="password", key="reset_confirm_password")
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    if st.button("✅ Reset Password"):
+                        if not (reset_code and new_password and confirm_password):
+                            st.warning("Please fill all fields")
+                        elif new_password != confirm_password:
+                            st.error("Passwords don't match")
+                        elif len(new_password) < 6:
+                            st.error("Password must be at least 6 characters")
+                        else:
+                            success, message = reset_password(reset_email, reset_code, new_password)
+                            if success:
+                                st.success(message)
+                                st.balloons()
+                                st.session_state.reset_step = 1
+                                st.rerun()
+                            else:
+                                st.error(message)
+                
+                with col2:
+                    if st.button("← Start Over"):
+                        st.session_state.reset_step = 1
+                        st.rerun()
     
     with tab2:
         st.subheader("New Student Registration")
-        st.info("🎉 **Start with 7-day FREE TRIAL!** No credit card required.")
+        st.info("🎉 **Start with 48-HOUR FREE TRIAL!** No credit card required.")
         
         reg_name = st.text_input("Full Name", key="reg_name")
         reg_email = st.text_input("Email Address", key="reg_email")
