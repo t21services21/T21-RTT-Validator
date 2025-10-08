@@ -33,6 +33,8 @@ from student_auth import (login_student, register_student, hash_password,
 from advanced_access_control import UserAccount, USER_TYPES
 from admin_management import load_users_db, save_users_db
 from admin_panel_ui import render_admin_panel
+from module_access_control import get_accessible_modules, can_access_module
+from admin_module_access_ui import render_module_access_admin
 import hashlib
 import pandas as pd
 # Page configuration
@@ -325,30 +327,39 @@ st.sidebar.markdown("---")
 
 # Sidebar navigation
 st.sidebar.title("🧭 Validation Tools")
-tool = st.sidebar.radio(
-    "Select Tool:",
-    [
+# Get user's accessible modules based on their role AND user-specific access
+user_role = st.session_state.user_license.role if hasattr(st.session_state.user_license, 'role') else "trial"
+user_email = st.session_state.user_email if 'user_email' in st.session_state else None
+accessible_modules = get_accessible_modules(user_role, user_email)
+
+# If no accessible modules (error), show all
+if not accessible_modules:
+    accessible_modules = [
         "📊 Pathway Validator",
         "📝 Clinic Letter Interpreter",
         "📅 Timeline Auditor",
         "👤 Patient Registration Validator",
         "📆 Appointment & Booking Checker",
         "💬 Comment Line Generator",
-        "✍️ Clinic Letter Creator",  # NEW! For students to practice writing letters
-        "🎓 Training Library",  # NEW!
-        "🎮 Interactive Learning Center",  # NEW! GAMIFIED! 🔥
-        "🎓 Certification Exam",  # NEW! Get certified! 🏆
-        "🤖 AI RTT Tutor",  # NEW! 24/7 Help! 🚀
-        "💼 Job Interview Prep",  # NEW! Career support
-        "📄 CV Builder",  # NEW! QUICK REVENUE! 💰
-        "📊 Interactive Reports",  # NEW! Replace Excel! 
-        "📈 Dashboard & Analytics",  # NEW!
-        "🚨 Smart Alerts",  # NEW!
-        "📜 Validation History",  # NEW!
-        "⚙️ My Account & Upgrade",  # NEW!
-        "🔧 Admin Panel",  # NEW! Admins only
+        "✍️ Clinic Letter Creator",
+        "🎓 Training Library",
+        "🎮 Interactive Learning Center",
+        "🎓 Certification Exam",
+        "🤖 AI RTT Tutor",
+        "💼 Job Interview Prep",
+        "📄 CV Builder",
+        "📊 Interactive Reports",
+        "📈 Dashboard & Analytics",
+        "🚨 Smart Alerts",
+        "📜 Validation History",
+        "⚙️ My Account & Upgrade",
+        "🔧 Admin Panel",
         "ℹ️ About RTT Rules"
     ]
+
+tool = st.sidebar.radio(
+    "Select Tool:",
+    accessible_modules
 )
 
 st.sidebar.markdown("---")
@@ -2871,19 +2882,30 @@ elif tool == "🔧 Admin Panel":
     # Check if user is admin
     if st.session_state.user_license:
         # Check if it's UserAccount (new system) or UserLicense (old system)
+        is_admin = False
         if isinstance(st.session_state.user_license, UserAccount):
             user_type = st.session_state.user_license.role
             if "admin" in user_type or "staff" in user_type:
-                render_admin_panel(st.session_state.user_email)
-            else:
-                st.error("⛔ Access Denied - Admin or Staff privileges required")
+                is_admin = True
         else:
             # Old UserLicense system - check role
             user_role = st.session_state.user_license.role
             if user_role == "admin":
+                is_admin = True
+        
+        if is_admin:
+            st.header("🔧 Admin Panel")
+            
+            # Create tabs for different admin functions
+            admin_tab1, admin_tab2 = st.tabs(["👥 User Management", "🔐 Module Access Control"])
+            
+            with admin_tab1:
                 render_admin_panel(st.session_state.user_email)
-            else:
-                st.error("⛔ Access Denied - Admin or Staff privileges required")
+            
+            with admin_tab2:
+                render_module_access_admin()
+        else:
+            st.error("⛔ Access Denied - Admin or Staff privileges required")
     else:
         st.error("⛔ Access Denied - Admin or Staff privileges required")
 
