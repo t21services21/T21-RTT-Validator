@@ -193,6 +193,24 @@ DEFAULT_MODULE_ACCESS = {
         "admin": True,
         "staff": True,
         "nhs_trust": True
+    },
+    "📚 LMS - My Courses": {
+        "trial": True,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "👥 Staff Management": {
+        "trial": False,
+        "basic": False,
+        "professional": False,
+        "ultimate": False,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
     }
 }
 

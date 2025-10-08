@@ -38,6 +38,8 @@ from module_access_control import get_accessible_modules, can_access_module
 from admin_module_access_ui import render_module_access_admin
 from admin_bulk_email import render_bulk_email_ui
 from admin_trial_automation_ui import render_trial_automation_ui
+from lms_course_manager import render_course_manager_ui
+from lms_student_portal import render_student_lms_portal
 import hashlib
 import pandas as pd
 # Page configuration
@@ -392,6 +394,8 @@ if not accessible_modules:
         "🚨 Smart Alerts",
         "📜 Validation History",
         "⚙️ My Account & Upgrade",
+        "📚 LMS - My Courses",
+        "👥 Staff Management",
         "🔧 Admin Panel",
         "ℹ️ About RTT Rules"
     ]
@@ -3037,11 +3041,12 @@ elif tool == "🔧 Admin Panel":
             st.header("🔧 Admin Panel")
             
             # Create tabs for different admin functions
-            admin_tab1, admin_tab2, admin_tab3, admin_tab4 = st.tabs([
+            admin_tab1, admin_tab2, admin_tab3, admin_tab4, admin_tab5 = st.tabs([
                 "👥 User Management", 
                 "🔐 Module Access Control", 
                 "📧 Bulk Email", 
-                "⏰ Trial Automation"
+                "⏰ Trial Automation",
+                "📚 LMS Courses"
             ])
             
             with admin_tab1:
@@ -3055,10 +3060,40 @@ elif tool == "🔧 Admin Panel":
             
             with admin_tab4:
                 render_trial_automation_ui()
+            
+            with admin_tab5:
+                render_course_manager_ui()
         else:
             st.error("⛔ Access Denied - Admin or Staff privileges required")
     else:
         st.error("⛔ Access Denied - Admin or Staff privileges required")
+
+
+# ============================================
+# LMS - MY COURSES (STUDENT VIEW)
+# ============================================
+elif tool == "📚 LMS - My Courses":
+    user_role = st.session_state.user_license.role if hasattr(st.session_state.user_license, 'role') else "trial"
+    render_student_lms_portal(st.session_state.user_email, user_role)
+
+
+# ============================================
+# STAFF MANAGEMENT
+# ============================================
+elif tool == "👥 Staff Management":
+    st.header("👥 Staff Management System")
+    st.info("🚧 Staff Management System - Coming in next phase!")
+    st.markdown("""
+    **Planned Features:**
+    - 👤 Staff directory
+    - 📅 Shift scheduling
+    - ✅ Task management
+    - 📊 Performance tracking
+    - ⏰ Time & attendance
+    - 💬 Team communication
+    
+    This comprehensive staff management system will help you manage your team efficiently!
+    """)
 
 
 # ============================================
