@@ -23,7 +23,6 @@ from cv_builder import (generate_cv_data, generate_professional_summary, format_
 from interactive_learning import (INTERACTIVE_QUIZZES, BADGES, check_answer as check_quiz_answer, 
                                   get_all_categories, get_quiz_by_difficulty,
                                   StudentProgress, get_leaderboard, add_to_leaderboard)
-                                 format_report_for_print)
 from certification_system import (generate_exam, grade_exam, generate_certificate, 
                                   format_certificate_html, verify_certificate)
 from ai_tutor import (answer_question, get_code_info, generate_related_quiz, ChatHistory)
