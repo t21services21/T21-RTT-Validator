@@ -2081,10 +2081,10 @@ Just paste ANY job description here!"""
         if not job_title or not job_description:
             st.error("Please enter job title and job description!")
         else:
-            with st.spinner("🤖 Analyzing job description and generating AI-powered answers... This may take 30-60 seconds..."):
+            with st.spinner("⚡ Analyzing job description and generating interview prep pack..."):
                 result = analyze_job_description(job_title, job_description, company_name)
                 
-                st.success("✅ Interview Prep Pack Generated with AI Answers!")
+                st.success("✅ Interview Prep Pack Generated!")
                 
                 # ===== LIKELY INTERVIEW QUESTIONS =====
                 st.markdown("---")
@@ -2111,8 +2111,8 @@ Just paste ANY job description here!"""
                 
                 # ===== EXAMPLE ANSWERS =====
                 st.markdown("---")
-                st.subheader("💡 Example Answers (AI-Powered with STAR Method)")
-                st.info("🤖 **Powered by GPT-4** - Intelligent, detailed answers for each question!")
+                st.subheader("💡 Example Answers (STAR Method)")
+                st.info("📝 **Professional example answers** - Use these as templates for your responses!")
                 
                 if result['example_answers']:
                     for i, answer in enumerate(result['example_answers'], 1):

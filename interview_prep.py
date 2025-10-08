@@ -80,8 +80,8 @@ def analyze_job_description(job_title, job_description, company_name=""):
     # Generate preparation tips
     prep_tips = generate_prep_tips(job_title, found_skills)
     
-    # Generate example answers using GPT-4 for ALL questions (intelligent AI answers)
-    example_answers = generate_ai_powered_answers(questions, job_title, job_description)
+    # Generate example answers (fast pre-written answers - GPT-4 disabled for speed)
+    example_answers = generate_example_answers(questions[:5])
     
     return {
         'job_title': job_title,
