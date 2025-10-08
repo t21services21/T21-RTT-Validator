@@ -41,6 +41,8 @@ from admin_trial_automation_ui import render_trial_automation_ui
 from admin_personal_message_ui import render_personal_message_ui
 from lms_course_manager import render_course_manager_ui
 from lms_student_portal import render_student_lms_portal
+from lms_enhanced_catalog import render_enhanced_catalog
+from lms_course_preview import render_course_preview
 import hashlib
 import pandas as pd
 # Page configuration
@@ -3079,7 +3081,21 @@ elif tool == "🔧 Admin Panel":
 # ============================================
 elif tool == "📚 LMS - My Courses":
     user_role = st.session_state.user_license.role if hasattr(st.session_state.user_license, 'role') else "trial"
-    render_student_lms_portal(st.session_state.user_email, user_role)
+    
+    # Check if viewing a specific course
+    if 'viewing_course' in st.session_state:
+        # Show the course player
+        render_student_lms_portal(st.session_state.user_email, user_role)
+    
+    # Check if previewing a course
+    elif 'preview_course' in st.session_state:
+        # Show course preview
+        render_course_preview(st.session_state.preview_course, st.session_state.user_email)
+    
+    # Otherwise show enhanced catalog
+    else:
+        # Enhanced course catalog
+        render_enhanced_catalog(st.session_state.user_email, user_role)
 
 
 # ============================================

@@ -18,6 +18,10 @@ from database_schema import (
 )
 from datetime import datetime, timedelta
 from lms_course_manager import get_all_courses, get_lessons_for_course, get_course
+from lms_quiz_ui import render_quiz_interface, render_quiz_list_for_course
+from lms_reviews_ui import render_review_section
+from lms_certificates_ui import render_certificates_gallery, render_certificate_viewer
+from lms_certificates import generate_certificate
 
 
 # ============================================
@@ -118,13 +122,26 @@ def update_time_spent(user_email, course_id, minutes):
 def render_student_lms_portal(user_email, user_role):
     """Render the student LMS portal"""
     
+    # Check if viewing a certificate
+    if 'viewing_certificate' in st.session_state:
+        render_certificate_viewer(st.session_state.viewing_certificate)
+        return
+    
+    # Check if taking a quiz
+    if 'active_quiz' in st.session_state:
+        render_quiz_interface(st.session_state.active_quiz, user_email)
+        
+        if st.button("⬅️ Back to Course"):
+            del st.session_state.active_quiz
+            st.rerun()
+        return
+    
     st.header("📚 My Learning Portal")
     st.markdown("**Explore courses and continue your learning journey**")
     
     # Tabs
-    tab1, tab2, tab3, tab4 = st.tabs([
+    tab1, tab2, tab3 = st.tabs([
         "🏠 My Courses",
-        "🔍 Browse Courses",
         "📖 Continue Learning",
         "🏆 Certificates"
     ])
@@ -133,13 +150,10 @@ def render_student_lms_portal(user_email, user_role):
         render_my_courses(user_email)
     
     with tab2:
-        render_browse_courses(user_email, user_role)
-    
-    with tab3:
         render_continue_learning(user_email)
     
-    with tab4:
-        render_certificates(user_email)
+    with tab3:
+        render_certificates_gallery(user_email)
 
 
 def render_my_courses(user_email):
@@ -306,55 +320,78 @@ def render_continue_learning(user_email):
     
     st.progress(progress['completion_percentage'] / 100)
     
-    # Get lessons
-    lessons = get_lessons_for_course(course_id)
+    # Tabs for course content
+    lesson_tab, quiz_tab, review_tab = st.tabs(["📝 Lessons", "❓ Quizzes", "⭐ Reviews"])
     
-    if not lessons:
-        st.warning("This course doesn't have any lessons yet.")
-        return
-    
-    # Lesson navigation
-    st.markdown("---")
-    st.markdown("### 📝 Course Lessons")
-    
-    for idx, lesson in enumerate(lessons, 1):
-        lesson_id = lesson['lesson_id']
-        is_completed = lesson_id in progress['completed_lessons']
+    with lesson_tab:
+        # Get lessons
+        lessons = get_lessons_for_course(course_id)
         
-        with st.expander(
-            f"{'✅' if is_completed else '⭕'} Lesson {idx}: {lesson['title']}", 
-            expanded=(not is_completed and idx == 1)
-        ):
-            st.markdown(f"**Duration:** {lesson['duration_minutes']} minutes")
-            st.markdown(f"**Description:** {lesson['description']}")
+        if not lessons:
+            st.warning("This course doesn't have any lessons yet.")
+        else:
+            st.markdown("### 📝 Course Lessons")
             
-            # Show content based on type
-            if lesson['content_type'] == 'video':
-                if lesson['video_url']:
-                    st.video(lesson['video_url'])
-                st.markdown(lesson['content'])
-            
-            elif lesson['content_type'] == 'pdf':
-                if lesson['pdf_url']:
-                    st.markdown(f"📄 [Download PDF]({lesson['pdf_url']})")
-                st.markdown(lesson['content'])
-            
-            elif lesson['content_type'] == 'text':
-                st.markdown(lesson['content'])
-            
-            else:
-                st.markdown(lesson['content'])
-            
-            # Mark complete button
-            if not is_completed:
-                if st.button(f"✅ Mark as Complete", key=f"complete_{lesson_id}"):
-                    mark_lesson_complete(user_email, course_id, lesson_id)
-                    update_time_spent(user_email, course_id, lesson['duration_minutes'])
-                    st.success("Lesson completed!")
-                    st.balloons()
-                    st.rerun()
-            else:
-                st.success("✅ Completed")
+            for idx, lesson in enumerate(lessons, 1):
+                lesson_id = lesson['lesson_id']
+                is_completed = lesson_id in progress['completed_lessons']
+                
+                with st.expander(
+                    f"{'✅' if is_completed else '⭕'} Lesson {idx}: {lesson['title']}", 
+                    expanded=(not is_completed and idx == 1)
+                ):
+                    st.markdown(f"**Duration:** {lesson['duration_minutes']} minutes")
+                    st.markdown(f"**Description:** {lesson['description']}")
+                    
+                    # Show content based on type
+                    if lesson['content_type'] == 'video':
+                        if lesson['video_url']:
+                            st.video(lesson['video_url'])
+                        st.markdown(lesson['content'])
+                    
+                    elif lesson['content_type'] == 'pdf':
+                        if lesson['pdf_url']:
+                            st.markdown(f"📄 [Download PDF]({lesson['pdf_url']})")
+                        st.markdown(lesson['content'])
+                    
+                    elif lesson['content_type'] == 'text':
+                        st.markdown(lesson['content'])
+                    
+                    else:
+                        st.markdown(lesson['content'])
+                    
+                    # Mark complete button
+                    if not is_completed:
+                        if st.button(f"✅ Mark as Complete", key=f"complete_{lesson_id}"):
+                            mark_lesson_complete(user_email, course_id, lesson_id)
+                            update_time_spent(user_email, course_id, lesson['duration_minutes'])
+                            
+                            # Check if course completed and generate certificate
+                            updated_progress = get_student_progress(user_email, course_id)
+                            if updated_progress['status'] == 'completed' and not updated_progress['certificate_issued']:
+                                generate_certificate(
+                                    user_email=user_email,
+                                    user_name=updated_progress.get('user_name', 'Student'),
+                                    course_id=course_id,
+                                    course_title=course['title']
+                                )
+                            
+                            st.success("Lesson completed!")
+                            st.balloons()
+                            st.rerun()
+                    else:
+                        st.success("✅ Completed")
+    
+    with quiz_tab:
+        render_quiz_list_for_course(course_id, user_email)
+    
+    with review_tab:
+        # Get user info for reviews
+        from student_auth import get_student_info
+        user_info = get_student_info(user_email)
+        user_name = user_info['full_name'] if user_info else "Student"
+        
+        render_review_section(course_id, course['title'], user_email, user_name)
 
 
 def render_certificates(user_email):
