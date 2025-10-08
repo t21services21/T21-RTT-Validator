@@ -14,7 +14,6 @@ from lms_reviews import (
     add_review, get_course_reviews, get_user_review,
     get_rating_distribution, vote_helpful
 )
-from lms_student_portal import get_student_progress
 from datetime import datetime
 
 
@@ -22,6 +21,9 @@ def render_review_section(course_id, course_title, user_email, user_name):
     """Render the review section for a course"""
     
     st.subheader("⭐ Course Reviews")
+    
+    # Import here to avoid circular import
+    from lms_student_portal import get_student_progress
     
     # Check if user completed the course
     progress = get_student_progress(user_email, course_id)
