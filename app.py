@@ -2081,10 +2081,10 @@ Just paste ANY job description here!"""
         if not job_title or not job_description:
             st.error("Please enter job title and job description!")
         else:
-            with st.spinner("Analyzing job description and generating questions..."):
+            with st.spinner("🤖 Analyzing job description and generating AI-powered answers... This may take 30-60 seconds..."):
                 result = analyze_job_description(job_title, job_description, company_name)
                 
-                st.success("✅ Interview Prep Pack Generated!")
+                st.success("✅ Interview Prep Pack Generated with AI Answers!")
                 
                 # ===== LIKELY INTERVIEW QUESTIONS =====
                 st.markdown("---")

@@ -460,8 +460,8 @@ def generate_ai_powered_answers(questions, job_title, job_description):
         
         all_answers = []
         
-        # Generate answers for top 15 most likely questions (balance between quality and API cost)
-        for q in questions[:15]:
+        # Generate answers for top 5 most likely questions (fast generation, most important)
+        for q in questions[:5]:
             try:
                 # Create prompt for GPT-4
                 prompt = f"""You are an expert interview coach helping a candidate prepare for a {job_title} interview.
