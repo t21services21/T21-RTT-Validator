@@ -1,0 +1,9 @@
+[
+  {
+    "timestamp": "2025-10-08T12:04:38.179216",
+    "action": "CREATE_USER",
+    "performed_by": "admin@t21services.co.uk",
+    "target_user": "t.owonifari@t21services.co.uk",
+    "details": "Role: student_professional"
+  }
+]

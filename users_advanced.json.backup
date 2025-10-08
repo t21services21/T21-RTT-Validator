@@ -1,0 +1,33 @@
+{
+  "admin@t21services.co.uk": {
+    "user_id": "admin001",
+    "email": "admin@t21services.co.uk",
+    "role": "super_admin",
+    "full_name": "T21 Administrator",
+    "created_by": "system",
+    "created_at": "2025-10-08T10:26:00",
+    "status": "active",
+    "suspended_reason": null,
+    "suspended_by": null,
+    "suspended_at": null,
+    "terminated_at": null,
+    "expiry_date": "2035-10-08T10:26:00",
+    "usage": {
+      "total_logins": 2,
+      "last_login": "2025-10-08T11:38:14.109561",
+      "logins_today": 2,
+      "last_login_date": "2025-10-08",
+      "ai_questions_today": 0,
+      "quizzes_today": 0,
+      "validations_today": 0,
+      "last_reset_date": "2025-10-08"
+    },
+    "custom_permissions": {},
+    "notes": [
+      {
+        "timestamp": "2025-10-08T10:26:00.000000",
+        "note": "Super Admin account created"
+      }
+    ]
+  }
+}
