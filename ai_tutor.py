@@ -1,19 +1,29 @@
 """
 T21 AI RTT TUTOR - 24/7 INTELLIGENT ASSISTANT
-Powered by AI to answer ANY RTT question instantly
+Powered by OpenAI GPT-4 to answer ANY RTT, NHS, and Healthcare Admin question
 
 Features:
+- Real AI intelligence (GPT-4)
+- Comprehensive RTT knowledge
+- NHS administrative procedures
+- Hospital management
+- PAS systems expertise
 - Natural language understanding
-- RTT-specific knowledge base
 - Conversational interface
 - Chat history
-- Example generation
-- Quiz suggestions
 - Available on all pages
 """
 
 from datetime import datetime
 import re
+import streamlit as st
+
+# OpenAI integration
+try:
+    from openai import OpenAI
+    OPENAI_AVAILABLE = True
+except ImportError:
+    OPENAI_AVAILABLE = False
 
 # ============================================
 # RTT KNOWLEDGE BASE
@@ -179,6 +189,75 @@ RTT_KNOWLEDGE_BASE = {
 
 
 # ============================================
+# OPENAI GPT-4 INTEGRATION
+# ============================================
+
+SYSTEM_PROMPT = """You are an expert RTT (Referral to Treatment), NHS, and Healthcare Administration tutor for T21 Services training platform.
+
+Your expertise covers:
+- ALL RTT codes (10-36, 90-92) and their applications
+- RTT pathway management and validation
+- NHS 18-week target, 2WW, 62-day cancer pathways
+- PAS (Patient Administration System) operations
+- Hospital administrative procedures
+- Booking, scheduling, and waiting list management
+- Breach prevention and management
+- Patient management (DNAs, cancellations, rescheduling)
+- Referral processing
+- Reporting and auditing
+- Staff roles and responsibilities
+- NHS operational procedures
+- Healthcare data management
+- Clinic management
+- Any other healthcare administration topics
+
+INSTRUCTIONS:
+1. Provide accurate, professional, and helpful answers
+2. Use clear, concise language
+3. Include practical examples when relevant
+4. Format responses with markdown (bold, lists, etc.)
+5. If asked about RTT codes, explain clock effects
+6. Be encouraging and supportive to learners
+7. If you don't know something specific, say so honestly
+8. Always relate answers back to real-world application
+
+TONE: Professional, friendly, encouraging, and educational."""
+
+def ask_gpt4(question):
+    """Use OpenAI GPT-4 to answer ANY question intelligently"""
+    try:
+        # Check if API key is available
+        if not OPENAI_AVAILABLE:
+            return None
+        
+        # Get API key from Streamlit secrets
+        api_key = st.secrets.get("OPENAI_API_KEY")
+        if not api_key:
+            return None
+        
+        # Initialize OpenAI client
+        client = OpenAI(api_key=api_key)
+        
+        # Call GPT-4
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": question}
+            ],
+            max_tokens=800,
+            temperature=0.7
+        )
+        
+        return response.choices[0].message.content
+        
+    except Exception as e:
+        # Fallback to keyword-based system if GPT-4 fails
+        print(f"GPT-4 error: {e}")
+        return None
+
+
+# ============================================
 # AI TUTOR FUNCTIONS
 # ============================================
 
@@ -202,8 +281,14 @@ def get_code_info(code_number):
 
 def answer_question(question):
     """
-    Answer RTT-related questions using knowledge base
+    Answer RTT-related questions using GPT-4 AI (with fallback to knowledge base)
     """
+    # Try GPT-4 first for intelligent, comprehensive answers
+    gpt4_answer = ask_gpt4(question)
+    if gpt4_answer:
+        return gpt4_answer
+    
+    # Fallback to keyword-based system if GPT-4 unavailable
     question_lower = question.lower()
     
     # Code-specific questions

@@ -5,3 +5,4 @@ plotly
 python-dateutil
 PyPDF2
 python-docx
+openai>=1.0.0
