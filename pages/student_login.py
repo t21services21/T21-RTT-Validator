@@ -88,7 +88,7 @@ else:
                 
                 with col_b:
                     if st.form_submit_button("← Back to Main Page", use_container_width=True):
-                        st.switch_page("landing_page.py")
+                        st.switch_page("app.py")
                 
                 if login_btn:
                     if email and password:

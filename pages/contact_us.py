@@ -331,7 +331,7 @@ st.markdown("---")
 
 # Back button
 if st.button("← Back to Home"):
-    st.switch_page("landing_page.py")
+    st.switch_page("app.py")
 
 st.markdown("---")
 

@@ -644,7 +644,7 @@ if st.checkbox("I have read and agree to the Terms of Service"):
 
 # Back button
 if st.button("← Back to Home"):
-    st.switch_page("landing_page.py")
+    st.switch_page("app.py")
 
 st.markdown("---")
 
