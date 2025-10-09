@@ -20,6 +20,9 @@ create_admin_simple.py
 check_all_users.py
 test_admin_functions.py
 
+# Supabase credentials (NEVER COMMIT!)
+supabase_config_SAFE.py
+
 # Database files with sensitive user data
 users_database.json
 users_advanced.json

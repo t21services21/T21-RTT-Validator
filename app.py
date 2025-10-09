@@ -401,11 +401,63 @@ if not st.session_state.logged_in:
         
         if st.button("Login", type="primary"):
             if email and password:
-                # Try advanced users database first (admins, staff)
                 import json
                 import os
                 
-                # Try advanced users database first (admins, staff)
+                # Try Supabase first (all users)
+                try:
+                    from supabase_database import get_user_by_email, update_user_last_login
+                    import hashlib
+                    
+                    supabase_user = get_user_by_email(email)
+                    
+                    if supabase_user:
+                        # User found in Supabase
+                        password_hash = hashlib.sha256(password.encode()).hexdigest()
+                        
+                        if supabase_user.get('password_hash') == password_hash:
+                            # Check if account is active
+                            if supabase_user.get('status') == 'active':
+                                # Update last login
+                                update_user_last_login(email)
+                                
+                                # Track login
+                                from user_tracking_system import track_user_login
+                                track_user_login(email, success=True)
+                                
+                                # Create a simple user object for session
+                                class SimpleUser:
+                                    def __init__(self, data):
+                                        self.email = data.get('email')
+                                        self.full_name = data.get('full_name')
+                                        self.role = data.get('role', 'trial')
+                                        self.user_type = data.get('user_type', 'student')
+                                        self.status = data.get('status', 'active')
+                                
+                                user_obj = SimpleUser(supabase_user)
+                                
+                                # Set session
+                                st.session_state.logged_in = True
+                                st.session_state.user_license = user_obj
+                                st.session_state.user_email = email
+                                
+                                st.success(f"✅ Welcome back, {user_obj.full_name}!")
+                                st.rerun()
+                            else:
+                                st.error(f"❌ Account {supabase_user.get('status')}. Please contact administrator.")
+                        else:
+                            # Track failed login
+                            from user_tracking_system import track_user_login
+                            track_user_login(email, success=False)
+                            st.error("❌ Incorrect password")
+                        # Exit early if found in Supabase
+                        st.stop()
+                        
+                except Exception as e:
+                    # If Supabase fails, fall back to old databases
+                    st.warning(f"Using backup login system...")
+                
+                # Fallback: Try advanced users database (old system)
                 users_db = load_users_db()
                 
                 if email in users_db:
@@ -568,12 +620,29 @@ if not st.session_state.logged_in:
             elif len(reg_password) < 6:
                 st.error("Password must be at least 6 characters")
             else:
-                success, message, user_license = register_student(reg_email, reg_password, reg_name, role="trial")
-                if success:
-                    st.success(message)
-                    st.success("✅ You can now login with your credentials!")
-                else:
-                    st.error(message)
+                # Use Supabase for new registrations
+                try:
+                    from supabase_database import create_user
+                    import hashlib
+                    
+                    password_hash = hashlib.sha256(reg_password.encode()).hexdigest()
+                    success, message = create_user(reg_email, password_hash, reg_name, role="trial", user_type="student")
+                    
+                    if success:
+                        st.success("🎉 Registration successful!")
+                        st.success("✅ You can now login with your credentials!")
+                        st.info("🎁 Your 48-hour FREE TRIAL has started!")
+                    else:
+                        st.error(message)
+                except Exception as e:
+                    # Fallback to old system if Supabase fails
+                    st.warning(f"Using backup registration system...")
+                    success, message, user_license = register_student(reg_email, reg_password, reg_name, role="trial")
+                    if success:
+                        st.success(message)
+                        st.success("✅ You can now login with your credentials!")
+                    else:
+                        st.error(message)
     
     # PROFESSIONAL FOOTER WITH COMPANY DETAILS
     st.markdown("---")
