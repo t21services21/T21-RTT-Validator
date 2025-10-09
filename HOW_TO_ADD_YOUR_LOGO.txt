@@ -1,0 +1,81 @@
+================================================================================
+                    🎨 HOW TO ADD YOUR REAL LOGO
+================================================================================
+
+YOU HAVE A BEAUTIFUL GOLD LAUREL WREATH LOGO!
+Let's add it to the platform!
+
+================================================================================
+
+📋 STEP-BY-STEP INSTRUCTIONS:
+
+STEP 1: FIND YOUR LOGO FILE
+----------------------------
+- You showed me a gold laurel wreath logo with "T21 SERVICES"
+- Find that image file on your computer
+- It should be .png, .jpg, or .svg format
+
+STEP 2: CREATE STATIC FOLDER
+-----------------------------
+1. Open File Explorer
+2. Go to: C:\Users\User\CascadeProjects\T21-RTT-Validator\
+3. Right-click → New → Folder
+4. Name it: static
+
+STEP 3: SAVE YOUR LOGO
+-----------------------
+1. Copy your logo image file
+2. Paste it into the static folder
+3. Rename it to: t21_logo.png
+   (or t21_logo.jpg if it's a JPG)
+
+Final location should be:
+C:\Users\User\CascadeProjects\T21-RTT-Validator\static\t21_logo.png
+
+STEP 4: TELL ME!
+-----------------
+Just message me: "Logo saved as t21_logo.png"
+
+I'll update the code to use your real logo instead of the placeholder!
+
+================================================================================
+
+❓ DON'T HAVE THE LOGO FILE?
+
+If you don't have the logo as an image file:
+1. Right-click on the logo wherever you see it
+2. Click "Save image as..."
+3. Save it to your Desktop
+4. Then follow steps above
+
+OR
+
+Send me the logo and I'll help you save it!
+
+================================================================================
+
+🎨 CURRENT LOGO STATUS:
+
+Current: Gold "T21" placeholder badge (looks good!)
+Need: Your real gold laurel wreath logo
+Location: Save to static/t21_logo.png
+Time to integrate: 5 minutes after you save it
+
+================================================================================
+
+WAITING FOR YOU TO:
+1. Create static folder
+2. Save logo as t21_logo.png
+3. Tell me "Logo saved!"
+
+THEN I'LL:
+1. Update app.py to use your logo
+2. Replace placeholder everywhere
+3. Done in 5 minutes!
+
+================================================================================
+
+T21 Services Limited | Company No: 13091053
+Liverpool, England
+
+================================================================================

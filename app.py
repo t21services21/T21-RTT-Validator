@@ -420,62 +420,48 @@ if not st.session_state.logged_in:
     
     # PROFESSIONAL FOOTER WITH COMPANY DETAILS
     st.markdown("---")
-    st.markdown("""
-    <div style='background: #2c3e50; color: white; padding: 40px; border-radius: 10px; margin-top: 40px;'>
-        <div style='text-align: center; margin-bottom: 30px;'>
-            <h2 style='color: white;'>🏢 T21 Services Limited</h2>
-            <p style='font-size: 18px;'>Healthcare Training & Technology Solutions</p>
-        </div>
-        
-        <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;'>
-            <div>
-                <h3 style='color: #FFD700;'>📍 Head Office</h3>
-                <p>64 Upper Parliament Street<br>
-                Liverpool, L8 7LF<br>
-                England, United Kingdom</p>
-                <p><strong>Company No:</strong> 13091053<br>
-                <strong>Status:</strong> Active ✅<br>
-                <strong>Incorporated:</strong> 18 December 2020</p>
-            </div>
-            
-            <div>
-                <h3 style='color: #FFD700;'>📞 Contact Us</h3>
-                <p>
-                📧 <a href='mailto:info@t21services.co.uk' style='color: #FFD700;'>info@t21services.co.uk</a><br>
-                📧 <a href='mailto:support@t21services.co.uk' style='color: #FFD700;'>support@t21services.co.uk</a><br>
-                📧 <a href='mailto:sales@t21services.co.uk' style='color: #FFD700;'>sales@t21services.co.uk</a><br>
-                🌐 <a href='https://www.t21services.co.uk' target='_blank' style='color: #FFD700;'>www.t21services.co.uk</a>
-                </p>
-            </div>
-            
-            <div>
-                <h3 style='color: #FFD700;'>🌐 Follow Us</h3>
-                <p>
-                💼 <a href='https://linkedin.com/company/t21services' target='_blank' style='color: #FFD700;'>LinkedIn</a><br>
-                🐦 <a href='https://x.com/t21services' target='_blank' style='color: #FFD700;'>X (Twitter)</a><br>
-                📘 <a href='https://facebook.com/t21services' target='_blank' style='color: #FFD700;'>Facebook</a><br>
-                📸 <a href='https://instagram.com/t21services' target='_blank' style='color: #FFD700;'>Instagram</a><br>
-                🎵 <a href='https://tiktok.com/@t21services' target='_blank' style='color: #FFD700;'>TikTok</a>
-                </p>
-            </div>
-            
-            <div>
-                <h3 style='color: #FFD700;'>📄 Legal & Support</h3>
-                <p>
-                📄 Privacy Policy → Go to Admin Panel<br>
-                📄 Terms of Service → Go to Admin Panel<br>
-                📧 Contact: info@t21services.co.uk<br>
-                <a href='https://ico.org.uk' target='_blank' style='color: #FFD700;'>GDPR Compliance (ICO)</a>
-                </p>
-            </div>
-        </div>
-        
-        <div style='text-align: center; margin-top: 30px; padding-top: 30px; border-top: 1px solid #555;'>
-            <p>© 2020-2025 T21 Services Limited. All rights reserved. Company registered in England and Wales.</p>
-            <p style='font-size: 12px; color: #999;'>T21 Healthcare Intelligence Platform is a registered product of T21 Services Limited.</p>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("## 🏢 T21 Services Limited")
+    st.markdown("*Healthcare Training & Technology Solutions*")
+    st.markdown("")
+    
+    footer_col1, footer_col2, footer_col3, footer_col4 = st.columns(4)
+    
+    with footer_col1:
+        st.markdown("### 📍 Head Office")
+        st.markdown("64 Upper Parliament Street")
+        st.markdown("Liverpool, L8 7LF")
+        st.markdown("England, United Kingdom")
+        st.markdown("")
+        st.markdown("**Company No:** 13091053")
+        st.markdown("**Status:** Active ✅")
+        st.markdown("**Incorporated:** 18 December 2020")
+    
+    with footer_col2:
+        st.markdown("### 📞 Contact Us")
+        st.markdown("📧 info@t21services.co.uk")
+        st.markdown("📧 support@t21services.co.uk")
+        st.markdown("📧 sales@t21services.co.uk")
+        st.markdown("🌐 [www.t21services.co.uk](https://www.t21services.co.uk)")
+    
+    with footer_col3:
+        st.markdown("### 🌐 Follow Us")
+        st.markdown("💼 [LinkedIn](https://linkedin.com/company/t21services)")
+        st.markdown("🐦 [X (Twitter)](https://x.com/t21services)")
+        st.markdown("📘 [Facebook](https://facebook.com/t21services)")
+        st.markdown("📸 [Instagram](https://instagram.com/t21services)")
+        st.markdown("🎵 [TikTok](https://tiktok.com/@t21services)")
+    
+    with footer_col4:
+        st.markdown("### 📄 Legal & Support")
+        st.markdown("📄 Privacy Policy")
+        st.markdown("(Access from sidebar)")
+        st.markdown("")
+        st.markdown("📜 Terms of Service")
+        st.markdown("(Access from sidebar)")
+    
+    st.markdown("---")
+    st.markdown("© 2020-2025 T21 Services Limited. All rights reserved.")
+    st.markdown("*Company registered in England and Wales*")
     
     # Stop here if not logged in
     st.stop()
