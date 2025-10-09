@@ -462,9 +462,9 @@ if not st.session_state.logged_in:
             <div>
                 <h3 style='color: #FFD700;'>📄 Legal & Support</h3>
                 <p>
-                <a href='#' style='color: #FFD700;'>Privacy Policy</a><br>
-                <a href='#' style='color: #FFD700;'>Terms of Service</a><br>
-                <a href='#' style='color: #FFD700;'>Contact Form</a><br>
+                📄 Privacy Policy → Go to Admin Panel<br>
+                📄 Terms of Service → Go to Admin Panel<br>
+                📧 Contact: info@t21services.co.uk<br>
                 <a href='https://ico.org.uk' target='_blank' style='color: #FFD700;'>GDPR Compliance (ICO)</a>
                 </p>
             </div>
@@ -650,7 +650,10 @@ if not accessible_modules:
         "🎓 My Academic Portal",
         "👥 Staff Management",
         "🔧 Admin Panel",
-        "ℹ️ About RTT Rules"
+        "ℹ️ About RTT Rules",
+        "📄 Privacy Policy",
+        "📜 Terms of Service",
+        "📧 Contact Us"
     ]
 
 tool = st.sidebar.radio(
@@ -3616,6 +3619,334 @@ elif tool == "ℹ️ About RTT Rules":
     - Improve data quality
     
     """)
+
+
+# ============================================
+# LEGAL PAGES
+# ============================================
+elif tool == "📄 Privacy Policy":
+    st.header("🔒 Privacy Policy")
+    st.markdown("**Last Updated:** October 9, 2025")
+    st.markdown("**Company:** T21 Services Limited (Company No: 13091053)")
+    
+    st.markdown("""
+    ## 1. Introduction
+    
+    Welcome to T21 Services Limited. We are committed to protecting your personal data and respecting your privacy.
+    
+    **Contact Information:**
+    - **Company:** T21 Services Limited
+    - **Company Number:** 13091053
+    - **Address:** 64 Upper Parliament Street, Liverpool, L8 7LF, England
+    - **Email:** privacy@t21services.co.uk
+    - **Website:** www.t21services.co.uk
+    
+    ## 2. Information We Collect
+    
+    **Personal Information:**
+    - Name, email address, password (encrypted)
+    - Professional information (job title, organization)
+    - Payment information (via secure third-party processors)
+    
+    **Usage Information:**
+    - Login data (IP address, login times, device information)
+    - Geolocation (approximate location for security)
+    - Platform usage (pages visited, features used)
+    - Training progress (scenarios completed, scores)
+    
+    ## 3. How We Use Your Information
+    
+    - Providing platform access and services
+    - Processing training and generating insights
+    - Security and fraud prevention
+    - Platform improvement and analytics
+    - Legal compliance
+    
+    ## 4. Legal Basis (GDPR)
+    
+    - **Contract Performance:** To provide services
+    - **Legitimate Interests:** Platform improvement, security
+    - **Consent:** Where explicitly given
+    - **Legal Obligation:** UK/EU law compliance
+    
+    ## 5. Data Sharing
+    
+    **We DO NOT sell your data.**
+    
+    We share data with:
+    - Service providers (cloud hosting, payment processors)
+    - Legal authorities (when required by law)
+    - NHS organizations (for organizational accounts only)
+    
+    ## 6. Data Security
+    
+    - 256-bit SSL/TLS encryption
+    - Encrypted password storage (SHA-256)
+    - Regular security audits
+    - Real-time security monitoring
+    
+    ## 7. Your Rights (GDPR)
+    
+    You have the right to:
+    - Access your data
+    - Rectify inaccurate data
+    - Erasure ("right to be forgotten")
+    - Restrict processing
+    - Data portability
+    - Object to processing
+    - Withdraw consent
+    - Complain to ICO (UK regulator)
+    
+    **To exercise your rights:** privacy@t21services.co.uk
+    
+    ## 8. Data Retention
+    
+    - Active accounts: Duration of subscription + 6 months
+    - Training records: Up to 7 years (NHS requirements)
+    - Financial records: 7 years (UK tax law)
+    
+    ## 9. Contact Us
+    
+    **Privacy Team:**
+    - Email: privacy@t21services.co.uk
+    - Mail: T21 Services Limited, Privacy Team, 64 Upper Parliament Street, Liverpool, L8 7LF
+    
+    **UK Regulator (ICO):**
+    - Website: ico.org.uk
+    - Helpline: 0303 123 1113
+    
+    ---
+    
+    **T21 Services Limited** | Company No: 13091053  
+    © 2020-2025 T21 Services Limited. All rights reserved.
+    """)
+
+elif tool == "📜 Terms of Service":
+    st.header("📄 Terms of Service")
+    st.markdown("**Effective Date:** October 9, 2025")
+    st.markdown("**Company:** T21 Services Limited (Company No: 13091053)")
+    
+    st.markdown("""
+    ## 1. Agreement to Terms
+    
+    By using the T21 Healthcare Intelligence Platform, you agree to these Terms of Service.
+    
+    **IF YOU DO NOT AGREE, DO NOT USE THE PLATFORM.**
+    
+    **Platform Provider:**
+    - **Company:** T21 Services Limited
+    - **Company Number:** 13091053
+    - **Address:** 64 Upper Parliament Street, Liverpool, L8 7LF, England
+    - **Website:** www.t21services.co.uk
+    
+    ## 2. Eligibility
+    
+    - Must be 18+ years old
+    - Designed for healthcare professionals, students, NHS organizations
+    - Provide accurate information during registration
+    
+    ## 3. User Accounts
+    
+    **Account Types:**
+    - **Free Trial:** 48-hour trial (limited features)
+    - **Paid Subscriptions:** Basic (£299/3mo), Professional (£599/6mo), Premium (£999/12mo)
+    - **NHS Organizations:** Custom pricing
+    
+    **Account Security:**
+    - Keep password confidential
+    - Responsible for all account activity
+    - Notify us of unauthorized access
+    
+    ## 4. Subscription & Payment
+    
+    - All fees in GBP (£), excluding VAT
+    - Payment via secure third-party processors
+    - Non-refundable after 7-day cooling-off period
+    - Auto-renewal unless cancelled 7 days before expiry
+    
+    ## 5. Permitted Use
+    
+    **You MAY:**
+    - Complete training scenarios
+    - Access NHS administration tools
+    - Generate reports and analytics
+    
+    **You may NOT:**
+    - Share account credentials
+    - Use automated tools (bots, scrapers)
+    - Reverse engineer the platform
+    - Copy or distribute content
+    - Use for illegal purposes
+    - Bypass security measures
+    
+    ## 6. Intellectual Property
+    
+    **We own:**
+    - Platform software and code
+    - Training scenarios and content
+    - AI models and algorithms
+    - Trademarks and branding
+    
+    **You own:**
+    - Data you upload (we license to process it)
+    
+    ## 7. Training & Certification
+    
+    - Training is for educational purposes only
+    - Certifications confirm completion of modules
+    - NOT official NHS qualifications
+    - Supplement with workplace experience
+    
+    ## 8. Data Protection
+    
+    See our Privacy Policy for details on data handling.
+    
+    ## 9. Service Availability
+    
+    - We strive for 99.5% uptime (no guarantee)
+    - Scheduled maintenance with advance notice
+    - Not liable for interruptions beyond our control
+    
+    ## 10. Limitation of Liability
+    
+    **Platform provided "AS IS" without warranties.**
+    
+    **Liability limited to:**
+    - Students: Amount paid in last 12 months
+    - NHS Organizations: As per contract
+    
+    **NOT liable for:**
+    - Indirect, consequential damages
+    - Loss of profits, data, goodwill
+    - Clinical decisions made using platform data
+    
+    ## 11. Termination
+    
+    **By You:** Cancel subscription anytime
+    
+    **By Us:** Immediate termination if you:
+    - Breach these Terms
+    - Engage in fraudulent activity
+    - Pose security risk
+    
+    ## 12. Governing Law
+    
+    These Terms governed by laws of England and Wales.
+    
+    ## 13. Contact
+    
+    **General:** info@t21services.co.uk  
+    **Legal:** legal@t21services.co.uk  
+    **Support:** support@t21services.co.uk
+    
+    ---
+    
+    **T21 Services Limited** | Company No: 13091053  
+    © 2020-2025 T21 Services Limited. All rights reserved.
+    """)
+
+elif tool == "📧 Contact Us":
+    st.header("📧 Contact Us")
+    st.markdown("We'd love to hear from you!")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("### 💬 Send Us a Message")
+        
+        with st.form("contact_form_main"):
+            contact_type = st.selectbox(
+                "I am contacting as:",
+                [
+                    "NHS Organization (Book Demo)",
+                    "Student (Training Inquiry)",
+                    "Training Provider (Partnership)",
+                    "Existing Customer (Support)",
+                    "General Inquiry"
+                ]
+            )
+            
+            full_name = st.text_input("Full Name *")
+            email = st.text_input("Email Address *")
+            organization = st.text_input("Organization (optional)")
+            subject = st.text_input("Subject *")
+            message = st.text_area("Message *", height=150)
+            
+            privacy_consent = st.checkbox("I agree to the Privacy Policy *")
+            
+            submitted = st.form_submit_button("📨 Send Message", type="primary")
+            
+            if submitted:
+                if not full_name or not email or not subject or not message:
+                    st.error("❌ Please fill in all required fields (*)")
+                elif not privacy_consent:
+                    st.error("❌ You must agree to the Privacy Policy")
+                elif "@" not in email:
+                    st.error("❌ Please enter a valid email address")
+                else:
+                    import json
+                    import os
+                    from datetime import datetime
+                    
+                    # Save submission
+                    try:
+                        os.makedirs("data/contact_submissions", exist_ok=True)
+                        
+                        submission = {
+                            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                            "contact_type": contact_type,
+                            "full_name": full_name,
+                            "email": email,
+                            "organization": organization,
+                            "subject": subject,
+                            "message": message,
+                            "privacy_consent": privacy_consent
+                        }
+                        
+                        filename = f"data/contact_submissions/{datetime.now().strftime('%Y%m%d_%H%M%S')}_{email.replace('@', '_at_')}.json"
+                        with open(filename, 'w') as f:
+                            json.dump(submission, f, indent=2)
+                        
+                        st.success("✅ Message Sent Successfully!")
+                        st.balloons()
+                        st.info(f"Thank you, {full_name}! We'll respond within 24 hours (Mon-Fri).")
+                        
+                    except Exception as e:
+                        st.error(f"Error submitting form. Please email us directly at info@t21services.co.uk")
+    
+    with col2:
+        st.markdown("### 📍 Contact Information")
+        
+        st.markdown("""
+        **🏢 T21 Services Limited**  
+        Company No: 13091053  
+        Status: Active ✅
+        
+        **📍 Head Office**  
+        64 Upper Parliament Street  
+        Liverpool, L8 7LF  
+        England, United Kingdom 🇬🇧
+        
+        **📧 Email Us**  
+        General: info@t21services.co.uk  
+        Support: support@t21services.co.uk  
+        Sales: sales@t21services.co.uk
+        
+        **🌐 Website**  
+        www.t21services.co.uk
+        
+        **🔗 Social Media**  
+        💼 [LinkedIn](https://linkedin.com/company/t21services)  
+        🐦 [X (Twitter)](https://x.com/t21services)  
+        📘 [Facebook](https://facebook.com/t21services)  
+        📸 [Instagram](https://instagram.com/t21services)  
+        🎵 [TikTok](https://tiktok.com/@t21services)
+        
+        **🕐 Office Hours**  
+        Monday - Friday: 9:00 AM - 5:00 PM GMT  
+        Saturday - Sunday: Closed  
+        *24/7 platform support available*
+        """)
 
 # Footer
 st.markdown("---")
