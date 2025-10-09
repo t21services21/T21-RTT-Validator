@@ -3848,53 +3848,65 @@ elif tool == "⚙️ My Account & Upgrade":
         
         current_role = user_license.role if user_license else 'trial'
         
-        # Show upgrade options
-        upgrade_cols = st.columns(3)
+        # Show upgrade options (NEW 4-TIER PRICING)
+        st.info("💰 **Special Offer:** Pay in full and save £50-£100!")
+        
+        upgrade_cols = st.columns(4)
         
         with upgrade_cols[0]:
-            st.markdown("### 🥉 Basic")
-            st.markdown("**£599** / 3 months")
-            st.markdown("✅ All 40 training scenarios")
-            st.markdown("✅ All quizzes")
+            st.markdown("### 🆓 Taster")
+            st.markdown("**£99** / 1 month")
             st.markdown("✅ AI Tutor (10 Q/day)")
-            st.markdown("✅ CV Builder")
-            st.markdown("✅ Interview Prep")
+            st.markdown("✅ Sample scenarios")
+            st.markdown("✅ Demo tools")
+            st.markdown("❌ Full platform")
             st.markdown("❌ Certification")
-            st.markdown("❌ PAS Practice")
             
             if current_role == "trial":
-                if st.button("Upgrade to Basic", key="upgrade_basic"):
-                    st.info("💳 Contact admin@t21services.co.uk to upgrade")
+                if st.button("Try Taster", key="upgrade_taster"):
+                    st.info("💳 Contact admin@t21services.co.uk")
         
         with upgrade_cols[1]:
-            st.markdown("### 🥈 Professional")
-            st.markdown("**£999** / 6 months")
-            st.markdown("✅ Everything in Basic")
+            st.markdown("### 💪 Tier 1")
+            st.markdown("**£499** / 6 months")
+            st.markdown("*£449 if paid in full*")
+            st.markdown("✅ **Full platform access**")
             st.markdown("✅ **Unlimited AI Tutor**")
-            st.markdown("✅ **PAS Practice**")
-            st.markdown("✅ Breach Calculator")
-            st.markdown("✅ Interactive Reports")
-            st.markdown("✅ Jobs Board")
+            st.markdown("✅ All clinical tools")
+            st.markdown("✅ Complete scenarios")
             st.markdown("❌ Certification")
             
-            if current_role in ["trial", "basic"]:
-                if st.button("Upgrade to Professional", key="upgrade_pro"):
-                    st.info("💳 Contact admin@t21services.co.uk to upgrade")
+            if current_role in ["trial", "taster"]:
+                if st.button("Upgrade to Tier 1", key="upgrade_tier1"):
+                    st.info("💳 Contact admin@t21services.co.uk")
         
         with upgrade_cols[2]:
-            st.markdown("### 🏆 Ultimate")
-            st.markdown("**£1,499** / 1 year")
-            st.markdown("✅ Everything in Professional")
-            st.markdown("✅ **Certification Exam**")
-            st.markdown("✅ **Official Certificate**")
-            st.markdown("✅ Video Lessons")
-            st.markdown("✅ Priority Support")
-            st.markdown("✅ 1 Year Access")
-            st.markdown("✅ Job Placement Support")
+            st.markdown("### ⭐ Tier 2")
+            st.markdown("**£1,299** / 12 months")
+            st.markdown("*£1,199 if paid in full*")
+            st.markdown("✅ Everything in Tier 1")
+            st.markdown("✅ **TQUK Certification**")
+            st.markdown("✅ **8-week program**")
+            st.markdown("✅ Live tutor sessions")
+            st.markdown("✅ Alumni network")
             
-            if current_role != "ultimate":
-                if st.button("Upgrade to Ultimate", key="upgrade_ultimate"):
-                    st.info("💳 Contact admin@t21services.co.uk to upgrade")
+            if current_role in ["trial", "taster", "tier1"]:
+                if st.button("Upgrade to Tier 2", key="upgrade_tier2"):
+                    st.info("💳 Contact admin@t21services.co.uk")
+        
+        with upgrade_cols[3]:
+            st.markdown("### 🏆 Tier 3")
+            st.markdown("**£1,799** / 12 months")
+            st.markdown("*£1,699 if paid in full*")
+            st.markdown("✅ Everything in Tier 2")
+            st.markdown("✅ **Job Placement**")
+            st.markdown("✅ **3-5 interviews guaranteed**")
+            st.markdown("✅ Staff applies for you")
+            st.markdown("✅ Support until hired")
+            
+            if current_role != "tier3":
+                if st.button("Upgrade to Tier 3", key="upgrade_tier3"):
+                    st.info("💳 Contact admin@t21services.co.uk")
         
         st.markdown("---")
         
