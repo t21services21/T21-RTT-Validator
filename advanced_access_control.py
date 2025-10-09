@@ -324,6 +324,21 @@ class UserAccount:
         # Notes
         self.notes = []
     
+    @property
+    def user_type(self):
+        """Get user type from role for backwards compatibility"""
+        if self.role in ['admin', 'super_admin']:
+            return 'admin'
+        elif self.role in ['staff', 'staff_trainer', 'staff_support']:
+            return 'staff'
+        elif self.role.startswith('student_'):
+            return 'student'
+        else:
+            # Fallback: check role type in USER_TYPES
+            if self.role in USER_TYPES:
+                return USER_TYPES[self.role].get('type', 'student')
+            return 'student'
+    
     def is_active(self):
         """Check if account is active"""
         if self.status == "terminated":
