@@ -95,23 +95,32 @@ else:
                             user_type = supabase_user.get('user_type', 'student')
                             
                             if user_type in ['admin', 'staff', 'nhs_user']:
-                                update_user_last_login(email)
-                                
-                                class SimpleUser:
-                                    def __init__(self, data):
-                                        self.email = data.get('email')
-                                        self.full_name = data.get('full_name')
-                                        self.role = data.get('role', 'nhs_user')
-                                        self.user_type = data.get('user_type', 'nhs_user')
-                                
-                                user_account = SimpleUser(supabase_user)
-                                
-                                st.session_state.logged_in = True
-                                st.session_state.user_license = user_account
-                                st.session_state.user_email = email
-                                
-                                st.success(f"✅ Welcome to NHS Organization Portal, {user_account.full_name}!")
-                                st.switch_page("app.py")
+                                # Check if 2FA is enabled
+                                if supabase_user.get('two_factor_enabled'):
+                                    # Store for 2FA verification
+                                    st.session_state.pending_2fa_user = supabase_user
+                                    st.session_state.show_2fa_prompt = True
+                                    st.rerun()
+                                else:
+                                    # No 2FA, proceed with login
+                                    update_user_last_login(email)
+                                    
+                                    class SimpleUser:
+                                        def __init__(self, data):
+                                            self.email = data.get('email')
+                                            self.full_name = data.get('full_name')
+                                            self.role = data.get('role', 'nhs_user')
+                                            self.user_type = data.get('user_type', 'nhs_user')
+                                    
+                                    user_account = SimpleUser(supabase_user)
+                                    
+                                    st.session_state.logged_in = True
+                                    st.session_state.user_license = user_account
+                                    st.session_state.user_email = email
+                                    st.session_state.session_email = email
+                                    
+                                    st.success(f"✅ Welcome to NHS Organization Portal, {user_account.full_name}!")
+                                    st.switch_page("app.py")
                             else:
                                 st.error("❌ This portal is for NHS organizations only. Students should use the Training Portal.")
                         elif supabase_user:
@@ -149,6 +158,100 @@ else:
                         st.error(f"❌ Login error. Please try the main app login page.")
                 else:
                     st.error("❌ Please enter both email and password")
+        
+        # 2FA Verification Prompt
+        if st.session_state.get('show_2fa_prompt'):
+            st.markdown("---")
+            st.markdown("### 🔐 Two-Factor Authentication Required")
+            
+            pending_user = st.session_state.get('pending_2fa_user')
+            
+            if pending_user:
+                st.info(f"Please enter the 6-digit code from your authenticator app for **{pending_user.get('email')}**")
+                
+                two_fa_code = st.text_input("Enter 6-digit code:", max_chars=6, key="nhs_2fa_code")
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    if st.button("✅ Verify & Login", type="primary", key="nhs_verify_2fa"):
+                        if two_fa_code and len(two_fa_code) == 6:
+                            from two_factor_auth import verify_2fa_code
+                            
+                            secret = pending_user.get('two_factor_secret')
+                            
+                            if verify_2fa_code(secret, two_fa_code):
+                                from supabase_database import update_user_last_login
+                                
+                                email = pending_user.get('email')
+                                update_user_last_login(email)
+                                
+                                class SimpleUser:
+                                    def __init__(self, data):
+                                        self.email = data.get('email')
+                                        self.full_name = data.get('full_name')
+                                        self.role = data.get('role', 'nhs_user')
+                                        self.user_type = data.get('user_type', 'nhs_user')
+                                
+                                user_obj = SimpleUser(pending_user)
+                                
+                                st.session_state.logged_in = True
+                                st.session_state.user_license = user_obj
+                                st.session_state.user_email = email
+                                st.session_state.session_email = email
+                                
+                                st.session_state.show_2fa_prompt = False
+                                st.session_state.pending_2fa_user = None
+                                
+                                st.success(f"✅ 2FA Verified! Welcome, {user_obj.full_name}!")
+                                st.switch_page("app.py")
+                            else:
+                                st.error("❌ Invalid 2FA code. Please try again.")
+                        else:
+                            st.error("Please enter a 6-digit code")
+                
+                with col2:
+                    if st.button("🔙 Use Backup Code", key="nhs_use_backup"):
+                        st.session_state.show_backup_code_input = True
+                        st.rerun()
+                
+                if st.session_state.get('show_backup_code_input'):
+                    st.markdown("---")
+                    st.warning("⚠️ Each backup code can only be used once")
+                    backup_code = st.text_input("Enter backup code (XXXX-XXXX):", key="nhs_backup_code")
+                    
+                    if st.button("✅ Verify Backup Code", key="nhs_verify_backup"):
+                        if backup_code:
+                            from supabase_database import use_backup_code, update_user_last_login
+                            
+                            if use_backup_code(pending_user.get('email'), backup_code):
+                                email = pending_user.get('email')
+                                update_user_last_login(email)
+                                
+                                class SimpleUser:
+                                    def __init__(self, data):
+                                        self.email = data.get('email')
+                                        self.full_name = data.get('full_name')
+                                        self.role = data.get('role', 'nhs_user')
+                                        self.user_type = data.get('user_type', 'nhs_user')
+                                
+                                user_obj = SimpleUser(pending_user)
+                                
+                                st.session_state.logged_in = True
+                                st.session_state.user_license = user_obj
+                                st.session_state.user_email = email
+                                st.session_state.session_email = email
+                                
+                                st.session_state.show_2fa_prompt = False
+                                st.session_state.pending_2fa_user = None
+                                st.session_state.show_backup_code_input = False
+                                
+                                st.success(f"✅ Backup code verified! Welcome, {user_obj.full_name}!")
+                                st.switch_page("app.py")
+                            else:
+                                st.error("❌ Invalid backup code")
+                        else:
+                            st.error("Please enter a backup code")
         
         st.markdown("---")
         
