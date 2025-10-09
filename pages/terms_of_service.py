@@ -140,10 +140,37 @@ We may suspend or terminate your account if:
 ### 5.1 Fees
 All fees are in GBP (£) and exclude VAT (if applicable).
 
-### 5.2 Payment
-- Payment processed securely via third-party processors
-- Credit/debit card or bank transfer accepted
-- Subscription begins upon payment confirmation
+### 5.2 Payment Options
+
+**Pay in Full (BEST DEAL - Save Money!):**
+- **Tier 1:** £449 (save £50!)
+- **Tier 2:** £1,199 (save £100!)
+- **Tier 3:** £1,699 (save £100!)
+- One-time payment, immediate access
+- No recurring charges
+
+**Installment Plans (Convenience Fee Applied):**
+
+**Tier 1 (£499 regular):**
+- 2 payments: £259 × 2 = £518 (+£19)
+- 3 payments: £175 × 3 = £525 (+£26)
+- 6 monthly: £89 × 6 = £534 (+£35)
+
+**Tier 2 (£1,299 regular):**
+- 2 payments: £675 × 2 = £1,350 (+£51)
+- 4 payments: £349 × 4 = £1,396 (+£97)
+- 8 monthly: £175 × 8 = £1,400 (+£101)
+
+**Tier 3 (£1,799 regular):**
+- 2 payments: £925 × 2 = £1,850 (+£51)
+- 4 payments: £475 × 4 = £1,900 (+£101)
+- 8 monthly: £240 × 8 = £1,920 (+£121)
+
+**Payment Methods:**
+- Credit/debit card (Visa, Mastercard, Amex)
+- PayPal
+- Bank transfer (UK only, full payment only)
+- All prices in GBP (£)
 
 ### 5.3 Refunds
 - **Taster (£99):** 48-hour money-back guarantee if not satisfied
@@ -172,14 +199,33 @@ We may terminate job placement service if you:
 - Fail to attend scheduled mock interview sessions
 - Are not actively participating in job search
 
-### 5.5 Auto-Renewal
-- **Taster (£99):** Does NOT auto-renew
-- **Tier 1 (£499):** Does NOT auto-renew (fixed 6-month period)
-- **Tier 2 & 3:** Do NOT auto-renew (fixed 12-month program)
-- You must manually renew or upgrade at end of period
+### 5.5 Installment Plan Terms
 
-### 5.6 Price Changes
-We may change prices with 30 days' notice. Price changes do not affect active subscriptions.
+**If You Choose Installments:**
+- **Auto-debit required:** Credit/debit card kept on file
+- **First payment:** Due at enrollment (immediate)
+- **Subsequent payments:** Same day of month, automatic
+- **Failed payment:** 7-day grace period, then account suspended
+- **2 failed payments:** Account suspended, must pay balance to continue
+- **Access:** Full platform access maintained if payments current
+- **Certification:** Only issued after all payments complete (Tier 2 & 3)
+- **Early payoff:** You may pay remaining balance anytime (no penalty)
+
+**Example - Tier 2, 4 Payments:**
+- Enroll Oct 1: Pay £349 (immediate access)
+- Jan 1: Pay £349
+- Apr 1: Pay £349
+- Jul 1: Pay £349 (final)
+- Aug 1: TQUK certificate issued
+
+### 5.6 Auto-Renewal
+- **Taster (£99):** Does NOT auto-renew
+- **Tier 1-3:** Do NOT auto-renew (fixed-term programs)
+- You must manually renew or upgrade at end of period
+- No surprise charges
+
+### 5.7 Price Changes
+We may change prices with 30 days' notice. Price changes do not affect active subscriptions or installment plans.
 
 ---
 
