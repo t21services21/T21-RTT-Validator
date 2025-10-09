@@ -51,6 +51,10 @@ from ai_validator_ui import render_ai_validator
 from admin_ai_training import render_ai_training_admin
 from ptl_ui import render_ptl
 from cancer_pathway_ui import render_cancer_pathways
+from mdt_coordination_ui import render_mdt_coordination
+from advanced_booking_ui import render_advanced_booking
+from medical_secretary_ui import render_medical_secretary
+from data_quality_ui import render_data_quality
 from interactive_reports import generate_student_progress_report
 import hashlib
 import pandas as pd
@@ -390,6 +394,10 @@ if not accessible_modules:
     accessible_modules = [
         "📋 PTL - Patient Tracking List",
         "🎗️ Cancer Pathways",
+        "👥 MDT Coordination",
+        "📅 Advanced Booking System",
+        "📧 Medical Secretary AI",
+        "📊 Data Quality System",
         "🤖 AI Auto-Validator",
         "📊 Pathway Validator",
         "📝 Clinic Letter Interpreter",
@@ -440,6 +448,34 @@ if tool == "📋 PTL - Patient Tracking List":
 # ============================================
 elif tool == "🎗️ Cancer Pathways":
     render_cancer_pathways()
+
+
+# ============================================
+# TOOL 0C: MDT COORDINATION
+# ============================================
+elif tool == "👥 MDT Coordination":
+    render_mdt_coordination()
+
+
+# ============================================
+# TOOL 0D: ADVANCED BOOKING SYSTEM
+# ============================================
+elif tool == "📅 Advanced Booking System":
+    render_advanced_booking()
+
+
+# ============================================
+# TOOL 0E: MEDICAL SECRETARY AI
+# ============================================
+elif tool == "📧 Medical Secretary AI":
+    render_medical_secretary()
+
+
+# ============================================
+# TOOL 0F: DATA QUALITY SYSTEM
+# ============================================
+elif tool == "📊 Data Quality System":
+    render_data_quality()
 
 
 # ============================================
