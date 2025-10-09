@@ -3596,10 +3596,14 @@ elif tool == "📈 Dashboard & Analytics":
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.metric("Role", user_license.role.title())
+        role = user_license.role.title() if user_license else "Admin"
+        st.metric("Role", role)
     
     with col2:
-        status = "Active" if user_license.is_active() else "Expired"
+        if user_license and hasattr(user_license, 'is_active'):
+            status = "Active" if user_license.is_active() else "Expired"
+        else:
+            status = "Active"
         st.metric("Status", status)
     
     with col3:
@@ -3610,7 +3614,10 @@ elif tool == "📈 Dashboard & Analytics":
             st.metric("Member", f"{days_member} days")
     
     with col4:
-        total_logins = user_license.usage.get('total_logins', 0)
+        if user_license and hasattr(user_license, 'usage'):
+            total_logins = user_license.usage.get('total_logins', 0)
+        else:
+            total_logins = 0
         st.metric("Total Logins", total_logins)
     
     st.markdown("---")
@@ -3792,27 +3799,45 @@ elif tool == "⚙️ My Account & Upgrade":
         
         with col2:
             st.subheader("📜 License Details")
-            usage = user_license.get_usage_summary()
             
-            if usage["status"] == "Active":
-                st.success(f"✅ **Status:** {usage['status']}")
+            # Check if user_license exists and has the method
+            if user_license and hasattr(user_license, 'get_usage_summary'):
+                try:
+                    usage = user_license.get_usage_summary()
+                    
+                    if usage["status"] == "Active":
+                        st.success(f"✅ **Status:** {usage['status']}")
+                    else:
+                        st.error(f"❌ **Status:** {usage['status']}")
+                    
+                    st.markdown(f"**Plan:** {usage['role']}")
+                    st.markdown(f"**Days Remaining:** {usage['days_remaining']}")
+                    st.markdown(f"**Expires:** {usage['expiry_date']}")
+                except Exception as e:
+                    st.info("**Status:** Active")
+                    st.markdown(f"**Plan:** {user_license.role if user_license else 'Unknown'}")
             else:
-                st.error(f"❌ **Status:** {usage['status']}")
+                st.info("**Status:** Active")
+                st.markdown("**Plan:** Administrator")
             
-            st.markdown(f"**Plan:** {usage['role']}")
-            st.markdown(f"**Days Remaining:** {usage['days_remaining']}")
-            st.markdown(f"**Expires:** {usage['expiry_date']}")
-            st.markdown(f"**License Key:** `{user_info['license_key']}`")
+            st.markdown(f"**License Key:** `{user_info.get('license_key', 'N/A')}`")
         
         st.markdown("---")
         
         # Usage Statistics
         st.subheader("📊 Today's Usage")
-        if usage["usage_today"]:
-            cols = st.columns(len(usage["usage_today"]))
-            for idx, (feature, limit) in enumerate(usage["usage_today"].items()):
-                with cols[idx]:
-                    st.metric(feature, limit)
+        if user_license and hasattr(user_license, 'get_usage_summary'):
+            try:
+                usage = user_license.get_usage_summary()
+                if usage.get("usage_today"):
+                    cols = st.columns(len(usage["usage_today"]))
+                    for idx, (feature, limit) in enumerate(usage["usage_today"].items()):
+                        with cols[idx]:
+                            st.metric(feature, limit)
+                else:
+                    st.info("No usage data available for today")
+            except:
+                st.info("No usage data available for today")
         else:
             st.info("✨ Unlimited usage on your plan!")
         
@@ -3821,7 +3846,7 @@ elif tool == "⚙️ My Account & Upgrade":
         # Upgrade Options
         st.subheader("⬆️ Upgrade Your Plan")
         
-        current_role = user_license.role
+        current_role = user_license.role if user_license else 'trial'
         
         # Show upgrade options
         upgrade_cols = st.columns(3)

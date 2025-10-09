@@ -229,13 +229,11 @@ def render_user_management(admin_email, admin_user):
     
     # Display users in table
     if users:
+        # Import needed modules
+        from io import BytesIO
+        
         df = pd.DataFrame(users)
         st.dataframe(df, use_container_width=True)
-        
-        # Export to Excel button
-        from io import BytesIO
-        import pandas as pd
-        from datetime import datetime
         
         col_export1, col_export2, col_export3 = st.columns([1, 1, 2])
         with col_export1:
