@@ -86,3 +86,12 @@ temp/
 *.tmp
 *.bak
 *.backup
+# Sensitive files - NEVER commit!
+PASSWORDS_RESET_SIMPLE.txt
+reset_staff_password.py
+test_login.py
+test_password.py
+users_database.json
+users_advanced.json
+.streamlit/secrets.toml
+*.env
