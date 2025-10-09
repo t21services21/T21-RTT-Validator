@@ -14,6 +14,15 @@ import os
 
 # Default module access by role
 DEFAULT_MODULE_ACCESS = {
+    "📋 PTL - Patient Tracking List": {
+        "trial": True,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
     "🤖 AI Auto-Validator": {
         "trial": True,
         "basic": True,

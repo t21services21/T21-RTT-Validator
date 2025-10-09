@@ -49,6 +49,8 @@ from admin_school_management_ui import render_school_management_admin
 from student_school_portal import render_student_school_portal
 from ai_validator_ui import render_ai_validator
 from admin_ai_training import render_ai_training_admin
+from ptl_ui import render_ptl
+from interactive_reports import generate_student_progress_report
 import hashlib
 import pandas as pd
 # Page configuration
@@ -385,6 +387,7 @@ accessible_modules = get_accessible_modules(user_role, user_email)
 # If no accessible modules (error), show all
 if not accessible_modules:
     accessible_modules = [
+        "📋 PTL - Patient Tracking List",
         "🤖 AI Auto-Validator",
         "📊 Pathway Validator",
         "📝 Clinic Letter Interpreter",
@@ -424,14 +427,21 @@ st.sidebar.markdown("No real patient data")
 
 
 # ============================================
-# TOOL 0: AI AUTO-VALIDATOR (REVOLUTIONARY!)
+# TOOL 0: PTL - PATIENT TRACKING LIST (CRITICAL NHS TOOL!)
 # ============================================
-if tool == "🤖 AI Auto-Validator":
+if tool == "📋 PTL - Patient Tracking List":
+    render_ptl()
+
+
+# ============================================
+# TOOL 1: AI AUTO-VALIDATOR (REVOLUTIONARY!)
+# ============================================
+elif tool == "🤖 AI Auto-Validator":
     render_ai_validator()
 
 
 # ============================================
-# TOOL 1: PATHWAY VALIDATOR
+# TOOL 2: PATHWAY VALIDATOR
 # ============================================
 elif tool == "📊 Pathway Validator":
     st.header("RTT Pathway Validator")
