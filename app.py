@@ -293,6 +293,28 @@ if 'user_email' not in st.session_state:
     st.session_state.user_email = None
 if 'session_email' not in st.session_state:
     st.session_state.session_email = None
+if 'last_activity' not in st.session_state:
+    st.session_state.last_activity = None
+
+# Session timeout check (15 minutes of inactivity)
+if st.session_state.logged_in and st.session_state.last_activity:
+    from datetime import datetime, timedelta
+    time_since_activity = datetime.now() - st.session_state.last_activity
+    
+    # Auto-logout after 15 minutes of inactivity
+    if time_since_activity > timedelta(minutes=15):
+        st.session_state.logged_in = False
+        st.session_state.user_license = None
+        st.session_state.user_email = None
+        st.session_state.session_email = None
+        st.session_state.last_activity = None
+        st.warning("⏱️ Session expired due to inactivity. Please login again.")
+        st.rerun()
+
+# Update last activity timestamp
+if st.session_state.logged_in:
+    from datetime import datetime
+    st.session_state.last_activity = datetime.now()
 
 # Session persistence - restore login on refresh
 if not st.session_state.logged_in and st.session_state.session_email:
@@ -480,6 +502,18 @@ if not st.session_state.logged_in:
                                 st.session_state.user_email = email
                                 st.session_state.session_email = email  # Persist across refreshes
                                 
+                                # Enhanced Audit Trail
+                                try:
+                                    from enhanced_audit_trail import log_audit_event, AuditActions
+                                    log_audit_event(
+                                        user_email=email,
+                                        action=AuditActions.LOGIN,
+                                        details={'method': 'supabase', 'user_type': user_obj.user_type},
+                                        reason='User authentication'
+                                    )
+                                except:
+                                    pass  # Don't break login if audit fails
+                                
                                 st.success(f"✅ Welcome back, {user_obj.full_name}!")
                                 st.rerun()
                             else:
@@ -646,7 +680,25 @@ if not st.session_state.logged_in:
         
         reg_name = st.text_input("Full Name", key="reg_name")
         reg_email = st.text_input("Email Address", key="reg_email")
-        reg_password = st.text_input("Password", type="password", key="reg_password")
+        reg_password = st.text_input("Password (min 12 characters)", type="password", key="reg_password", 
+                                      help="Must contain: uppercase, lowercase, number, and special character")
+        
+        # Real-time password strength indicator
+        if reg_password:
+            from security_utils import validate_password_strength
+            strength_check = validate_password_strength(reg_password)
+            
+            col_strength, col_score = st.columns([3, 1])
+            with col_strength:
+                st.markdown(f"**Password Strength:** {strength_check['strength']}")
+            with col_score:
+                st.markdown(f"**Score:** {strength_check['score']}/100")
+            
+            # Show feedback
+            with st.expander("📋 Password Requirements", expanded=not strength_check['valid']):
+                for item in strength_check['feedback']:
+                    st.markdown(f"- {item}")
+        
         reg_confirm = st.text_input("Confirm Password", type="password", key="reg_confirm")
         
         st.checkbox("I agree to Terms & Conditions", key="terms_agreed")
@@ -658,32 +710,55 @@ if not st.session_state.logged_in:
                 st.warning("Please fill all fields")
             elif reg_password != reg_confirm:
                 st.error("Passwords don't match")
-            elif len(reg_password) < 6:
-                st.error("Password must be at least 6 characters")
             else:
-                # Use Supabase for new registrations
-                try:
-                    from supabase_database import create_user
-                    import hashlib
-                    
-                    password_hash = hashlib.sha256(reg_password.encode()).hexdigest()
-                    success, message = create_user(reg_email, password_hash, reg_name, role="trial", user_type="student")
-                    
-                    if success:
-                        st.success("🎉 Registration successful!")
-                        st.success("✅ You can now login with your credentials!")
-                        st.info("🎁 Your 48-hour FREE TRIAL has started!")
-                    else:
-                        st.error(message)
-                except Exception as e:
-                    # Fallback to old system if Supabase fails
-                    st.warning(f"Using backup registration system...")
-                    success, message, user_license = register_student(reg_email, reg_password, reg_name, role="trial")
-                    if success:
-                        st.success(message)
-                        st.success("✅ You can now login with your credentials!")
-                    else:
-                        st.error(message)
+                # Validate password strength
+                from security_utils import validate_password_strength
+                strength_check = validate_password_strength(reg_password)
+                
+                if not strength_check['valid']:
+                    st.error(f"❌ Password is too weak ({strength_check['strength']})")
+                    st.error("Please choose a stronger password that meets all requirements.")
+                else:
+                    # Use Supabase for new registrations
+                    try:
+                        from supabase_database import create_user
+                        import hashlib
+                        
+                        password_hash = hashlib.sha256(reg_password.encode()).hexdigest()
+                        success, message = create_user(reg_email, password_hash, reg_name, role="trial", user_type="student")
+                        
+                        if success:
+                            # Enhanced Audit Trail - Log new registration
+                            try:
+                                from enhanced_audit_trail import log_audit_event, AuditActions
+                                log_audit_event(
+                                    user_email=reg_email,
+                                    action=AuditActions.CREATE_USER,
+                                    details={
+                                        'method': 'self_registration',
+                                        'role': 'trial',
+                                        'user_type': 'student',
+                                        'full_name': reg_name
+                                    },
+                                    reason='New user self-registration'
+                                )
+                            except:
+                                pass
+                            
+                            st.success("🎉 Registration successful!")
+                            st.success("✅ You can now login with your credentials!")
+                            st.info("🎁 Your 48-hour FREE TRIAL has started!")
+                        else:
+                            st.error(message)
+                    except Exception as e:
+                        # Fallback to old system if Supabase fails
+                        st.warning(f"Using backup registration system...")
+                        success, message, user_license = register_student(reg_email, reg_password, reg_name, role="trial")
+                        if success:
+                            st.success(message)
+                            st.success("✅ You can now login with your credentials!")
+                        else:
+                            st.error(message)
     
     # PROFESSIONAL FOOTER WITH COMPANY DETAILS
     st.markdown("---")
@@ -856,6 +931,19 @@ if st.session_state.user_license:
     
     # Logout button
     if st.sidebar.button("🚪 Logout"):
+        # Enhanced Audit Trail - Log logout
+        try:
+            from enhanced_audit_trail import log_audit_event, AuditActions
+            if st.session_state.user_email:
+                log_audit_event(
+                    user_email=st.session_state.user_email,
+                    action=AuditActions.LOGOUT,
+                    details={'manual_logout': True},
+                    reason='User initiated logout'
+                )
+        except:
+            pass
+        
         st.session_state.logged_in = False
         st.session_state.user_license = None
         st.session_state.user_email = None

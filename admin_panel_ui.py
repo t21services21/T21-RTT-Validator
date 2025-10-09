@@ -232,6 +232,37 @@ def render_user_management(admin_email, admin_user):
         df = pd.DataFrame(users)
         st.dataframe(df, use_container_width=True)
         
+        # Export to Excel button
+        from io import BytesIO
+        import pandas as pd
+        from datetime import datetime
+        
+        col_export1, col_export2, col_export3 = st.columns([1, 1, 2])
+        with col_export1:
+            # Create Excel file in memory
+            output = BytesIO()
+            with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                df.to_excel(writer, index=False, sheet_name='Users')
+            excel_data = output.getvalue()
+            
+            # Download button
+            st.download_button(
+                label="📥 Export to Excel",
+                data=excel_data,
+                file_name=f"T21_Users_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+        
+        with col_export2:
+            # Export to CSV
+            csv_data = df.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label="📄 Export to CSV",
+                data=csv_data,
+                file_name=f"T21_Users_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                mime="text/csv"
+            )
+        
         st.markdown("---")
         
         # User actions
