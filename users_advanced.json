@@ -37,7 +37,7 @@
   "admin@t21services.co.uk": {
     "user_id": "b64f4dd02ae2",
     "email": "admin@t21services.co.uk",
-    "password_hash": "3eb3fe66b31e3b4d10fa70b5cad49c7112294af6ae4e476a1c405155d45aa121",
+    "password_hash": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
     "user_type": "admin",
     "role": "super_admin",
     "full_name": "T21 Administrator",
@@ -71,7 +71,7 @@
   "staff@t21services.co.uk": {
     "user_id": "e1ce0e9a3e4c",
     "email": "staff@t21services.co.uk",
-    "password_hash": "05dd4a1376a72d9a5e0fad32000f7e61651a5cef5c9c9a0c3816c7443dafbf6f",
+    "password_hash": "10176e7b7b24d317acfcf8d2064cfd2f24e154f7b5a96603077d5ef813d6a6b6",
     "user_type": "staff",
     "role": "staff",
     "full_name": "T21 Staff Member",
