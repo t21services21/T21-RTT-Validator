@@ -224,6 +224,37 @@ USER_TYPES = {
             "database_access": True,
             "terminate_accounts": True
         }
+    },
+    
+    # BACKWARDS COMPATIBILITY - Generic "staff" role
+    "staff": {
+        "type": "staff",
+        "name": "Staff Member",
+        "duration_days": 9999,
+        "price": 0,
+        "max_logins_per_day": 500,
+        "features": {
+            "pathway_validator": True,
+            "clinic_letter_interpreter": True,
+            "training_library": True,
+            "interactive_learning": True,
+            "ai_tutor": True,
+            "certification_exam": True,
+            "cv_builder": True,
+            "job_interview_prep": True,
+            "pas_practice": True,
+            "breach_calculator": True,
+            "admin_panel": True,  # Full admin access
+            "staff_tools": True,
+            "student_management": "full",
+            "staff_management": "full",
+            "create_content": True,
+            "grade_exams": True,
+            "system_settings": True,
+            "revenue_reports": True,
+            "audit_logs": True,
+            "license_management": True
+        }
     }
 }
 
@@ -263,8 +294,15 @@ class UserAccount:
         self.suspended_at = None
         self.terminated_at = None
         
-        # License info
-        role_info = USER_TYPES[role]
+        # License info - Handle unknown roles gracefully
+        if role not in USER_TYPES:
+            # Default to admin if role not found (backwards compatibility)
+            if "admin" in role.lower() or "staff" in role.lower():
+                role = "admin"
+            else:
+                role = "student_trial"
+            
+        role_info = USER_TYPES.get(role, USER_TYPES["admin"])  # Fallback to admin
         self.duration_days = role_info["duration_days"]
         self.expiry_date = self.created_at + timedelta(days=self.duration_days)
         

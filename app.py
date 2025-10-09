@@ -358,47 +358,38 @@ if not st.session_state.logged_in:
     
     st.markdown("---")
     
-    # Portal Selection
+    # Portal Selection - BIG CLICKABLE BOXES!
     st.markdown("## 🚪 Select Your Portal Type")
+    st.markdown("**Click on any box below to select your portal:**")
     
-    portal_col1, portal_col2, portal_col3 = st.columns(3)
+    # Use radio button for single selection
+    portal_selection = st.radio(
+        "Choose your portal:",
+        options=["🎓 Students - For Individual Training & Learning", 
+                 "👥 Staff & Partners - For T21 Staff & Training Providers",
+                 "🏥 NHS Organizations - For NHS Trusts & Healthcare Organizations"],
+        index=0,
+        label_visibility="collapsed"
+    )
     
-    with portal_col1:
-        st.markdown("""
-        <div style='background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%); padding: 20px; border-radius: 10px; text-align: center; color: white; margin-bottom: 10px;'>
-            <h3>🏥 NHS Organizations</h3>
-            <p style='font-size: 14px;'>For NHS Trusts & Healthcare Organizations</p>
-        </div>
-        """, unsafe_allow_html=True)
-        nhs_portal = st.checkbox("I'm from an NHS/Healthcare Organization", key="nhs_portal")
-    
-    with portal_col2:
-        st.markdown("""
-        <div style='background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); padding: 20px; border-radius: 10px; text-align: center; color: white; margin-bottom: 10px;'>
-            <h3>🎓 Students</h3>
-            <p style='font-size: 14px;'>For Individual Training & Learning</p>
-        </div>
-        """, unsafe_allow_html=True)
-        student_portal = st.checkbox("I'm a Student/Learner", key="student_portal", value=True)
-    
-    with portal_col3:
-        st.markdown("""
-        <div style='background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); padding: 20px; border-radius: 10px; text-align: center; color: white; margin-bottom: 10px;'>
-            <h3>👥 Staff & Partners</h3>
-            <p style='font-size: 14px;'>For T21 Staff & Training Providers</p>
-        </div>
-        """, unsafe_allow_html=True)
-        staff_portal = st.checkbox("I'm T21 Staff/Partner", key="staff_portal")
-    
-    st.markdown("---")
-    
-    # Portal-specific messaging
-    if nhs_portal:
-        st.info("🏥 **NHS Organization Portal** - Access operational systems, admin dashboards, and analytics")
-    elif staff_portal:
+    # Parse selection
+    if "Student" in portal_selection:
+        nhs_portal = False
+        staff_portal = False
+        student_portal = True
+        st.success("🎓 **Student Training Portal** - Access training scenarios, AI tutor, and certification")
+    elif "Staff" in portal_selection:
+        nhs_portal = False
+        staff_portal = True
+        student_portal = False
         st.warning("👥 **Staff/Partner Portal** - Restricted access for authorized personnel only")
     else:
-        st.success("🎓 **Student Training Portal** - Access training scenarios, AI tutor, and certification")
+        nhs_portal = True
+        staff_portal = False
+        student_portal = False
+        st.info("🏥 **NHS Organization Portal** - Access operational systems, admin dashboards, and analytics")
+    
+    st.markdown("---")
     
     tab1, tab2 = st.tabs(["🔐 Login", "📝 Register"])
     
