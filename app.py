@@ -61,6 +61,7 @@ from admin_school_management_ui import render_school_management_admin
 from student_school_portal import render_student_school_portal
 from ai_validator_ui import render_ai_validator
 from admin_ai_training import render_ai_training_admin
+from admin_user_tracking_ui import render_user_tracking_admin
 from ptl_ui import render_ptl
 from cancer_pathway_ui import render_cancer_pathways
 from mdt_coordination_ui import render_mdt_coordination
@@ -92,12 +93,54 @@ if 'user_email' not in st.session_state:
 
 # Login/Registration Page
 if not st.session_state.logged_in:
-    # Professional Header with Company Branding
+    # PROFESSIONAL HEADER WITH LOGO AND COMPANY INFO
     st.markdown("""
-    <div style='text-align: center; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; margin-bottom: 30px;'>
-        <h1 style='color: white; margin: 0;'>🏥 T21 Healthcare Intelligence Platform</h1>
-        <p style='color: white; font-size: 18px; margin: 10px 0 0 0;'>Complete NHS Healthcare Administration Suite</p>
-        <p style='color: #e0e0e0; font-size: 14px; margin: 5px 0 0 0;'>By T21 Services UK | Training & Technology Solutions</p>
+    <div style='background: white; padding: 15px 40px; border-bottom: 2px solid #e0e0e0; margin: -60px -60px 20px -60px;'>
+        <div style='display: flex; justify-content: space-between; align-items: center;'>
+            <div style='display: flex; align-items: center; gap: 20px;'>
+                <!-- LOGO (Will be replaced with your gold logo soon!) -->
+                <div style='background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); width: 60px; height: 60px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
+                    T21
+                </div>
+                <div>
+                    <h3 style='margin: 0; color: #2c3e50;'>T21 Services Limited</h3>
+                    <p style='margin: 0; font-size: 12px; color: #7f8c8d;'>Healthcare Intelligence Platform | Est. 2020</p>
+                </div>
+            </div>
+            <div style='text-align: right;'>
+                <p style='margin: 0; font-size: 14px; color: #2c3e50;'><strong>Company No:</strong> 13091053</p>
+                <p style='margin: 0; font-size: 12px; color: #7f8c8d;'>Liverpool, England 🇬🇧</p>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # HERO SECTION
+    st.markdown("""
+    <div style='text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; margin-bottom: 30px;'>
+        <h1 style='color: white; margin: 0; font-size: 42px;'>🏥 T21 Healthcare Intelligence Platform</h1>
+        <p style='color: white; font-size: 20px; margin: 15px 0 0 0;'>Complete NHS Healthcare Administration Suite</p>
+        <p style='color: #e0e0e0; font-size: 16px; margin: 10px 0 0 0;'>Training + Automation | 7 AI-Powered Modules | 188 Scenarios</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # TRUST BADGES
+    st.markdown("""
+    <div style='text-align: center; margin-bottom: 30px;'>
+        <div style='display: inline-flex; gap: 20px; flex-wrap: wrap; justify-content: center;'>
+            <div style='background: #f8f9fa; padding: 10px 20px; border-radius: 8px; border: 1px solid #dee2e6;'>
+                <strong>✅ Companies House Registered</strong>
+            </div>
+            <div style='background: #f8f9fa; padding: 10px 20px; border-radius: 8px; border: 1px solid #dee2e6;'>
+                <strong>🏥 NHS Compliant</strong>
+            </div>
+            <div style='background: #f8f9fa; padding: 10px 20px; border-radius: 8px; border: 1px solid #dee2e6;'>
+                <strong>🔒 GDPR Compliant</strong>
+            </div>
+            <div style='background: #f8f9fa; padding: 10px 20px; border-radius: 8px; border: 1px solid #dee2e6;'>
+                <strong>🇬🇧 UK Based</strong>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
     
@@ -374,6 +417,65 @@ if not st.session_state.logged_in:
                     st.success("✅ You can now login with your credentials!")
                 else:
                     st.error(message)
+    
+    # PROFESSIONAL FOOTER WITH COMPANY DETAILS
+    st.markdown("---")
+    st.markdown("""
+    <div style='background: #2c3e50; color: white; padding: 40px; border-radius: 10px; margin-top: 40px;'>
+        <div style='text-align: center; margin-bottom: 30px;'>
+            <h2 style='color: white;'>🏢 T21 Services Limited</h2>
+            <p style='font-size: 18px;'>Healthcare Training & Technology Solutions</p>
+        </div>
+        
+        <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;'>
+            <div>
+                <h3 style='color: #FFD700;'>📍 Head Office</h3>
+                <p>64 Upper Parliament Street<br>
+                Liverpool, L8 7LF<br>
+                England, United Kingdom</p>
+                <p><strong>Company No:</strong> 13091053<br>
+                <strong>Status:</strong> Active ✅<br>
+                <strong>Incorporated:</strong> 18 December 2020</p>
+            </div>
+            
+            <div>
+                <h3 style='color: #FFD700;'>📞 Contact Us</h3>
+                <p>
+                📧 <a href='mailto:info@t21services.co.uk' style='color: #FFD700;'>info@t21services.co.uk</a><br>
+                📧 <a href='mailto:support@t21services.co.uk' style='color: #FFD700;'>support@t21services.co.uk</a><br>
+                📧 <a href='mailto:sales@t21services.co.uk' style='color: #FFD700;'>sales@t21services.co.uk</a><br>
+                🌐 <a href='https://www.t21services.co.uk' target='_blank' style='color: #FFD700;'>www.t21services.co.uk</a>
+                </p>
+            </div>
+            
+            <div>
+                <h3 style='color: #FFD700;'>🌐 Follow Us</h3>
+                <p>
+                💼 <a href='https://linkedin.com/company/t21services' target='_blank' style='color: #FFD700;'>LinkedIn</a><br>
+                🐦 <a href='https://x.com/t21services' target='_blank' style='color: #FFD700;'>X (Twitter)</a><br>
+                📘 <a href='https://facebook.com/t21services' target='_blank' style='color: #FFD700;'>Facebook</a><br>
+                📸 <a href='https://instagram.com/t21services' target='_blank' style='color: #FFD700;'>Instagram</a><br>
+                🎵 <a href='https://tiktok.com/@t21services' target='_blank' style='color: #FFD700;'>TikTok</a>
+                </p>
+            </div>
+            
+            <div>
+                <h3 style='color: #FFD700;'>📄 Legal & Support</h3>
+                <p>
+                <a href='#' style='color: #FFD700;'>Privacy Policy</a><br>
+                <a href='#' style='color: #FFD700;'>Terms of Service</a><br>
+                <a href='#' style='color: #FFD700;'>Contact Form</a><br>
+                <a href='https://ico.org.uk' target='_blank' style='color: #FFD700;'>GDPR Compliance (ICO)</a>
+                </p>
+            </div>
+        </div>
+        
+        <div style='text-align: center; margin-top: 30px; padding-top: 30px; border-top: 1px solid #555;'>
+            <p>© 2020-2025 T21 Services Limited. All rights reserved. Company registered in England and Wales.</p>
+            <p style='font-size: 12px; color: #999;'>T21 Healthcare Intelligence Platform is a registered product of T21 Services Limited.</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Stop here if not logged in
     st.stop()
@@ -3297,7 +3399,7 @@ elif tool == "🔧 Admin Panel":
             st.header("🔧 Admin Panel")
             
             # Create tabs for different admin functions
-            admin_tab1, admin_tab2, admin_tab3, admin_tab4, admin_tab5, admin_tab6, admin_tab7, admin_tab8, admin_tab9 = st.tabs([
+            admin_tab1, admin_tab2, admin_tab3, admin_tab4, admin_tab5, admin_tab6, admin_tab7, admin_tab8, admin_tab9, admin_tab10 = st.tabs([
                 "👥 User Management", 
                 "🔐 Module Access Control",
                 "🎯 Modular Access",
@@ -3306,35 +3408,79 @@ elif tool == "🔧 Admin Panel":
                 "⏰ Trial Automation",
                 "📚 LMS Courses",
                 "🏫 School Management",
-                "🤖 AI Training"
+                "🤖 AI Training",
+                "🗺️ User Tracking"
             ])
             
             with admin_tab1:
-                render_admin_panel(st.session_state.user_email)
+                try:
+                    render_admin_panel(st.session_state.user_email)
+                except Exception as e:
+                    st.error(f"Error loading User Management: {str(e)}")
+                    st.info("💡 This feature is being updated. Please try again later.")
             
             with admin_tab2:
-                render_module_access_admin()
+                try:
+                    render_module_access_admin()
+                except Exception as e:
+                    st.error(f"Error loading Module Access Control: {str(e)}")
+                    st.info("💡 This feature is being updated. Please try again later.")
             
             with admin_tab3:
-                render_modular_access_admin()
+                try:
+                    render_modular_access_admin()
+                except Exception as e:
+                    st.error(f"Error loading Modular Access: {str(e)}")
+                    st.info("💡 This feature is being updated. Please try again later.")
             
             with admin_tab4:
-                render_bulk_email_ui()
+                try:
+                    render_bulk_email_ui()
+                except Exception as e:
+                    st.error(f"Error loading Bulk Email: {str(e)}")
+                    st.info("💡 This feature is being updated. Please try again later.")
             
             with admin_tab5:
-                render_personal_message_ui()
+                try:
+                    render_personal_message_ui()
+                except Exception as e:
+                    st.error(f"Error loading Personal Message: {str(e)}")
+                    st.info("💡 This feature is being updated. Please try again later.")
             
             with admin_tab6:
-                render_trial_automation_ui()
+                try:
+                    render_trial_automation_ui()
+                except Exception as e:
+                    st.error(f"Error loading Trial Automation: {str(e)}")
+                    st.info("💡 This feature is being updated. Please try again later.")
             
             with admin_tab7:
-                render_course_manager_ui()
+                try:
+                    render_course_manager_ui()
+                except Exception as e:
+                    st.error(f"Error loading LMS Courses: {str(e)}")
+                    st.info("💡 This feature is being updated. Please try again later.")
             
             with admin_tab8:
-                render_school_management_admin()
+                try:
+                    render_school_management_admin()
+                except Exception as e:
+                    st.error(f"Error loading School Management: {str(e)}")
+                    st.info("💡 This feature is being updated. Please try again later.")
             
             with admin_tab9:
-                render_ai_training_admin()
+                try:
+                    render_ai_training_admin()
+                except Exception as e:
+                    st.error(f"Error loading AI Training: {str(e)}")
+                    st.info("💡 This feature is being updated. Please try again later.")
+            
+            with admin_tab10:
+                try:
+                    render_user_tracking_admin()
+                except Exception as e:
+                    st.error(f"Error loading User Tracking: {str(e)}")
+                    st.info("💡 This feature is being updated. Please try again later.")
         else:
             st.error("⛔ Access Denied - Admin or Staff privileges required")
     else:

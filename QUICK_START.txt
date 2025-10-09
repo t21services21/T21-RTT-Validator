@@ -1,0 +1,153 @@
+================================================================================
+                    QUICK START GUIDE - T21 PLATFORM
+================================================================================
+
+🎉 TWO ISSUES FIXED! 🎉
+
+ISSUE #1: TRIAL USERS HAD TOO MUCH ACCESS
+✅ FIXED! Trial now = LIMITED ACCESS (only 4 out of 20 features!)
+
+ISSUE #2: CAN'T SEE LANDING PAGE IMPROVEMENTS  
+✅ YOU NEED TO RUN THE LANDING PAGE!
+
+================================================================================
+
+🚀 TO SEE ALL YOUR IMPROVEMENTS:
+
+Step 1: Open Terminal/Command Prompt
+
+Step 2: Navigate to project:
+    cd C:\Users\User\CascadeProjects\T21-RTT-Validator
+
+Step 3: Run LANDING PAGE (not app.py!):
+    streamlit run landing_page.py
+
+Step 4: Your browser will open - YOU'LL SEE EVERYTHING! ✨
+
+================================================================================
+
+✅ WHAT YOU'LL SEE ON LANDING PAGE:
+
+✅ Professional header (Company No: 13091053)
+✅ Logo placeholder (T21 badge - waiting for your real logo!)
+✅ Trust badges (Companies House, NHS, GDPR, UK)
+✅ 3 beautiful portal cards (NHS, Student, Staff)
+✅ Testimonials (3 customer quotes)
+✅ 7 modules overview
+✅ Complete footer with:
+   - Liverpool address
+   - All emails (.co.uk)
+   - All social media links
+   - Privacy Policy link ← Click this!
+   - Terms of Service link ← Click this!
+   - Contact Us link ← Click this!
+
+================================================================================
+
+🎨 ABOUT YOUR LOGO:
+
+You showed me a BEAUTIFUL gold laurel wreath logo!
+
+To add it:
+1. Create folder: C:\Users\User\CascadeProjects\T21-RTT-Validator\static\
+2. Save your logo as: t21_logo.png
+3. Tell me: "Logo saved!"
+4. I'll integrate it EVERYWHERE (5 minutes)
+
+================================================================================
+
+🔒 TRIAL ACCESS NOW RESTRICTED:
+
+BEFORE (BAD):
+❌ Trial users had access to EVERYTHING
+❌ Why would they pay?
+
+AFTER (GOOD):  
+✅ Trial users get LIMITED access only:
+   ✅ Basic PTL
+   ✅ Training Library (limited)
+   ✅ AI Tutor (basic)
+   ✅ Learning Center
+
+✅ They CANNOT access:
+   ❌ AI Auto-Validator
+   ❌ Cancer Pathways
+   ❌ MDT Coordination
+   ❌ Advanced Booking
+   ❌ Medical Secretary AI
+   ❌ Data Quality
+   ❌ All advanced tools
+   ❌ Interview Prep
+   ❌ CV Builder
+   ❌ Reports
+   ...and 10 more premium features!
+
+RESULT: They'll WANT to upgrade after 48 hours! 💰
+
+================================================================================
+
+📋 QUICK COMMANDS:
+
+See Landing Page:
+    streamlit run landing_page.py
+
+See Direct Login:
+    streamlit run app.py
+
+See Privacy Policy:
+    streamlit run pages/privacy_policy.py
+
+See Terms of Service:
+    streamlit run pages/terms_of_service.py
+
+See Contact Form:
+    streamlit run pages/contact_us.py
+
+================================================================================
+
+🎯 NEXT STEPS:
+
+TODAY:
+1. Run: streamlit run landing_page.py
+2. See all improvements
+3. Test Privacy Policy link
+4. Test Terms of Service link
+5. Test Contact Us link
+6. Save your logo to static/ folder
+
+TOMORROW:
+1. I'll integrate logo everywhere
+2. Final testing
+3. LAUNCH! 🚀
+
+================================================================================
+
+❓ COMMON QUESTIONS:
+
+Q: Where are the improvements?
+A: Run "streamlit run landing_page.py" (not app.py!)
+
+Q: Why no logo showing?
+A: Logo placeholder shows until you save your real logo to static/ folder!
+
+Q: Are trials really restricted?
+A: YES! Only 4 features out of 20. They'll have to upgrade!
+
+Q: Can I still use app.py?
+A: Yes! Both work. landing_page.py is more professional for demos.
+
+================================================================================
+
+🚀 RUN THIS NOW:
+
+    streamlit run landing_page.py
+
+YOU'LL SEE EVERYTHING! ✨✨✨
+
+================================================================================
+
+T21 Services Limited | Company No: 13091053
+64 Upper Parliament Street, Liverpool, L8 7LF, England
+www.t21services.co.uk
+
+================================================================================

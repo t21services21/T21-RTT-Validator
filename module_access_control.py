@@ -159,7 +159,7 @@ BUNDLES = {
 # Default module access by role
 DEFAULT_MODULE_ACCESS = {
     "📋 PTL - Patient Tracking List": {
-        "trial": True,
+        "trial": True,  # Trial gets basic PTL access only
         "basic": True,
         "professional": True,
         "ultimate": True,
@@ -168,7 +168,7 @@ DEFAULT_MODULE_ACCESS = {
         "nhs_trust": True
     },
     "🤖 AI Auto-Validator": {
-        "trial": True,
+        "trial": False,  # NO AI for trial users!
         "basic": True,
         "professional": True,
         "ultimate": True,
@@ -222,7 +222,7 @@ DEFAULT_MODULE_ACCESS = {
         "nhs_trust": True
     },
     "📊 Pathway Validator": {
-        "trial": True,
+        "trial": False,  # Trial = LIMITED access only
         "basic": True,
         "professional": True,
         "ultimate": True,
@@ -231,7 +231,7 @@ DEFAULT_MODULE_ACCESS = {
         "nhs_trust": True
     },
     "📝 Clinic Letter Interpreter": {
-        "trial": True,
+        "trial": False,  # NO letter tools for trial
         "basic": True,
         "professional": True,
         "ultimate": True,
@@ -240,7 +240,7 @@ DEFAULT_MODULE_ACCESS = {
         "nhs_trust": True
     },
     "📅 Timeline Auditor": {
-        "trial": True,
+        "trial": False,  # NO auditor for trial
         "basic": True,
         "professional": True,
         "ultimate": True,
@@ -249,7 +249,7 @@ DEFAULT_MODULE_ACCESS = {
         "nhs_trust": True
     },
     "👤 Patient Registration Validator": {
-        "trial": True,
+        "trial": False,  # NO validator for trial
         "basic": True,
         "professional": True,
         "ultimate": True,
@@ -258,7 +258,7 @@ DEFAULT_MODULE_ACCESS = {
         "nhs_trust": True
     },
     "📆 Appointment & Booking Checker": {
-        "trial": True,
+        "trial": False,  # NO booking tools for trial
         "basic": True,
         "professional": True,
         "ultimate": True,
@@ -267,7 +267,7 @@ DEFAULT_MODULE_ACCESS = {
         "nhs_trust": True
     },
     "💬 Comment Line Generator": {
-        "trial": True,
+        "trial": False,  # NO comment generator for trial
         "basic": True,
         "professional": True,
         "ultimate": True,
@@ -276,7 +276,7 @@ DEFAULT_MODULE_ACCESS = {
         "nhs_trust": True
     },
     "✍️ Clinic Letter Creator": {
-        "trial": True,
+        "trial": False,  # NO letter creator for trial
         "basic": True,
         "professional": True,
         "ultimate": True,
@@ -321,7 +321,7 @@ DEFAULT_MODULE_ACCESS = {
         "nhs_trust": True
     },
     "💼 Job Interview Prep": {
-        "trial": True,
+        "trial": False,  # NO interview prep for trial
         "basic": True,
         "professional": True,
         "ultimate": True,
@@ -330,7 +330,7 @@ DEFAULT_MODULE_ACCESS = {
         "nhs_trust": True
     },
     "📄 CV Builder": {
-        "trial": True,
+        "trial": False,  # NO CV builder for trial
         "basic": True,
         "professional": True,
         "ultimate": True,

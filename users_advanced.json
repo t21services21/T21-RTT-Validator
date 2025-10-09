@@ -33,5 +33,73 @@
         "note": "Custom expiry set to 30/10/2025 12:15:00 by admin@t21services.co.uk"
       }
     ]
+  },
+  "admin@t21services.co.uk": {
+    "user_id": "b64f4dd02ae2",
+    "email": "admin@t21services.co.uk",
+    "password_hash": "3eb3fe66b31e3b4d10fa70b5cad49c7112294af6ae4e476a1c405155d45aa121",
+    "user_type": "admin",
+    "role": "super_admin",
+    "full_name": "T21 Administrator",
+    "organization": "T21 Services Limited",
+    "created_by": "system",
+    "created_at": "2025-10-09T13:15:18.381746",
+    "status": "active",
+    "suspended_reason": null,
+    "suspended_by": null,
+    "suspended_at": null,
+    "terminated_at": null,
+    "expiry_date": "2035-10-07T13:15:18.381746",
+    "usage": {
+      "total_logins": 0,
+      "last_login": null,
+      "logins_today": 0,
+      "last_login_date": null,
+      "ai_questions_today": 0,
+      "quizzes_today": 0,
+      "validations_today": 0,
+      "last_reset_date": "2025-10-09"
+    },
+    "custom_permissions": {},
+    "notes": [
+      {
+        "timestamp": "2025-10-09T13:15:18.381746",
+        "note": "Admin account created by system"
+      }
+    ]
+  },
+  "staff@t21services.co.uk": {
+    "user_id": "e1ce0e9a3e4c",
+    "email": "staff@t21services.co.uk",
+    "password_hash": "05dd4a1376a72d9a5e0fad32000f7e61651a5cef5c9c9a0c3816c7443dafbf6f",
+    "user_type": "staff",
+    "role": "staff",
+    "full_name": "T21 Staff Member",
+    "organization": "T21 Services Limited",
+    "created_by": "system",
+    "created_at": "2025-10-09T13:15:18.381746",
+    "status": "active",
+    "suspended_reason": null,
+    "suspended_by": null,
+    "suspended_at": null,
+    "terminated_at": null,
+    "expiry_date": "2035-10-07T13:15:18.381746",
+    "usage": {
+      "total_logins": 0,
+      "last_login": null,
+      "logins_today": 0,
+      "last_login_date": null,
+      "ai_questions_today": 0,
+      "quizzes_today": 0,
+      "validations_today": 0,
+      "last_reset_date": "2025-10-09"
+    },
+    "custom_permissions": {},
+    "notes": [
+      {
+        "timestamp": "2025-10-09T13:15:18.381746",
+        "note": "Staff account created by system"
+      }
+    ]
   }
 }
