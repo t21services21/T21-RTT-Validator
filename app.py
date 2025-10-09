@@ -45,6 +45,8 @@ from lms_student_portal import render_student_lms_portal
 from lms_enhanced_catalog import render_enhanced_catalog
 from lms_course_preview import render_course_preview
 from user_module_marketplace import render_user_marketplace
+from admin_school_management_ui import render_school_management_admin
+from student_school_portal import render_student_school_portal
 import hashlib
 import pandas as pd
 # Page configuration
@@ -401,6 +403,7 @@ if not accessible_modules:
         "⚙️ My Account & Upgrade",
         "🛒 Module Marketplace",
         "📚 LMS - My Courses",
+        "🎓 My Academic Portal",
         "👥 Staff Management",
         "🔧 Admin Panel",
         "ℹ️ About RTT Rules"
@@ -3093,14 +3096,15 @@ elif tool == "🔧 Admin Panel":
             st.header("🔧 Admin Panel")
             
             # Create tabs for different admin functions
-            admin_tab1, admin_tab2, admin_tab3, admin_tab4, admin_tab5, admin_tab6, admin_tab7 = st.tabs([
+            admin_tab1, admin_tab2, admin_tab3, admin_tab4, admin_tab5, admin_tab6, admin_tab7, admin_tab8 = st.tabs([
                 "👥 User Management", 
                 "🔐 Module Access Control",
                 "🎯 Modular Access",
                 "📧 Bulk Email",
                 "💬 Personal Message",
                 "⏰ Trial Automation",
-                "📚 LMS Courses"
+                "📚 LMS Courses",
+                "🏫 School Management"
             ])
             
             with admin_tab1:
@@ -3123,6 +3127,9 @@ elif tool == "🔧 Admin Panel":
             
             with admin_tab7:
                 render_course_manager_ui()
+            
+            with admin_tab8:
+                render_school_management_admin()
         else:
             st.error("⛔ Access Denied - Admin or Staff privileges required")
     else:
@@ -3134,6 +3141,13 @@ elif tool == "🔧 Admin Panel":
 # ============================================
 elif tool == "🛒 Module Marketplace":
     render_user_marketplace(st.session_state.user_email)
+
+
+# ============================================
+# ACADEMIC PORTAL (STUDENT)
+# ============================================
+elif tool == "🎓 My Academic Portal":
+    render_student_school_portal(st.session_state.user_email)
 
 
 # ============================================
