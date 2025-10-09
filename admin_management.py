@@ -416,13 +416,60 @@ def change_role(target_email, new_role, changed_by_email):
 # ============================================
 
 def get_all_users(filter_by=None):
-    """Get all users with optional filtering from both databases"""
-    users = load_users_db()
+    """Get all users with optional filtering - Supabase FIRST, then fallback to old databases"""
+    from datetime import datetime
+    import json
+    import os
     
     user_list = []
+    loaded_emails = set()  # Track emails we've already loaded
     
-    # Get users from NEW database
+    # PRIORITY 1: Get users from SUPABASE
+    try:
+        from supabase_database import get_all_users as get_supabase_users
+        supabase_users = get_supabase_users()
+        
+        for user_data in supabase_users:
+            email = user_data.get('email')
+            if not email:
+                continue
+            
+            loaded_emails.add(email)
+            
+            # Convert Supabase format to summary format
+            summary = {
+                "email": email,
+                "full_name": user_data.get('full_name', 'Unknown'),
+                "role": user_data.get('role', 'trial'),
+                "role_name": user_data.get('role', 'trial').replace('_', ' ').title(),
+                "user_type": user_data.get('user_type', 'student'),
+                "status": user_data.get('status', 'active'),
+                "status_display": user_data.get('status', 'active').title(),
+                "created_at": user_data.get('created_at', 'Unknown')[:10] if user_data.get('created_at') else 'Unknown',
+                "expiry_date": user_data.get('expiry_date', 'Unknown')[:10] if user_data.get('expiry_date') else 'Unknown',
+                "days_remaining": 0  # Calculate if needed
+            }
+            
+            # Apply filters
+            if filter_by:
+                if filter_by.get("type") and summary["user_type"] != filter_by["type"]:
+                    continue
+                if filter_by.get("status") and summary["status"] != filter_by["status"]:
+                    continue
+                if filter_by.get("role") and summary["role"] != filter_by["role"]:
+                    continue
+            
+            user_list.append(summary)
+    except Exception as e:
+        print(f"Supabase load failed: {e}, falling back to JSON")
+    
+    # PRIORITY 2: Get users from NEW database (users_advanced.json) - only if not in Supabase
+    users = load_users_db()
     for email, user in users.items():
+        if email in loaded_emails:
+            continue  # Skip duplicates
+        
+        loaded_emails.add(email)
         summary = user.get_summary()
         
         # Apply filters
@@ -439,23 +486,21 @@ def get_all_users(filter_by=None):
         
         user_list.append(summary)
     
-    # Also get users from OLD database (users_database.json)
-    import json
-    import os
+    # PRIORITY 3: Get users from OLD database (users_database.json) - only if not already loaded
     if os.path.exists("users_database.json"):
         with open("users_database.json", 'r') as f:
             old_users = json.load(f)
         
         for email, old_user in old_users.items():
-            # Skip if already in new database
-            if email in users:
-                continue
+            if email in loaded_emails:
+                continue  # Skip duplicates
+            
+            loaded_emails.add(email)
             
             # Convert old format to summary format
             license = old_user.get("license", {})
             role = license.get("role", "unknown")
             
-            from datetime import datetime
             expiry_str = license.get("expiry_date", "")
             try:
                 expiry_dt = datetime.fromisoformat(expiry_str)
