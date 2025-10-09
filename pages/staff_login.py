@@ -29,7 +29,27 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Custom CSS
+# Logo and Header
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    st.image("assets/logo.png", width=200)
+
+st.markdown("""
+<div style='text-align: center; margin: 20px 0;'>
+    <div style='background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); 
+                color: white; 
+                padding: 8px 20px; 
+                border-radius: 20px; 
+                display: inline-block; 
+                margin-bottom: 10px;'>
+        👥 STAFF & PARTNER PORTAL
+    </div>
+    <h1 style='color: #e74c3c; margin: 10px 0;'>T21 Healthcare Intelligence Platform</h1>
+    <p style='color: #666; font-size: 16px;'>For T21 Services Staff, Training Providers, and Authorized Partners</p>
+</div>
+""", unsafe_allow_html=True)
+
+# Custom CSS (keeping for compatibility)
 st.markdown("""
 <style>
     .login-header {

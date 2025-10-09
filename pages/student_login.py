@@ -28,35 +28,23 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Custom CSS
-st.markdown("""
-<style>
-    .login-header {
-        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-        padding: 40px 20px;
-        border-radius: 15px;
-        text-align: center;
-        color: white;
-        margin-bottom: 30px;
-    }
-    
-    .portal-badge {
-        background: #1abc9c;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 20px;
-        display: inline-block;
-        margin-bottom: 20px;
-    }
-</style>
-""", unsafe_allow_html=True)
+# Logo and Header
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    st.image("assets/logo.png", width=200)
 
-# Header
 st.markdown("""
-<div class="login-header">
-    <div class="portal-badge">🎓 STUDENT TRAINING PORTAL</div>
-    <h1>T21 Healthcare Intelligence Platform</h1>
-    <p>Professional NHS Administration Training</p>
+<div style='text-align: center; margin: 20px 0;'>
+    <div style='background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); 
+                color: white; 
+                padding: 8px 20px; 
+                border-radius: 20px; 
+                display: inline-block; 
+                margin-bottom: 10px;'>
+        🎓 STUDENT TRAINING PORTAL
+    </div>
+    <h1 style='color: #27ae60; margin: 10px 0;'>T21 Healthcare Intelligence Platform</h1>
+    <p style='color: #666; font-size: 16px;'>Professional NHS Administration Training</p>
 </div>
 """, unsafe_allow_html=True)
 
