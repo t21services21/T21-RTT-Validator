@@ -416,77 +416,46 @@ if not st.session_state.logged_in:
                     password_hash = hashlib.sha256(password.encode()).hexdigest()
                     
                     if user.password_hash and user.password_hash == password_hash:
-                            if user.is_active():
-                                # PORTAL VALIDATION
-                                user_type = user.user_type
+                        if user.is_active():
+                            # PORTAL VALIDATION
+                            user_type = user.user_type
+                            
+                            if staff_portal and user_type not in ['admin', 'staff', 'super_admin']:
+                                st.error("❌ Staff/Partner Portal is restricted to authorized personnel only")
+                                st.info("💡 Please uncheck 'Staff/Partner' and use the correct portal")
+                            elif nhs_portal and user_type not in ['admin', 'staff', 'nhs_user', 'super_admin']:
+                                st.error("❌ NHS Organization Portal requires NHS/Organization account")
+                                st.info("💡 Students should use the Student Portal")
+                            else:
+                                # Record login
+                                user.record_login()
+                                save_users_db(users_db)
                                 
-                                if staff_portal and user_type not in ['admin', 'staff', 'super_admin']:
-                                    st.error("❌ Staff/Partner Portal is restricted to authorized personnel only")
-                                    st.info("💡 Please uncheck 'Staff/Partner' and use the correct portal")
-                                elif nhs_portal and user_type not in ['admin', 'staff', 'nhs_user', 'super_admin']:
-                                    st.error("❌ NHS Organization Portal requires NHS/Organization account")
-                                    st.info("💡 Students should use the Student Portal")
-                                else:
-                                    # Record login
-                                    user.record_login()
-                                    save_users_db(users_db)
-                                    
-                                    # Track user login with geolocation
-                                    from user_tracking_system import track_user_login
-                                    track_user_login(email, success=True)
-                                    
-                                    # Set session
-                                    st.session_state.logged_in = True
-                                    st.session_state.user_license = user
-                                    st.session_state.user_email = email
-                                    
-                                    # Portal-specific welcome
-                                    if staff_portal:
-                                        st.success(f"👥 Staff Portal: Welcome back, {user.full_name}!")
-                                    elif nhs_portal:
-                                        st.success(f"🏥 NHS Portal: Welcome back, {user.full_name}!")
-                                    else:
-                                        st.success(f"Welcome back, {user.full_name}!")
-                                    
-                                    st.rerun()
-                            else:
-                                st.error(f"Account {user.status}. Please contact administrator.")
-                        else:
-                            # Track failed login
-                            from user_tracking_system import track_user_login
-                            track_user_login(email, success=False)
-                            st.error("Incorrect password")
-                    else:
-                        # Try old student database
-                        success, message, user_license = login_student(email, password)
-                        if success:
-                            # Check if trial expired
-                            if user_license.role == "trial" and not user_license.is_active():
-                                st.error("❌ Your 48-hour trial has expired!")
-                                st.warning("⬆️ Please upgrade to continue using the platform.")
-                                st.info("💰 **Upgrade Options:**\n- Basic: £299 / 3 months\n- Professional: £599 / 6 months\n- Premium: £999 / 12 months")
-                                if st.button("📧 Contact Admin to Upgrade"):
-                                    st.info("📧 Email: admin@t21services.co.uk")
-                            else:
-                                # PORTAL VALIDATION FOR STUDENTS
+                                # Track user login with geolocation
+                                from user_tracking_system import track_user_login
+                                track_user_login(email, success=True)
+                                
+                                # Set session
+                                st.session_state.logged_in = True
+                                st.session_state.user_license = user
+                                st.session_state.user_email = email
+                                
+                                # Portal-specific welcome
                                 if staff_portal:
-                                    st.error("❌ Staff/Partner Portal is restricted to T21 staff only")
-                                    st.info("💡 Please uncheck 'Staff/Partner' to access student training")
+                                    st.success(f"👥 Staff Portal: Welcome back, {user.full_name}!")
                                 elif nhs_portal:
-                                    st.error("❌ NHS Organization Portal is for NHS trusts only")
-                                    st.info("💡 Please uncheck 'NHS Organization' to access student training")
+                                    st.success(f"🏥 NHS Portal: Welcome back, {user.full_name}!")
                                 else:
-                                    # Track student login
-                                    from user_tracking_system import track_user_login
-                                    track_user_login(email, success=True)
-                                    
-                                    st.session_state.logged_in = True
-                                    st.session_state.user_license = user_license
-                                    st.session_state.user_email = email
-                                    st.success(f"🎓 Student Portal: {message}")
-                                    st.rerun()
+                                    st.success(f"Welcome back, {user.full_name}!")
+                                
+                                st.rerun()
                         else:
-                            st.error(message)
+                            st.error(f"Account {user.status}. Please contact administrator.")
+                    else:
+                        # Track failed login
+                        from user_tracking_system import track_user_login
+                        track_user_login(email, success=False)
+                        st.error("Incorrect password")
                 else:
                     # Try old student database
                     success, message, user_license = login_student(email, password)
