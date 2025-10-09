@@ -152,19 +152,20 @@ All fees are in GBP (£) and exclude VAT (if applicable).
 **Installment Plans (Convenience Fee Applied):**
 
 **Tier 1 (£499 regular):**
-- 2 payments: £259 × 2 = £518 (+£19)
-- 3 payments: £175 × 3 = £525 (+£26)
-- 6 monthly: £89 × 6 = £534 (+£35)
+- 2 payments: £259 (month 1) + £259 (month 4) = £518 (+£19)
+- 3 payments: £175 × 3 (every 2 months) = £525 (+£26)
 
-**Tier 2 (£1,299 regular):**
-- 2 payments: £675 × 2 = £1,350 (+£51)
-- 4 payments: £349 × 4 = £1,396 (+£97)
-- 8 monthly: £175 × 8 = £1,400 (+£101)
+**Tier 2 (£1,299 regular - 8 week program):**
+- 2 payments: £700 (month 1) + £650 (month 5) = £1,350 (+£51)
+- 3 payments: £475 × 3 (months 1, 4, 7) = £1,425 (+£126)
 
-**Tier 3 (£1,799 regular):**
-- 2 payments: £925 × 2 = £1,850 (+£51)
-- 4 payments: £475 × 4 = £1,900 (+£101)
-- 8 monthly: £240 × 8 = £1,920 (+£121)
+**Tier 3 (£1,799 regular - 8 week program + job placement):**
+- 2 payments: £925 (month 1) + £925 (month 5) = £1,850 (+£51)
+- 3 payments: £625 × 3 (months 1, 4, 7) = £1,875 (+£76)
+
+**⚠️ NO MONTHLY PAYMENT OPTIONS**
+- Prevents gaming the system
+- First payment covers 50%+ of cost
 
 **Payment Methods:**
 - Credit/debit card (Visa, Mastercard, Amex)
@@ -199,24 +200,64 @@ We may terminate job placement service if you:
 - Fail to attend scheduled mock interview sessions
 - Are not actively participating in job search
 
-### 5.5 Installment Plan Terms
+### 5.5 Installment Plan Terms - LEGALLY BINDING CONTRACT
 
-**If You Choose Installments:**
-- **Auto-debit required:** Credit/debit card kept on file
-- **First payment:** Due at enrollment (immediate)
-- **Subsequent payments:** Same day of month, automatic
-- **Failed payment:** 7-day grace period, then account suspended
-- **2 failed payments:** Account suspended, must pay balance to continue
-- **Access:** Full platform access maintained if payments current
-- **Certification:** Only issued after all payments complete (Tier 2 & 3)
-- **Early payoff:** You may pay remaining balance anytime (no penalty)
+**⚠️ CRITICAL: Installment plans are LEGALLY BINDING CONTRACTS**
 
-**Example - Tier 2, 4 Payments:**
-- Enroll Oct 1: Pay £349 (immediate access)
-- Jan 1: Pay £349
-- Apr 1: Pay £349
-- Jul 1: Pay £349 (final)
-- Aug 1: TQUK certificate issued
+By choosing an installment plan, you agree to pay ALL scheduled payments, even if you:
+- Complete the program early
+- No longer wish to continue
+- Change your mind
+- Experience financial hardship
+- Leave the country
+
+**Legal Obligations:**
+- All payments are legally enforceable
+- We may pursue collections or legal action for non-payment
+- You remain liable for full balance regardless of program completion
+- Certificate/credentials withheld until final payment received
+
+**Payment Structure:**
+- **First payment: 50%+ of total cost** (covers our operational costs)
+- **Subsequent payments:** Scheduled 3-4 months apart
+- **Auto-debit required:** Valid credit/debit card kept on file
+- **Automatic charges:** Payments processed automatically on due date
+
+**Failed Payment Consequences:**
+- **1st missed payment:** 
+  - 7-day grace period
+  - £25 late fee applied
+  - Warning email sent
+- **2nd missed payment:** 
+  - Account immediately suspended
+  - Platform access blocked
+  - £50 late fee applied
+- **3rd missed payment or 30+ days overdue:** 
+  - Sent to collections agency
+  - Legal action initiated
+  - Certificate permanently withheld
+  - Credit rating impact
+  - Additional fees may apply
+
+**Certificate/Credential Release:**
+- **Tier 2 & 3:** TQUK certificate held until FINAL payment received
+- Even if you complete program in 8 weeks, certificate withheld until payment plan complete
+- **No exceptions or early releases** (prevents payment avoidance)
+- Job placement services paused if payments missed (Tier 3)
+
+**Example - Tier 2, 2 Payments:**
+- Enroll Oct 1: Pay £700 (immediate program start)
+- Complete program: Week 8 (mid-November)
+- Pass exam: Week 8 (mid-November)
+- **Certificate withheld**
+- Mar 1: Pay £650 (final payment)
+- Mar 2: **Certificate issued**
+
+**Early Payoff (Recommended):**
+- Pay remaining balance anytime
+- Receive 5% discount on remaining balance
+- Immediate certificate release (if program complete)
+- Contact support@t21services.co.uk
 
 ### 5.6 Auto-Renewal
 - **Taster (£99):** Does NOT auto-renew

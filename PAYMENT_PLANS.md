@@ -35,27 +35,26 @@ This incentivizes upfront payment while offering flexibility for those who need 
 - Immediate access to all features
 - No recurring payments
 
-**Option 2: 2 Payments**
-- **£259 × 2 = £518**
-- (+£19 total)
-- Month 1: £259
-- Month 4: £259
+**Option 2: 2 Payments (Most Flexible)**
+- **Month 1:** £259 (upfront - 50%)
+- **Month 4:** £259 (final)
+- **Total:** £518 (+£19)
+- ✅ Legal contract to pay both installments
+- ✅ Access continues only if payments current
 
 **Option 3: 3 Payments**
-- **£175 × 3 = £525**
-- (+£26 total)
-- Every 2 months: £175
-
-**Option 4: 6 Monthly Payments**
-- **£89 × 6 = £534**
-- (+£35 total)
-- Monthly: £89
+- **Month 1:** £175 (upfront - 33%)
+- **Month 3:** £175
+- **Month 5:** £175 (final)
+- **Total:** £525 (+£26)
+- ✅ Legal contract to pay all installments
 
 ---
 
-## 💳 TIER 2 - TQUK CERTIFICATION (12 Months)
+## 💳 TIER 2 - TQUK CERTIFICATION (8 Weeks + 10 Months Access)
 
-**Regular Price:** £1,299
+**Regular Price:** £1,299  
+**Program:** 8-week certification + 10 months continued access = 12 months total
 
 ### Payment Options:
 
@@ -63,30 +62,37 @@ This incentivizes upfront payment while offering flexibility for those who need 
 - **£1,199** one-time payment
 - **SAVE £100!**
 - Immediate program start
+- Certificate issued week 9 (after final exam)
 - No recurring payments
 - **Most Popular!**
 
-**Option 2: 2 Payments**
-- **£675 × 2 = £1,350**
-- (+£51 total)
-- Month 1: £675 (program start)
-- Month 5: £675
+**Option 2: 2 Payments (Recommended)**
+- **Month 1:** £700 (upfront - 50%+)
+- **Month 5:** £650 (final)
+- **Total:** £1,350 (+£51)
+- ⚠️ **Certificate held until BOTH payments complete**
+- ✅ Legal contract to pay both installments
+- ✅ Full platform access from day 1
+- ✅ Can complete program early, but certificate only after final payment
 
-**Option 3: 4 Payments**
-- **£349 × 4 = £1,396**
-- (+£97 total)
-- Every 3 months: £349
+**Option 3: 3 Payments (Maximum Flexibility)**
+- **Month 1:** £475 (upfront - 33%+)
+- **Month 4:** £475
+- **Month 7:** £475 (final)
+- **Total:** £1,425 (+£126)
+- ⚠️ **Certificate held until ALL payments complete**
+- ✅ Legally binding payment contract
+- ✅ Full platform access maintained if payments current
+- ✅ Account suspended if payment missed
 
-**Option 4: 8 Monthly Payments**
-- **£175 × 8 = £1,400**
-- (+£101 total)
-- Monthly: £175 for 8 months
+**NO monthly payment option** (prevents gaming system)
 
 ---
 
-## 💳 TIER 3 - PREMIUM JOB PLACEMENT (12 Months)
+## 💳 TIER 3 - PREMIUM JOB PLACEMENT (8 Weeks + 10 Months)
 
-**Regular Price:** £1,799
+**Regular Price:** £1,799  
+**Program:** 8-week certification + job placement service + 10 months access
 
 ### Payment Options:
 
@@ -95,23 +101,28 @@ This incentivizes upfront payment while offering flexibility for those who need 
 - **SAVE £100!**
 - Immediate program start
 - Job placement service starts immediately
+- Certificate issued week 9
 - No recurring payments
 
-**Option 2: 2 Payments**
-- **£925 × 2 = £1,850**
-- (+£51 total)
-- Month 1: £925 (program start)
-- Month 5: £925
+**Option 2: 2 Payments (Recommended)**
+- **Month 1:** £925 (upfront - 50%+)
+- **Month 5:** £925 (final)
+- **Total:** £1,850 (+£51)
+- ⚠️ **Certificate held until BOTH payments complete**
+- ⚠️ **Job placement service PAUSED if payment missed**
+- ✅ Legal contract to pay both installments
+- ✅ Full access maintained if payments current
 
-**Option 3: 4 Payments**
-- **£475 × 4 = £1,900**
-- (+£101 total)
-- Every 3 months: £475
+**Option 3: 3 Payments (Maximum Flexibility)**
+- **Month 1:** £625 (upfront - 33%+)
+- **Month 4:** £625
+- **Month 7:** £625 (final)
+- **Total:** £1,875 (+£76)
+- ⚠️ **Certificate held until ALL payments complete**
+- ⚠️ **Job placement service PAUSED if payment missed**
+- ✅ Legally binding payment contract
 
-**Option 4: 8 Monthly Payments**
-- **£240 × 8 = £1,920**
-- (+£121 total)
-- Monthly: £240 for 8 months
+**NO monthly payment option** (prevents gaming system)
 
 ---
 
@@ -123,18 +134,22 @@ This incentivizes upfront payment while offering flexibility for those who need 
 ├──────────────┼────────┼───────────┼─────────────┼───────────────────┤
 │ REGULAR      │ £99    │ £499      │ £1,299      │ £1,799            │
 ├──────────────┼────────┼───────────┼─────────────┼───────────────────┤
-│ Pay in Full  │ £99    │ £449 ⭐   │ £1,199 ⭐⭐  │ £1,699 ⭐⭐        │
+│ Pay in Full  │ £99    │ £449 ⭐   │ £1,199 ⭐⭐⭐│ £1,699 ⭐⭐⭐      │
 │ (Discount)   │ -      │ (save £50)│ (save £100) │ (save £100)       │
 ├──────────────┼────────┼───────────┼─────────────┼───────────────────┤
 │ 2 Payments   │ -      │ £518      │ £1,350      │ £1,850            │
-│ (Premium)    │ -      │ (+£19)    │ (+£51)      │ (+£51)            │
+│ (50% upfront)│ -      │ (+£19)    │ (+£51)      │ (+£51)            │
+│              │ -      │ £259+£259 │ £700+£650   │ £925+£925         │
 ├──────────────┼────────┼───────────┼─────────────┼───────────────────┤
-│ 3-4 Payments │ -      │ £525      │ £1,396      │ £1,900            │
-│ (Premium)    │ -      │ (+£26)    │ (+£97)      │ (+£101)           │
-├──────────────┼────────┼───────────┼─────────────┼───────────────────┤
-│ Monthly      │ -      │ £534      │ £1,400      │ £1,920            │
-│ (Highest)    │ -      │ (+£35)    │ (+£101)     │ (+£121)           │
+│ 3 Payments   │ -      │ £525      │ £1,425      │ £1,875            │
+│ (33% upfront)│ -      │ (+£26)    │ (+£126)     │ (+£76)            │
+│              │ -      │ £175×3    │ £475×3      │ £625×3            │
 └──────────────────────────────────────────────────────────────────────┘
+
+⚠️ NO MONTHLY PAYMENT OPTIONS
+- Prevents students from completing early and stopping payments
+- Certificate held until ALL payments complete
+- Legally binding payment contract required
 ```
 
 ---
@@ -182,27 +197,56 @@ This incentivizes upfront payment while offering flexibility for those who need 
 ### **All Payments:**
 - Accepted via Stripe/PayPal
 - Credit/debit cards accepted
-- Bank transfer available (UK only)
+- Bank transfer available (UK only, full payment only)
 - All prices in GBP (£)
 - VAT may apply
 
-### **Installment Plans:**
-- **Auto-debit required** (credit/debit card on file)
-- First payment due at enrollment
-- Subsequent payments on same day of month
-- Failed payment = 7-day grace period
-- 2 failed payments = account suspended
-- Must complete all payments to access certification
+### **Installment Plans - LEGALLY BINDING:**
+
+**⚠️ CRITICAL: Installment plans are LEGALLY BINDING CONTRACTS**
+
+When you choose an installment plan, you are entering into a legal contract to pay ALL installments, even if you:
+- Complete the program early
+- No longer want to continue
+- Change your mind
+- Move out of the country
+
+**You MUST pay ALL installments to:**
+- Receive your TQUK certificate (Tier 2 & 3)
+- Continue using the platform
+- Access job placement services (Tier 3)
+
+**Payment Structure:**
+- **First payment: 50%+ upfront** (covers our costs)
+- **Subsequent payments:** Spread over time
+- **Auto-debit required:** Credit/debit card kept on file
+- **Legally enforceable:** We can pursue legal action for non-payment
+
+**Failed Payments:**
+- **1 missed payment:** 7-day grace period, warning email
+- **2nd missed payment:** Account suspended immediately
+- **3rd missed payment:** 
+  - Sent to collections agency
+  - Legal action initiated
+  - Certificate permanently withheld
+  - Access terminated
+
+**Certificate Release:**
+- **Tier 2 & 3:** Certificate ONLY issued after FINAL payment received
+- Even if you pass exam in week 8, certificate held until month 5-7 (depending on plan)
+- No exceptions - this prevents payment gaming
 
 ### **Refunds:**
 - **Taster:** 48-hour money-back guarantee
-- **Tier 1:** 7-day money-back guarantee
-- **Tier 2 & 3:** No refunds after certification issued
-- Installment plans: Refund prorated if within refund period
+- **Tier 1:** 7-day money-back guarantee (from first payment)
+- **Tier 2 & 3:** 7-day cooling-off period from FIRST payment only
+- **After 7 days:** NO REFUNDS, all payments still due
+- Installment plans: If refund granted, only first payment refunded
 
-### **Early Payoff:**
+### **Early Payoff (Recommended!):**
 - Can pay remaining balance anytime
-- Receive discount for early payoff
+- Receive 5% discount on remaining balance
+- Immediate certificate release (if program complete)
 - Contact support@t21services.co.uk
 
 ---
