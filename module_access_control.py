@@ -12,6 +12,150 @@ Features:
 import json
 import os
 
+# ============================================
+# MODULAR ACCESS CONTROL SYSTEM
+# Each module can be sold/accessed separately
+# ============================================
+
+# MODULE DEFINITIONS
+MODULES = {
+    # MODULE 1: RTT VALIDATION
+    "RTT_VALIDATION_MODULE": {
+        "name": "RTT Validation Module",
+        "description": "Complete RTT validation training & automation",
+        "price_nhs": 50000,
+        "price_individual": 999,
+        "tools": ["🤖 AI Auto-Validator", "📊 Pathway Validator", "📅 Timeline Auditor"],
+        "training": "40 RTT validation scenarios"
+    },
+    
+    # MODULE 2: PATIENT PATHWAY
+    "PATIENT_PATHWAY_MODULE": {
+        "name": "Patient Pathway Module",
+        "description": "Complete pathway coordination training & automation",
+        "price_nhs": 75000,
+        "price_individual": 1299,
+        "tools": ["📋 PTL - Patient Tracking List", "🤖 AI Auto-Validator"],
+        "training": "30 pathway coordination scenarios"
+    },
+    
+    # MODULE 3: CANCER PATHWAY
+    "CANCER_PATHWAY_MODULE": {
+        "name": "Cancer Pathway Module",
+        "description": "2WW/62-day cancer pathway training & automation",
+        "price_nhs": 60000,
+        "price_individual": 1199,
+        "tools": ["🎗️ Cancer Pathways"],
+        "training": "20 cancer pathway scenarios"
+    },
+    
+    # MODULE 4: WAITING LIST
+    "WAITING_LIST_MODULE": {
+        "name": "Waiting List Module",
+        "description": "Waiting list management training & automation",
+        "price_nhs": 55000,
+        "price_individual": 899,
+        "tools": ["📋 PTL - Patient Tracking List"],
+        "training": "20 waiting list scenarios"
+    },
+    
+    # MODULE 5: APPOINTMENT SCHEDULER
+    "APPOINTMENT_MODULE": {
+        "name": "Appointment Scheduler Module",
+        "description": "AI appointment scheduling training & automation",
+        "price_nhs": 65000,
+        "price_individual": 1099,
+        "tools": ["📆 Appointment & Booking Checker", "📅 Advanced Booking System"],
+        "training": "20 booking scenarios"
+    },
+    
+    # MODULE 6: MDT COORDINATION
+    "MDT_MODULE": {
+        "name": "MDT Coordination Module",
+        "description": "MDT meeting coordination training & automation",
+        "price_nhs": 50000,
+        "price_individual": 999,
+        "tools": ["👥 MDT Coordination"],
+        "training": "18 MDT scenarios"
+    },
+    
+    # MODULE 7: MEDICAL SECRETARY
+    "MEDICAL_SECRETARY_MODULE": {
+        "name": "Medical Secretary Module",
+        "description": "Complete medical secretary training & automation",
+        "price_nhs": 70000,
+        "price_individual": 1199,
+        "tools": ["📝 Clinic Letter Interpreter", "✍️ Clinic Letter Creator", "📧 Medical Secretary AI"],
+        "training": "25 secretary scenarios"
+    },
+    
+    # MODULE 8: DATA QUALITY
+    "DATA_QUALITY_MODULE": {
+        "name": "Data Quality Module",
+        "description": "Data quality & audit training & automation",
+        "price_nhs": 60000,
+        "price_individual": 999,
+        "tools": ["📊 Data Quality System"],
+        "training": "15 data quality scenarios"
+    },
+    
+    # MODULE 9: AI KNOWLEDGE BASE
+    "AI_KNOWLEDGE_MODULE": {
+        "name": "AI Training & Knowledge Base",
+        "description": "AI learns from YOUR training materials",
+        "price_nhs": 40000,
+        "price_individual": 599,
+        "tools": ["🤖 AI Training"],
+        "training": "AI knowledge management"
+    },
+    
+    # MODULE 10: LMS
+    "LMS_MODULE": {
+        "name": "Professional LMS Module",
+        "description": "Complete learning management system",
+        "price_nhs": 45000,
+        "price_individual": 799,
+        "tools": ["📚 LMS Courses", "🎓 Training Library"],
+        "training": "LMS administration"
+    },
+    
+    # MODULE 11: SCHOOL MANAGEMENT
+    "SCHOOL_MODULE": {
+        "name": "School Management Module",
+        "description": "Complete school/academy administration",
+        "price_nhs": 50000,
+        "price_individual": 999,
+        "tools": ["🏫 School Management"],
+        "training": "School administration"
+    }
+}
+
+# BUNDLE PACKAGES
+BUNDLES = {
+    "STARTER": {
+        "name": "Starter Bundle",
+        "modules": ["RTT_VALIDATION_MODULE", "PATIENT_PATHWAY_MODULE", "WAITING_LIST_MODULE"],
+        "price_nhs": 80000,
+        "price_individual": 1499,
+        "discount": "30%"
+    },
+    "PROFESSIONAL": {
+        "name": "Professional Bundle",
+        "modules": ["RTT_VALIDATION_MODULE", "PATIENT_PATHWAY_MODULE", "CANCER_PATHWAY_MODULE", 
+                   "WAITING_LIST_MODULE", "APPOINTMENT_MODULE"],
+        "price_nhs": 150000,
+        "price_individual": 2999,
+        "discount": "40%"
+    },
+    "ULTIMATE": {
+        "name": "Ultimate Bundle",
+        "modules": list(MODULES.keys()),
+        "price_nhs": 250000,
+        "price_individual": 4999,
+        "discount": "50%"
+    }
+}
+
 # Default module access by role
 DEFAULT_MODULE_ACCESS = {
     "📋 PTL - Patient Tracking List": {
@@ -26,6 +170,51 @@ DEFAULT_MODULE_ACCESS = {
     "🤖 AI Auto-Validator": {
         "trial": True,
         "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "🎗️ Cancer Pathways": {
+        "trial": False,
+        "basic": False,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "👥 MDT Coordination": {
+        "trial": False,
+        "basic": False,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "📅 Advanced Booking System": {
+        "trial": False,
+        "basic": False,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "📧 Medical Secretary AI": {
+        "trial": False,
+        "basic": False,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "📊 Data Quality System": {
+        "trial": False,
+        "basic": False,
         "professional": True,
         "ultimate": True,
         "admin": True,

@@ -50,6 +50,7 @@ from student_school_portal import render_student_school_portal
 from ai_validator_ui import render_ai_validator
 from admin_ai_training import render_ai_training_admin
 from ptl_ui import render_ptl
+from cancer_pathway_ui import render_cancer_pathways
 from interactive_reports import generate_student_progress_report
 import hashlib
 import pandas as pd
@@ -388,6 +389,7 @@ accessible_modules = get_accessible_modules(user_role, user_email)
 if not accessible_modules:
     accessible_modules = [
         "📋 PTL - Patient Tracking List",
+        "🎗️ Cancer Pathways",
         "🤖 AI Auto-Validator",
         "📊 Pathway Validator",
         "📝 Clinic Letter Interpreter",
@@ -431,6 +433,13 @@ st.sidebar.markdown("No real patient data")
 # ============================================
 if tool == "📋 PTL - Patient Tracking List":
     render_ptl()
+
+
+# ============================================
+# TOOL 0B: CANCER PATHWAYS (2WW/62-DAY TRACKING!)
+# ============================================
+elif tool == "🎗️ Cancer Pathways":
+    render_cancer_pathways()
 
 
 # ============================================
