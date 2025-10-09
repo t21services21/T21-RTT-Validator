@@ -272,6 +272,7 @@ except:
 
 import hashlib
 import pandas as pd
+
 # Page configuration
 st.set_page_config(
     page_title="T21 Healthcare Intelligence Platform | T21 Services UK",
@@ -279,6 +280,15 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# ============================================
+# CUSTOM SIDEBAR (Show/Hide based on login)
+# ============================================
+try:
+    from sidebar_manager import render_sidebar
+    render_sidebar()
+except Exception as e:
+    st.sidebar.warning(f"Sidebar manager error: {e}")
 
 # ============================================
 # AUTHENTICATION & ACCESS CONTROL

@@ -7,12 +7,22 @@ Company No: 13091053
 """
 
 import streamlit as st
+import sys
+import os
 
 st.set_page_config(
     page_title="Terms of Service | T21 Services Limited",
     page_icon="📄",
     layout="wide"
 )
+
+# Custom sidebar
+try:
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from sidebar_manager import render_sidebar
+    render_sidebar()
+except:
+    pass
 
 # Header
 st.markdown("""

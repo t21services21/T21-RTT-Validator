@@ -17,6 +17,16 @@ st.set_page_config(
     layout="wide"
 )
 
+# Custom sidebar
+try:
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from sidebar_manager import render_sidebar
+    render_sidebar()
+except:
+    pass
+
 # Header
 st.markdown("""
 <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 10px; margin-bottom: 30px; text-align: center;'>

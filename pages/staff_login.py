@@ -22,6 +22,13 @@ st.set_page_config(
     layout="wide"
 )
 
+# Custom sidebar
+try:
+    from sidebar_manager import render_sidebar
+    render_sidebar()
+except:
+    pass
+
 # Custom CSS
 st.markdown("""
 <style>
