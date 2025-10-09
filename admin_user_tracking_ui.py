@@ -58,25 +58,56 @@ def render_user_tracking_dashboard():
 
 
 def render_all_users_dashboard():
-    """Show ALL users including trial users"""
+    """Show ALL users including trial users - SUPABASE FIRST"""
     
     st.subheader("📊 Complete User Database")
-    
-    # Get all students
-    all_students = list_all_students()
-    
-    # Get all advanced users (admin, staff, nhs)
-    all_advanced = load_users_db()
     
     # Get tracking data
     tracking_data = get_all_users_tracking()
     
     # Combine all users
     all_users = []
+    loaded_emails = set()  # Track to avoid duplicates
     
-    # Add students
+    # PRIORITY 1: Get users from SUPABASE
+    try:
+        from supabase_database import get_all_users as get_supabase_users
+        supabase_users = get_supabase_users()
+        
+        for user_data in supabase_users:
+            email = user_data.get('email')
+            if not email or email in loaded_emails:
+                continue
+            
+            loaded_emails.add(email)
+            tracking = tracking_data.get(email, {})
+            
+            user_row = {
+                'Email': email,
+                'Name': user_data.get('full_name', 'N/A'),
+                'Type': user_data.get('user_type', 'student'),
+                'Role': user_data.get('role', 'trial'),
+                'Status': user_data.get('status', 'active'),
+                'Days Remaining': 0,  # Calculate if needed
+                'Created': user_data.get('created_at', 'Unknown')[:10] if user_data.get('created_at') else 'Unknown',
+                'Last Login': tracking.get('last_login', 'Never'),
+                'Last IP': tracking.get('last_ip', 'Unknown'),
+                'Last Location': tracking.get('last_location', 'Unknown'),
+                'Total Logins': tracking.get('total_logins', 0),
+                'Failed Logins': tracking.get('failed_logins', 0)
+            }
+            all_users.append(user_row)
+    except Exception as e:
+        st.warning(f"Loading from Supabase failed, falling back to JSON: {str(e)}")
+    
+    # PRIORITY 2: Get old students (only if not in Supabase)
+    all_students = list_all_students()
     for student in all_students:
         email = student.get('email')
+        if email in loaded_emails:
+            continue
+        
+        loaded_emails.add(email)
         tracking = tracking_data.get(email, {})
         
         user_row = {
@@ -95,8 +126,13 @@ def render_all_users_dashboard():
         }
         all_users.append(user_row)
     
-    # Add advanced users
+    # PRIORITY 3: Get advanced users (only if not already loaded)
+    all_advanced = load_users_db()
     for email, user_account in all_advanced.items():
+        if email in loaded_emails:
+            continue
+        
+        loaded_emails.add(email)
         tracking = tracking_data.get(email, {})
         
         # UserAccount is an object, not a dict - use attributes or get_summary()

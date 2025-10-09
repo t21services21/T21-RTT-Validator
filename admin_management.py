@@ -595,11 +595,12 @@ def get_audit_log(limit=100):
 
 
 def get_platform_stats():
-    """Get overall platform statistics"""
-    users = load_users_db()
+    """Get overall platform statistics - uses get_all_users() which loads from Supabase"""
+    # Use get_all_users() which now loads from Supabase first
+    all_users = get_all_users()  # Returns list of summary dicts
     
     stats = {
-        "total_users": len(users),
+        "total_users": len(all_users),
         "active_users": 0,
         "suspended_users": 0,
         "expired_users": 0,
@@ -610,16 +611,18 @@ def get_platform_stats():
         "total_logins": 0
     }
     
-    for email, user in users.items():
-        user_type = USER_TYPES[user.role]["type"]
+    for user_summary in all_users:
+        status = user_summary.get("status", "active")
+        user_type = user_summary.get("user_type", "student")
+        role = user_summary.get("role", "trial")
         
-        if user.status == "active":
+        if status == "active":
             stats["active_users"] += 1
-        elif user.status == "suspended":
+        elif status == "suspended":
             stats["suspended_users"] += 1
-        elif user.status == "expired":
+        elif status == "expired":
             stats["expired_users"] += 1
-        elif user.status == "terminated":
+        elif status == "terminated":
             stats["terminated_users"] += 1
         
         if user_type == "student":
@@ -629,6 +632,7 @@ def get_platform_stats():
         elif user_type in ["admin", "super_admin"]:
             stats["admins"] += 1
         
-        stats["total_logins"] += user.usage.get("total_logins", 0)
+        # Total logins would come from tracking data if needed
+        # stats["total_logins"] += user.usage.get("total_logins", 0)
     
     return stats

@@ -291,6 +291,44 @@ if 'user_license' not in st.session_state:
     st.session_state.user_license = None
 if 'user_email' not in st.session_state:
     st.session_state.user_email = None
+if 'session_email' not in st.session_state:
+    st.session_state.session_email = None
+
+# Session persistence - restore login on refresh
+if not st.session_state.logged_in and st.session_state.session_email:
+    # Try to restore session
+    try:
+        import hashlib
+        stored_email = st.session_state.session_email
+        
+        # Try loading from Supabase first
+        try:
+            from supabase_database import get_user_by_email
+            user_data = get_user_by_email(stored_email)
+            
+            if user_data:
+                # Create simple user object
+                class SimpleUser:
+                    def __init__(self, data):
+                        self.email = data.get('email')
+                        self.full_name = data.get('full_name')
+                        self.role = data.get('role', 'trial')
+                        self.user_type = data.get('user_type', 'student')
+                
+                user_obj = SimpleUser(user_data)
+                st.session_state.logged_in = True
+                st.session_state.user_license = user_obj
+                st.session_state.user_email = stored_email
+        except:
+            # Fallback to old system
+            from student_auth import load_students_db
+            students = load_students_db()
+            if stored_email in students:
+                st.session_state.logged_in = True
+                st.session_state.user_license = students[stored_email]['license']
+                st.session_state.user_email = stored_email
+    except Exception as e:
+        pass  # Silent fail, just show login page
 
 # Login/Registration Page
 if not st.session_state.logged_in:
@@ -440,6 +478,7 @@ if not st.session_state.logged_in:
                                 st.session_state.logged_in = True
                                 st.session_state.user_license = user_obj
                                 st.session_state.user_email = email
+                                st.session_state.session_email = email  # Persist across refreshes
                                 
                                 st.success(f"✅ Welcome back, {user_obj.full_name}!")
                                 st.rerun()
@@ -491,6 +530,7 @@ if not st.session_state.logged_in:
                                 st.session_state.logged_in = True
                                 st.session_state.user_license = user
                                 st.session_state.user_email = email
+                                st.session_state.session_email = email  # Persist across refreshes
                                 
                                 # Portal-specific welcome
                                 if staff_portal:
@@ -535,6 +575,7 @@ if not st.session_state.logged_in:
                                 st.session_state.logged_in = True
                                 st.session_state.user_license = user_license
                                 st.session_state.user_email = email
+                                st.session_state.session_email = email  # Persist across refreshes
                                 st.success(f"🎓 Student Portal: {message}")
                                 st.rerun()
                     else:
@@ -818,6 +859,7 @@ if st.session_state.user_license:
         st.session_state.logged_in = False
         st.session_state.user_license = None
         st.session_state.user_email = None
+        st.session_state.session_email = None  # Clear persistent session
         st.rerun()
 
 st.sidebar.markdown("---")
@@ -849,36 +891,8 @@ user_role = st.session_state.user_license.role if hasattr(st.session_state.user_
 user_email = st.session_state.user_email if 'user_email' in st.session_state else None
 accessible_modules = get_accessible_modules(user_role, user_email)
 
-# Add common features for all users
-common_features = [
-    "🎓 Training Library",
-    "🎮 Interactive Learning Center",
-    "🤖 AI RTT Tutor",
-    "💼 Job Interview Prep",
-    "📄 CV Builder",
-    "📊 Interactive Reports",
-    "📈 Dashboard & Analytics",
-    "🚨 Smart Alerts",
-    "📜 Validation History",
-    "⚙️ My Account & Upgrade",
-    "📚 LMS - My Courses",
-    "🎓 My Academic Portal",
-    "ℹ️ About RTT Rules",
-    "📄 Privacy Policy",
-    "📜 Terms of Service",
-    "📧 Contact Us"
-]
-
-# Add admin/staff specific features
-if user_role in ['admin', 'super_admin', 'staff', 'staff_trainer', 'staff_support']:
-    admin_features = [
-        "👥 Staff Management",
-        "🔧 Admin Panel"  # This is where you manage all users!
-    ]
-    accessible_modules = accessible_modules + admin_features
-
-# Add common features to all users
-accessible_modules = accessible_modules + common_features
+# Remove any duplicates (use dict to preserve order while removing duplicates)
+accessible_modules = list(dict.fromkeys(accessible_modules))
 
 # If no accessible modules (error), show all
 if not accessible_modules:
