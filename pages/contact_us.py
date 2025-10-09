@@ -268,10 +268,10 @@ with faq_col1:
     with st.expander("🎓 How do I sign up as a student?"):
         st.markdown("""
         **For Students:**
-        1. Click "Student Portal" on the home page
-        2. Register for free 48-hour trial
-        3. Explore 188 training scenarios
-        4. Upgrade to full access (£299-999)
+        1. Click "Student Login" in the sidebar
+        2. Create your account (instant)
+        3. Start with Taster tier (£99) or go straight to full access
+        4. Access AI-powered training & hands-on tools
         
         **Need help?** Email student-support@t21services.co.uk
         """)
@@ -279,15 +279,15 @@ with faq_col1:
     with st.expander("💰 What are your pricing options?"):
         st.markdown("""
         **For Students:**
-        - Free 48-hour trial
-        - Basic: £299 / 3 months
-        - Professional: £599 / 6 months
-        - Premium: £999 / 12 months
+        - **Taster:** £99 / 1 month (try it out)
+        - **Tier 1 Practice:** £499 / 6 months (full platform)
+        - **Tier 2 Certified:** £1,299 / 12 months (TQUK certification)
+        - **Tier 3 Premium:** £1,799 / 12 months (cert + job placement)
         
         **For NHS Organizations:**
         - Custom pricing based on trust size
-        - Typical: £100k-300k per year
-        - Contact us for quote
+        - Bulk licensing available
+        - Contact sales@t21services.co.uk for quote
         """)
 
 with faq_col2:

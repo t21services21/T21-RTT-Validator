@@ -25,35 +25,26 @@ def render_sidebar():
             st.markdown("### 🔐 Login Options")
             st.caption("Please select your portal:")
             
-            if st.button("🎓 Student Login", use_container_width=True, type="primary"):
+            if st.button("🎓 Student Login", key="btn_student_login", use_container_width=True, type="primary"):
                 st.switch_page("pages/student_login.py")
             
-            if st.button("👥 Staff Login", use_container_width=True):
+            if st.button("👥 Staff Login", key="btn_staff_login", use_container_width=True):
                 st.switch_page("pages/staff_login.py")
             
-            if st.button("🏥 NHS Login", use_container_width=True):
+            if st.button("🏥 NHS Login", key="btn_nhs_login", use_container_width=True):
                 st.switch_page("pages/nhs_login.py")
             
             st.markdown("---")
             st.markdown("### ℹ️ Information")
             
-            if st.button("📧 Contact Us", use_container_width=True):
-                try:
-                    st.switch_page("pages/contact_us.py")
-                except:
-                    st.info("Contact: info@t21services.co.uk")
+            if st.button("📧 Contact Us", key="btn_contact", use_container_width=True):
+                st.switch_page("pages/contact_us.py")
             
-            if st.button("📜 Terms of Service", use_container_width=True):
-                try:
-                    st.switch_page("pages/terms_of_service.py")
-                except:
-                    pass
+            if st.button("📜 Terms of Service", key="btn_terms", use_container_width=True):
+                st.switch_page("pages/terms_of_service.py")
             
-            if st.button("🔒 Privacy Policy", use_container_width=True):
-                try:
-                    st.switch_page("pages/privacy_policy.py")
-                except:
-                    pass
+            if st.button("🔒 Privacy Policy", key="btn_privacy", use_container_width=True):
+                st.switch_page("pages/privacy_policy.py")
             
             # Helpful message
             st.markdown("---")
@@ -77,28 +68,28 @@ def render_sidebar():
             st.markdown("---")
             st.markdown("### 🏠 Main")
             
-            if st.button("📊 Dashboard", use_container_width=True, type="primary"):
+            if st.button("📊 Dashboard", key="btn_dashboard", use_container_width=True, type="primary"):
                 st.switch_page("app.py")
             
             st.markdown("---")
             st.markdown("### 🏥 Clinical Tools")
             
-            if st.button("🏥 RTT Clinical Validator", use_container_width=True):
+            if st.button("🏥 RTT Clinical Validator", key="btn_rtt_validator", use_container_width=True):
                 st.switch_page("pages/rtt_clinical_validator.py")
             
-            if st.button("📊 Pathway Validator", use_container_width=True):
+            if st.button("📊 Pathway Validator", key="btn_pathway_validator", use_container_width=True):
                 st.switch_page("pages/pathway_validator.py")
             
-            if st.button("📅 Appointment System", use_container_width=True):
+            if st.button("📅 Appointment System", key="btn_appointments", use_container_width=True):
                 st.switch_page("pages/appointment_system.py")
             
             st.markdown("---")
             st.markdown("### ⚙️ Settings")
             
-            if st.button("🔐 2FA Security", use_container_width=True):
+            if st.button("🔐 2FA Security", key="btn_2fa", use_container_width=True):
                 st.switch_page("pages/2fa_setup.py")
             
-            if st.button("👤 My Account", use_container_width=True):
+            if st.button("👤 My Account", key="btn_account", use_container_width=True):
                 st.switch_page("app.py")
             
             # Admin/Staff only features
@@ -106,23 +97,22 @@ def render_sidebar():
                 st.markdown("---")
                 st.markdown("### 🔧 Administration")
                 
-                if st.button("🏥 PAS Integration", use_container_width=True):
+                if st.button("🏥 PAS Integration", key="btn_pas_demo", use_container_width=True):
                     st.switch_page("pages/pas_integration_demo.py")
                 
-                if st.button("📊 Analytics", use_container_width=True):
+                if st.button("📊 Analytics", key="btn_analytics", use_container_width=True):
                     st.switch_page("app.py")
                 
-                if st.button("👥 Users", use_container_width=True):
+                if st.button("👥 Users", key="btn_users", use_container_width=True):
                     st.switch_page("app.py")
             
             st.markdown("---")
             
             # Logout button
-            if st.button("🚪 Logout", use_container_width=True, type="secondary"):
+            if st.button("🚪 Logout", key="btn_logout", use_container_width=True, type="secondary"):
                 # Clear session
                 for key in list(st.session_state.keys()):
                     del st.session_state[key]
-                st.success("Logged out successfully!")
                 st.rerun()
         
         # Footer

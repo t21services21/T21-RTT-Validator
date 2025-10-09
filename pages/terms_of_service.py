@@ -83,18 +83,40 @@ You agree to provide accurate, current, and complete information during registra
 
 ### 4.1 Account Types
 
-**Free Trial (Students):**
-- 48-hour trial period
-- Access to limited features
-- Automatic expiry
+**Taster (1 Month):**
+- £99 for 1 month
+- Limited platform access
+- AI tutor (10 questions/day)
+- Sample scenarios and demo tools
 
-**Paid Subscriptions:**
-- Basic: £299 / 3 months
-- Professional: £599 / 6 months
-- Premium: £999 / 12 months
+**Tier 1 - Platform Practice (6 Months):**
+- £499 for 6 months
+- Full platform access
+- Unlimited AI tutor
+- Complete hands-on clinical tools
+- RTT Clinical Validator, Pathway Validator, Appointment System
+
+**Tier 2 - TQUK Certification (12 Months):**
+- £1,299 for 12 months
+- 8-week intensive certification program
+- Official TQUK certification (Ofqual-regulated)
+- Live Zoom tutor sessions (4 sessions)
+- Alumni network access (lifetime)
+- 10 months continued platform access after certification
+
+**Tier 3 - Premium Job Placement (12 Months):**
+- £1,799 for 12 months
+- Everything in Tier 2 PLUS:
+- Our staff applies to NHS jobs on your behalf
+- 3-5 NHS interview invitations guaranteed (no time limit)
+- 5 × 1-on-1 mock interview coaching sessions
+- Unlimited application reviews
+- Weekly accountability check-ins
+- Support until employed
 
 **NHS Organization Licenses:**
 - Custom pricing based on trust size
+- Bulk user management
 - Contact sales@t21services.co.uk
 
 ### 4.2 Account Security
@@ -124,15 +146,40 @@ All fees are in GBP (£) and exclude VAT (if applicable).
 - Subscription begins upon payment confirmation
 
 ### 5.3 Refunds
-- **Trial Users:** No refund (free trial)
-- **Paid Subscriptions:** Non-refundable after 7-day cooling-off period
+- **Taster (£99):** 48-hour money-back guarantee if not satisfied
+- **Tier 1 (£499):** 7-day money-back guarantee
+- **Tier 2 (£1,299):** No refunds after TQUK certification issued
+- **Tier 3 (£1,799):** No refunds (unlimited job placement service provided)
 - **NHS Organizations:** As per contract terms
 
-### 5.4 Auto-Renewal
-Subscriptions auto-renew unless cancelled 7 days before expiry.
+### 5.4 Tier 3 Job Placement Service Terms
+**Our Guarantee:**
+- We guarantee 3-5 NHS interview invitations
+- No time limit - we continue applying until target achieved
+- Service is non-refundable (we provide unlimited support, not money back)
 
-### 5.5 Price Changes
-We may change prices with 30 days' notice.
+**Your Obligations:**
+- Must complete TQUK certification program
+- Must attend all 5 mock interview sessions
+- Must respond to our communications within 48 hours
+- Must be actively seeking employment
+- Must accept interviews when offered
+
+**Service Termination:**
+We may terminate job placement service if you:
+- Stop responding for 30+ consecutive days
+- Decline 3+ interview invitations without valid reason
+- Fail to attend scheduled mock interview sessions
+- Are not actively participating in job search
+
+### 5.5 Auto-Renewal
+- **Taster (£99):** Does NOT auto-renew
+- **Tier 1 (£499):** Does NOT auto-renew (fixed 6-month period)
+- **Tier 2 & 3:** Do NOT auto-renew (fixed 12-month program)
+- You must manually renew or upgrade at end of period
+
+### 5.6 Price Changes
+We may change prices with 30 days' notice. Price changes do not affect active subscriptions.
 
 ---
 
@@ -187,17 +234,54 @@ You retain ownership of data you upload, but grant us a license to:
 ## 8. Training & Certification
 
 ### 8.1 Educational Purpose
-Training scenarios are for educational purposes only and do not replace formal NHS training.
+Training scenarios are for educational purposes only and supplement (but do not replace) formal NHS training and on-the-job experience.
 
-### 8.2 Certifications
-Platform-issued certifications:
-- Confirm completion of training modules
-- Are NOT official NHS qualifications
-- Are recognized by partner training providers
-- Should be supplemented with workplace experience
+### 8.2 TQUK Certification (Tier 2 & 3 Only)
+**Official Qualification:**
+- TQUK (Training Qualifications UK) certification
+- Ofqual-regulated qualification
+- NHS-recognized credential
+- Nationally recognized in the UK
+- Awarded upon successful completion of 8-week program
 
-### 8.3 No Guarantee
-We do not guarantee employment, job placement, or NHS hiring outcomes.
+**Program Requirements:**
+- Attend all training sessions
+- Complete all assessments
+- Pass final TQUK examination
+- Demonstrate competency in RTT administration
+
+**Certification Details:**
+- Official TQUK certificate issued
+- Digital credential provided
+- Verifiable by employers
+- Valid indefinitely (does not expire)
+
+### 8.3 Job Placement Support (Tier 3 Only)
+**What We Provide:**
+- Professional NHS job application writing and submission
+- 3-5 guaranteed interview invitations (no time limit)
+- Mock interview preparation sessions
+- Application strategy and guidance
+- LinkedIn profile optimization
+- Support until employed
+
+**What We Do NOT Guarantee:**
+- Job offers (hiring decisions are made by NHS employers)
+- Specific job titles or salaries
+- Employment within a specific timeframe
+- Interviews at specific NHS trusts
+
+**Your Responsibility:**
+- Interview performance and success
+- Meeting NHS employer requirements
+- Accepting suitable job offers
+
+### 8.4 Limitations
+We do not guarantee:
+- Employment outcomes
+- Specific salary levels
+- Job placement timelines (though average is 2-4 months)
+- Acceptance by any specific NHS trust
 
 ---
 
