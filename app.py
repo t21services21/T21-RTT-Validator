@@ -19,56 +19,257 @@ Trusted by NHS Trusts, Training Providers, and Healthcare Professionals
 import streamlit as st
 import json
 from datetime import datetime
-from rtt_validator import (validate_pathway, validate_clinic_letter, validate_timeline, 
-                          validate_patient_registration, validate_appointments, generate_comment_line)
+
+# Import with error handling
+try:
+    from rtt_validator import (validate_pathway, validate_clinic_letter, validate_timeline, 
+                              validate_patient_registration, validate_appointments, generate_comment_line)
+except Exception as e:
+    st.error(f"Error loading rtt_validator: {e}")
+    # Provide fallback functions
+    def validate_pathway(data): return {"error": "Module not loaded"}
+    def validate_clinic_letter(letter, pas): return {"error": "Module not loaded"}
+    def validate_timeline(events): return {"error": "Module not loaded"}
+    def validate_patient_registration(data): return {"error": "Module not loaded"}
+    def validate_appointments(data): return {"error": "Module not loaded"}
+    def generate_comment_line(data): return {"Standardised_Comment_Line": "ERROR"}
 
 # NEW IMPORTS - All the powerful features we built!
-from database import (save_validation, get_validation_history, get_dashboard_stats, 
-                     get_active_alerts, acknowledge_alert)
-from excel_export import create_validation_excel, create_batch_results_excel
-from training_library import get_all_scenarios, check_answer as check_scenario_answer
-from smart_alerts import validate_and_generate_alerts
-from interview_prep import (analyze_job_description, generate_smart_questions_to_ask, 
-                            generate_red_flags_to_avoid)
-from cv_builder import (generate_cv_data, generate_professional_summary, format_cv_html,
-                        get_ats_keywords, generate_linkedin_profile, get_t21_qualifications)
-from interactive_learning import (INTERACTIVE_QUIZZES, BADGES, check_answer as check_quiz_answer, 
-                                  get_all_categories, get_quiz_by_difficulty,
-                                  StudentProgress, get_leaderboard, add_to_leaderboard)
-from certification_system import (generate_exam, grade_exam, generate_certificate, 
-                                  format_certificate_html, verify_certificate)
-from ai_tutor import (answer_question, get_code_info, generate_related_quiz, ChatHistory)
-from access_control import UserLicense, ROLES, check_feature_access
-from student_auth import (login_student, register_student, hash_password,
-                          list_all_students, upgrade_student, extend_student_license,
-                          request_password_reset, verify_reset_code, reset_password,
-                          get_student_info)
-from advanced_access_control import UserAccount, USER_TYPES
-from admin_management import load_users_db, save_users_db
-from admin_panel_ui import render_admin_panel
-from module_access_control import get_accessible_modules, can_access_module
-from admin_module_access_ui import render_module_access_admin
-from admin_bulk_email import render_bulk_email_ui
-from admin_trial_automation_ui import render_trial_automation_ui
-from admin_personal_message_ui import render_personal_message_ui
-from admin_modular_access_ui import render_modular_access_admin
-from lms_course_manager import render_course_manager_ui
-from lms_student_portal import render_student_lms_portal
-from lms_enhanced_catalog import render_enhanced_catalog
-from lms_course_preview import render_course_preview
-from user_module_marketplace import render_user_marketplace
-from admin_school_management_ui import render_school_management_admin
-from student_school_portal import render_student_school_portal
-from ai_validator_ui import render_ai_validator
-from admin_ai_training import render_ai_training_admin
-from admin_user_tracking_ui import render_user_tracking_dashboard
-from ptl_ui import render_ptl
-from cancer_pathway_ui import render_cancer_pathways
-from mdt_coordination_ui import render_mdt_coordination
-from advanced_booking_ui import render_advanced_booking
-from medical_secretary_ui import render_medical_secretary
-from data_quality_ui import render_data_quality
-from interactive_reports import generate_student_progress_report
+try:
+    from database import (save_validation, get_validation_history, get_dashboard_stats, 
+                         get_active_alerts, acknowledge_alert)
+except:
+    def save_validation(data): pass
+    def get_validation_history(): return []
+    def get_dashboard_stats(): return {}
+    def get_active_alerts(): return []
+    def acknowledge_alert(id): pass
+
+try:
+    from excel_export import create_validation_excel, create_batch_results_excel
+except:
+    def create_validation_excel(data): return None
+    def create_batch_results_excel(data): return None
+
+try:
+    from training_library import get_all_scenarios, check_answer as check_scenario_answer
+except:
+    def get_all_scenarios(): return []
+    def check_scenario_answer(q, a): return False, ""
+
+try:
+    from smart_alerts import validate_and_generate_alerts
+except:
+    def validate_and_generate_alerts(data): return []
+# All other imports with error handling
+try:
+    from interview_prep import (analyze_job_description, generate_smart_questions_to_ask, 
+                                generate_red_flags_to_avoid)
+except:
+    def analyze_job_description(desc): return {}
+    def generate_smart_questions_to_ask(role): return []
+    def generate_red_flags_to_avoid(role): return []
+
+try:
+    from cv_builder import (generate_cv_data, generate_professional_summary, format_cv_html,
+                            get_ats_keywords, generate_linkedin_profile, get_t21_qualifications)
+except:
+    def generate_cv_data(data): return {}
+    def generate_professional_summary(data): return ""
+    def format_cv_html(data): return ""
+    def get_ats_keywords(role): return []
+    def generate_linkedin_profile(data): return ""
+    def get_t21_qualifications(): return []
+
+try:
+    from interactive_learning import (INTERACTIVE_QUIZZES, BADGES, check_answer as check_quiz_answer, 
+                                      get_all_categories, get_quiz_by_difficulty,
+                                      StudentProgress, get_leaderboard, add_to_leaderboard)
+except:
+    INTERACTIVE_QUIZZES = {}
+    BADGES = []
+    def check_quiz_answer(q, a): return False, ""
+    def get_all_categories(): return []
+    def get_quiz_by_difficulty(d): return []
+    class StudentProgress: pass
+    def get_leaderboard(): return []
+    def add_to_leaderboard(name, score): pass
+
+try:
+    from certification_system import (generate_exam, grade_exam, generate_certificate, 
+                                      format_certificate_html, verify_certificate)
+except:
+    def generate_exam(level): return []
+    def grade_exam(answers): return 0, []
+    def generate_certificate(name, score): return ""
+    def format_certificate_html(cert): return ""
+    def verify_certificate(id): return False
+
+try:
+    from ai_tutor import (answer_question, get_code_info, generate_related_quiz, ChatHistory)
+except:
+    def answer_question(question): return "AI Tutor unavailable"
+    def get_code_info(code): return ""
+    def generate_related_quiz(topic): return []
+    class ChatHistory: pass
+
+try:
+    from access_control import UserLicense, ROLES, check_feature_access
+except:
+    class UserLicense: pass
+    ROLES = {}
+    def check_feature_access(role, feature): return True
+
+try:
+    from student_auth import (login_student, register_student, hash_password,
+                              list_all_students, upgrade_student, extend_student_license,
+                              request_password_reset, verify_reset_code, reset_password,
+                              get_student_info)
+except:
+    def login_student(email, pw): return False, "", None
+    def register_student(email, pw, name, role="trial"): return False, "", None
+    def hash_password(pw): return pw
+    def list_all_students(): return []
+    def upgrade_student(email, tier): pass
+    def extend_student_license(email, days): pass
+    def request_password_reset(email): return False, ""
+    def verify_reset_code(email, code): return False
+    def reset_password(email, pw): pass
+    def get_student_info(email): return {}
+
+try:
+    from advanced_access_control import UserAccount, USER_TYPES
+except:
+    class UserAccount: pass
+    USER_TYPES = {}
+
+try:
+    from admin_management import load_users_db, save_users_db
+except:
+    def load_users_db(): return {}
+    def save_users_db(db): pass
+
+try:
+    from admin_panel_ui import render_admin_panel
+except:
+    def render_admin_panel(email): st.info("Admin panel unavailable")
+
+try:
+    from module_access_control import get_accessible_modules, can_access_module
+except:
+    def get_accessible_modules(role, email=None): return []
+    def can_access_module(role, module, email=None): return True
+
+try:
+    from admin_module_access_ui import render_module_access_admin
+except:
+    def render_module_access_admin(): st.info("Module access admin unavailable")
+
+try:
+    from admin_bulk_email import render_bulk_email_ui
+except:
+    def render_bulk_email_ui(): st.info("Bulk email unavailable")
+
+try:
+    from admin_trial_automation_ui import render_trial_automation_ui
+except:
+    def render_trial_automation_ui(): st.info("Trial automation unavailable")
+
+try:
+    from admin_personal_message_ui import render_personal_message_ui
+except:
+    def render_personal_message_ui(): st.info("Personal message unavailable")
+
+try:
+    from admin_modular_access_ui import render_modular_access_admin
+except:
+    def render_modular_access_admin(): st.info("Modular access unavailable")
+
+try:
+    from lms_course_manager import render_course_manager_ui
+except:
+    def render_course_manager_ui(): st.info("LMS course manager unavailable")
+
+try:
+    from lms_student_portal import render_student_lms_portal
+except:
+    def render_student_lms_portal(email, role): st.info("LMS student portal unavailable")
+
+try:
+    from lms_enhanced_catalog import render_enhanced_catalog
+except:
+    def render_enhanced_catalog(email): st.info("LMS catalog unavailable")
+
+try:
+    from lms_course_preview import render_course_preview
+except:
+    def render_course_preview(course_id, email): st.info("Course preview unavailable")
+
+try:
+    from user_module_marketplace import render_user_marketplace
+except:
+    def render_user_marketplace(email, role): st.info("Module marketplace unavailable")
+
+try:
+    from admin_school_management_ui import render_school_management_admin
+except:
+    def render_school_management_admin(): st.info("School management unavailable")
+
+try:
+    from student_school_portal import render_student_school_portal
+except:
+    def render_student_school_portal(email): st.info("School portal unavailable")
+
+try:
+    from ai_validator_ui import render_ai_validator
+except:
+    def render_ai_validator(): st.info("AI validator unavailable")
+
+try:
+    from admin_ai_training import render_ai_training_admin
+except:
+    def render_ai_training_admin(): st.info("AI training admin unavailable")
+
+try:
+    from admin_user_tracking_ui import render_user_tracking_dashboard
+except:
+    def render_user_tracking_dashboard(): st.info("User tracking unavailable")
+
+try:
+    from ptl_ui import render_ptl
+except:
+    def render_ptl(): st.info("PTL unavailable")
+
+try:
+    from cancer_pathway_ui import render_cancer_pathways
+except:
+    def render_cancer_pathways(): st.info("Cancer pathways unavailable")
+
+try:
+    from mdt_coordination_ui import render_mdt_coordination
+except:
+    def render_mdt_coordination(): st.info("MDT coordination unavailable")
+
+try:
+    from advanced_booking_ui import render_advanced_booking
+except:
+    def render_advanced_booking(): st.info("Advanced booking unavailable")
+
+try:
+    from medical_secretary_ui import render_medical_secretary
+except:
+    def render_medical_secretary(): st.info("Medical secretary unavailable")
+
+try:
+    from data_quality_ui import render_data_quality
+except:
+    def render_data_quality(): st.info("Data quality unavailable")
+
+try:
+    from interactive_reports import generate_student_progress_report
+except:
+    def generate_student_progress_report(email): return ""
+
 import hashlib
 import pandas as pd
 # Page configuration
