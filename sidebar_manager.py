@@ -16,8 +16,11 @@ def render_sidebar():
     
     with st.sidebar:
         # Logo and branding
-        st.markdown("# 🏥 T21 Services")
-        st.markdown("Healthcare Intelligence Platform")
+        try:
+            st.image("assets/logo.png", width=180)
+        except:
+            st.markdown("# 🏥 T21 Services")
+        st.markdown("**Healthcare Intelligence Platform**")
         st.markdown("---")
         
         if not is_logged_in:

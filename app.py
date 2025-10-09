@@ -282,6 +282,16 @@ st.set_page_config(
 )
 
 # ============================================
+# LOGO AT TOP OF PAGE
+# ============================================
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    try:
+        st.image("assets/logo.png", width=200)
+    except:
+        st.markdown("# 🏥 T21 Services")
+
+# ============================================
 # CUSTOM SIDEBAR (Show/Hide based on login)
 # ============================================
 try:
