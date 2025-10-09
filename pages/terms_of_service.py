@@ -16,13 +16,12 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom sidebar
-try:
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from sidebar_manager import render_sidebar
-    render_sidebar()
-except:
-    pass
+# Hide default sidebar navigation
+st.markdown("""
+<style>
+    [data-testid="stSidebarNav"] {display: none;}
+</style>
+""", unsafe_allow_html=True)
 
 # Header
 st.markdown("""
