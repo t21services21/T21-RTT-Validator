@@ -12,8 +12,17 @@ Features:
 import json
 import os
 
-# Default module access configuration
+# Default module access by role
 DEFAULT_MODULE_ACCESS = {
+    "🤖 AI Auto-Validator": {
+        "trial": True,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
     "📊 Pathway Validator": {
         "trial": True,
         "basic": True,

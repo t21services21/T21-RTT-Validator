@@ -47,6 +47,7 @@ from lms_course_preview import render_course_preview
 from user_module_marketplace import render_user_marketplace
 from admin_school_management_ui import render_school_management_admin
 from student_school_portal import render_student_school_portal
+from ai_validator_ui import render_ai_validator
 import hashlib
 import pandas as pd
 # Page configuration
@@ -383,6 +384,7 @@ accessible_modules = get_accessible_modules(user_role, user_email)
 # If no accessible modules (error), show all
 if not accessible_modules:
     accessible_modules = [
+        "🤖 AI Auto-Validator",
         "📊 Pathway Validator",
         "📝 Clinic Letter Interpreter",
         "📅 Timeline Auditor",
@@ -421,9 +423,16 @@ st.sidebar.markdown("No real patient data")
 
 
 # ============================================
+# TOOL 0: AI AUTO-VALIDATOR (REVOLUTIONARY!)
+# ============================================
+if tool == "🤖 AI Auto-Validator":
+    render_ai_validator()
+
+
+# ============================================
 # TOOL 1: PATHWAY VALIDATOR
 # ============================================
-if tool == "📊 Pathway Validator":
+elif tool == "📊 Pathway Validator":
     st.header("RTT Pathway Validator")
     st.markdown("Validate a complete RTT pathway from referral to treatment (0-52 weeks)")
     
