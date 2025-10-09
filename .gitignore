@@ -1,0 +1,88 @@
+# ================================================================================
+# T21 SERVICES - SECURITY: NEVER COMMIT THESE FILES!
+# ================================================================================
+
+# Secrets and credentials
+*.env
+.env
+.env.local
+.streamlit/secrets.toml
+secrets.toml
+config.ini
+
+# Test/utility scripts with hardcoded passwords
+reset_staff_password.py
+test_login.py
+test_password.py
+verify_login_works.py
+diagnose_login.py
+create_admin_simple.py
+check_all_users.py
+test_admin_functions.py
+
+# Database files with sensitive user data
+users_database.json
+users_advanced.json
+*.db
+*.sqlite
+*.sqlite3
+validation_history.json
+user_tracking.json
+audit_log.json
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup

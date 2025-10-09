@@ -96,24 +96,31 @@ def render_all_users_dashboard():
         all_users.append(user_row)
     
     # Add advanced users
-    for email, user_data in all_advanced.items():
+    for email, user_account in all_advanced.items():
         tracking = tracking_data.get(email, {})
         
-        user_row = {
-            'Email': email,
-            'Name': user_data.get('name', 'N/A'),
-            'Type': user_data.get('user_type', 'Unknown').title(),
-            'Role': user_data.get('role', 'N/A'),
-            'Status': 'Active',
-            'Days Remaining': 99999,  # Admin/staff don't expire
-            'Created': user_data.get('created_at', 'Unknown'),
-            'Last Login': tracking.get('last_login', 'Never'),
-            'Last IP': tracking.get('last_ip', 'Unknown'),
-            'Last Location': tracking.get('last_location', 'Unknown'),
-            'Total Logins': tracking.get('total_logins', 0),
-            'Failed Logins': tracking.get('failed_logins', 0)
-        }
-        all_users.append(user_row)
+        # UserAccount is an object, not a dict - use attributes or get_summary()
+        try:
+            summary = user_account.get_summary() if hasattr(user_account, 'get_summary') else {}
+            
+            user_row = {
+                'Email': email,
+                'Name': user_account.full_name if hasattr(user_account, 'full_name') else summary.get('full_name', 'N/A'),
+                'Type': user_account.user_type if hasattr(user_account, 'user_type') else summary.get('user_type', 'Unknown').title(),
+                'Role': user_account.role if hasattr(user_account, 'role') else summary.get('role', 'N/A'),
+                'Status': user_account.status if hasattr(user_account, 'status') else 'Active',
+                'Days Remaining': summary.get('days_remaining', 99999),  # Admin/staff don't expire
+                'Created': user_account.created_at.strftime('%Y-%m-%d') if hasattr(user_account, 'created_at') else summary.get('created_at', 'Unknown'),
+                'Last Login': tracking.get('last_login', 'Never'),
+                'Last IP': tracking.get('last_ip', 'Unknown'),
+                'Last Location': tracking.get('last_location', 'Unknown'),
+                'Total Logins': tracking.get('total_logins', 0),
+                'Failed Logins': tracking.get('failed_logins', 0)
+            }
+            all_users.append(user_row)
+        except Exception as e:
+            st.error(f"Error processing user {email}: {str(e)}")
+            continue
     
     # Statistics
     col1, col2, col3, col4 = st.columns(4)
