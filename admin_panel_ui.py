@@ -417,8 +417,6 @@ def render_user_management(admin_email, admin_user):
                         expiry_time = st.time_input("Expiry Time")
                     
                     if st.button("Set Custom Expiry"):
-                        from datetime import datetime
-                        
                         # Combine date and time
                         new_expiry = datetime.combine(expiry_date, expiry_time)
                         
@@ -476,7 +474,6 @@ def render_user_management(admin_email, admin_user):
                 # Check if custom expiry is set
                 custom_expiry = None
                 if custom_expiry_date and custom_expiry_time:
-                    from datetime import datetime
                     custom_expiry = datetime.combine(custom_expiry_date, custom_expiry_time)
                 
                 success, msg = create_user(new_email, new_password, new_name, new_role, admin_email, custom_expiry)
