@@ -1,7 +1,18 @@
 """
-T21 RTT Pathway Intelligence Application
-NHS Referral To Treatment (RTT) Simulation and Validation System
-T21 Services UK
+T21 HEALTHCARE INTELLIGENCE PLATFORM
+Complete NHS Healthcare Administration - Training & Automation Suite
+By T21 Services UK | Company No: [Your Number] | www.t21services.com
+
+7 Integrated Modules:
+- RTT & Pathway Intelligence
+- Cancer Pathway Management  
+- MDT Coordination Suite
+- Intelligent Appointment System
+- Medical Secretary AI
+- Data Quality & Governance
+- Professional Training Academy (15+ NHS Roles)
+
+Trusted by NHS Trusts, Training Providers, and Healthcare Professionals
 """
 
 import streamlit as st
@@ -60,7 +71,7 @@ import hashlib
 import pandas as pd
 # Page configuration
 st.set_page_config(
-    page_title="T21 RTT Pathway Intelligence",
+    page_title="T21 Healthcare Intelligence Platform | T21 Services UK",
     page_icon="🏥",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -80,8 +91,25 @@ if 'user_email' not in st.session_state:
 
 # Login/Registration Page
 if not st.session_state.logged_in:
-    st.title("🏥 T21 RTT Training Platform")
-    st.markdown("### Welcome to Professional RTT Validation Training")
+    # Professional Header with Company Branding
+    st.markdown("""
+    <div style='text-align: center; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; margin-bottom: 30px;'>
+        <h1 style='color: white; margin: 0;'>🏥 T21 Healthcare Intelligence Platform</h1>
+        <p style='color: white; font-size: 18px; margin: 10px 0 0 0;'>Complete NHS Healthcare Administration Suite</p>
+        <p style='color: #e0e0e0; font-size: 14px; margin: 5px 0 0 0;'>By T21 Services UK | Training & Technology Solutions</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("### Welcome to Professional NHS Administration Training & Operations")
+    
+    # Feature highlights
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.info("🎓 **Train** for 15+ NHS Roles")
+    with col2:
+        st.info("🤖 **Automate** with 7 AI Systems")
+    with col3:
+        st.info("💰 **Save** £2M+ Per Year")
     
     tab1, tab2 = st.tabs(["🔐 Login", "📝 Register"])
     
@@ -300,9 +328,10 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Header
-st.markdown('<div class="main-header">🏥 T21 RTT Pathway Intelligence (v1.2)</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">NHS Referral To Treatment Simulation & Validation System | T21 Services UK</div>', unsafe_allow_html=True)
+# Header - Professional Branding
+st.markdown('<div class="main-header">🏥 T21 Healthcare Intelligence Platform</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">Complete NHS Healthcare Administration - Training & Automation Suite | T21 Services UK</div>', unsafe_allow_html=True)
+st.markdown('<p style="text-align: center; color: #666; font-size: 14px; margin-top: -10px;">✨ 7 Integrated Modules | 15+ NHS Roles | AI-Powered Throughout | Trusted by Healthcare Professionals</p>', unsafe_allow_html=True)
 
 # Sidebar - User License Info
 st.sidebar.title("👤 User Profile")
@@ -383,7 +412,7 @@ if hasattr(user_license, 'role') and user_license.role == "trial":
 st.sidebar.markdown("---")
 
 # Sidebar navigation
-st.sidebar.title("🧭 Validation Tools")
+st.sidebar.title("🧭 Platform Modules")
 # Get user's accessible modules based on their role AND user-specific access
 user_role = st.session_state.user_license.role if hasattr(st.session_state.user_license, 'role') else "trial"
 user_email = st.session_state.user_email if 'user_email' in st.session_state else None
@@ -431,9 +460,15 @@ tool = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("**T21 Services UK**")
-st.sidebar.markdown("*Training & Simulation Environment*")
-st.sidebar.markdown("No real patient data")
+st.sidebar.markdown("### 🏢 **T21 Services UK**")
+st.sidebar.markdown("*Healthcare Training & Technology Solutions*")
+st.sidebar.markdown("**Company No:** [Your Number]")
+st.sidebar.markdown("📧 [Your Email]")
+st.sidebar.markdown("🌐 [www.t21services.com](http://www.t21services.com)")
+st.sidebar.markdown("💼 [LinkedIn](https://linkedin.com) | 🐦 [Twitter](https://twitter.com)")
+st.sidebar.markdown("---")
+st.sidebar.caption("⚠️ Training & Simulation Environment")
+st.sidebar.caption("No real patient data used")
 
 
 # ============================================
