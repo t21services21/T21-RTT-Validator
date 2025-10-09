@@ -39,10 +39,12 @@ from admin_module_access_ui import render_module_access_admin
 from admin_bulk_email import render_bulk_email_ui
 from admin_trial_automation_ui import render_trial_automation_ui
 from admin_personal_message_ui import render_personal_message_ui
+from admin_modular_access_ui import render_modular_access_admin
 from lms_course_manager import render_course_manager_ui
 from lms_student_portal import render_student_lms_portal
 from lms_enhanced_catalog import render_enhanced_catalog
 from lms_course_preview import render_course_preview
+from user_module_marketplace import render_user_marketplace
 import hashlib
 import pandas as pd
 # Page configuration
@@ -397,6 +399,7 @@ if not accessible_modules:
         "🚨 Smart Alerts",
         "📜 Validation History",
         "⚙️ My Account & Upgrade",
+        "🛒 Module Marketplace",
         "📚 LMS - My Courses",
         "👥 Staff Management",
         "🔧 Admin Panel",
@@ -1276,48 +1279,94 @@ elif tool == "🎓 Training Library":
     st.header("🎓 RTT Training Library")
     st.markdown("Practice RTT validation with real scenarios and instant feedback!")
     
+    # Import modular access
+    from modular_access_system import user_has_module_access
+    
     scenarios = get_all_scenarios()
     
-    st.markdown("### 📚 Available Scenarios")
+    # Get user's accessible scenarios
+    user_email = st.session_state.user_email
+    
+    # Check if user has full training library access
+    has_full_access = user_has_module_access(user_email, "training_library")
+    
+    # Count accessible scenarios
+    accessible_count = 0
+    for scenario in scenarios:
+        scenario_id = f"scenario_{scenario['id']:02d}"
+        if has_full_access or user_has_module_access(user_email, scenario_id):
+            accessible_count += 1
+    
+    st.markdown(f"### 📚 Scenarios Available: {accessible_count}/{len(scenarios)}")
+    
+    if accessible_count < len(scenarios):
+        st.info(f"🔒 You have access to {accessible_count} scenarios. Upgrade to unlock all {len(scenarios)} scenarios!")
     
     for scenario in scenarios:
-        with st.expander(f"Scenario {scenario['id']}: {scenario['title']} - {scenario['difficulty']}", expanded=False):
+        scenario_id = f"scenario_{scenario['id']:02d}"
+        has_access = has_full_access or user_has_module_access(user_email, scenario_id)
+        
+        # Icon based on access
+        icon = "✅" if has_access else "🔒"
+        
+        with st.expander(f"{icon} Scenario {scenario['id']}: {scenario['title']} - {scenario['difficulty']}", expanded=False):
             st.markdown(f"**Difficulty:** {scenario['difficulty']}")
-            st.markdown("**Letter:**")
-            st.text_area("Clinic Letter", scenario['letter'], height=200, key=f"letter_{scenario['id']}", disabled=True)
             
-            st.markdown("---")
-            st.markdown("**Your Answer:**")
-            
-            col1, col2 = st.columns([3, 1])
-            
-            with col1:
-                user_answer = st.selectbox(
-                    "What RTT code should this letter get?",
-                    ["Select...", "10", "11", "12", "20", "21", "30", "31", "32", "33", "34", "35", "36", "90", "91", "92", "98"],
-                    key=f"answer_{scenario['id']}"
-                )
-            
-            with col2:
-                check_btn = st.button("Check Answer", key=f"check_{scenario['id']}")
-            
-            if check_btn and user_answer != "Select...":
-                result = check_scenario_answer(scenario['id'], user_answer)
+            if has_access:
+                # User has access - show full content
+                st.markdown("**Letter:**")
+                st.text_area("Clinic Letter", scenario['letter'], height=200, key=f"letter_{scenario['id']}", disabled=True)
                 
-                if result['correct']:
-                    st.success(f"✅ CORRECT! Well done!")
-                else:
-                    st.error(f"❌ Incorrect. The correct answer is: Code {result['correct_answer']}")
+                st.markdown("---")
+                st.markdown("**Your Answer:**")
                 
-                st.info(f"**Explanation:** {result['explanation']}")
+                col1, col2 = st.columns([3, 1])
                 
-                st.markdown("**Key Points:**")
-                for point in result['key_points']:
-                    st.markdown(f"- {point}")
+                with col1:
+                    user_answer = st.selectbox(
+                        "What RTT code should this letter get?",
+                        ["Select...", "10", "11", "12", "20", "21", "30", "31", "32", "33", "34", "35", "36", "90", "91", "92", "98"],
+                        key=f"answer_{scenario['id']}"
+                    )
                 
-                st.markdown("**Expected Actions:**")
-                for action in result['expected_actions']:
-                    st.markdown(f"- ✅ {action}")
+                with col2:
+                    check_btn = st.button("Check Answer", key=f"check_{scenario['id']}")
+                
+                if check_btn and user_answer != "Select...":
+                    result = check_scenario_answer(scenario['id'], user_answer)
+                    
+                    if result['correct']:
+                        st.success(f"✅ CORRECT! Well done!")
+                    else:
+                        st.error(f"❌ Incorrect. The correct answer is: Code {result['correct_answer']}")
+                    
+                    st.info(f"**Explanation:** {result['explanation']}")
+                    
+                    st.markdown("**Key Points:**")
+                    for point in result['key_points']:
+                        st.markdown(f"- {point}")
+                    
+                    st.markdown("**Expected Actions:**")
+                    for action in result['expected_actions']:
+                        st.markdown(f"- ✅ {action}")
+            
+            else:
+                # User doesn't have access - show preview
+                st.warning("🔒 **This scenario is locked**")
+                st.markdown("**Preview:**")
+                st.markdown(scenario['letter'][:200] + "... [Locked]")
+                st.markdown("---")
+                st.info("""
+                **Unlock this scenario:**
+                - Purchase individual scenario (£29)
+                - Get 5 scenarios bundle (£99)
+                - Get full Training Library access (£299)
+                
+                Contact admin to upgrade!
+                """)
+                
+                if st.button("📧 Request Access", key=f"request_{scenario['id']}"):
+                    st.success("✅ Access request sent to admin!")
 
 
 # ============================================
@@ -3044,9 +3093,10 @@ elif tool == "🔧 Admin Panel":
             st.header("🔧 Admin Panel")
             
             # Create tabs for different admin functions
-            admin_tab1, admin_tab2, admin_tab3, admin_tab4, admin_tab5, admin_tab6 = st.tabs([
+            admin_tab1, admin_tab2, admin_tab3, admin_tab4, admin_tab5, admin_tab6, admin_tab7 = st.tabs([
                 "👥 User Management", 
-                "🔐 Module Access Control", 
+                "🔐 Module Access Control",
+                "🎯 Modular Access",
                 "📧 Bulk Email",
                 "💬 Personal Message",
                 "⏰ Trial Automation",
@@ -3060,20 +3110,30 @@ elif tool == "🔧 Admin Panel":
                 render_module_access_admin()
             
             with admin_tab3:
-                render_bulk_email_ui()
+                render_modular_access_admin()
             
             with admin_tab4:
-                render_personal_message_ui()
+                render_bulk_email_ui()
             
             with admin_tab5:
-                render_trial_automation_ui()
+                render_personal_message_ui()
             
             with admin_tab6:
+                render_trial_automation_ui()
+            
+            with admin_tab7:
                 render_course_manager_ui()
         else:
             st.error("⛔ Access Denied - Admin or Staff privileges required")
     else:
         st.error("⛔ Access Denied - Admin or Staff privileges required")
+
+
+# ============================================
+# MODULE MARKETPLACE
+# ============================================
+elif tool == "🛒 Module Marketplace":
+    render_user_marketplace(st.session_state.user_email)
 
 
 # ============================================

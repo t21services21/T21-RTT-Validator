@@ -211,6 +211,15 @@ DEFAULT_MODULE_ACCESS = {
         "admin": True,
         "staff": True,
         "nhs_trust": True
+    },
+    "🛒 Module Marketplace": {
+        "trial": True,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
     }
 }
 
