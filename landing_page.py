@@ -466,12 +466,12 @@ st.markdown("""
         </div>
         
         <div>
-            <h3>📄 Legal</h3>
+            <h3>📄 Legal & Support</h3>
             <p>
-            <a href="#">Privacy Policy</a><br>
-            <a href="#">Terms of Service</a><br>
-            <a href="#">Data Protection</a><br>
-            <a href="#">GDPR Compliance</a>
+            <a href="/privacy_policy" target="_self">Privacy Policy</a><br>
+            <a href="/terms_of_service" target="_self">Terms of Service</a><br>
+            <a href="/contact_us" target="_self">Contact Us</a><br>
+            <a href="https://ico.org.uk" target="_blank">GDPR Compliance (ICO)</a>
             </p>
         </div>
     </div>

@@ -1,0 +1,55 @@
+==============================================================
+HOW TO ADD YOUR LOGO TO THE PLATFORM
+T21 Healthcare Intelligence Platform
+==============================================================
+
+YOUR LOGO: Beautiful gold laurel wreath with "T21 SERVICES"
+
+STEP 1: CREATE STATIC FOLDER
+-----------------------------
+1. Open File Explorer
+2. Go to: C:\Users\User\CascadeProjects\T21-RTT-Validator\
+3. Right-click → New → Folder
+4. Name it: static
+
+
+STEP 2: SAVE YOUR LOGO
+-----------------------
+1. Find your logo image file
+2. Copy it to: C:\Users\User\CascadeProjects\T21-RTT-Validator\static\
+3. Rename it to: t21_logo.png
+   (or .jpg, .svg - whatever format you have)
+
+
+STEP 3: TELL ME!
+-----------------
+Once saved, just tell me:
+"Logo is saved as t21_logo.png"
+
+I will then update these files in 5 minutes:
+- landing_page.py (header logo)
+- app.py (login page logo)
+- pages/nhs_login.py (NHS portal logo)
+- pages/student_login.py (Student portal logo)
+- pages/staff_login.py (Staff portal logo)
+- pages/privacy_policy.py (header logo)
+- pages/terms_of_service.py (header logo)
+- pages/contact_us.py (header logo)
+
+All automatically!
+
+
+THAT'S IT!
+----------
+Your professional logo will appear everywhere!
+
+
+QUESTIONS?
+----------
+Just ask me and I'll help!
+
+
+==============================================================
+T21 Services Limited | Company No: 13091053
+Liverpool, England | www.t21services.co.uk
+==============================================================
