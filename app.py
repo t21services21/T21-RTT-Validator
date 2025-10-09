@@ -3594,7 +3594,10 @@ elif tool == "🔧 Admin Panel":
                     render_admin_panel(st.session_state.user_email)
                 except Exception as e:
                     st.error(f"Error loading User Management: {str(e)}")
-                    st.info("💡 This feature is being updated. Please try again later.")
+                    import traceback
+                    with st.expander("🔍 Show Full Error Details"):
+                        st.code(traceback.format_exc())
+                    st.info("💡 If you see this error, please report it with the details above.")
             
             with admin_tab2:
                 try:
