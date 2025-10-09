@@ -112,6 +112,50 @@ if not st.session_state.logged_in:
     with col3:
         st.info("💰 **Save** £2M+ Per Year")
     
+    st.markdown("---")
+    
+    # Portal Selection
+    st.markdown("## 🚪 Select Your Portal Type")
+    
+    portal_col1, portal_col2, portal_col3 = st.columns(3)
+    
+    with portal_col1:
+        st.markdown("""
+        <div style='background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%); padding: 20px; border-radius: 10px; text-align: center; color: white; margin-bottom: 10px;'>
+            <h3>🏥 NHS Organizations</h3>
+            <p style='font-size: 14px;'>For NHS Trusts & Healthcare Organizations</p>
+        </div>
+        """, unsafe_allow_html=True)
+        nhs_portal = st.checkbox("I'm from an NHS/Healthcare Organization", key="nhs_portal")
+    
+    with portal_col2:
+        st.markdown("""
+        <div style='background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); padding: 20px; border-radius: 10px; text-align: center; color: white; margin-bottom: 10px;'>
+            <h3>🎓 Students</h3>
+            <p style='font-size: 14px;'>For Individual Training & Learning</p>
+        </div>
+        """, unsafe_allow_html=True)
+        student_portal = st.checkbox("I'm a Student/Learner", key="student_portal", value=True)
+    
+    with portal_col3:
+        st.markdown("""
+        <div style='background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); padding: 20px; border-radius: 10px; text-align: center; color: white; margin-bottom: 10px;'>
+            <h3>👥 Staff & Partners</h3>
+            <p style='font-size: 14px;'>For T21 Staff & Training Providers</p>
+        </div>
+        """, unsafe_allow_html=True)
+        staff_portal = st.checkbox("I'm T21 Staff/Partner", key="staff_portal")
+    
+    st.markdown("---")
+    
+    # Portal-specific messaging
+    if nhs_portal:
+        st.info("🏥 **NHS Organization Portal** - Access operational systems, admin dashboards, and analytics")
+    elif staff_portal:
+        st.warning("👥 **Staff/Partner Portal** - Restricted access for authorized personnel only")
+    else:
+        st.success("🎓 **Student Training Portal** - Access training scenarios, AI tutor, and certification")
+    
     tab1, tab2 = st.tabs(["🔐 Login", "📝 Register"])
     
     with tab1:
@@ -142,20 +186,38 @@ if not st.session_state.logged_in:
                         
                         if stored_hash == password_hash:
                             if user.is_active():
-                                # Record login
-                                user.record_login()
-                                save_users_db(users_db)
+                                # PORTAL VALIDATION
+                                user_type = user.user_type
                                 
-                                # Track user login with geolocation
-                                from user_tracking_system import track_user_login
-                                track_user_login(email, success=True)
-                                
-                                # Set session
-                                st.session_state.logged_in = True
-                                st.session_state.user_license = user
-                                st.session_state.user_email = email
-                                st.success(f"Welcome back, {user.full_name}!")
-                                st.rerun()
+                                if staff_portal and user_type not in ['admin', 'staff', 'super_admin']:
+                                    st.error("❌ Staff/Partner Portal is restricted to authorized personnel only")
+                                    st.info("💡 Please uncheck 'Staff/Partner' and use the correct portal")
+                                elif nhs_portal and user_type not in ['admin', 'staff', 'nhs_user', 'super_admin']:
+                                    st.error("❌ NHS Organization Portal requires NHS/Organization account")
+                                    st.info("💡 Students should use the Student Portal")
+                                else:
+                                    # Record login
+                                    user.record_login()
+                                    save_users_db(users_db)
+                                    
+                                    # Track user login with geolocation
+                                    from user_tracking_system import track_user_login
+                                    track_user_login(email, success=True)
+                                    
+                                    # Set session
+                                    st.session_state.logged_in = True
+                                    st.session_state.user_license = user
+                                    st.session_state.user_email = email
+                                    
+                                    # Portal-specific welcome
+                                    if staff_portal:
+                                        st.success(f"👥 Staff Portal: Welcome back, {user.full_name}!")
+                                    elif nhs_portal:
+                                        st.success(f"🏥 NHS Portal: Welcome back, {user.full_name}!")
+                                    else:
+                                        st.success(f"Welcome back, {user.full_name}!")
+                                    
+                                    st.rerun()
                             else:
                                 st.error(f"Account {user.status}. Please contact administrator.")
                         else:
@@ -175,11 +237,23 @@ if not st.session_state.logged_in:
                                 if st.button("📧 Contact Admin to Upgrade"):
                                     st.info("📧 Email: admin@t21services.co.uk")
                             else:
-                                st.session_state.logged_in = True
-                                st.session_state.user_license = user_license
-                                st.session_state.user_email = email
-                                st.success(message)
-                                st.rerun()
+                                # PORTAL VALIDATION FOR STUDENTS
+                                if staff_portal:
+                                    st.error("❌ Staff/Partner Portal is restricted to T21 staff only")
+                                    st.info("💡 Please uncheck 'Staff/Partner' to access student training")
+                                elif nhs_portal:
+                                    st.error("❌ NHS Organization Portal is for NHS trusts only")
+                                    st.info("💡 Please uncheck 'NHS Organization' to access student training")
+                                else:
+                                    # Track student login
+                                    from user_tracking_system import track_user_login
+                                    track_user_login(email, success=True)
+                                    
+                                    st.session_state.logged_in = True
+                                    st.session_state.user_license = user_license
+                                    st.session_state.user_email = email
+                                    st.success(f"🎓 Student Portal: {message}")
+                                    st.rerun()
                         else:
                             st.error(message)
                 else:
@@ -194,16 +268,27 @@ if not st.session_state.logged_in:
                             if st.button("📧 Contact Admin to Upgrade", key="contact_admin_2"):
                                 st.info("📧 Email: admin@t21services.co.uk")
                         else:
-                            # Track student login
-                            from user_tracking_system import track_user_login
-                            track_user_login(email, success=True)
-                            
-                            st.session_state.logged_in = True
-                            st.session_state.user_license = user_license
-                            st.session_state.user_email = email
-                            st.success(message)
-                            st.rerun()
+                            # PORTAL VALIDATION FOR STUDENTS
+                            if staff_portal:
+                                st.error("❌ Staff/Partner Portal is restricted to T21 staff only")
+                                st.info("💡 Please uncheck 'Staff/Partner' to access student training")
+                            elif nhs_portal:
+                                st.error("❌ NHS Organization Portal is for NHS trusts only")
+                                st.info("💡 Please uncheck 'NHS Organization' to access student training")
+                            else:
+                                # Track student login
+                                from user_tracking_system import track_user_login
+                                track_user_login(email, success=True)
+                                
+                                st.session_state.logged_in = True
+                                st.session_state.user_license = user_license
+                                st.session_state.user_email = email
+                                st.success(f"🎓 Student Portal: {message}")
+                                st.rerun()
                     else:
+                        # Track failed login
+                        from user_tracking_system import track_user_login
+                        track_user_login(email, success=False)
                         st.error(message)
             else:
                 st.warning("Please enter email and password")
