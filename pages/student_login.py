@@ -85,18 +85,62 @@ else:
                 
                 if login_btn:
                     if email and password:
-                        result = login_student(email, password)
+                        import hashlib
                         
-                        if result["success"]:
-                            st.session_state.logged_in = True
-                            st.session_state.user_license = result["license"]
-                            st.session_state.user_email = email
+                        # Try Supabase first
+                        try:
+                            from supabase_database import get_user_by_email, update_user_last_login
+                            supabase_user = get_user_by_email(email)
                             
-                            st.success(f"✅ Welcome back {result['student_name']}!")
-                            st.balloons()
-                            st.rerun()
-                        else:
-                            st.error(f"❌ {result['message']}")
+                            if supabase_user:
+                                password_hash = hashlib.sha256(password.encode()).hexdigest()
+                                
+                                if supabase_user.get('password_hash') == password_hash:
+                                    update_user_last_login(email)
+                                    
+                                    class SimpleUser:
+                                        def __init__(self, data):
+                                            self.email = data.get('email')
+                                            self.full_name = data.get('full_name')
+                                            self.role = data.get('role', 'trial')
+                                            self.user_type = data.get('user_type', 'student')
+                                    
+                                    user_obj = SimpleUser(supabase_user)
+                                    
+                                    st.session_state.logged_in = True
+                                    st.session_state.user_license = user_obj
+                                    st.session_state.user_email = email
+                                    
+                                    st.success(f"✅ Welcome back {user_obj.full_name}!")
+                                    st.switch_page("app.py")
+                                else:
+                                    st.error("❌ Incorrect password")
+                            else:
+                                # Fall back to old student system
+                                result = login_student(email, password)
+                                
+                                if result["success"]:
+                                    st.session_state.logged_in = True
+                                    st.session_state.user_license = result["license"]
+                                    st.session_state.user_email = email
+                                    
+                                    st.success(f"✅ Welcome back {result['student_name']}!")
+                                    st.switch_page("app.py")
+                                else:
+                                    st.error(f"❌ {result['message']}")
+                        except Exception as e:
+                            # Fall back to old system
+                            result = login_student(email, password)
+                            
+                            if result["success"]:
+                                st.session_state.logged_in = True
+                                st.session_state.user_license = result["license"]
+                                st.session_state.user_email = email
+                                
+                                st.success(f"✅ Welcome back {result['student_name']}!")
+                                st.switch_page("app.py")
+                            else:
+                                st.error(f"❌ {result['message']}")
                     else:
                         st.error("❌ Please enter both email and password")
         

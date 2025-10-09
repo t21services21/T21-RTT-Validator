@@ -288,9 +288,19 @@ def render_user_detail_actions():
         with col2:
             if 'license' in user_info:
                 license_info = user_info['license']
-                st.markdown(f"**Role:** {license_info.get('role', 'trial')}")
-                st.markdown(f"**Days Remaining:** {license_info.get('days_remaining', 0)}")
-                st.markdown(f"**Status:** {'Active' if license_info.get('days_remaining', 0) > 0 else 'Expired'}")
+                
+                # Handle both dict and object types
+                if isinstance(license_info, dict):
+                    role = license_info.get('role', 'trial')
+                    days_remaining = license_info.get('days_remaining', 0)
+                else:
+                    # It's an object (UserLicense or UserAccount)
+                    role = getattr(license_info, 'role', 'trial')
+                    days_remaining = getattr(license_info, 'days_remaining', 0) if hasattr(license_info, 'days_remaining') else 0
+                
+                st.markdown(f"**Role:** {role}")
+                st.markdown(f"**Days Remaining:** {days_remaining}")
+                st.markdown(f"**Status:** {'Active' if days_remaining > 0 else 'Expired'}")
             else:
                 st.markdown(f"**Role:** {user_info.get('role', 'N/A')}")
                 st.markdown(f"**Status:** Active (Staff/Admin)")
