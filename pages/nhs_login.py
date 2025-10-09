@@ -84,38 +84,69 @@ else:
             
             if login_btn:
                 if email and password:
-                    # Try advanced users database
-                    users_db = load_users_db()
+                    password_hash = hashlib.sha256(password.encode()).hexdigest()
                     
-                    if email in users_db:
-                        user_data = users_db[email]
-                        password_hash = hashlib.sha256(password.encode()).hexdigest()
+                    # Try Supabase first
+                    try:
+                        from supabase_database import get_user_by_email, update_user_last_login
+                        supabase_user = get_user_by_email(email)
                         
-                        if user_data.get('password_hash') == password_hash:
-                            # Check if user is NHS/organization type
-                            user_type = user_data.get('user_type', 'student')
+                        if supabase_user and supabase_user.get('password_hash') == password_hash:
+                            user_type = supabase_user.get('user_type', 'student')
                             
                             if user_type in ['admin', 'staff', 'nhs_user']:
-                                user_account = UserAccount(
-                                    email=email,
-                                    user_type=user_data.get('user_type'),
-                                    role=user_data.get('role'),
-                                    modules_access=user_data.get('modules_access', [])
-                                )
+                                update_user_last_login(email)
+                                
+                                class SimpleUser:
+                                    def __init__(self, data):
+                                        self.email = data.get('email')
+                                        self.full_name = data.get('full_name')
+                                        self.role = data.get('role', 'nhs_user')
+                                        self.user_type = data.get('user_type', 'nhs_user')
+                                
+                                user_account = SimpleUser(supabase_user)
                                 
                                 st.session_state.logged_in = True
                                 st.session_state.user_license = user_account
                                 st.session_state.user_email = email
                                 
-                                st.success(f"✅ Welcome to NHS Organization Portal!")
-                                st.balloons()
-                                st.rerun()
+                                st.success(f"✅ Welcome to NHS Organization Portal, {user_account.full_name}!")
+                                st.switch_page("app.py")
                             else:
                                 st.error("❌ This portal is for NHS organizations only. Students should use the Training Portal.")
-                        else:
+                        elif supabase_user:
                             st.error("❌ Incorrect password")
-                    else:
-                        st.error("❌ Organization account not found")
+                        else:
+                            # Fall back to old system
+                            users_db = load_users_db()
+                            
+                            if email in users_db:
+                                user_data = users_db[email]
+                                
+                                # Handle UserAccount object
+                                if hasattr(user_data, 'password_hash'):
+                                    stored_hash = user_data.password_hash
+                                else:
+                                    stored_hash = user_data.get('password_hash') if isinstance(user_data, dict) else None
+                                
+                                if stored_hash == password_hash:
+                                    user_type = user_data.get('user_type', 'student') if isinstance(user_data, dict) else getattr(user_data, 'user_type', 'student')
+                                    
+                                    if user_type in ['admin', 'staff', 'nhs_user']:
+                                        st.session_state.logged_in = True
+                                        st.session_state.user_license = user_data
+                                        st.session_state.user_email = email
+                                        
+                                        st.success(f"✅ Welcome to NHS Organization Portal!")
+                                        st.switch_page("app.py")
+                                    else:
+                                        st.error("❌ This portal is for NHS organizations only. Students should use the Training Portal.")
+                                else:
+                                    st.error("❌ Incorrect password")
+                            else:
+                                st.error("❌ Organization account not found")
+                    except Exception as e:
+                        st.error(f"❌ Login error. Please try the main app login page.")
                 else:
                     st.error("❌ Please enter both email and password")
         
