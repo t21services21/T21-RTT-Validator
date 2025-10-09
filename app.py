@@ -1,7 +1,8 @@
 """
 T21 HEALTHCARE INTELLIGENCE PLATFORM
 Complete NHS Healthcare Administration - Training & Automation Suite
-By T21 Services UK | Company No: [Your Number] | www.t21services.com
+By T21 Services Limited | Company No: 13091053 | Liverpool, England
+www.t21services.co.uk | info@t21services.co.uk
 
 7 Integrated Modules:
 - RTT & Pathway Intelligence
@@ -145,6 +146,10 @@ if not st.session_state.logged_in:
                                 user.record_login()
                                 save_users_db(users_db)
                                 
+                                # Track user login with geolocation
+                                from user_tracking_system import track_user_login
+                                track_user_login(email, success=True)
+                                
                                 # Set session
                                 st.session_state.logged_in = True
                                 st.session_state.user_license = user
@@ -154,6 +159,9 @@ if not st.session_state.logged_in:
                             else:
                                 st.error(f"Account {user.status}. Please contact administrator.")
                         else:
+                            # Track failed login
+                            from user_tracking_system import track_user_login
+                            track_user_login(email, success=False)
                             st.error("Incorrect password")
                     else:
                         # Try old student database
@@ -186,6 +194,10 @@ if not st.session_state.logged_in:
                             if st.button("📧 Contact Admin to Upgrade", key="contact_admin_2"):
                                 st.info("📧 Email: admin@t21services.co.uk")
                         else:
+                            # Track student login
+                            from user_tracking_system import track_user_login
+                            track_user_login(email, success=True)
+                            
                             st.session_state.logged_in = True
                             st.session_state.user_license = user_license
                             st.session_state.user_email = email
@@ -460,12 +472,16 @@ tool = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 🏢 **T21 Services UK**")
+st.sidebar.markdown("### 🏢 **T21 Services Limited**")
 st.sidebar.markdown("*Healthcare Training & Technology Solutions*")
-st.sidebar.markdown("**Company No:** [Your Number]")
-st.sidebar.markdown("📧 [Your Email]")
-st.sidebar.markdown("🌐 [www.t21services.com](http://www.t21services.com)")
-st.sidebar.markdown("💼 [LinkedIn](https://linkedin.com) | 🐦 [Twitter](https://twitter.com)")
+st.sidebar.markdown("**Company No:** 13091053")
+st.sidebar.markdown("**Address:** 64 Upper Parliament St, Liverpool, L8 7LF")
+st.sidebar.markdown("📧 info@t21services.co.uk")
+st.sidebar.markdown("📧 support@t21services.co.uk")
+st.sidebar.markdown("🌐 [www.t21services.co.uk](https://www.t21services.co.uk)")
+st.sidebar.markdown("💼 [LinkedIn](https://linkedin.com/company/t21services) | 🐦 [X](https://x.com/t21services)")
+st.sidebar.markdown("📘 [Facebook](https://facebook.com/t21services) | 📸 [Instagram](https://instagram.com/t21services)")
+st.sidebar.markdown("🎵 [TikTok](https://tiktok.com/@t21services)")
 st.sidebar.markdown("---")
 st.sidebar.caption("⚠️ Training & Simulation Environment")
 st.sidebar.caption("No real patient data used")

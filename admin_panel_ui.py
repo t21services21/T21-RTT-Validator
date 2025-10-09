@@ -64,9 +64,10 @@ def render_admin_panel(admin_email):
         return
     
     # Main tabs
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
         "📊 Dashboard",
         "👥 User Management",
+        "🗺️ User Tracking & Locations",
         "🔑 Permissions",
         "💰 Revenue & Analytics",
         "📜 Audit Log",
@@ -86,27 +87,34 @@ def render_admin_panel(admin_email):
         render_user_management(admin_email, admin_user)
     
     # ========================================
-    # TAB 3: PERMISSIONS
+    # TAB 3: USER TRACKING & LOCATIONS (NEW!)
     # ========================================
     with tab3:
+        from admin_user_tracking_ui import render_user_tracking_dashboard
+        render_user_tracking_dashboard()
+    
+    # ========================================
+    # TAB 4: PERMISSIONS
+    # ========================================
+    with tab4:
         render_permissions_management(admin_email)
     
     # ========================================
-    # TAB 4: REVENUE & ANALYTICS
+    # TAB 5: REVENUE & ANALYTICS
     # ========================================
-    with tab4:
+    with tab5:
         render_revenue_analytics()
     
     # ========================================
-    # TAB 5: AUDIT LOG
+    # TAB 6: AUDIT LOG
     # ========================================
-    with tab5:
+    with tab6:
         render_audit_log()
     
     # ========================================
-    # TAB 6: SYSTEM SETTINGS
+    # TAB 7: SYSTEM SETTINGS
     # ========================================
-    with tab6:
+    with tab7:
         render_system_settings(admin_user)
 
 
