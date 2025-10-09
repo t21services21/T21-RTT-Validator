@@ -161,6 +161,86 @@ def test_connection():
         return False
 
 
+# ============================================
+# TWO-FACTOR AUTHENTICATION (2FA) FUNCTIONS
+# ============================================
+
+def enable_2fa(email, secret, backup_codes):
+    """
+    Enable 2FA for a user
+    
+    Args:
+        email: User email
+        secret: TOTP secret (base32)
+        backup_codes: List of backup codes
+    
+    Returns:
+        bool: Success status
+    """
+    try:
+        import json
+        supabase.table("users").update({
+            "two_factor_secret": secret,
+            "two_factor_backup_codes": json.dumps(backup_codes),
+            "two_factor_enabled": True,
+            "two_factor_enabled_at": datetime.now().isoformat()
+        }).eq("email", email).execute()
+        return True
+    except Exception as e:
+        print(f"Error enabling 2FA: {e}")
+        return False
+
+
+def disable_2fa(email):
+    """Disable 2FA for a user"""
+    try:
+        supabase.table("users").update({
+            "two_factor_secret": None,
+            "two_factor_backup_codes": None,
+            "two_factor_enabled": False
+        }).eq("email", email).execute()
+        return True
+    except Exception as e:
+        print(f"Error disabling 2FA: {e}")
+        return False
+
+
+def use_backup_code(email, code):
+    """
+    Use a backup code and remove it from the list
+    
+    Args:
+        email: User email
+        code: Backup code to use
+    
+    Returns:
+        bool: True if code was valid and used
+    """
+    try:
+        import json
+        user = get_user_by_email(email)
+        if not user or not user.get('two_factor_backup_codes'):
+            return False
+        
+        backup_codes = json.loads(user['two_factor_backup_codes'])
+        
+        if code in backup_codes:
+            # Remove used code
+            backup_codes.remove(code)
+            
+            # Update database
+            supabase.table("users").update({
+                "two_factor_backup_codes": json.dumps(backup_codes)
+            }).eq("email", email).execute()
+            
+            return True
+        
+        return False
+    except Exception as e:
+        print(f"Error using backup code: {e}")
+        return False
+
+
 if __name__ == "__main__":
     # Test connection when run directly
     print("Testing Supabase connection...")

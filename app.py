@@ -478,44 +478,52 @@ if not st.session_state.logged_in:
                         if supabase_user.get('password_hash') == password_hash:
                             # Check if account is active
                             if supabase_user.get('status') == 'active':
-                                # Update last login
-                                update_user_last_login(email)
-                                
-                                # Track login
-                                from user_tracking_system import track_user_login
-                                track_user_login(email, success=True)
-                                
-                                # Create a simple user object for session
-                                class SimpleUser:
-                                    def __init__(self, data):
-                                        self.email = data.get('email')
-                                        self.full_name = data.get('full_name')
-                                        self.role = data.get('role', 'trial')
-                                        self.user_type = data.get('user_type', 'student')
-                                        self.status = data.get('status', 'active')
-                                
-                                user_obj = SimpleUser(supabase_user)
-                                
-                                # Set session
-                                st.session_state.logged_in = True
-                                st.session_state.user_license = user_obj
-                                st.session_state.user_email = email
-                                st.session_state.session_email = email  # Persist across refreshes
-                                
-                                # Enhanced Audit Trail
-                                try:
-                                    from enhanced_audit_trail import log_audit_event, AuditActions
-                                    log_audit_event(
-                                        user_email=email,
-                                        action=AuditActions.LOGIN,
-                                        details={'method': 'supabase', 'user_type': user_obj.user_type},
-                                        reason='User authentication'
-                                    )
-                                except:
-                                    pass  # Don't break login if audit fails
-                                
-                                st.success(f"✅ Welcome back, {user_obj.full_name}!")
-                                st.rerun()
+                                # Check if 2FA is enabled
+                                if supabase_user.get('two_factor_enabled'):
+                                    # Store user data temporarily and show 2FA prompt
+                                    st.session_state.pending_2fa_user = supabase_user
+                                    st.session_state.show_2fa_prompt = True
+                                    st.rerun()
+                                else:
+                                    # No 2FA, proceed with normal login
+                                    # Update last login
+                                    update_user_last_login(email)
+                                    
+                                    # Track login
+                                    from user_tracking_system import track_user_login
+                                    track_user_login(email, success=True)
+                                    
+                                    # Create a simple user object for session
+                                    class SimpleUser:
+                                        def __init__(self, data):
+                                            self.email = data.get('email')
+                                            self.full_name = data.get('full_name')
+                                            self.role = data.get('role', 'trial')
+                                            self.user_type = data.get('user_type', 'student')
+                                            self.status = data.get('status', 'active')
+                                    
+                                    user_obj = SimpleUser(supabase_user)
+                                    
+                                    # Set session
+                                    st.session_state.logged_in = True
+                                    st.session_state.user_license = user_obj
+                                    st.session_state.user_email = email
+                                    st.session_state.session_email = email  # Persist across refreshes
+                                    
+                                    # Enhanced Audit Trail
+                                    try:
+                                        from enhanced_audit_trail import log_audit_event, AuditActions
+                                        log_audit_event(
+                                            user_email=email,
+                                            action=AuditActions.LOGIN,
+                                            details={'method': 'supabase', 'user_type': user_obj.user_type, '2fa': False},
+                                            reason='User authentication'
+                                        )
+                                    except:
+                                        pass  # Don't break login if audit fails
+                                    
+                                    st.success(f"✅ Welcome back, {user_obj.full_name}!")
+                                    st.rerun()
                             else:
                                 st.error(f"❌ Account {supabase_user.get('status')}. Please contact administrator.")
                         else:
@@ -619,6 +627,129 @@ if not st.session_state.logged_in:
                         st.error(message)
             else:
                 st.warning("Please enter email and password")
+        
+        # 2FA Verification Prompt
+        if st.session_state.get('show_2fa_prompt'):
+            st.markdown("---")
+            st.markdown("### 🔐 Two-Factor Authentication Required")
+            
+            pending_user = st.session_state.get('pending_2fa_user')
+            
+            if pending_user:
+                st.info(f"Please enter the 6-digit code from your authenticator app for **{pending_user.get('email')}**")
+                
+                two_fa_code = st.text_input("Enter 6-digit code:", max_chars=6, key="2fa_code_input")
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    if st.button("✅ Verify & Login", type="primary"):
+                        if two_fa_code and len(two_fa_code) == 6:
+                            from two_factor_auth import verify_2fa_code
+                            
+                            secret = pending_user.get('two_factor_secret')
+                            
+                            if verify_2fa_code(secret, two_fa_code):
+                                # 2FA verified! Complete login
+                                from user_tracking_system import track_user_login
+                                from supabase_database import update_user_last_login
+                                
+                                email = pending_user.get('email')
+                                update_user_last_login(email)
+                                track_user_login(email, success=True)
+                                
+                                # Create user object
+                                class SimpleUser:
+                                    def __init__(self, data):
+                                        self.email = data.get('email')
+                                        self.full_name = data.get('full_name')
+                                        self.role = data.get('role', 'trial')
+                                        self.user_type = data.get('user_type', 'student')
+                                        self.status = data.get('status', 'active')
+                                
+                                user_obj = SimpleUser(pending_user)
+                                
+                                # Set session
+                                st.session_state.logged_in = True
+                                st.session_state.user_license = user_obj
+                                st.session_state.user_email = email
+                                st.session_state.session_email = email
+                                
+                                # Clear 2FA prompt
+                                st.session_state.show_2fa_prompt = False
+                                st.session_state.pending_2fa_user = None
+                                
+                                # Audit log
+                                try:
+                                    from enhanced_audit_trail import log_audit_event, AuditActions
+                                    log_audit_event(
+                                        user_email=email,
+                                        action=AuditActions.LOGIN,
+                                        details={'method': 'supabase', 'user_type': user_obj.user_type, '2fa': True},
+                                        reason='User authentication with 2FA'
+                                    )
+                                except:
+                                    pass
+                                
+                                st.success(f"✅ 2FA Verified! Welcome back, {user_obj.full_name}!")
+                                st.rerun()
+                            else:
+                                st.error("❌ Invalid 2FA code. Please try again.")
+                        else:
+                            st.error("Please enter a 6-digit code")
+                
+                with col2:
+                    if st.button("🔙 Use Backup Code"):
+                        st.session_state.show_backup_code_input = True
+                        st.rerun()
+                
+                # Backup code option
+                if st.session_state.get('show_backup_code_input'):
+                    st.markdown("---")
+                    st.warning("⚠️ Each backup code can only be used once")
+                    backup_code = st.text_input("Enter backup code (XXXX-XXXX):", key="backup_code_input")
+                    
+                    if st.button("✅ Verify Backup Code"):
+                        if backup_code:
+                            from supabase_database import use_backup_code
+                            
+                            if use_backup_code(pending_user.get('email'), backup_code):
+                                # Login successful
+                                email = pending_user.get('email')
+                                
+                                # Same login process as above
+                                from user_tracking_system import track_user_login
+                                from supabase_database import update_user_last_login
+                                
+                                update_user_last_login(email)
+                                track_user_login(email, success=True)
+                                
+                                class SimpleUser:
+                                    def __init__(self, data):
+                                        self.email = data.get('email')
+                                        self.full_name = data.get('full_name')
+                                        self.role = data.get('role', 'trial')
+                                        self.user_type = data.get('user_type', 'student')
+                                        self.status = data.get('status', 'active')
+                                
+                                user_obj = SimpleUser(pending_user)
+                                
+                                st.session_state.logged_in = True
+                                st.session_state.user_license = user_obj
+                                st.session_state.user_email = email
+                                st.session_state.session_email = email
+                                
+                                st.session_state.show_2fa_prompt = False
+                                st.session_state.pending_2fa_user = None
+                                st.session_state.show_backup_code_input = False
+                                
+                                st.success(f"✅ Backup code verified! Welcome back, {user_obj.full_name}!")
+                                st.warning("⚠️ Consider regenerating backup codes in your account settings")
+                                st.rerun()
+                            else:
+                                st.error("❌ Invalid backup code")
+                        else:
+                            st.error("Please enter a backup code")
         
         st.markdown("---")
         
