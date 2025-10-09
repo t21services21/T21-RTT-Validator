@@ -183,64 +183,29 @@ with col2:
     """, unsafe_allow_html=True)
     
     # Email
-    st.markdown("""
-    <div style='background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;'>
-        <h4 style='margin-top: 0;'>📧 Email Us</h4>
-        <p style='margin: 5px 0;'>
-        <strong>General:</strong><br>
-        <a href='mailto:info@t21services.co.uk'>info@t21services.co.uk</a><br><br>
-        
-        <strong>Support:</strong><br>
-        <a href='mailto:support@t21services.co.uk'>support@t21services.co.uk</a><br><br>
-        
-        <strong>Sales (NHS):</strong><br>
-        <a href='mailto:sales@t21services.co.uk'>sales@t21services.co.uk</a><br><br>
-        
-        <strong>Student Support:</strong><br>
-        <a href='mailto:student-support@t21services.co.uk'>student-support@t21services.co.uk</a>
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("### 📧 Email Us")
+    st.markdown("**General:**  \ninfo@t21services.co.uk")
+    st.markdown("**Support:**  \nsupport@t21services.co.uk")
+    st.markdown("**Sales (NHS):**  \nsales@t21services.co.uk")
+    st.markdown("**Student Support:**  \nstudent-support@t21services.co.uk")
     
     # Social Media
-    st.markdown("""
-    <div style='background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;'>
-        <h4 style='margin-top: 0;'>🌐 Follow Us</h4>
-        <p style='margin: 5px 0;'>
-        💼 <a href='https://linkedin.com/company/t21services' target='_blank'>LinkedIn</a><br>
-        🐦 <a href='https://x.com/t21services' target='_blank'>X (Twitter)</a><br>
-        📘 <a href='https://facebook.com/t21services' target='_blank'>Facebook</a><br>
-        📸 <a href='https://instagram.com/t21services' target='_blank'>Instagram</a><br>
-        🎵 <a href='https://tiktok.com/@t21services' target='_blank'>TikTok</a>
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("### 🌐 Follow Us")
+    st.markdown("💼 [LinkedIn](https://linkedin.com/company/t21services)")
+    st.markdown("🐦 [X (Twitter)](https://x.com/t21services)")
+    st.markdown("📘 [Facebook](https://facebook.com/t21services)")
+    st.markdown("📸 [Instagram](https://instagram.com/t21services)")
+    st.markdown("🎵 [TikTok](https://tiktok.com/@t21services)")
     
     # Website
-    st.markdown("""
-    <div style='background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;'>
-        <h4 style='margin-top: 0;'>🌐 Website</h4>
-        <p style='margin: 5px 0;'>
-        <a href='https://www.t21services.co.uk' target='_blank'>www.t21services.co.uk</a>
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("### 🌐 Website")
+    st.markdown("[www.t21services.co.uk](https://www.t21services.co.uk)")
     
     # Office Hours
-    st.markdown("""
-    <div style='background: #e3f2fd; padding: 20px; border-radius: 10px;'>
-        <h4 style='margin-top: 0;'>🕐 Office Hours</h4>
-        <p style='margin: 5px 0; color: #666;'>
-        <strong>Monday - Friday:</strong><br>
-        9:00 AM - 5:00 PM GMT<br><br>
-        
-        <strong>Saturday - Sunday:</strong><br>
-        Closed<br><br>
-        
-        <em>24/7 platform support available</em>
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("### 🕐 Office Hours")
+    st.markdown("**Monday - Friday:**  \n9:00 AM - 5:00 PM GMT")
+    st.markdown("**Saturday - Sunday:**  \nClosed")
+    st.markdown("*24/7 platform support available*")
 
 st.markdown("---")
 
