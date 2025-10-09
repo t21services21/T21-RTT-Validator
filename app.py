@@ -774,24 +774,44 @@ if st.session_state.user_license:
             st.sidebar.markdown(f"- Logins: {usage_data.get('logins_today', 0)}")
             if usage_data.get('ai_questions_today', 0) > 0:
                 st.sidebar.markdown(f"- AI Questions: {usage_data.get('ai_questions_today', 0)}")
+    elif hasattr(user_license, 'email') and hasattr(user_license, 'role'):
+        # SimpleUser from Supabase login
+        role = getattr(user_license, 'role', 'user')
+        user_type = getattr(user_license, 'user_type', 'student')
+        full_name = getattr(user_license, 'full_name', 'User')
+        
+        # Status card
+        st.sidebar.success(f"✅ {full_name}")
+        st.sidebar.markdown(f"**Role:** {role.replace('_', ' ').title()}")
+        
+        if user_type in ['admin', 'staff', 'super_admin']:
+            st.sidebar.markdown(f"**Type:** {user_type.replace('_', ' ').title()}")
+        else:
+            st.sidebar.markdown(f"**Type:** Student")
     else:
         # Old UserLicense object
-        usage = user_license.get_usage_summary()
-        
-        # License status card
-        if usage["status"] == "Active":
-            st.sidebar.success(f"✅ {usage['role']}")
-        else:
-            st.sidebar.error(f"❌ {usage['role']} - EXPIRED")
-        
-        st.sidebar.markdown(f"**Days Remaining:** {usage['days_remaining']}")
-        st.sidebar.markdown(f"**Expires:** {usage['expiry_date']}")
-        
-        # Usage limits (if any)
-        if usage["usage_today"]:
-            st.sidebar.markdown("**Today's Usage:**")
-            for feature, limit in usage["usage_today"].items():
-                st.sidebar.markdown(f"- {feature}: {limit}")
+        try:
+            usage = user_license.get_usage_summary()
+            
+            # License status card
+            if usage["status"] == "Active":
+                st.sidebar.success(f"✅ {usage['role']}")
+            else:
+                st.sidebar.error(f"❌ {usage['role']} - EXPIRED")
+            
+            st.sidebar.markdown(f"**Days Remaining:** {usage['days_remaining']}")
+            st.sidebar.markdown(f"**Expires:** {usage['expiry_date']}")
+            
+            # Usage limits (if any)
+            if usage["usage_today"]:
+                st.sidebar.markdown("**Today's Usage:**")
+                for feature, limit in usage["usage_today"].items():
+                    st.sidebar.markdown(f"- {feature}: {limit}")
+        except AttributeError:
+            # Fallback for unknown user object type
+            st.sidebar.info("✅ Logged In")
+            if hasattr(user_license, 'email'):
+                st.sidebar.markdown(f"**Email:** {user_license.email}")
     
     # Logout button
     if st.sidebar.button("🚪 Logout"):
