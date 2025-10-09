@@ -1,0 +1,234 @@
+================================================================================
+                 ADMIN PANEL NOW VISIBLE FOR STAFF/ADMIN!
+================================================================================
+
+PROBLEM FIXED:
+The Admin Panel wasn't showing in the sidebar for staff/admin users because
+get_accessible_modules() only returned the 7 automation modules, not the
+management features.
+
+================================================================================
+
+✅ WHAT I FIXED:
+
+FILE: app.py (lines 818-824)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Added automatic inclusion of admin features for admin/staff users:
+
+if user_role in ['admin', 'super_admin', 'staff', 'staff_trainer', 'staff_support']:
+    admin_features = [
+        "👥 Staff Management",
+        "🔧 Admin Panel"  # This is where you manage all users!
+    ]
+    accessible_modules = accessible_modules + admin_features
+
+Now admin and staff will see:
+✓ 👥 Staff Management
+✓ 🔧 Admin Panel  ← YOUR USER MANAGEMENT IS HERE!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+================================================================================
+
+🔧 WHERE TO FIND USER MANAGEMENT:
+
+After you login as staff/admin, look in the LEFT SIDEBAR:
+
+┌─────────────────────────────────────┐
+│  Platform Modules                   │
+├─────────────────────────────────────┤
+│  📋 PTL - Patient Tracking List     │
+│  🎗️ Cancer Pathways                │
+│  👥 MDT Coordination                │
+│  ... (other modules)                │
+│  👥 Staff Management                │
+│  🔧 Admin Panel  ← CLICK HERE!      │
+│  ℹ️ About RTT Rules                 │
+│  📄 Privacy Policy                  │
+│  📜 Terms of Service                │
+│  📧 Contact Us                      │
+└─────────────────────────────────────┘
+
+Click on "🔧 Admin Panel" to access all user management features!
+
+================================================================================
+
+🎯 ADMIN PANEL FEATURES (10 TABS):
+
+Once you click "🔧 Admin Panel", you'll see 10 tabs:
+
+TAB 1: 👥 User Management  ← MANAGE ALL USERS HERE!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- View all users (students, staff, admins)
+- Upgrade users (Trial → Basic → Professional → Ultimate)
+- Extend license duration (add more days/months)
+- Suspend/unsuspend users
+- View user activity
+- Change user roles
+- Delete users
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TAB 2: 🔐 Module Access Control
+- Control which modules each role can access
+- Enable/disable specific automation modules
+
+TAB 3: 🎯 Modular Access
+- Grant specific users access to specific modules
+- Override role-based permissions
+
+TAB 4: 📧 Bulk Email
+- Send emails to all users or specific groups
+
+TAB 5: 💬 Personal Message
+- Send personal messages to specific users
+
+TAB 6: ⏰ Trial Automation
+- Auto-expire trials after 48 hours
+- Auto-send upgrade reminders
+
+TAB 7: 📚 LMS Courses
+- Manage all courses
+- Add/edit/delete courses
+
+TAB 8: 🏫 School Management
+- Manage training provider organizations
+
+TAB 9: 🤖 AI Training
+- Train AI models with new scenarios
+
+TAB 10: 🗺️ User Tracking
+- See all user logins with geolocation
+- Monitor user activity
+- Security monitoring
+
+================================================================================
+
+🚀 HOW TO ACCESS USER MANAGEMENT:
+
+STEP 1: Login as Staff/Admin
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Email:    staff@t21services.co.uk
+Password: staff123
+Portal:   Select "Staff & Partners"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 2: Look at Left Sidebar
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Scroll down to find: "🔧 Admin Panel"
+(Should be near the bottom, before "About RTT Rules")
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 3: Click "🔧 Admin Panel"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Main panel will load with 10 tabs
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 4: Click "👥 User Management" (Tab 1)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+You'll see ALL users with options to:
+- Upgrade their tier
+- Extend their license
+- Suspend their account
+- View their activity
+- Change their role
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+================================================================================
+
+💡 WHAT YOU CAN DO IN USER MANAGEMENT:
+
+For Each User, You Can:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ View full details (name, email, license type, expiry date)
+✓ Upgrade: Trial → Basic → Professional → Ultimate
+✓ Extend license: Add 30/60/90/180/365 days
+✓ Suspend account: Temporarily disable access
+✓ Unsuspend account: Re-enable access
+✓ View login history: See when they logged in
+✓ View usage stats: See how much they use the platform
+✓ Change role: Change from student to staff, etc.
+✓ Delete user: Permanently remove (use with caution!)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+================================================================================
+
+🎯 EXAMPLE: UPGRADING A USER
+
+1. Login as staff/admin
+2. Click "🔧 Admin Panel" in sidebar
+3. Click "👥 User Management" tab
+4. Find the user (e.g., "tosin.owonifari@t21services.co.uk")
+5. See their current tier (e.g., "Trial")
+6. Click dropdown: Select "Professional"
+7. Click "Upgrade User"
+8. Done! User now has Professional access!
+
+================================================================================
+
+🎯 EXAMPLE: EXTENDING A LICENSE
+
+1. Login as staff/admin
+2. Click "🔧 Admin Panel" in sidebar
+3. Click "👥 User Management" tab
+4. Find the user
+5. See their expiry date (e.g., "2025-10-15")
+6. Select extension: "90 days"
+7. Click "Extend License"
+8. Done! User now has 90 more days!
+
+================================================================================
+
+📊 WHO CAN ACCESS ADMIN PANEL:
+
+Users with these roles will see "🔧 Admin Panel" in sidebar:
+✓ admin
+✓ super_admin
+✓ staff
+✓ staff_trainer
+✓ staff_support
+
+Students will NOT see the Admin Panel (security!)
+
+================================================================================
+
+✅ BOTTOM LINE:
+
+Admin Panel: ✅ NOW VISIBLE in sidebar for staff/admin!
+Location: Left sidebar, near bottom
+Features: 10 tabs including User Management
+User Management: Full control - upgrade, extend, suspend users
+Access: staff@t21services.co.uk / staff123
+
+================================================================================
+
+🚀 WHAT TO DO NOW:
+
+1. HARD REFRESH BROWSER (Ctrl+Shift+R)
+   - This clears cache and loads new code
+
+2. LOGIN AS STAFF:
+   - Email: staff@t21services.co.uk
+   - Password: staff123
+   - Select: "Staff & Partners" portal
+
+3. LOOK AT LEFT SIDEBAR:
+   - Scroll down to find "🔧 Admin Panel"
+   - Should be there now!
+
+4. CLICK "🔧 Admin Panel"
+
+5. CLICK "👥 User Management" TAB
+
+6. MANAGE ALL YOUR USERS!
+   - Upgrade them
+   - Extend their licenses
+   - View their activity
+   - Everything you need!
+
+================================================================================
+
+T21 Services Limited | Company No: 13091053
+www.t21services.co.uk | Liverpool, England
+
+ADMIN PANEL IS NOW ACCESSIBLE - REFRESH AND LOGIN!
+
+================================================================================

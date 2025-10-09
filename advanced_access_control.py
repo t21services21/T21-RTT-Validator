@@ -279,13 +279,14 @@ ACCOUNT_STATUS = {
 class UserAccount:
     """Enhanced user account with full access control"""
     
-    def __init__(self, user_id, email, role, full_name, created_by="system"):
+    def __init__(self, user_id, email, role, full_name, created_by="system", password_hash=None):
         self.user_id = user_id
         self.email = email
         self.role = role
         self.full_name = full_name
         self.created_by = created_by
         self.created_at = datetime.now()
+        self.password_hash = password_hash  # Store password hash
         
         # Account status
         self.status = "active"
@@ -523,6 +524,7 @@ class UserAccount:
         return {
             "user_id": self.user_id,
             "email": self.email,
+            "password_hash": self.password_hash,  # Save password hash!
             "role": self.role,
             "full_name": self.full_name,
             "created_by": self.created_by,
@@ -546,7 +548,8 @@ class UserAccount:
             email=data["email"],
             role=data["role"],
             full_name=data["full_name"],
-            created_by=data.get("created_by", "system")
+            created_by=data.get("created_by", "system"),
+            password_hash=data.get("password_hash")  # Load password hash!
         )
         account.created_at = datetime.fromisoformat(data["created_at"])
         account.status = data["status"]

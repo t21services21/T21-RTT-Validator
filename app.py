@@ -405,21 +405,17 @@ if not st.session_state.logged_in:
                 import json
                 import os
                 
-                # Load raw JSON to get password hash
-                if os.path.exists("users_advanced.json"):
-                    with open("users_advanced.json", 'r') as f:
-                        raw_users = json.load(f)
+                # Try advanced users database first (admins, staff)
+                users_db = load_users_db()
+                
+                if email in users_db:
+                    # Advanced user (admin/staff)
+                    user = users_db[email]
                     
-                    if email in raw_users:
-                        # Advanced user (admin/staff)
-                        users_db = load_users_db()
-                        user = users_db[email]
-                        
-                        # Check password against raw JSON
-                        password_hash = hashlib.sha256(password.encode()).hexdigest()
-                        stored_hash = raw_users[email].get("password_hash")
-                        
-                        if stored_hash == password_hash:
+                    # Check password
+                    password_hash = hashlib.sha256(password.encode()).hexdigest()
+                    
+                    if user.password_hash and user.password_hash == password_hash:
                             if user.is_active():
                                 # PORTAL VALIDATION
                                 user_type = user.user_type
@@ -794,6 +790,37 @@ st.sidebar.title("🧭 Platform Modules")
 user_role = st.session_state.user_license.role if hasattr(st.session_state.user_license, 'role') else "trial"
 user_email = st.session_state.user_email if 'user_email' in st.session_state else None
 accessible_modules = get_accessible_modules(user_role, user_email)
+
+# Add common features for all users
+common_features = [
+    "🎓 Training Library",
+    "🎮 Interactive Learning Center",
+    "🤖 AI RTT Tutor",
+    "💼 Job Interview Prep",
+    "📄 CV Builder",
+    "📊 Interactive Reports",
+    "📈 Dashboard & Analytics",
+    "🚨 Smart Alerts",
+    "📜 Validation History",
+    "⚙️ My Account & Upgrade",
+    "📚 LMS - My Courses",
+    "🎓 My Academic Portal",
+    "ℹ️ About RTT Rules",
+    "📄 Privacy Policy",
+    "📜 Terms of Service",
+    "📧 Contact Us"
+]
+
+# Add admin/staff specific features
+if user_role in ['admin', 'super_admin', 'staff', 'staff_trainer', 'staff_support']:
+    admin_features = [
+        "👥 Staff Management",
+        "🔧 Admin Panel"  # This is where you manage all users!
+    ]
+    accessible_modules = accessible_modules + admin_features
+
+# Add common features to all users
+accessible_modules = accessible_modules + common_features
 
 # If no accessible modules (error), show all
 if not accessible_modules:
