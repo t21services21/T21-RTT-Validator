@@ -173,12 +173,23 @@ All fees are in GBP (£) and exclude VAT (if applicable).
 - Bank transfer (UK only, full payment only)
 - All prices in GBP (£)
 
-### 5.3 Refunds
-- **Taster (£99):** 48-hour money-back guarantee if not satisfied
-- **Tier 1 (£499):** 7-day money-back guarantee
-- **Tier 2 (£1,299):** No refunds after TQUK certification issued
-- **Tier 3 (£1,799):** No refunds (unlimited job placement service provided)
-- **NHS Organizations:** As per contract terms
+### 5.3 Refunds (UK Consumer Rights Act 2015)
+
+**14-Day Cooling-Off Period (UK Law):**
+ALL tiers include a 14-day cancellation right:
+- Cancel for ANY reason within 14 days of enrollment
+- Full refund minus any services already used (pro-rated)
+- Email cancellation@t21services.co.uk to cancel
+- Refund processed within 14 days
+
+**After 14-Day Period:**
+- **Taster (£99):** No additional refunds (short program)
+- **Tier 1 (£499):** No refunds, but can cancel future installments
+- **Tier 2 (£1,299):** No refunds after 14 days
+- **Tier 3 (£1,799):** No refunds after 14 days
+- **Exceptional circumstances:** Contact us, we review case-by-case
+
+**NHS Organizations:** As per contract terms
 
 ### 5.4 Tier 3 Job Placement Service Terms
 **Our Guarantee:**
@@ -200,64 +211,79 @@ We may terminate job placement service if you:
 - Fail to attend scheduled mock interview sessions
 - Are not actively participating in job search
 
-### 5.5 Installment Plan Terms - LEGALLY BINDING CONTRACT
+### 5.5 Installment Plan Terms (UK Consumer-Friendly)
 
-**⚠️ CRITICAL: Installment plans are LEGALLY BINDING CONTRACTS**
+**14-Day Cooling-Off Period:**
+You can cancel within 14 days for any reason (UK Consumer Rights Act 2015).
 
-By choosing an installment plan, you agree to pay ALL scheduled payments, even if you:
-- Complete the program early
-- No longer wish to continue
-- Change your mind
-- Experience financial hardship
-- Leave the country
-
-**Legal Obligations:**
-- All payments are legally enforceable
-- We may pursue collections or legal action for non-payment
-- You remain liable for full balance regardless of program completion
-- Certificate/credentials withheld until final payment received
+**After 14 Days - Payment Agreement:**
+Installment plans are payment agreements where you agree to:
+- Pay all scheduled installments on agreed dates
+- Maintain valid payment method on file
+- Complete all payments to receive certification (Tier 2 & 3)
 
 **Payment Structure:**
-- **First payment: 50%+ of total cost** (covers our operational costs)
-- **Subsequent payments:** Scheduled 3-4 months apart
-- **Auto-debit required:** Valid credit/debit card kept on file
-- **Automatic charges:** Payments processed automatically on due date
+- **First payment: 50%+ upfront** (covers program setup costs)
+- **Subsequent payments:** Every 3-4 months
+- **Auto-debit:** Card charged automatically on due date
+- **Fixed plan:** Set number of payments, NO auto-renewal
 
-**Failed Payment Consequences:**
-- **1st missed payment:** 
-  - 7-day grace period
-  - £25 late fee applied
-  - Warning email sent
-- **2nd missed payment:** 
-  - Account immediately suspended
-  - Platform access blocked
-  - £50 late fee applied
-- **3rd missed payment or 30+ days overdue:** 
-  - Sent to collections agency
-  - Legal action initiated
-  - Certificate permanently withheld
-  - Credit rating impact
-  - Additional fees may apply
+**Missed Payment Process (Fair & Transparent):**
 
-**Certificate/Credential Release:**
-- **Tier 2 & 3:** TQUK certificate held until FINAL payment received
-- Even if you complete program in 8 weeks, certificate withheld until payment plan complete
-- **No exceptions or early releases** (prevents payment avoidance)
-- Job placement services paused if payments missed (Tier 3)
+**1st Missed Payment:**
+- Days 1-3: Automatic payment retry
+- Day 4: Friendly reminder email
+- Day 8: £15 administration fee (covers processing costs)
+- Days 8-14: Grace period to pay without penalty
+
+**2nd Missed Payment:**
+- Platform access temporarily suspended
+- £25 additional administration fee (£40 total)
+- Email + SMS notification sent
+- 14-day period to resolve
+
+**30+ Days Overdue:**
+- Account closed
+- Certificate withheld (if applicable - Tier 2 & 3)
+- Passed to UK debt collection agency
+- May report to credit reference agencies
+- Legal action only if debt exceeds £500
+
+**Financial Hardship:**
+If you experience financial difficulty:
+- Email hardship@t21services.co.uk immediately
+- We offer: payment holidays, extended plans, deferrals
+- We work with you to find a solution
+
+**Certificate Release (Tier 2 & 3 Only):**
+TQUK certification requires TWO conditions:
+1. ✅ Program completion + pass exam
+2. ✅ Full payment of fees
+
+**Timeline:**
+- **Pay in Full:** Certificate issued 5-7 days after program completion
+- **Installments:** Certificate issued after final payment + program complete
+
+**Legal Basis:** 
+Withholding certificate until payment complete is:
+- Clearly disclosed upfront ✅
+- Agreed to in contract ✅
+- Standard practice in education ✅
+- Legal under UK law ✅
 
 **Example - Tier 2, 2 Payments:**
-- Enroll Oct 1: Pay £700 (immediate program start)
-- Complete program: Week 8 (mid-November)
-- Pass exam: Week 8 (mid-November)
-- **Certificate withheld**
-- Mar 1: Pay £650 (final payment)
-- Mar 2: **Certificate issued**
+- Oct 1: Enroll, pay £700 → Program starts
+- Nov 15: Complete program, pass exam ✅
+- Certificate processing on hold (payment plan incomplete)
+- Mar 1: Pay £650 (final installment) ✅
+- Mar 3: Certificate issued 🎓
 
-**Early Payoff (Recommended):**
+**Early Payoff Benefit:**
 - Pay remaining balance anytime
-- Receive 5% discount on remaining balance
-- Immediate certificate release (if program complete)
-- Contact support@t21services.co.uk
+- Get 5% discount on remaining balance
+- Certificate released immediately (if program complete)
+- FREE processing (we encourage early payoff!)
+- Email finance@t21services.co.uk
 
 ### 5.6 Auto-Renewal
 - **Taster (£99):** Does NOT auto-renew
@@ -523,19 +549,36 @@ Continued use after changes constitutes acceptance.
 
 ---
 
-## 18. Dispute Resolution
+## 18. Dispute Resolution & Consumer Rights
 
-### 18.1 Governing Law
+### 18.1 Your Consumer Rights (UK Law)
+Nothing in these Terms affects your statutory consumer rights under:
+- Consumer Rights Act 2015
+- Consumer Contracts Regulations 2013
+- Unfair Terms in Consumer Contracts Regulations 1999
+
+If any term is found unfair or unenforceable, that term is void but the rest remains valid.
+
+### 18.2 Complaint Process
+**If you have a complaint:**
+1. Email: complaints@t21services.co.uk
+2. We respond within 5 business days
+3. Formal resolution within 28 days
+4. If unresolved, free Alternative Dispute Resolution (ADR) available
+
+### 18.3 Alternative Dispute Resolution (ADR)
+If we cannot resolve your complaint:
+- Free ADR service available (UK consumer right)
+- Independent mediator reviews dispute
+- Binding resolution for both parties
+- No legal fees required
+- Contact details provided upon request
+
+### 18.4 Governing Law
 These Terms are governed by the laws of England and Wales.
 
-### 18.2 Jurisdiction
-Courts of England and Wales have exclusive jurisdiction.
-
-### 18.3 Informal Resolution
-We encourage resolving disputes informally by contacting us first.
-
-### 18.4 Arbitration (Optional)
-Parties may agree to binding arbitration.
+### 18.5 Jurisdiction
+Courts of England and Wales have jurisdiction, but you retain all UK consumer protection rights.
 
 ---
 
