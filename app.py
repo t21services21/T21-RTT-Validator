@@ -61,7 +61,7 @@ from admin_school_management_ui import render_school_management_admin
 from student_school_portal import render_student_school_portal
 from ai_validator_ui import render_ai_validator
 from admin_ai_training import render_ai_training_admin
-from admin_user_tracking_ui import render_user_tracking_admin
+from admin_user_tracking_ui import render_user_tracking_dashboard
 from ptl_ui import render_ptl
 from cancer_pathway_ui import render_cancer_pathways
 from mdt_coordination_ui import render_mdt_coordination
@@ -3480,7 +3480,7 @@ elif tool == "🔧 Admin Panel":
             
             with admin_tab10:
                 try:
-                    render_user_tracking_admin()
+                    render_user_tracking_dashboard()
                 except Exception as e:
                     st.error(f"Error loading User Tracking: {str(e)}")
                     st.info("💡 This feature is being updated. Please try again later.")
