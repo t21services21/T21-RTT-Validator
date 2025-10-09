@@ -12,6 +12,26 @@ st.set_page_config(
     layout="wide"
 )
 
+# ⚠️ AUTHENTICATION CHECK - MUST BE LOGGED IN
+if 'logged_in' not in st.session_state or not st.session_state.logged_in:
+    st.error("🔒 **Access Denied - Login Required**")
+    st.warning("You must be logged in to access the RTT Clinical Validator.")
+    st.info("This feature is available to all enrolled students. Please login to continue.")
+    
+    st.markdown("### Please Login:")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        if st.button("🎓 Student Login", use_container_width=True):
+            st.switch_page("pages/student_login.py")
+    with col2:
+        if st.button("👥 Staff Login", use_container_width=True):
+            st.switch_page("pages/staff_login.py")
+    with col3:
+        if st.button("🏥 NHS Login", use_container_width=True):
+            st.switch_page("pages/nhs_login.py")
+    
+    st.stop()  # Stop execution here
+
 # Header
 st.markdown("""
 <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px;'>
