@@ -48,6 +48,7 @@ from user_module_marketplace import render_user_marketplace
 from admin_school_management_ui import render_school_management_admin
 from student_school_portal import render_student_school_portal
 from ai_validator_ui import render_ai_validator
+from admin_ai_training import render_ai_training_admin
 import hashlib
 import pandas as pd
 # Page configuration
@@ -3105,7 +3106,7 @@ elif tool == "🔧 Admin Panel":
             st.header("🔧 Admin Panel")
             
             # Create tabs for different admin functions
-            admin_tab1, admin_tab2, admin_tab3, admin_tab4, admin_tab5, admin_tab6, admin_tab7, admin_tab8 = st.tabs([
+            admin_tab1, admin_tab2, admin_tab3, admin_tab4, admin_tab5, admin_tab6, admin_tab7, admin_tab8, admin_tab9 = st.tabs([
                 "👥 User Management", 
                 "🔐 Module Access Control",
                 "🎯 Modular Access",
@@ -3113,7 +3114,8 @@ elif tool == "🔧 Admin Panel":
                 "💬 Personal Message",
                 "⏰ Trial Automation",
                 "📚 LMS Courses",
-                "🏫 School Management"
+                "🏫 School Management",
+                "🤖 AI Training"
             ])
             
             with admin_tab1:
@@ -3139,6 +3141,9 @@ elif tool == "🔧 Admin Panel":
             
             with admin_tab8:
                 render_school_management_admin()
+            
+            with admin_tab9:
+                render_ai_training_admin()
         else:
             st.error("⛔ Access Denied - Admin or Staff privileges required")
     else:

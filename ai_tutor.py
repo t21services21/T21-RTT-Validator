@@ -17,6 +17,7 @@ Features:
 from datetime import datetime
 import re
 import streamlit as st
+from ai_knowledge_base import search_knowledge_base, export_knowledge_for_ai
 
 # OpenAI integration
 try:
@@ -247,7 +248,7 @@ INSTRUCTIONS:
 TONE: Professional, friendly, encouraging, and educational."""
 
 def ask_gpt4(question):
-    """Use OpenAI GPT-4 to answer ANY question intelligently"""
+    """Use OpenAI GPT-4 to answer ANY question intelligently with YOUR training materials"""
     try:
         # Check if API key is available
         if not OPENAI_AVAILABLE:
@@ -258,21 +259,43 @@ def ask_gpt4(question):
         if not api_key:
             return None
         
+        # STEP 1: Search YOUR uploaded knowledge base first!
+        relevant_materials = search_knowledge_base(question, limit=3)
+        
+        # Build context from your materials
+        custom_knowledge = ""
+        if relevant_materials:
+            custom_knowledge = "\n\n**IMPORTANT: Use this information from T21 training materials:**\n\n"
+            for idx, material in enumerate(relevant_materials, 1):
+                custom_knowledge += f"**From {material['material_title']}:**\n{material['content']}\n\n"
+        
+        # STEP 2: Create enhanced prompt with YOUR materials
+        enhanced_prompt = SYSTEM_PROMPT
+        if custom_knowledge:
+            enhanced_prompt += custom_knowledge
+            enhanced_prompt += "\n\n**CRITICAL: Always reference and prioritize the T21 training materials provided above when answering!**"
+        
         # Initialize OpenAI client
         client = OpenAI(api_key=api_key)
         
-        # Call GPT-4
+        # Call GPT-4 with YOUR knowledge
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "system", "content": enhanced_prompt},
                 {"role": "user", "content": question}
             ],
-            max_tokens=800,
+            max_tokens=1000,
             temperature=0.7
         )
         
-        return response.choices[0].message.content
+        answer = response.choices[0].message.content
+        
+        # Add reference note if materials were used
+        if relevant_materials:
+            answer += f"\n\n📚 *Answer based on T21 training materials*"
+        
+        return answer
         
     except Exception as e:
         # Fallback to keyword-based system if GPT-4 fails
