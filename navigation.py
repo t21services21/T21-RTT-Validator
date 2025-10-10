@@ -27,11 +27,11 @@ def render_navigation(current_page="home"):
             display: none !important;
         }
         
-        /* Hide default button styling */
+        /* Navigation button styling */
         .stButton button {
             background: none;
             border: none;
-            color: white;
+            color: #1a1a1a !important;
             font-weight: 700;
             text-transform: uppercase;
             font-size: 14px;
@@ -40,8 +40,19 @@ def render_navigation(current_page="home"):
         }
         
         .stButton button:hover {
-            color: #d4af37;
+            color: #d4af37 !important;
             background: none;
+        }
+        
+        /* Primary button (HOME) styling */
+        .stButton button[kind="primary"] {
+            background: #d4af37 !important;
+            color: white !important;
+        }
+        
+        .stButton button[kind="primary"]:hover {
+            background: #c4a030 !important;
+            color: white !important;
         }
     </style>
     """, unsafe_allow_html=True)
