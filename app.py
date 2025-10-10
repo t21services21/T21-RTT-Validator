@@ -278,7 +278,7 @@ st.set_page_config(
     page_title="T21 Healthcare Intelligence Platform | T21 Services UK",
     page_icon="🏥",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # ============================================
@@ -286,41 +286,54 @@ st.set_page_config(
 # ============================================
 st.markdown("""
 <style>
+    /* Hide sidebar completely */
+    [data-testid="stSidebar"] {display: none;}
+    
     .top-navbar {
-        background: #2c3e50;
-        padding: 15px 50px;
-        margin-bottom: 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
+        padding: 12px 50px;
+        margin: -70px -70px 0 -70px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 3px solid #3498db;
+        border-bottom: 4px solid #d4af37;
     }
     .nav-logo-section {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 15px;
+    }
+    .nav-logo-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
     }
     .nav-logo-text {
-        font-size: 18px;
-        font-weight: 700;
-        color: white;
+        font-size: 20px;
+        font-weight: 800;
+        color: #d4af37;
         margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     .nav-menu {
         display: flex;
-        gap: 30px;
+        gap: 35px;
         align-items: center;
     }
     .nav-link {
-        color: rgba(255,255,255,0.9);
+        color: white;
         text-decoration: none;
-        font-size: 14px;
-        font-weight: 500;
-        transition: color 0.3s;
+        font-size: 15px;
+        font-weight: 700;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     .nav-link:hover {
-        color: #3498db;
+        color: #d4af37;
+        transform: translateY(-2px);
     }
     .nav-right {
         display: flex;
@@ -328,32 +341,38 @@ st.markdown("""
         align-items: center;
     }
     .nav-button {
-        background: #3498db;
-        color: white;
-        padding: 8px 20px;
-        border-radius: 5px;
+        background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+        color: #1a1a1a;
+        padding: 10px 25px;
+        border-radius: 25px;
         text-decoration: none;
         font-size: 14px;
-        font-weight: 600;
-        transition: background 0.3s;
+        font-weight: 800;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
     }
     .nav-button:hover {
-        background: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(212, 175, 55, 0.5);
     }
 </style>
 
 <div class='top-navbar'>
     <div class='nav-logo-section'>
+        <img src='app/static/logo.png' class='nav-logo-img' onerror='this.style.display="none"'>
         <div class='nav-logo-text'>T21 Services</div>
     </div>
     <div class='nav-menu'>
-        <a href='#about' class='nav-link'>About Us</a>
-        <a href='#services' class='nav-link'>Our Services</a>
+        <a href='#about' class='nav-link'>About</a>
+        <a href='#services' class='nav-link'>Services</a>
         <a href='#pricing' class='nav-link'>Pricing</a>
         <a href='#contact' class='nav-link'>Contact</a>
     </div>
     <div class='nav-right'>
-        <span style='color: #95a5a6; font-size: 11px;'>🇬🇧 UK</span>
+        <a href='#login' class='nav-button'>🎓 Student Login</a>
+        <a href='#staff' class='nav-button'>👥 Staff Login</a>
+        <a href='#nhs' class='nav-button'>🏥 NHS Login</a>
     </div>
 </div>
 """, unsafe_allow_html=True)
