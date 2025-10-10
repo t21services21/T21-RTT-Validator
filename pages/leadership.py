@@ -68,8 +68,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-{{ ... }}
-
 st.title("Leadership Team")
 
 st.markdown("---")
