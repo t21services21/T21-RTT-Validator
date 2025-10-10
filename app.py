@@ -282,21 +282,58 @@ st.set_page_config(
 )
 
 # ============================================
-# PROFESSIONAL NAVIGATION BAR (Like Big Companies)
+# PROFESSIONAL NAVIGATION BAR (Inline - No Import)
 # ============================================
-try:
-    from navigation_bar import render_navigation_bar
-    render_navigation_bar()
-except Exception as e:
-    # Fallback if navigation bar fails
-    st.markdown(f"""
-    <div style='background: white; padding: 10px 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin: -1rem -1rem 1rem -1rem;'>
-        <div style='display: flex; justify-content: space-between; align-items: center;'>
-            <div style='font-size: 18px; font-weight: 700; color: #2c3e50;'>T21 Services Limited</div>
-            <div style='font-size: 11px; color: #95a5a6;'>Co. No: 13091053 | Liverpool, UK 🇬🇧</div>
+st.markdown("""
+<style>
+    /* Professional Navigation Bar */
+    .top-nav {
+        background: white;
+        padding: 12px 40px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .nav-logo-text {
+        font-size: 18px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .nav-subtitle {
+        font-size: 11px;
+        color: #7f8c8d;
+        margin: 0;
+    }
+    
+    .company-reg {
+        font-size: 11px;
+        color: #95a5a6;
+    }
+</style>
+
+<div class="top-nav">
+    <div class="nav-logo">
+        <div>
+            <div class="nav-logo-text">T21 Services Limited</div>
+            <div class="nav-subtitle">Healthcare Intelligence Platform</div>
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    <div>
+        <span class="company-reg">Co. No: 13091053 | Liverpool, UK 🇬🇧</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # ============================================
 # CUSTOM SIDEBAR (Show/Hide based on login)
