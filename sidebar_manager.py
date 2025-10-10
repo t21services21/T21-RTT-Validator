@@ -132,7 +132,7 @@ def render_sidebar():
             st.markdown("### ⚙️ Settings")
             
             if st.button("🔐 2FA Security", key="btn_2fa", use_container_width=True):
-                st.switch_page("pages/2fa_setup.py")
+                st.switch_page("pages/security_2fa.py")
             
             if st.button("👤 My Account", key="btn_account", use_container_width=True):
                 st.switch_page("app.py")

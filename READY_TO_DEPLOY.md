@@ -86,15 +86,16 @@ All 3 login pages have complete 2FA implementation:
 
 ---
 
-## 📁 FILES TO PUSH (9 Files)
+## 📁 FILES TO PUSH (10 Files)
 
-### Modified (6):
+### Modified (7):
 1. `pages/about.py` - Removed duplicate navigation
 2. `pages/pricing.py` - Removed duplicate navigation
 3. `pages/testimonials.py` - Removed duplicate navigation
 4. `pages/leadership.py` - Removed duplicate navigation
 5. `pages/why_t21.py` - Removed duplicate navigation
 6. `navigation.py` - Fixed invisible button colors
+7. `sidebar_manager.py` - Fixed reference to deleted 2fa_setup.py
 
 ### Deleted (1):
 7. `pages/2fa_setup.py` - Removed duplicate
