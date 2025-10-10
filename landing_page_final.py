@@ -171,11 +171,11 @@ def render_final_landing_page():
     </div>
     
     <div class='hero'>
-        <h1>Transform Your NHS Workforce</h1>
+        <h1>Your NHS Career & Workforce Partner</h1>
         <h2>Training • Talent • Technology</h2>
-        <p>UK Certified Centre delivering certified NHS training courses (TQUK-endorsed RTT & Hospital Administration), 
-        qualified healthcare professionals, and AI automation that saves trusts £2M+ annually. We train individuals, 
-        upskill staff, supply certified talent, and deliver intelligent systems. Your complete workforce solution.</p>
+        <p>UK Certified Centre serving individuals seeking NHS careers, NHS staff advancing their skills, and NHS trusts 
+        transforming operations. Certified courses (TQUK-endorsed RTT & Hospital Administration), qualified talent supply, 
+        and AI automation saving £2M+ annually. From student to system—we empower everyone.</p>
     </div>
     """, unsafe_allow_html=True)
     
