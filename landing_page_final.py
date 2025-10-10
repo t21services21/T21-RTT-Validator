@@ -18,7 +18,7 @@ def render_final_landing_page():
         .top-nav {
             background: rgba(26, 26, 26, 0.95);
             padding: 15px 60px;
-            margin: -70px -70px 0 -70px;
+            margin: 0 -70px 0 -70px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -106,7 +106,7 @@ def render_final_landing_page():
         .hero {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
-            padding: 150px 60px;
+            padding: 180px 60px 150px 60px;
             margin: 0 -70px;
             min-height: 600px;
         }

@@ -54,6 +54,8 @@ st.markdown("""
     <p style='color: #666; font-size: 14px; margin: 0 0 10px 0;'>Authorized Personnel Only</p>
 </div>
 """, unsafe_allow_html=True)
+
+st.markdown("""
 <style>
     .login-header {
         background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
