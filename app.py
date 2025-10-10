@@ -285,52 +285,21 @@ st.set_page_config(
 # PROFESSIONAL NAVIGATION BAR (Inline - No Import)
 # ============================================
 st.markdown("""
-<style>
-    /* Professional Navigation Bar */
-    .top-nav {
-        background: white;
-        padding: 12px 40px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    
-    .nav-logo {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    
-    .nav-logo-text {
-        font-size: 18px;
-        font-weight: 700;
-        color: #2c3e50;
-        margin: 0;
-    }
-    
-    .nav-subtitle {
-        font-size: 11px;
-        color: #7f8c8d;
-        margin: 0;
-    }
-    
-    .company-reg {
-        font-size: 11px;
-        color: #95a5a6;
-    }
-</style>
-
-<div class="top-nav">
-    <div class="nav-logo">
+<div style='background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); 
+            padding: 15px 40px; 
+            margin: -70px -70px 20px -70px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;'>
+    <div style='display: flex; align-items: center; gap: 15px;'>
         <div>
-            <div class="nav-logo-text">T21 Services Limited</div>
-            <div class="nav-subtitle">Healthcare Intelligence Platform</div>
+            <div style='font-size: 20px; font-weight: 700; color: white; margin: 0;'>T21 Services Limited</div>
+            <div style='font-size: 11px; color: rgba(255,255,255,0.9); margin: 0;'>Healthcare Intelligence Platform</div>
         </div>
     </div>
     <div>
-        <span class="company-reg">Co. No: 13091053 | Liverpool, UK 🇬🇧</span>
+        <span style='font-size: 11px; color: rgba(255,255,255,0.85);'>Co. No: 13091053 | Liverpool, UK 🇬🇧</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
