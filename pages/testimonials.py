@@ -191,32 +191,32 @@ st.markdown("---")
 
 # NHS Organizations
 st.markdown("## 🏥 Our Graduates Work At")
-st.markdown("*Our trained students have successfully secured roles at NHS organizations including:*")
+st.markdown("*Our trained students have successfully secured roles at NHS trusts including:*")
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown("""
-    - NHS England
-    - University Hospitals Birmingham
-    - Manchester University NHS Foundation Trust
-    - Leeds Teaching Hospitals
+    - **Manchester NHS Trust**
+    - **Liverpool NHS Trust**
+    - **Leeds NHS Trust**
+    - **Birmingham NHS Trusts**
     """)
 
 with col2:
     st.markdown("""
-    - Royal Liverpool University Hospital
-    - Sheffield Teaching Hospitals
-    - Newcastle upon Tyne Hospitals
-    - Nottingham University Hospitals
+    - **Wolverhampton NHS Trust**
+    - **Various London NHS Trusts**
+    - **Royal Liverpool University Hospital**
+    - **University Hospitals Birmingham**
     """)
 
 with col3:
     st.markdown("""
-    - Oxford University Hospitals
-    - Cambridge University Hospitals
-    - Imperial College Healthcare
-    - Guy's and St Thomas' NHS Foundation Trust
+    - **Leeds Teaching Hospitals**
+    - **Manchester University NHS FT**
+    - **Multiple NHS Trusts Nationwide**
+    - **50+ NHS Organizations**
     """)
 
 st.markdown("---")

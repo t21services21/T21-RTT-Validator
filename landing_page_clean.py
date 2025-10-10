@@ -148,10 +148,11 @@ def render_clean_landing_page():
     
     # Trust Badges
     st.markdown("""
-    <div style='display: flex; gap: 30px; justify-content: center; padding: 60px 0; background: #f8f9fa; margin: 0 -70px;'>
-        <div style='background: white; padding: 30px 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>✅ COMPANIES HOUSE<br>REGISTERED</div>
-        <div style='background: white; padding: 30px 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>🏥 NHS<br>COMPLIANT</div>
-        <div style='background: white; padding: 30px 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>🔒 GDPR<br>COMPLIANT</div>
-        <div style='background: white; padding: 30px 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>🇬🇧 UK<br>BASED</div>
+    <div style='display: flex; gap: 20px; justify-content: center; padding: 60px 0; background: #f8f9fa; margin: 0 -70px; flex-wrap: wrap;'>
+        <div style='background: white; padding: 25px 35px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>✅ TQUK APPROVED<br>CENTRE</div>
+        <div style='background: white; padding: 25px 35px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>🔒 CYBER ESSENTIALS<br>CERTIFIED</div>
+        <div style='background: white; padding: 25px 35px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>🏥 NHS<br>COMPLIANT</div>
+        <div style='background: white; padding: 25px 35px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>✅ COMPANIES HOUSE<br>REGISTERED</div>
+        <div style='background: white; padding: 25px 35px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>🇬🇧 UK<br>BASED</div>
     </div>
     """, unsafe_allow_html=True)

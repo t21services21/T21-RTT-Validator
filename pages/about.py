@@ -115,9 +115,9 @@ with col2:
     - **TQUK Approved Centre**
     - **Centre No:** 36257481088
     - **Course Code:** PDLC-01-039
+    - **Cyber Essentials Certified** ✅
     - **NHS Compliant**
     - **GDPR Certified**
-    - **ISO 9001 Standards**
     - **Companies House Registered**
     """)
 
