@@ -7,68 +7,6 @@ from navigation import render_navigation
 
 st.set_page_config(page_title="About Us | T21 Services", page_icon="🏢", layout="wide")
 
-# Navigation bar
-st.markdown("""
-<style>
-    [data-testid="stSidebar"] {display: none;}
-    
-    /* Remove all top spacing */
-    .main .block-container {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-    }
-    
-    .main {
-        padding-top: 0 !important;
-    }
-    
-    header[data-testid="stHeader"] {
-        display: none !important;
-    }
-    
-    .top-nav {
-        background: rgba(26, 26, 26, 0.95);
-        padding: 15px 60px;
-        margin: -100px -70px 30px -70px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    }
-    
-    .nav-logo-text {
-        font-size: 24px;
-        font-weight: 800;
-        color: #d4af37;
-        text-transform: uppercase;
-        text-decoration: none;
-    }
-    
-    .nav-menu {
-        display: flex;
-        gap: 40px;
-    }
-    
-    .nav-link {
-        color: white !important;
-        font-size: 14px;
-        font-weight: 700;
-        text-transform: uppercase;
-        text-decoration: none;
-        padding: 10px 15px;
-    }
-    
-    .nav-link:hover {
-        color: #d4af37 !important;
-    }
-</style>
-
-<div class='top-nav'>
-    <img src='assets/t21_logo.png' alt='T21 SERVICES' style='height:34px; vertical-align: middle; border-radius: 50%; margin-right:10px;' onerror="this.style.display='none';">
-    <span class='nav-logo-text'>T21 SERVICES</span>
-</div>
-""", unsafe_allow_html=True)
-
 render_navigation(current_page="about")
 
 st.title("About T21 Services")
