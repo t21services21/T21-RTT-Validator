@@ -30,9 +30,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Compact Header with Logo
+try:
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.image("assets/logo.png", width=100)
+except:
+    pass
+
 st.markdown("""
-<div style='text-align: center; padding: 20px 0 10px 0;'>
-    <img src="app/static/logo.png" width="100" style="margin-bottom: 10px;" onerror="this.style.display='none'">
+<div style='text-align: center; padding: 10px 0;'>
     <div style='background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); 
                 color: white; 
                 padding: 6px 16px; 

@@ -15,33 +15,33 @@ def render_sidebar():
     user_type = st.session_state.get('user_type', 'student')
     
     with st.sidebar:
-        # Compact Professional Header
+        # Remove default Streamlit spacing
         st.markdown("""
         <style>
+            .block-container {padding-top: 0 !important;}
+            section[data-testid="stSidebar"] > div {padding-top: 0 !important;}
             .sidebar-header {
                 text-align: center;
                 padding: 0;
-                margin: 0 0 10px 0;
+                margin: 0 0 8px 0;
             }
             .sidebar-title {
                 font-size: 15px;
                 font-weight: 600;
                 color: #1f1f1f;
-                margin: 5px 0 3px 0;
+                margin: 3px 0 2px 0;
             }
             .sidebar-subtitle {
                 font-size: 11px;
                 color: #666;
-                margin: 0 0 10px 0;
+                margin: 0 0 8px 0;
             }
         </style>
         """, unsafe_allow_html=True)
         
-        # Logo - centered and compact
+        # Logo - at very top
         try:
-            col1, col2, col3 = st.columns([0.3, 2.4, 0.3])
-            with col2:
-                st.image("assets/logo.png", width=100)
+            st.image("assets/logo.png", width=100)
         except:
             pass
         
