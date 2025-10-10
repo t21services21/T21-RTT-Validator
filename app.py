@@ -3625,21 +3625,24 @@ elif tool == "📈 Dashboard & Analytics":
     # Usage Today
     st.subheader("📊 Today's Activity")
     
-    usage = user_license.usage
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        validations_today = usage.get('validations_today', 0)
-        st.metric("Validations Today", validations_today)
-    
-    with col2:
-        quiz_completed = usage.get('quizzes_completed_today', 0)
-        st.metric("Quizzes Completed", quiz_completed)
-    
-    with col3:
-        ai_questions = usage.get('ai_questions_today', 0)
-        st.metric("AI Tutor Questions", ai_questions)
+    if user_license and hasattr(user_license, 'usage'):
+        usage = user_license.usage if not callable(user_license.usage) else {}
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            validations_today = usage.get('validations_today', 0) if isinstance(usage, dict) else 0
+            st.metric("Validations Today", validations_today)
+        
+        with col2:
+            quiz_completed = usage.get('quizzes_completed_today', 0) if isinstance(usage, dict) else 0
+            st.metric("Quizzes Completed", quiz_completed)
+        
+        with col3:
+            ai_questions = usage.get('ai_questions_today', 0) if isinstance(usage, dict) else 0
+            st.metric("AI Tutor Questions", ai_questions)
+    else:
+        st.info("Usage tracking not available for this account type")
     
     st.markdown("---")
     
