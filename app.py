@@ -282,14 +282,39 @@ st.set_page_config(
 )
 
 # ============================================
-# LOGO AT TOP OF PAGE
+# PROFESSIONAL HEADER
 # ============================================
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    try:
-        st.image("assets/logo.png", width=200)
-    except:
-        st.markdown("# 🏥 T21 Services")
+st.markdown("""
+<style>
+    .main-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 15px 30px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .company-info {
+        color: white;
+        text-align: right;
+        font-size: 12px;
+    }
+</style>
+
+<div class="main-header">
+    <div style="display: flex; align-items: center; gap: 20px;">
+        <img src="app/static/logo.png" width="80" style="border-radius: 50%;" onerror="this.style.display='none'">
+        <div>
+            <h1 style="color: white; margin: 0; font-size: 28px;">T21 Healthcare Intelligence Platform</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 5px 0 0 0; font-size: 14px;">Complete NHS Healthcare Administration Suite</p>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # ============================================
 # CUSTOM SIDEBAR (Show/Hide based on login)
