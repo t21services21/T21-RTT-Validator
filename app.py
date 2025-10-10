@@ -278,16 +278,8 @@ st.set_page_config(
     page_title="T21 Healthcare Intelligence Platform | T21 Services UK",
     page_icon="🏥",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
-
-# Hide default navigation - landing page has its own
-st.markdown("""
-<style>
-    /* Hide sidebar completely */
-    [data-testid="stSidebar"] {display: none;}
-</style>
-""", unsafe_allow_html=True)
 
 # ============================================
 # CUSTOM SIDEBAR (Show/Hide based on login)
@@ -376,29 +368,13 @@ if not st.session_state.logged_in:
     try:
         from landing_page_final import render_final_landing_page
         render_final_landing_page()
-        st.stop()
-    except:
+    except Exception as e:
+        st.error(f"Error loading landing page: {e}")
         # Fallback hero section
         st.markdown("""
-        <div style='
-            background: linear-gradient(rgba(44, 62, 80, 0.85), rgba(44, 62, 80, 0.85)), 
-                        url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920") center/cover;
-            padding: 100px 60px;
-            margin: -20px -60px 30px -60px;
-            min-height: 500px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;'>
-            <h1 style='color: white; font-size: 56px; font-weight: 700; margin: 0 0 20px 0; line-height: 1.2;'>
-                NHS Healthcare Intelligence
-            </h1>
-            <h2 style='color: #d4af37; font-size: 42px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.2;'>
-                Training aligned to your people,<br>not only your technology.
-            </h2>
-            <p style='color: rgba(255,255,255,0.95); font-size: 18px; max-width: 600px; line-height: 1.6; margin: 0;'>
-                Imagine if your NHS training was something you could always feel happy about, 
-                knowing it was always aligned with your workforce and was never an obstacle to getting things done.
-            </p>
+        <div style='text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; margin: 20px 0;'>
+            <h1 style='color: white; margin: 0; font-size: 42px;'>Welcome to T21 Healthcare Intelligence</h1>
+            <p style='color: rgba(255,255,255,0.9); font-size: 20px; margin: 15px 0 0 0;'>Complete NHS Healthcare Administration Training & Automation Suite</p>
         </div>
         """, unsafe_allow_html=True)
     

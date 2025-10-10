@@ -12,7 +12,7 @@ def render_final_landing_page():
     # Custom CSS and Navigation with working dropdown
     st.markdown("""
     <style>
-        [data-testid="stSidebar"] {display: none;}
+        /* Keep sidebar visible for login */
         
         .top-nav {
             background: rgba(26, 26, 26, 0.95);
