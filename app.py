@@ -370,11 +370,11 @@ if not st.session_state.logged_in and st.session_state.session_email:
 
 # Login/Registration Page
 if not st.session_state.logged_in:
-    # Welcome Section
+    # Hero Section with professional design
     st.markdown("""
-    <div style='text-align: center; padding: 30px 20px;'>
-        <h2 style='color: #2c3e50; margin-bottom: 15px;'>Welcome to T21 Healthcare Intelligence Platform</h2>
-        <p style='color: #666; font-size: 18px; margin-bottom: 25px;'>Complete NHS Healthcare Administration Training & Automation Suite</p>
+    <div style='text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; margin: 20px 0;'>
+        <h1 style='color: white; margin: 0; font-size: 42px;'>Welcome to T21 Healthcare Intelligence</h1>
+        <p style='color: rgba(255,255,255,0.9); font-size: 20px; margin: 15px 0 0 0;'>Complete NHS Healthcare Administration Training & Automation Suite</p>
     </div>
     """, unsafe_allow_html=True)
     
