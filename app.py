@@ -286,13 +286,14 @@ st.set_page_config(
 # ============================================
 st.markdown("""
 <div style='background: #2c3e50; 
-            padding: 12px 40px; 
-            margin: -70px -70px 20px -70px;
+            padding: 15px 40px; 
+            margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid #3498db;'>
+            border-bottom: 3px solid #3498db;
+            border-radius: 8px;'>
     <div style='display: flex; align-items: center; gap: 15px;'>
         <div>
             <div style='font-size: 20px; font-weight: 700; color: white; margin: 0;'>T21 Services Limited</div>
