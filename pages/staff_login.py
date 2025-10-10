@@ -212,7 +212,7 @@ else:
         
         # 2FA Verification Prompt (same as main app)
         if st.session_state.get('show_2fa_prompt'):
-{{ ... }}
+        
             st.markdown("### 🔐 Two-Factor Authentication Required")
             
             pending_user = st.session_state.get('pending_2fa_user')
