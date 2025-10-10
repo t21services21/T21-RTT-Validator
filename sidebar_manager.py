@@ -15,37 +15,47 @@ def render_sidebar():
     user_type = st.session_state.get('user_type', 'student')
     
     with st.sidebar:
-        # Remove default Streamlit spacing
+        # Aggressive spacing removal
         st.markdown("""
         <style>
-            .block-container {padding-top: 0 !important;}
-            section[data-testid="stSidebar"] > div {padding-top: 0 !important;}
+            /* Remove ALL top padding */
+            section[data-testid="stSidebar"] > div:first-child {
+                padding-top: 0 !important;
+                margin-top: 0 !important;
+            }
+            section[data-testid="stSidebar"] .block-container {
+                padding-top: 0 !important;
+                margin-top: 0 !important;
+            }
+            /* Compact header */
             .sidebar-header {
                 text-align: center;
                 padding: 0;
-                margin: 0 0 8px 0;
+                margin: 0 0 5px 0;
             }
             .sidebar-title {
-                font-size: 15px;
+                font-size: 14px;
                 font-weight: 600;
                 color: #1f1f1f;
-                margin: 3px 0 2px 0;
+                margin: 2px 0;
             }
             .sidebar-subtitle {
-                font-size: 11px;
+                font-size: 10px;
                 color: #666;
-                margin: 0 0 8px 0;
+                margin: 0 0 5px 0;
             }
         </style>
         """, unsafe_allow_html=True)
         
-        # Logo - at very top
-        try:
-            st.image("assets/logo.png", width=100)
-        except:
-            pass
+        # Logo - centered, compact
+        col1, col2, col3 = st.columns([0.2, 2.6, 0.2])
+        with col2:
+            try:
+                st.image("assets/logo.png", width=90)
+            except:
+                pass
         
-        # Company name and tagline - compact
+        # Company name - compact
         st.markdown("""
         <div class="sidebar-header">
             <div class="sidebar-title">T21 Services Limited</div>
