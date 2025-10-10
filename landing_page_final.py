@@ -41,17 +41,19 @@ def render_final_landing_page():
         }
         
         .nav-link {
-            color: white;
+            color: white !important;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             text-decoration: none;
             transition: color 0.3s;
+            padding: 10px 15px;
         }
         
         .nav-link:hover {
-            color: #d4af37;
+            color: #d4af37 !important;
+            text-decoration: none;
         }
         
         .dropdown {
@@ -141,6 +143,9 @@ def render_final_landing_page():
             <a href='#pricing' class='nav-link'>PRICING</a>
             <a href='#contact' class='nav-link'>CONTACT</a>
         </div>
+        <div style='display: flex; gap: 15px;'>
+            <a href='#login' style='background: linear-gradient(135deg, #d4af37, #f4d03f); color: #1a1a1a; padding: 10px 30px; border-radius: 25px; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px;'>LOGIN</a>
+        </div>
     </div>
     
     <div class='hero'>
@@ -152,6 +157,9 @@ def render_final_landing_page():
     """, unsafe_allow_html=True)
     
     # Login buttons section - prominent and working
+    st.markdown("<div id='login'></div>", unsafe_allow_html=True)
+    st.markdown("## 🔐 Login to Your Account")
+    st.markdown("*Select your portal to access the platform*")
     st.markdown("<br>", unsafe_allow_html=True)
     col1, col2, col3, col4, col5 = st.columns([2, 1.5, 1.5, 1.5, 2])
     
