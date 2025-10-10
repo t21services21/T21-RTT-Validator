@@ -370,49 +370,8 @@ if not st.session_state.logged_in:
         render_clean_landing_page()
     except Exception as e:
         st.error(f"Error loading landing page: {e}")
-        # Fallback hero section
-        st.markdown("""
-        <div style='text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; margin: 20px 0;'>
-            <h1 style='color: white; margin: 0; font-size: 42px;'>Welcome to T21 Healthcare Intelligence</h1>
-            <p style='color: rgba(255,255,255,0.9); font-size: 20px; margin: 15px 0 0 0;'>Complete NHS Healthcare Administration Training & Automation Suite</p>
-        </div>
-        """, unsafe_allow_html=True)
     
-    # TRUST BADGES
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.info("✅ **Companies House**  \nRegistered")
-    with col2:
-        st.info("🏥 **NHS**  \nCompliant")
-    with col3:
-        st.info("🔒 **GDPR**  \nCompliant")
-    with col4:
-        st.info("🇬🇧 **UK**  \nBased")
-    
-    st.markdown("---")
-    
-    # Feature highlights
-    st.markdown("### 🎯 What We Offer")
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.success("**🎓 Training**  \n15+ NHS Roles  \nTQUK Certified")
-    with col2:
-        st.success("**🤖 Automation**  \n7 AI Systems  \n188 Scenarios")
-    with col3:
-        st.success("**💰 ROI**  \nSave £2M+/Year  \nProven Results")
-    
-    st.markdown("---")
-    
-    # Login Instructions
-    st.markdown("### 🔐 Please Login to Continue")
-    st.info("👈 **Use the sidebar** to select your portal and login:  \n• 🎓 **Student Login** - For individual training  \n• 👥 **Staff Login** - For T21 staff  \n• 🏥 **NHS Login** - For NHS organizations")
-    
-    st.markdown("---")
-    
-    # Company Info Footer
-    st.caption("**T21 Services Limited** | Company No: 13091053 | Liverpool, England 🇬🇧 | Est. 2020")
-    
-    st.stop()  # Stop here - don't show login form on main page
+    st.stop()  # Stop here - landing page is complete
     
     with tab1:
         st.subheader("Login")

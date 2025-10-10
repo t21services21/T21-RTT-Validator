@@ -79,16 +79,22 @@ st.markdown("""
 st.title("About T21 Services")
 
 st.markdown("""
-**T21 Services Limited** is a UK Certified Centre and leading healthcare training, talent supply, and technology company serving the NHS and healthcare sector.
+**T21 Services Limited** is a **TQUK Approved Centre** (Centre No: **36257481088**) and leading healthcare training, talent supply, and technology company serving the NHS and healthcare sector.
+
+**Official TQUK Endorsement:**
+- ✅ **TQUK Approved Centre Number:** 36257481088
+- ✅ **Endorsed Course:** "Proficient Professional Development Learning Course in Understanding RTT and Hospital Administration" (PDLC-01-039)
+- ✅ **Status:** APPROVED by Training Qualifications UK
+- ✅ **Contact:** H.E. Ambassador Tosin Michael Owonifari (t.owonifari@t21services.co.uk)
 
 **What We Do:**
-- 🎓 **Train Individuals** - Certified NHS administration courses (TQUK-endorsed RTT & Hospital Administration)
+- 🎓 **Train Individuals** - TQUK-endorsed RTT & Hospital Administration courses
 - 👥 **Upskill NHS Staff** - Professional development for existing healthcare professionals
 - 💼 **Supply Qualified Talent** - Place our trained graduates into NHS roles
 - 🤖 **Provide AI Automation** - 7 intelligent systems with 188 scenarios to transform NHS operations
 - 🏥 **Support NHS Trusts** - End-to-end workforce and technology solutions
 
-Established in 2020 and registered with Companies House (No: 13091053), we're a UK Certified Centre committed to transforming healthcare workforce development through certified training programs (with TQUK endorsement for RTT and Hospital Administration) and cutting-edge technology solutions.
+Established in 2020 and registered with Companies House (No: 13091053), we're a TQUK Approved Centre committed to transforming healthcare workforce development through officially endorsed training programs and cutting-edge technology solutions.
 """)
 
 col1, col2, col3 = st.columns(3)
@@ -106,12 +112,13 @@ with col1:
 with col2:
     st.markdown("""
     ### ✅ Certifications
-    - **UK Certified Centre**
-    - **TQUK Endorsement** (RTT & Hospital Admin)
+    - **TQUK Approved Centre**
+    - **Centre No:** 36257481088
+    - **Course Code:** PDLC-01-039
     - **NHS Compliant**
     - **GDPR Certified**
     - **ISO 9001 Standards**
-    - **Cyber Essentials**
+    - **Companies House Registered**
     """)
 
 with col3:
