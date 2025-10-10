@@ -63,18 +63,29 @@ st.markdown("""
 </style>
 
 <div class='top-nav'>
-    <a href='/' style='text-decoration: none;'>
-        <span class='nav-logo-text'>T21 SERVICES</span>
-    </a>
-    <div class='nav-menu'>
-        <a href='/about' class='nav-link'>ABOUT</a>
-        <a href='/services' class='nav-link'>SERVICES</a>
-        <a href='/pricing' class='nav-link'>PRICING</a>
-        <a href='/contact' class='nav-link'>CONTACT</a>
-    </div>
-    <a href='/' style='background: linear-gradient(135deg, #d4af37, #f4d03f); color: #1a1a1a; padding: 10px 30px; border-radius: 25px; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px;'>HOME</a>
+    <span class='nav-logo-text'>T21 SERVICES</span>
 </div>
 """, unsafe_allow_html=True)
+
+# Navigation buttons
+st.markdown("<div style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: -30px -70px 20px -70px;'>", unsafe_allow_html=True)
+col1, col2, col3, col4, col5 = st.columns(5)
+with col1:
+    if st.button("🏠 HOME", key="nav_home", use_container_width=True, type="primary"):
+        st.switch_page("app.py")
+with col2:
+    if st.button("📋 SERVICES", key="nav_services", use_container_width=True):
+        st.switch_page("pages/services.py")
+with col3:
+    if st.button("💰 PRICING", key="nav_pricing", use_container_width=True):
+        st.switch_page("pages/pricing.py")
+with col4:
+    if st.button("📞 CONTACT", key="nav_contact", use_container_width=True):
+        st.switch_page("pages/contact_us.py")
+with col5:
+    if st.button("⭐ TESTIMONIALS", key="nav_testimonials", use_container_width=True):
+        st.switch_page("pages/testimonials.py")
+st.markdown("</div>", unsafe_allow_html=True)
 
 st.title("About T21 Services")
 
@@ -85,7 +96,7 @@ st.markdown("""
 - ✅ **TQUK Approved Centre Number:** 36257481088
 - ✅ **Endorsed Course:** "Proficient Professional Development Learning Course in Understanding RTT and Hospital Administration" (PDLC-01-039)
 - ✅ **Status:** APPROVED by Training Qualifications UK
-- ✅ **Contact:** H.E. Ambassador Tosin Michael Owonifari (info@t21services.co.uk)
+- ✅ **Contact:** Amb. Tosin Michael Owonifari, FCISM (t.owonifari@t21services.co.uk)
 
 **What We Do:**
 - 🎓 **Train Individuals** - TQUK-endorsed RTT & Hospital Administration courses

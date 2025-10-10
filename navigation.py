@@ -1,0 +1,87 @@
+"""
+T21 SERVICES - NAVIGATION COMPONENT
+Reusable navigation for all pages
+"""
+
+import streamlit as st
+
+def render_navigation(current_page="home"):
+    """Render navigation bar with Streamlit buttons"""
+    
+    # CSS for navigation
+    st.markdown("""
+    <style>
+        [data-testid="stSidebar"] {display: none;}
+        
+        /* Remove all top spacing */
+        .main .block-container {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+        
+        .main {
+            padding-top: 0 !important;
+        }
+        
+        header[data-testid="stHeader"] {
+            display: none !important;
+        }
+        
+        /* Hide default button styling */
+        .stButton button {
+            background: none;
+            border: none;
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 14px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        
+        .stButton button:hover {
+            color: #d4af37;
+            background: none;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Navigation bar
+    st.markdown("""
+    <div style='background: rgba(26, 26, 26, 0.95); padding: 15px 60px; margin: -100px -70px 30px -70px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);'>
+        <div style='display: flex; justify-content: space-between; align-items: center;'>
+            <div style='font-size: 24px; font-weight: 800; color: #d4af37; text-transform: uppercase;'>T21 SERVICES</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Navigation buttons
+    col1, col2, col3, col4, col5, col6, col7 = st.columns([2, 1, 1, 1, 1, 1, 1])
+    
+    with col1:
+        st.write("")  # Spacer for logo
+    
+    with col2:
+        if st.button("ABOUT", key="nav_about", use_container_width=True):
+            st.switch_page("pages/about.py")
+    
+    with col3:
+        if st.button("SERVICES", key="nav_services", use_container_width=True):
+            st.switch_page("pages/services.py")
+    
+    with col4:
+        if st.button("PRICING", key="nav_pricing", use_container_width=True):
+            st.switch_page("pages/pricing.py")
+    
+    with col5:
+        if st.button("CONTACT", key="nav_contact", use_container_width=True):
+            st.switch_page("pages/contact_us.py")
+    
+    with col6:
+        st.write("")  # Spacer
+    
+    with col7:
+        if st.button("🏠 HOME", key="nav_home", use_container_width=True, type="primary"):
+            st.switch_page("app.py")
+    
+    st.markdown("<br>", unsafe_allow_html=True)

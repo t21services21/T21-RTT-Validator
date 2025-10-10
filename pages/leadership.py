@@ -63,18 +63,29 @@ st.markdown("""
 </style>
 
 <div class='top-nav'>
-    <a href='/' style='text-decoration: none;'>
-        <span class='nav-logo-text'>T21 SERVICES</span>
-    </a>
-    <div class='nav-menu'>
-        <a href='/about' class='nav-link'>ABOUT</a>
-        <a href='/services' class='nav-link'>SERVICES</a>
-        <a href='/pricing' class='nav-link'>PRICING</a>
-        <a href='/contact_us' class='nav-link'>CONTACT</a>
-    </div>
-    <a href='/' style='background: linear-gradient(135deg, #d4af37, #f4d03f); color: #1a1a1a; padding: 10px 30px; border-radius: 25px; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px;'>HOME</a>
+    <span class='nav-logo-text'>T21 SERVICES</span>
 </div>
 """, unsafe_allow_html=True)
+
+# Navigation buttons
+st.markdown("<div style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: -30px -70px 20px -70px;'>", unsafe_allow_html=True)
+col1, col2, col3, col4, col5 = st.columns(5)
+with col1:
+    if st.button("🏠 HOME", key="nav_home", use_container_width=True, type="primary"):
+        st.switch_page("app.py")
+with col2:
+    if st.button("📋 ABOUT", key="nav_about", use_container_width=True):
+        st.switch_page("pages/about.py")
+with col3:
+    if st.button("🛠️ SERVICES", key="nav_services", use_container_width=True):
+        st.switch_page("pages/services.py")
+with col4:
+    if st.button("💰 PRICING", key="nav_pricing", use_container_width=True):
+        st.switch_page("pages/pricing.py")
+with col5:
+    if st.button("📞 CONTACT", key="nav_contact", use_container_width=True):
+        st.switch_page("pages/contact_us.py")
+st.markdown("</div>", unsafe_allow_html=True)
 
 st.title("Leadership Team")
 
@@ -89,9 +100,9 @@ with col1:
     st.markdown("""
     <div style='background: linear-gradient(135deg, #d4af37, #f4d03f); padding: 40px; border-radius: 15px; text-align: center;'>
         <div style='font-size: 80px; margin-bottom: 20px;'>👨‍💼</div>
-        <h2 style='color: #1a1a1a; margin: 0;'>H.E. Ambassador</h2>
-        <h3 style='color: #1a1a1a; margin: 10px 0;'>Tosin Michael Owonifari</h3>
-        <p style='color: #1a1a1a; font-weight: 600;'>Founder & CEO</p>
+        <h2 style='color: #1a1a1a; margin: 0;'>Amb. Tosin Michael Owonifari</h2>
+        <h3 style='color: #1a1a1a; margin: 10px 0; font-size: 18px;'>FCISM, BCS</h3>
+        <p style='color: #1a1a1a; font-weight: 600; font-size: 16px;'>Founder & CEO | AU Agenda 2063 Ambassador</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -99,41 +110,66 @@ with col2:
     st.markdown("""
     ### Professional Background
     
-    **H.E. Ambassador Tosin Michael Owonifari** is the Founder and Chief Executive Officer of T21 Services Limited, bringing over **10 years of specialized experience** in NHS healthcare administration, training, and digital transformation.
+    **Amb. Tosin Michael Owonifari, FCISM** is the Founder and Chief Executive Officer of T21 Services (UK & Nigeria) and Executive Director of AU Gateway Global CIC. A visionary leader, technocrat, and training expert with extensive experience in digital transformation, skills development, and cross-continental program delivery.
     
     ### Key Roles & Achievements
     
-    - 🌍 **African Union Agenda 2063 Ambassador**
-    - 🏥 **10+ Years NHS Experience** - Healthcare administration, RTT pathways, and workforce development
-    - 🎓 **TQUK Approved Centre Director** - Centre No: 36257481088
-    - 🤖 **Healthcare Innovation Leader** - AI automation and digital transformation
-    - 💼 **Workforce Development Expert** - Training and talent supply for NHS organizations
+    - 🌍 **African Union Agenda 2063 Ambassador** (UK – North West Region)
+    - 🎓 **Fellow, Chartered Institute of Strategic Management (FCISM)**
+    - 💻 **Member, British Computer Society (BCS)**
+    - 🏥 **TQUK Approved Centre Director** - Centre No: 36257481088
+    - 📋 **CPD Certification Approval** - RTT Validator & Hospital Administrative Training
+    - 🏢 **Certiport Authorized Testing Centre Manager**
+    - 🤝 **Former Consultant** - Leadership Training Partner, Liverpool Hope University
+    
+    ### Professional Qualifications
+    
+    - **Level 4 Award** - Internal Quality Assurance of Assessment Processes (RQF) – IAO
+    - **Level 3 Certificate** - Assessing Vocational Achievement (RQF) – IAO
+    - **Level 3 Award** - Education and Training (RQF) – IAO
+    - **B.Sc. (Hons)** - Oil and Gas Management, University of Plymouth (2:1)
+    - **Fellow (FCISM)** - Chartered Institute of Strategic Management
+    - **Member (BCS)** - British Computer Society
     
     ### Vision & Mission
     
-    Ambassador Owonifari founded T21 Services with a clear vision: to transform NHS workforce development through innovative training programs and cutting-edge technology solutions. His deep understanding of NHS challenges, combined with expertise in AI automation, has positioned T21 Services as a leading provider of healthcare training and technology solutions.
+    Ambassador Owonifari founded T21 Services with a clear vision: to transform NHS workforce development through innovative training programs and cutting-edge technology solutions. His deep understanding of NHS challenges, combined with expertise in curriculum development and quality assurance, has positioned T21 Services as a leading provider of accredited healthcare training.
     
     ### Areas of Expertise
     
-    - NHS Referral to Treatment (RTT) Pathways
+    **Training & Assessment:**
+    - NHS Administrative Careers & RTT Validation
+    - Internal Quality Assurance (IQA)
+    - Curriculum Design & Assessment
+    - Vocational Assessment & Portfolio Review
+    - CPD-Approved Training Programs
+    
+    **Healthcare & Technology:**
     - Hospital Administration & Management
-    - Healthcare Workforce Training & Development
+    - EPR/PAS Systems Training
     - AI-Powered Healthcare Automation
-    - NHS Digital Transformation
-    - TQUK-Endorsed Training Programs
-    - Healthcare Talent Supply & Recruitment
+    - Cybersecurity Awareness
+    - Data Protection & Compliance
     
-    ### Education & Certifications
+    **Leadership & Development:**
+    - Centre Management & Policy Implementation
+    - Strategic Partnerships & International Relations
+    - Diaspora & Civic Engagement
+    - Youth Empowerment & Leadership Coaching
+    - Remote Work Enablement
     
-    - TQUK Approved Centre Director
-    - African Union Agenda 2063 Ambassador
-    - NHS Healthcare Administration Specialist
-    - Digital Transformation & AI Implementation
+    ### Global Impact
+    
+    - Facilitated diaspora-led civic partnerships across UK councils under AU Agenda 2063
+    - Led youth empowerment projects and leadership bootcamps with universities
+    - Advancing access to international remote job markets for trained African talent
+    - Developing multi-purpose training & remote work hub in Liverpool
     
     ### Contact
     
-    📧 **Email:** info@t21services.co.uk  
-    📞 **Phone:** +44 20 3375 2061  
+    📧 **Email:** t.owonifari@t21services.co.uk  
+    📞 **Direct:** +44 7447 459420  
+    📞 **Office:** +44 20 3375 2061  
     🌐 **LinkedIn:** [Connect with Ambassador Owonifari](https://linkedin.com/in/tosinowonifari)
     """)
 
