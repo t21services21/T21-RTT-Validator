@@ -30,23 +30,21 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Logo and Header
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    st.image("assets/logo.png", width=200)
-
+# Compact Header with Logo
 st.markdown("""
-<div style='text-align: center; margin: 20px 0;'>
-    <div style='background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%); 
+<div style='text-align: center; padding: 20px 0 10px 0;'>
+    <img src="app/static/logo.png" width="100" style="margin-bottom: 10px;" onerror="this.style.display='none'">
+    <div style='background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); 
                 color: white; 
-                padding: 8px 20px; 
-                border-radius: 20px; 
+                padding: 6px 16px; 
+                border-radius: 15px; 
                 display: inline-block; 
-                margin-bottom: 10px;'>
+                font-size: 14px;
+                margin-bottom: 8px;'>
         🏥 NHS ORGANIZATION PORTAL
     </div>
-    <h1 style='color: #2980b9; margin: 10px 0;'>T21 Healthcare Intelligence Platform</h1>
-    <p style='color: #666; font-size: 16px;'>For NHS Trusts, Hospitals, and Healthcare Organizations</p>
+    <h2 style='color: #3498db; margin: 8px 0;'>T21 Healthcare Intelligence Platform</h2>
+    <p style='color: #666; font-size: 14px; margin: 0;'>NHS Trusts & Healthcare Organizations</p>
 </div>
 """, unsafe_allow_html=True)
 
