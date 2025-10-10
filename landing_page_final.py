@@ -178,10 +178,10 @@ def render_final_landing_page():
             </a>
         </div>
         <div class='nav-menu'>
-            <a href='#about' class='nav-link'>ABOUT</a>
-            <a href='#services' class='nav-link'>SERVICES</a>
-            <a href='#pricing' class='nav-link'>PRICING</a>
-            <a href='#contact' class='nav-link'>CONTACT</a>
+            <a href='/about' class='nav-link'>ABOUT</a>
+            <a href='/services' class='nav-link'>SERVICES</a>
+            <a href='/pricing' class='nav-link'>PRICING</a>
+            <a href='/contact_us' class='nav-link'>CONTACT</a>
         </div>
         <div style='display: flex; gap: 15px;'>
             <a href='#login' style='background: linear-gradient(135deg, #d4af37, #f4d03f); color: #1a1a1a; padding: 10px 30px; border-radius: 25px; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px;'>LOGIN</a>
