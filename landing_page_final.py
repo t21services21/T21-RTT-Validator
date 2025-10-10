@@ -51,6 +51,18 @@ def render_final_landing_page():
         }
         
         .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+        }
+        
+        .nav-logo-text {
             font-size: 24px;
             font-weight: 800;
             color: #d4af37;
@@ -135,30 +147,35 @@ def render_final_landing_page():
         
         .hero h1 {
             color: white;
-            font-size: 68px;
+            font-size: 64px;
             font-weight: 800;
-            margin: 0 0 15px 0;
-            line-height: 1.05;
+            margin: 0 0 10px 0;
+            line-height: 1.0;
+            letter-spacing: -0.5px;
         }
         
         .hero h2 {
             color: #d4af37;
-            font-size: 44px;
+            font-size: 40px;
             font-weight: 700;
-            margin: 0 0 25px 0;
-            line-height: 1.1;
+            margin: 0 0 18px 0;
+            line-height: 1.0;
         }
         
         .hero p {
             color: rgba(255,255,255,0.95);
-            font-size: 18px;
-            max-width: 750px;
-            line-height: 1.6;
+            font-size: 17px;
+            max-width: 800px;
+            line-height: 1.55;
+            margin: 0;
         }
     </style>
     
     <div class='top-nav'>
-        <div class='nav-logo'>T21 SERVICES</div>
+        <div class='nav-logo'>
+            <img src='app/static/logo.png' alt='T21 Logo' onerror='this.style.display="none"'>
+            <span class='nav-logo-text'>T21 SERVICES</span>
+        </div>
         <div class='nav-menu'>
             <a href='#about' class='nav-link'>ABOUT</a>
             <a href='#services' class='nav-link'>SERVICES</a>
