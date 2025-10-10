@@ -14,3 +14,4 @@ qrcode>=7.4.2
 pillow>=10.0.0
 fhirclient>=4.0.0
 requests>=2.31.0
+# Updated 2025-10-10 - Force redeploy
