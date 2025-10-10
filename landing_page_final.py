@@ -173,7 +173,7 @@ def render_final_landing_page():
     
     <div class='top-nav'>
         <div class='nav-logo'>
-            <img src='app/static/logo.png' alt='T21 Logo' onerror='this.style.display="none"'>
+            <span style='font-size: 32px; margin-right: 8px;'>🏥</span>
             <span class='nav-logo-text'>T21 SERVICES</span>
         </div>
         <div class='nav-menu'>
