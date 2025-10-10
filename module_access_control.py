@@ -436,6 +436,15 @@ DEFAULT_MODULE_ACCESS = {
         "admin": True,
         "staff": True,
         "nhs_trust": True
+    },
+    "🏥 PAS Integration Demo": {
+        "trial": True,  # ALL users - training/demo tool
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
     }
 }
 

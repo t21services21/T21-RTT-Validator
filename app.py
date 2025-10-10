@@ -1066,6 +1066,7 @@ if not accessible_modules:
         "🎓 My Academic Portal",
         "👥 Staff Management",
         "🔧 Admin Panel",
+        "🏥 PAS Integration Demo",
         "ℹ️ About RTT Rules",
         "📄 Privacy Policy",
         "📜 Terms of Service",
@@ -4002,6 +4003,13 @@ elif tool == "👥 Staff Management":
     
     This comprehensive staff management system will help you manage your team efficiently!
     """)
+
+
+# ============================================
+# PAS INTEGRATION DEMO
+# ============================================
+elif tool == "🏥 PAS Integration Demo":
+    st.switch_page("pages/pas_integration_demo.py")
 
 
 # ============================================
