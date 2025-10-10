@@ -85,12 +85,12 @@ st.markdown("""
 - ✅ **TQUK Approved Centre Number:** 36257481088
 - ✅ **Endorsed Course:** "Proficient Professional Development Learning Course in Understanding RTT and Hospital Administration" (PDLC-01-039)
 - ✅ **Status:** APPROVED by Training Qualifications UK
-- ✅ **Contact:** H.E. Ambassador Tosin Michael Owonifari (t.owonifari@t21services.co.uk)
+- ✅ **Contact:** H.E. Ambassador Tosin Michael Owonifari (info@t21services.co.uk)
 
 **What We Do:**
 - 🎓 **Train Individuals** - TQUK-endorsed RTT & Hospital Administration courses
 - 👥 **Upskill NHS Staff** - Professional development for existing healthcare professionals
-- 💼 **Supply Qualified Talent** - Place our trained graduates into NHS roles
+- 💼 **Job Application Support** - Help our trained graduates secure NHS roles with proven success
 - 🤖 **Provide AI Automation** - 7 intelligent systems with 188 scenarios to transform NHS operations
 - 🏥 **Support NHS Trusts** - End-to-end workforce and technology solutions
 
@@ -129,6 +129,24 @@ with col3:
     - **£2M+** Annual Savings
     - **98%** Satisfaction Rate
     """)
+
+st.markdown("---")
+
+# Quick Links
+st.markdown("## 🔗 Learn More")
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    if st.button("👔 Leadership Team", use_container_width=True, type="primary"):
+        st.switch_page("pages/leadership.py")
+
+with col2:
+    if st.button("⭐ Testimonials", use_container_width=True, type="primary"):
+        st.switch_page("pages/testimonials.py")
+
+with col3:
+    if st.button("🏆 Why Choose T21?", use_container_width=True, type="primary"):
+        st.switch_page("pages/why_t21.py")
 
 st.markdown("---")
 

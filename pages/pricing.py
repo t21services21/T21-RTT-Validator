@@ -193,8 +193,8 @@ with col2:
             <li><strong>Proven results</strong> across 50+ NHS organizations</li>
         </ul>
         <div style='text-align: center; margin-top: 30px;'>
-            <p style='font-size: 18px; font-weight: 700;'>📞 Book a demo: +44 (0) 151 123 4567</p>
-            <p style='font-size: 14px;'>📧 nhs-sales@t21services.co.uk</p>
+            <p style='font-size: 18px; font-weight: 700;'>📞 Book a demo: +44 20 3375 2061</p>
+            <p style='font-size: 14px;'>📧 info@t21services.co.uk</p>
         </div>
     </div>
     """, unsafe_allow_html=True)

@@ -119,7 +119,7 @@ def render_clean_landing_page():
         <h1>Your NHS Career & Workforce Partner</h1>
         <h2>Training • Talent • Technology</h2>
         <p>UK Certified Centre serving individuals seeking NHS careers, NHS staff advancing their skills, and NHS trusts 
-        transforming operations. Certified courses (TQUK-endorsed RTT & Hospital Administration), qualified talent supply, 
+        transforming operations. TQUK-endorsed training, job application support with proven success, 
         and AI automation saving £2M+ annually. From student to system—we empower everyone.</p>
     </div>
     """, unsafe_allow_html=True)

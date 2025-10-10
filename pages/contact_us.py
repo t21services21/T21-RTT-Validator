@@ -181,12 +181,14 @@ with col2:
     </div>
     """, unsafe_allow_html=True)
     
-    # Email
+    # Phone & Email
+    st.markdown("### 📞 Phone")
+    st.markdown("**Main:** +44 20 3375 2061")
+    
     st.markdown("### 📧 Email Us")
     st.markdown("**General:**  \ninfo@t21services.co.uk")
-    st.markdown("**Support:**  \nsupport@t21services.co.uk")
-    st.markdown("**Sales (NHS):**  \nsales@t21services.co.uk")
-    st.markdown("**Student Support:**  \nstudent-support@t21services.co.uk")
+    st.markdown("**Administration:**  \nadmin@t21services.co.uk")
+    st.markdown("**Training:**  \ntraining@t21services.co.uk")
     
     # Social Media
     st.markdown("### 🌐 Follow Us")
@@ -274,8 +276,6 @@ with faq_col2:
         
         Read our **Privacy Policy** for details.
         """)
-    
-    with st.expander("🚀 How quickly can we get started?"):
         st.markdown("""
         **Timeline:**
         - **Students:** Instant (register now!)
@@ -295,12 +295,13 @@ if st.button("← Back to Home"):
     st.switch_page("app.py")
 
 st.markdown("---")
-
 # Footer
 st.markdown("""
 <div style='text-align: center; color: #666; padding: 20px;'>
     <p><strong>T21 Services Limited</strong> | Company No: 13091053 | Liverpool, England</p>
-    <p>📧 info@t21services.co.uk | 🌐 www.t21services.co.uk</p>
+    <p>📧 info@t21services.co.uk
+    📧 admin@t21services.co.uk
+    📧 training@t21services.co.uk</p>
     <p style='font-size: 12px; margin-top: 10px;'>© 2020-2025 T21 Services Limited. All rights reserved.</p>
 </div>
 """, unsafe_allow_html=True)
