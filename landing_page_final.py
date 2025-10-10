@@ -15,6 +15,20 @@ def render_final_landing_page():
         /* Hide sidebar on landing page */
         [data-testid="stSidebar"] {display: none;}
         
+        /* Remove ALL top padding/margin */
+        .main .block-container {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+        
+        .main {
+            padding-top: 0 !important;
+        }
+        
+        header {
+            background-color: transparent !important;
+        }
+        
         .top-nav {
             background: rgba(26, 26, 26, 0.95);
             padding: 15px 60px;
@@ -106,9 +120,9 @@ def render_final_landing_page():
         .hero {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
-            padding: 180px 60px 150px 60px;
-            margin: 0 -70px;
-            min-height: 600px;
+            padding: 150px 60px 120px 60px;
+            margin: -20px -70px 0 -70px;
+            min-height: 550px;
         }
         
         .hero h1 {
