@@ -282,26 +282,78 @@ st.set_page_config(
 )
 
 # ============================================
-# PROFESSIONAL NAVIGATION BAR (Inline - No Import)
+# PROFESSIONAL NAVIGATION BAR WITH MENU (Like Oryx Align)
 # ============================================
 st.markdown("""
-<div style='background: #2c3e50; 
-            padding: 15px 40px; 
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid #3498db;
-            border-radius: 8px;'>
-    <div style='display: flex; align-items: center; gap: 15px;'>
-        <div>
-            <div style='font-size: 20px; font-weight: 700; color: white; margin: 0;'>T21 Services Limited</div>
-            <div style='font-size: 11px; color: #95a5a6; margin: 0;'>Healthcare Intelligence Platform</div>
-        </div>
+<style>
+    .top-navbar {
+        background: #2c3e50;
+        padding: 15px 50px;
+        margin-bottom: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid #3498db;
+    }
+    .nav-logo-section {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .nav-logo-text {
+        font-size: 18px;
+        font-weight: 700;
+        color: white;
+        margin: 0;
+    }
+    .nav-menu {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+    }
+    .nav-link {
+        color: rgba(255,255,255,0.9);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+    .nav-link:hover {
+        color: #3498db;
+    }
+    .nav-right {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+    .nav-button {
+        background: #3498db;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        transition: background 0.3s;
+    }
+    .nav-button:hover {
+        background: #2980b9;
+    }
+</style>
+
+<div class='top-navbar'>
+    <div class='nav-logo-section'>
+        <div class='nav-logo-text'>T21 Services</div>
     </div>
-    <div>
-        <span style='font-size: 11px; color: #bdc3c7;'>Co. No: 13091053 | Liverpool, UK 🇬🇧</span>
+    <div class='nav-menu'>
+        <a href='#about' class='nav-link'>About Us</a>
+        <a href='#services' class='nav-link'>Our Services</a>
+        <a href='#pricing' class='nav-link'>Pricing</a>
+        <a href='#contact' class='nav-link'>Contact</a>
+    </div>
+    <div class='nav-right'>
+        <span style='color: #95a5a6; font-size: 11px;'>🇬🇧 UK</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
