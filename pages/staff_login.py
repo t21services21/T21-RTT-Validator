@@ -171,51 +171,51 @@ else:
                     if not supabase_user:
                         if require_supabase:
                             st.error("❌ Supabase login is required. Please check Supabase credentials and user record.")
-                            return
-                        users_db = load_users_db()
-                        
-                        if email in users_db:
-                            user_data = users_db[email]
-                            # Handle UserAccount object vs dict
-                            if hasattr(user_data, 'password_hash'):
-                                stored_hash = user_data.password_hash
-                            elif isinstance(user_data, dict):
-                                stored_hash = user_data.get('password_hash')
-                            else:
-                                stored_hash = None
+                        else:
+                            users_db = load_users_db()
+                            
+                            if email in users_db:
+                                user_data = users_db[email]
+                                # Handle UserAccount object vs dict
+                                if hasattr(user_data, 'password_hash'):
+                                    stored_hash = user_data.password_hash
+                                elif isinstance(user_data, dict):
+                                    stored_hash = user_data.get('password_hash')
+                                else:
+                                    stored_hash = None
 
-                            if stored_hash and stored_hash == password_hash:
-                                # Check if user is staff/admin
-                                if user_type in ['admin', 'staff', 'partner']:
-                                    st.session_state.logged_in = True
-                                    st.session_state.user_license = user_data
-                                    st.session_state.user_email = email
-                                    st.session_state.auth_source = "local_json"
-                                    
-                                    st.success(f"✅ Welcome to Staff Portal!")
-                                    st.switch_page("app.py")
+                                if stored_hash and stored_hash == password_hash:
+                                    # Check if user is staff/admin
+                                    if user_type in ['admin', 'staff', 'partner']:
+                                        st.session_state.logged_in = True
+                                        st.session_state.user_license = user_data
+                                        st.session_state.user_email = email
+                                        st.session_state.auth_source = "local_json"
+                                        
+                                        st.success(f"✅ Welcome to Staff Portal!")
+                                        st.switch_page("app.py")
+                                    else:
+                                        st.error("❌ Unauthorized access. This portal is for staff/partners only.")
                                 else:
-                                    st.error("❌ Unauthorized access. This portal is for staff/partners only.")
-                            else:
-                                require_supabase = str(st.secrets.get("REQUIRE_SUPABASE_LOGIN", "false")).lower() == "true"
-                                if require_supabase:
-                                    st.error("❌ Supabase login is required. Please check Supabase credentials and user record.")
-                                if (email.lower() == "admin@t21services.co.uk" and password in ["admin123", "Admin123!"] and not users_db and not require_supabase):
-                                    class DevAdmin:
-                                        def __init__(self, email):
-                                            self.email = email
-                                            self.full_name = "T21 Administrator"
-                                            self.role = "admin"
-                                            self.user_type = "admin"
-                                    dev_admin = DevAdmin(email)
-                                    st.session_state.logged_in = True
-                                    st.session_state.user_license = dev_admin
-                                    st.session_state.user_email = email
-                                    st.session_state.auth_source = "dev_fallback"
-                                    st.success("✅ Dev admin access granted")
-                                    st.switch_page("app.py")
-                                else:
-                                    st.error("❌ Staff/Partner account not found. Please contact IT support.")
+                                    require_supabase = str(st.secrets.get("REQUIRE_SUPABASE_LOGIN", "false")).lower() == "true"
+                                    if require_supabase:
+                                        st.error("❌ Supabase login is required. Please check Supabase credentials and user record.")
+                                    if (email.lower() == "admin@t21services.co.uk" and password in ["admin123", "Admin123!"] and not users_db and not require_supabase):
+                                        class DevAdmin:
+                                            def __init__(self, email):
+                                                self.email = email
+                                                self.full_name = "T21 Administrator"
+                                                self.role = "admin"
+                                                self.user_type = "admin"
+                                        dev_admin = DevAdmin(email)
+                                        st.session_state.logged_in = True
+                                        st.session_state.user_license = dev_admin
+                                        st.session_state.user_email = email
+                                        st.session_state.auth_source = "dev_fallback"
+                                        st.success("✅ Dev admin access granted")
+                                        st.switch_page("app.py")
+                                    else:
+                                        st.error("❌ Staff/Partner account not found. Please contact IT support.")
                 else:
                     st.error("❌ Please enter both email and password")
         
