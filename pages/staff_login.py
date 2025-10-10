@@ -185,8 +185,16 @@ else:
                                     stored_hash = None
 
                                 if stored_hash and stored_hash == password_hash:
+                                    # Get user type from user_data
+                                    if hasattr(user_data, 'user_type'):
+                                        local_user_type = user_data.user_type
+                                    elif isinstance(user_data, dict):
+                                        local_user_type = user_data.get('user_type', 'student')
+                                    else:
+                                        local_user_type = 'student'
+                                    
                                     # Check if user is staff/admin
-                                    if user_type in ['admin', 'staff', 'partner']:
+                                    if local_user_type in ['admin', 'staff', 'partner']:
                                         st.session_state.logged_in = True
                                         st.session_state.user_license = user_data
                                         st.session_state.user_email = email
