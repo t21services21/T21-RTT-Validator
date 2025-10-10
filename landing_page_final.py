@@ -173,7 +173,6 @@ def render_final_landing_page():
     
     <div class='top-nav'>
         <div class='nav-logo'>
-            <span style='font-size: 32px; margin-right: 8px;'>🏥</span>
             <span class='nav-logo-text'>T21 SERVICES</span>
         </div>
         <div class='nav-menu'>
