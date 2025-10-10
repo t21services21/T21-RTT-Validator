@@ -173,7 +173,9 @@ def render_final_landing_page():
     
     <div class='top-nav'>
         <div class='nav-logo'>
-            <span class='nav-logo-text'>T21 SERVICES</span>
+            <a href='/' style='text-decoration: none;'>
+                <span class='nav-logo-text'>T21 SERVICES</span>
+            </a>
         </div>
         <div class='nav-menu'>
             <a href='#about' class='nav-link'>ABOUT</a>
