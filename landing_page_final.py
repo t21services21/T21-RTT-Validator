@@ -173,9 +173,9 @@ def render_final_landing_page():
     <div class='hero'>
         <h1>Transform Your NHS Workforce</h1>
         <h2>Training • Talent • Technology</h2>
-        <p>UK's leading provider of TQUK-certified NHS training, qualified healthcare professionals, and AI automation 
-        that saves trusts £2M+ annually. We train individuals, upskill staff, supply certified talent, and deliver 
-        intelligent systems. Your complete workforce solution.</p>
+        <p>UK's leading TQUK Approved Centre delivering TQUK-endorsed NHS training, qualified healthcare professionals, 
+        and AI automation that saves trusts £2M+ annually. We train individuals, upskill staff, supply certified talent, 
+        and deliver intelligent systems. Your complete workforce solution.</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -214,16 +214,16 @@ def render_final_landing_page():
     st.markdown("<div id='about'></div>", unsafe_allow_html=True)
     st.markdown("## About T21 Services")
     st.markdown("""
-    **T21 Services Limited** is a leading UK-based healthcare training, talent supply, and technology company serving the NHS and healthcare sector.
+    **T21 Services Limited** is a TQUK Approved Centre and leading UK-based healthcare training, talent supply, and technology company serving the NHS and healthcare sector.
     
     **What We Do:**
-    - 🎓 **Train Individuals** - TQUK-certified NHS administration courses for career starters
+    - 🎓 **Train Individuals** - TQUK-endorsed NHS administration courses for career starters
     - 👥 **Upskill NHS Staff** - Professional development for existing healthcare professionals
     - 💼 **Supply Qualified Talent** - Place our trained graduates into NHS roles
     - 🤖 **Provide AI Automation** - 7 intelligent systems with 188 scenarios to transform NHS operations
     - 🏥 **Support NHS Trusts** - End-to-end workforce and technology solutions
     
-    Established in 2020 and registered with Companies House (No: 13091053), we're committed to transforming healthcare workforce development through innovative training programs and cutting-edge technology solutions.
+    Established in 2020 and registered with Companies House (No: 13091053), we're a TQUK Approved Centre committed to transforming healthcare workforce development through TQUK-endorsed training programs and cutting-edge technology solutions.
     """)
     
     col1, col2, col3 = st.columns(3)
