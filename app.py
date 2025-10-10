@@ -281,100 +281,12 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# ============================================
-# PROFESSIONAL NAVIGATION BAR WITH MENU (Like Oryx Align)
-# ============================================
+# Hide default navigation - landing page has its own
 st.markdown("""
 <style>
     /* Hide sidebar completely */
     [data-testid="stSidebar"] {display: none;}
-    
-    .top-navbar {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2c3e50 100%);
-        padding: 12px 50px;
-        margin: -70px -70px 0 -70px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 4px solid #d4af37;
-    }
-    .nav-logo-section {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-    .nav-logo-img {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-    }
-    .nav-logo-text {
-        font-size: 20px;
-        font-weight: 800;
-        color: #d4af37;
-        margin: 0;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    .nav-menu {
-        display: flex;
-        gap: 35px;
-        align-items: center;
-    }
-    .nav-link {
-        color: white;
-        text-decoration: none;
-        font-size: 15px;
-        font-weight: 700;
-        transition: all 0.3s;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .nav-link:hover {
-        color: #d4af37;
-        transform: translateY(-2px);
-    }
-    .nav-right {
-        display: flex;
-        gap: 15px;
-        align-items: center;
-    }
-    .nav-button {
-        background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
-        color: #1a1a1a;
-        padding: 10px 25px;
-        border-radius: 25px;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 800;
-        transition: all 0.3s;
-        text-transform: uppercase;
-        box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
-    }
-    .nav-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(212, 175, 55, 0.5);
-    }
 </style>
-
-<div class='top-navbar'>
-    <div class='nav-logo-section'>
-        <img src='app/static/logo.png' class='nav-logo-img' onerror='this.style.display="none"'>
-        <div class='nav-logo-text'>T21 Services</div>
-    </div>
-    <div class='nav-menu'>
-        <a href='#about' class='nav-link'>About</a>
-        <a href='#services' class='nav-link'>Services</a>
-        <a href='#pricing' class='nav-link'>Pricing</a>
-        <a href='#contact' class='nav-link'>Contact</a>
-    </div>
-    <div class='nav-right'>
-        <a href='#login' class='nav-button'>🎓 Student Login</a>
-        <a href='#staff' class='nav-button'>👥 Staff Login</a>
-        <a href='#nhs' class='nav-button'>🏥 NHS Login</a>
-    </div>
-</div>
 """, unsafe_allow_html=True)
 
 # ============================================
