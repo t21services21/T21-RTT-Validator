@@ -21,34 +21,36 @@ st.set_page_config(
     layout="wide"
 )
 
-# Hide default sidebar navigation
+# Remove ALL spacing and center logo
 st.markdown("""
 <style>
     [data-testid="stSidebarNav"] {display: none;}
+    .block-container {padding-top: 1rem !important;}
+    .main .block-container {padding-top: 1rem !important;}
 </style>
 """, unsafe_allow_html=True)
 
-# Compact Header with Logo
-try:
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
+# Centered Logo at top
+col1, col2, col3 = st.columns([1, 1, 1])
+with col2:
+    try:
         st.image("assets/logo.png", width=100)
-except:
-    pass
+    except:
+        st.markdown("### 🏥")
 
 st.markdown("""
-<div style='text-align: center; padding: 10px 0;'>
+<div style='text-align: center; padding: 5px 0;'>
     <div style='background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); 
                 color: white; 
                 padding: 6px 16px; 
                 border-radius: 15px; 
                 display: inline-block; 
                 font-size: 14px;
-                margin-bottom: 8px;'>
+                margin: 5px 0;'>
         🎓 STUDENT TRAINING PORTAL
     </div>
     <h2 style='color: #27ae60; margin: 8px 0;'>T21 Healthcare Intelligence Platform</h2>
-    <p style='color: #666; font-size: 14px; margin: 0;'>Professional NHS Administration Training</p>
+    <p style='color: #666; font-size: 14px; margin: 0 0 10px 0;'>Professional NHS Administration Training</p>
 </div>
 """, unsafe_allow_html=True)
 

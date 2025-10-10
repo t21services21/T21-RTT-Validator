@@ -282,36 +282,68 @@ st.set_page_config(
 )
 
 # ============================================
-# PROFESSIONAL HEADER
+# PROFESSIONAL NAVIGATION BAR (Like Big Companies)
 # ============================================
 st.markdown("""
 <style>
-    .main-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 15px 30px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    /* Remove default Streamlit padding */
+    .block-container {
+        padding-top: 0 !important;
+        max-width: 100% !important;
     }
-    .header-content {
+    
+    /* Professional Navigation Bar */
+    .top-nav {
+        background: white;
+        padding: 15px 50px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: -1rem -1rem 2rem -1rem;
+    }
+    
+    .nav-logo {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        gap: 12px;
     }
-    .company-info {
-        color: white;
-        text-align: right;
-        font-size: 12px;
+    
+    .nav-logo-text {
+        font-size: 20px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .nav-subtitle {
+        font-size: 11px;
+        color: #7f8c8d;
+        margin: 0;
+    }
+    
+    .nav-right {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .company-reg {
+        font-size: 11px;
+        color: #95a5a6;
     }
 </style>
 
-<div class="main-header">
-    <div style="display: flex; align-items: center; gap: 20px;">
-        <img src="app/static/logo.png" width="80" style="border-radius: 50%;" onerror="this.style.display='none'">
+<div class="top-nav">
+    <div class="nav-logo">
+        <img src="app/static/logo.png" width="50" onerror="this.style.display='none'">
         <div>
-            <h1 style="color: white; margin: 0; font-size: 28px;">T21 Healthcare Intelligence Platform</h1>
-            <p style="color: rgba(255,255,255,0.9); margin: 5px 0 0 0; font-size: 14px;">Complete NHS Healthcare Administration Suite</p>
+            <div class="nav-logo-text">T21 Services Limited</div>
+            <div class="nav-subtitle">Healthcare Intelligence Platform</div>
         </div>
+    </div>
+    <div class="nav-right">
+        <span class="company-reg">Co. No: 13091053 | Liverpool, UK 🇬🇧</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
