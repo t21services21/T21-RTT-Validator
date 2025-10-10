@@ -232,32 +232,64 @@ def update_patient_status(
     rtt_code: str = None,
     notes: str = ""
 ) -> bool:
-    """Update patient status on PTL"""
+    """Update patient status on PTL - NOW WITH SUPABASE!"""
     
-    ptl = load_ptl()
+    user_email = get_current_user_email()
     
-    for patient in ptl['patients']:
-        if patient['patient_id'] == patient_id:
-            patient['current_status'] = new_status
-            if rtt_code:
-                patient['rtt_code'] = rtt_code
-            if notes:
-                patient['notes'] = notes
-            patient['last_updated'] = datetime.now().isoformat()
-            
-            # Add event
-            patient['events'].append({
+    if SUPABASE_ENABLED:
+        # Update in Supabase
+        updates = {
+            'current_status': new_status,
+            'last_updated': datetime.now().isoformat()
+        }
+        
+        if rtt_code:
+            updates['rtt_code'] = rtt_code
+        
+        if notes:
+            # Append to existing notes
+            updates['notes'] = notes
+        
+        # Get current patient to append to events
+        patient = get_supabase_patient(patient_id, user_email)
+        if patient:
+            current_events = patient.get('events', [])
+            current_events.append({
                 'date': datetime.now().isoformat(),
-                'code': rtt_code or patient['rtt_code'],
+                'code': rtt_code or patient.get('rtt_code', ''),
                 'description': new_status,
                 'notes': notes,
-                'added_by': 'System'
+                'added_by': user_email
             })
-            
-            save_ptl(ptl)
-            return True
-    
-    return False
+            updates['events'] = current_events
+        
+        success, result = update_ptl_patient(patient_id, user_email, updates)
+        return success
+    else:
+        # Fallback to old method
+        ptl = load_ptl()
+        
+        for patient in ptl['patients']:
+            if patient['patient_id'] == patient_id:
+                patient['current_status'] = new_status
+                if rtt_code:
+                    patient['rtt_code'] = rtt_code
+                if notes:
+                    patient['notes'] = notes
+                patient['last_updated'] = datetime.now().isoformat()
+                
+                patient['events'].append({
+                    'date': datetime.now().isoformat(),
+                    'code': rtt_code or patient['rtt_code'],
+                    'description': new_status,
+                    'notes': notes,
+                    'added_by': 'System'
+                })
+                
+                save_ptl(ptl)
+                return True
+        
+        return False
 
 
 def add_appointment(

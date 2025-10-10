@@ -306,6 +306,77 @@ def render_patient_card(patient: dict):
                 if st.button("Close", key=f"close_{patient['patient_id']}"):
                     st.session_state[f"viewing_{patient['patient_id']}"] = False
                     st.rerun()
+        
+        # Update patient popup
+        if st.session_state.get(f"updating_{patient['patient_id']}", False):
+            with st.expander("📝 Update Patient", expanded=True):
+                st.markdown("### Update Patient Information")
+                
+                with st.form(key=f"update_form_{patient['patient_id']}"):
+                    col_a, col_b = st.columns(2)
+                    
+                    with col_a:
+                        new_status = st.selectbox("Current Status", [
+                            "Awaiting First Appointment",
+                            "First Appointment Booked",
+                            "Seen - Diagnostics Pending",
+                            "Diagnostics Complete - Awaiting Decision",
+                            "Decision Made - Awaiting Treatment",
+                            "On Waiting List for Treatment",
+                            "Treatment Complete",
+                            "Discharged"
+                        ], index=0)
+                        
+                        new_priority = st.selectbox("Priority", [
+                            "Routine", "Urgent", "2WW", "Cancer 62-day"
+                        ], index=["Routine", "Urgent", "2WW", "Cancer 62-day"].index(patient.get('priority', 'Routine')))
+                    
+                    with col_b:
+                        new_consultant = st.text_input("Consultant", value=patient.get('consultant', ''))
+                        new_notes = st.text_area("Additional Notes", height=100)
+                    
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        if st.form_submit_button("💾 Save Changes", type="primary", use_container_width=True):
+                            success = update_patient_status(
+                                patient['patient_id'],
+                                new_status,
+                                notes=new_notes
+                            )
+                            if success:
+                                st.success("✅ Patient updated successfully!")
+                                st.session_state[f"updating_{patient['patient_id']}"] = False
+                                st.rerun()
+                            else:
+                                st.error("❌ Failed to update patient")
+                    
+                    with col2:
+                        if st.form_submit_button("❌ Cancel", use_container_width=True):
+                            st.session_state[f"updating_{patient['patient_id']}"] = False
+                            st.rerun()
+        
+        # Remove patient confirmation
+        if st.session_state.get(f"removing_{patient['patient_id']}", False):
+            with st.expander("⚠️ Confirm Removal", expanded=True):
+                st.warning(f"**Are you sure you want to remove {patient['patient_name']} from the PTL?**")
+                st.markdown("This action cannot be undone!")
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    if st.button("🗑️ Yes, Remove", key=f"confirm_remove_{patient['patient_id']}", type="primary", use_container_width=True):
+                        success = remove_from_ptl(patient['patient_id'])
+                        if success:
+                            st.success(f"✅ {patient['patient_name']} removed from PTL")
+                            st.session_state[f"removing_{patient['patient_id']}"] = False
+                            st.rerun()
+                        else:
+                            st.error("❌ Failed to remove patient")
+                
+                with col2:
+                    if st.button("❌ Cancel", key=f"cancel_remove_{patient['patient_id']}", use_container_width=True):
+                        st.session_state[f"removing_{patient['patient_id']}"] = False
+                        st.rerun()
 
 
 def render_add_patient():
