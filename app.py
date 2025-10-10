@@ -460,29 +460,35 @@ if not st.session_state.logged_in and st.session_state.session_email:
 
 # Login/Registration Page
 if not st.session_state.logged_in:
-    # Full-screen hero section (Oryx Align style)
-    st.markdown("""
-    <div style='
-        background: linear-gradient(rgba(44, 62, 80, 0.85), rgba(44, 62, 80, 0.85)), 
-                    url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920") center/cover;
-        padding: 100px 60px;
-        margin: -20px -60px 30px -60px;
-        min-height: 500px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;'>
-        <h1 style='color: white; font-size: 56px; font-weight: 700; margin: 0 0 20px 0; line-height: 1.2;'>
-            NHS Healthcare Intelligence
-        </h1>
-        <h2 style='color: #3498db; font-size: 42px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.2;'>
-            Training aligned to your people,<br>not only your technology.
-        </h2>
-        <p style='color: rgba(255,255,255,0.95); font-size: 18px; max-width: 600px; line-height: 1.6; margin: 0;'>
-            Imagine if your NHS training was something you could always feel happy about, 
-            knowing it was always aligned with your workforce and was never an obstacle to getting things done.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    # Import and render complete landing page
+    try:
+        from landing_page_complete import render_complete_landing_page
+        render_complete_landing_page()
+        st.stop()
+    except:
+        # Fallback hero section
+        st.markdown("""
+        <div style='
+            background: linear-gradient(rgba(44, 62, 80, 0.85), rgba(44, 62, 80, 0.85)), 
+                        url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920") center/cover;
+            padding: 100px 60px;
+            margin: -20px -60px 30px -60px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;'>
+            <h1 style='color: white; font-size: 56px; font-weight: 700; margin: 0 0 20px 0; line-height: 1.2;'>
+                NHS Healthcare Intelligence
+            </h1>
+            <h2 style='color: #d4af37; font-size: 42px; font-weight: 600; margin: 0 0 30px 0; line-height: 1.2;'>
+                Training aligned to your people,<br>not only your technology.
+            </h2>
+            <p style='color: rgba(255,255,255,0.95); font-size: 18px; max-width: 600px; line-height: 1.6; margin: 0;'>
+                Imagine if your NHS training was something you could always feel happy about, 
+                knowing it was always aligned with your workforce and was never an obstacle to getting things done.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
     
     # TRUST BADGES
     col1, col2, col3, col4 = st.columns(4)
