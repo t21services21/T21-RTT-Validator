@@ -1066,7 +1066,9 @@ if not accessible_modules:
         "🎓 My Academic Portal",
         "👥 Staff Management",
         "🔧 Admin Panel",
-        "🏥 PAS Integration Demo",
+        "🏥 PAS Integration Demo (Hands-On)",
+        "🔌 Custom PAS Integration",
+        "🎓 Practical Training Portal (All Courses)",
         "ℹ️ About RTT Rules",
         "📄 Privacy Policy",
         "📜 Terms of Service",
@@ -4006,10 +4008,128 @@ elif tool == "👥 Staff Management":
 
 
 # ============================================
-# PAS INTEGRATION DEMO
+# PAS INTEGRATION DEMO (HANDS-ON)
 # ============================================
-elif tool == "🏥 PAS Integration Demo":
+elif tool == "🏥 PAS Integration Demo (Hands-On)":
     st.switch_page("pages/pas_integration_demo.py")
+
+
+# ============================================
+# CUSTOM PAS INTEGRATION (NHS TRUSTS)
+# ============================================
+elif tool == "🔌 Custom PAS Integration":
+    st.switch_page("pages/pas_custom_integration.py")
+
+
+# ============================================
+# PRACTICAL TRAINING PORTAL - ALL COURSES
+# ============================================
+elif tool == "🎓 Practical Training Portal (All Courses)":
+    st.markdown("""
+    <div style='background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); padding: 40px; border-radius: 10px; margin-bottom: 30px; text-align: center;'>
+        <h1 style='color: white; margin: 0;'>🎓 T21 Practical Training Portal</h1>
+        <p style='color: white; margin: 10px 0 0 0; font-size: 18px;'>Access ALL Your Hands-On Training Courses</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.info("""
+    **🎓 Practical Training Portal** is your dedicated hands-on training environment with MULTIPLE courses and practical exercises across ALL NHS specialties.
+    
+    **You will need to login separately** to access the Training Portal.
+    """)
+    
+    st.markdown("---")
+    
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        st.markdown("""
+        ### 📚 What's in the Training Portal?
+        
+        ✅ **RTT Training** - Referral to Treatment pathways & validation  
+        ✅ **Hospital Administration** - Complete admin training  
+        ✅ **Cancer Pathways** - 2WW & 62-day pathway management  
+        ✅ **MDT Coordination** - Multi-disciplinary team training  
+        ✅ **Medical Secretary** - Complete secretary skills  
+        ✅ **Appointment Systems** - Booking & scheduling  
+        ✅ **Data Quality** - NHS data standards & validation  
+        ✅ **Clinical Coding** - Introduction to coding  
+        ✅ **Patient Pathways** - End-to-end pathway management  
+        ✅ **Practical Scenarios** - Real-world case studies  
+        ✅ **Assessment Tools** - Test your knowledge  
+        ✅ **Progress Tracking** - Monitor your learning  
+        
+        ### 🔐 Separate Login Required
+        
+        The Training Portal is a separate system with its own login:
+        - If you have Training Portal access, use your portal username and password
+        - If you don't have access yet, contact admin@t21services.co.uk
+        
+        ### 💡 How It Works
+        
+        1. Click "Launch Training Portal" button below
+        2. New window opens to Training Portal login
+        3. Login with your Training Portal credentials
+        4. Access ALL your practical training courses
+        5. Return here anytime for theory, AI tools, and validators
+        """)
+    
+    with col2:
+        st.markdown("""
+        <div style='background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center;'>
+            <img src='https://via.placeholder.com/150x150/1e3a8a/ffffff?text=TRAINING+PORTAL' style='border-radius: 10px; margin-bottom: 20px;'>
+            <h3 style='color: #1e3a8a; margin-bottom: 10px;'>External Platform</h3>
+            <p style='color: #666; margin-bottom: 20px;'>Multiple courses available</p>
+            <p style='color: #666; font-size: 12px;'>RTT • Admin • Cancer • MDT<br>Secretary • Coding • More!</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Launch button
+    st.markdown("### 🚀 Ready to Start Training?")
+    
+    col_a, col_b, col_c = st.columns([1, 2, 1])
+    
+    with col_b:
+        st.markdown("""
+        <div style='text-align: center; margin: 30px 0;'>
+            <a href='https://t21servicestraining.co.uk/account/login' target='_blank' style='text-decoration: none;'>
+                <button style='
+                    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+                    color: white;
+                    font-size: 20px;
+                    font-weight: bold;
+                    padding: 20px 40px;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+                    width: 100%;
+                '>
+                    🎓 Launch Training Portal (New Window)
+                </button>
+            </a>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.caption("Opens in new window: https://t21servicestraining.co.uk")
+    
+    st.markdown("---")
+    
+    st.markdown("""
+    ### ❓ Need Help?
+    
+    **Don't have Training Portal access?**  
+    📧 Email: admin@t21services.co.uk  
+    ☎️ Phone: +44 20 3375 2061
+    
+    **Forgot your Training Portal password?**  
+    Use the "Forgot Password?" link on the Training Portal login page
+    
+    **Technical issues?**  
+    Contact our support team: support@t21services.co.uk
+    """)
 
 
 # ============================================

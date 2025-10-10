@@ -437,8 +437,26 @@ DEFAULT_MODULE_ACCESS = {
         "staff": True,
         "nhs_trust": True
     },
-    "🏥 PAS Integration Demo": {
-        "trial": True,  # ALL users - training/demo tool
+    "🏥 PAS Integration Demo (Hands-On)": {
+        "trial": True,  # ALL users - practical training/demo tool
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "🔌 Custom PAS Integration": {
+        "trial": False,  # NHS Trusts and Admins ONLY
+        "basic": False,
+        "professional": False,
+        "ultimate": False,
+        "admin": True,  # Admin can configure
+        "staff": False,
+        "nhs_trust": True  # NHS trusts can request integration
+    },
+    "🎓 Practical Training Portal (All Courses)": {
+        "trial": True,  # ALL users - external training system
         "basic": True,
         "professional": True,
         "ultimate": True,
