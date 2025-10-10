@@ -511,13 +511,15 @@ def render_final_landing_page():
             </div>
         </div>
         <div style='border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; text-align: center;'>
-            <div style='margin-bottom: 15px;'>
-                <a href='/privacy_policy' style='color: rgba(255,255,255,0.8); margin: 0 15px; text-decoration: none;'>Privacy Policy</a> |
-                <a href='/terms_of_service' style='color: rgba(255,255,255,0.8); margin: 0 15px; text-decoration: none;'>Terms of Service</a> |
-                <a href='/gdpr_compliance' style='color: rgba(255,255,255,0.8); margin: 0 15px; text-decoration: none;'>GDPR Compliance</a> |
-                <a href='/cookie_policy' style='color: rgba(255,255,255,0.8); margin: 0 15px; text-decoration: none;'>Cookie Policy</a>
-            </div>
-            <p style='color: rgba(255,255,255,0.6); font-size: 14px;'>© 2025 T21 Services Limited | Company No: 13091053 | Liverpool, England 🇬🇧</p>
+            <p style='color: rgba(255,255,255,0.6); font-size: 14px; margin-top: 20px;'>© 2025 T21 Services Limited | Company No: 13091053 | Liverpool, England 🇬🇧</p>
         </div>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Legal links as Streamlit buttons
+    st.markdown("<br>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([2, 1, 2])
+    
+    with col2:
+        if st.button("📋 Privacy Policy & Terms", use_container_width=True, type="secondary"):
+            st.switch_page("pages/privacy_policy.py")
