@@ -12,7 +12,8 @@ def render_final_landing_page():
     # Custom CSS and Navigation with working dropdown
     st.markdown("""
     <style>
-        /* Keep sidebar visible for login */
+        /* Hide sidebar on landing page */
+        [data-testid="stSidebar"] {display: none;}
         
         .top-nav {
             background: rgba(26, 26, 26, 0.95);
@@ -140,14 +141,6 @@ def render_final_landing_page():
             <a href='#pricing' class='nav-link'>PRICING</a>
             <a href='#contact' class='nav-link'>CONTACT</a>
         </div>
-        <div class='dropdown'>
-            <button class='dropdown-button'>LOGIN ▼</button>
-            <div class='dropdown-content' id='loginDropdown'>
-                <a href='?page=student_login' onclick='window.location.href="/student_login"; return false;'>🎓 Student Login</a>
-                <a href='?page=staff_login' onclick='window.location.href="/staff_login"; return false;'>👥 Staff Login</a>
-                <a href='?page=nhs_login' onclick='window.location.href="/nhs_login"; return false;'>🏥 NHS Login</a>
-            </div>
-        </div>
     </div>
     
     <div class='hero'>
@@ -158,17 +151,23 @@ def render_final_landing_page():
     </div>
     """, unsafe_allow_html=True)
     
-    # Login buttons (Streamlit native - will work!)
-    col1, col2, col3, col4, col5 = st.columns([3, 1, 1, 1, 1])
-    with col3:
-        if st.button("🎓 Student", key="student_login_btn", use_container_width=True):
+    # Login buttons section - prominent and working
+    st.markdown("<br>", unsafe_allow_html=True)
+    col1, col2, col3, col4, col5 = st.columns([2, 1.5, 1.5, 1.5, 2])
+    
+    with col2:
+        if st.button("🎓 STUDENT LOGIN", key="student_login_btn", use_container_width=True, type="primary"):
             st.switch_page("pages/student_login.py")
-    with col4:
-        if st.button("👥 Staff", key="staff_login_btn", use_container_width=True):
+    
+    with col3:
+        if st.button("👥 STAFF LOGIN", key="staff_login_btn", use_container_width=True, type="primary"):
             st.switch_page("pages/staff_login.py")
-    with col5:
-        if st.button("🏥 NHS", key="nhs_login_btn", use_container_width=True):
+    
+    with col4:
+        if st.button("🏥 NHS LOGIN", key="nhs_login_btn", use_container_width=True, type="primary"):
             st.switch_page("pages/nhs_login.py")
+    
+    st.markdown("<br>", unsafe_allow_html=True)
     
     # Trust Badges
     st.markdown("""
