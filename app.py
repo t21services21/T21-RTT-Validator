@@ -399,104 +399,49 @@ if not st.session_state.logged_in and st.session_state.session_email:
 
 # Login/Registration Page
 if not st.session_state.logged_in:
-    # PROFESSIONAL HEADER WITH LOGO AND COMPANY INFO
+    # Welcome Section
     st.markdown("""
-    <div style='background: white; padding: 15px 40px; border-bottom: 2px solid #e0e0e0; margin: -60px -60px 20px -60px;'>
-        <div style='display: flex; justify-content: space-between; align-items: center;'>
-            <div style='display: flex; align-items: center; gap: 20px;'>
-                <!-- LOGO (Will be replaced with your gold logo soon!) -->
-                <div style='background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); width: 60px; height: 60px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
-                    T21
-                </div>
-                <div>
-                    <h3 style='margin: 0; color: #2c3e50;'>T21 Services Limited</h3>
-                    <p style='margin: 0; font-size: 12px; color: #7f8c8d;'>Healthcare Intelligence Platform | Est. 2020</p>
-                </div>
-            </div>
-            <div style='text-align: right;'>
-                <p style='margin: 0; font-size: 14px; color: #2c3e50;'><strong>Company No:</strong> 13091053</p>
-                <p style='margin: 0; font-size: 12px; color: #7f8c8d;'>Liverpool, England 🇬🇧</p>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # HERO SECTION
-    st.markdown("""
-    <div style='text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; margin-bottom: 30px;'>
-        <h1 style='color: white; margin: 0; font-size: 42px;'>🏥 T21 Healthcare Intelligence Platform</h1>
-        <p style='color: white; font-size: 20px; margin: 15px 0 0 0;'>Complete NHS Healthcare Administration Suite</p>
-        <p style='color: #e0e0e0; font-size: 16px; margin: 10px 0 0 0;'>Training + Automation | 7 AI-Powered Modules | 188 Scenarios</p>
+    <div style='text-align: center; padding: 30px 20px;'>
+        <h2 style='color: #2c3e50; margin-bottom: 15px;'>Welcome to T21 Healthcare Intelligence Platform</h2>
+        <p style='color: #666; font-size: 18px; margin-bottom: 25px;'>Complete NHS Healthcare Administration Training & Automation Suite</p>
     </div>
     """, unsafe_allow_html=True)
     
     # TRUST BADGES
-    st.markdown("""
-    <div style='text-align: center; margin-bottom: 30px;'>
-        <div style='display: inline-flex; gap: 20px; flex-wrap: wrap; justify-content: center;'>
-            <div style='background: #f8f9fa; padding: 10px 20px; border-radius: 8px; border: 1px solid #dee2e6;'>
-                <strong>✅ Companies House Registered</strong>
-            </div>
-            <div style='background: #f8f9fa; padding: 10px 20px; border-radius: 8px; border: 1px solid #dee2e6;'>
-                <strong>🏥 NHS Compliant</strong>
-            </div>
-            <div style='background: #f8f9fa; padding: 10px 20px; border-radius: 8px; border: 1px solid #dee2e6;'>
-                <strong>🔒 GDPR Compliant</strong>
-            </div>
-            <div style='background: #f8f9fa; padding: 10px 20px; border-radius: 8px; border: 1px solid #dee2e6;'>
-                <strong>🇬🇧 UK Based</strong>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.info("✅ **Companies House**  \nRegistered")
+    with col2:
+        st.info("🏥 **NHS**  \nCompliant")
+    with col3:
+        st.info("🔒 **GDPR**  \nCompliant")
+    with col4:
+        st.info("🇬🇧 **UK**  \nBased")
     
-    st.markdown("### Welcome to Professional NHS Administration Training & Operations")
+    st.markdown("---")
     
     # Feature highlights
+    st.markdown("### 🎯 What We Offer")
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.info("🎓 **Train** for 15+ NHS Roles")
+        st.success("**🎓 Training**  \n15+ NHS Roles  \nTQUK Certified")
     with col2:
-        st.info("🤖 **Automate** with 7 AI Systems")
+        st.success("**🤖 Automation**  \n7 AI Systems  \n188 Scenarios")
     with col3:
-        st.info("💰 **Save** £2M+ Per Year")
+        st.success("**💰 ROI**  \nSave £2M+/Year  \nProven Results")
     
     st.markdown("---")
     
-    # Portal Selection - BIG CLICKABLE BOXES!
-    st.markdown("## 🚪 Select Your Portal Type")
-    st.markdown("**Click on any box below to select your portal:**")
-    
-    # Use radio button for single selection
-    portal_selection = st.radio(
-        "Choose your portal:",
-        options=["🎓 Students - For Individual Training & Learning", 
-                 "👥 Staff & Partners - For T21 Staff & Training Providers",
-                 "🏥 NHS Organizations - For NHS Trusts & Healthcare Organizations"],
-        index=0,
-        label_visibility="collapsed"
-    )
-    
-    # Parse selection
-    if "Student" in portal_selection:
-        nhs_portal = False
-        staff_portal = False
-        student_portal = True
-        st.success("🎓 **Student Training Portal** - Access training scenarios, AI tutor, and certification")
-    elif "Staff" in portal_selection:
-        nhs_portal = False
-        staff_portal = True
-        student_portal = False
-        st.warning("👥 **Staff/Partner Portal** - Restricted access for authorized personnel only")
-    else:
-        nhs_portal = True
-        staff_portal = False
-        student_portal = False
-        st.info("🏥 **NHS Organization Portal** - Access operational systems, admin dashboards, and analytics")
+    # Login Instructions
+    st.markdown("### 🔐 Please Login to Continue")
+    st.info("👈 **Use the sidebar** to select your portal and login:  \n• 🎓 **Student Login** - For individual training  \n• 👥 **Staff Login** - For T21 staff  \n• 🏥 **NHS Login** - For NHS organizations")
     
     st.markdown("---")
     
-    tab1, tab2 = st.tabs(["🔐 Login", "📝 Register"])
+    # Company Info Footer
+    st.caption("**T21 Services Limited** | Company No: 13091053 | Liverpool, England 🇬🇧 | Est. 2020")
+    
+    st.stop()  # Stop here - don't show login form on main page
     
     with tab1:
         st.subheader("Login")
