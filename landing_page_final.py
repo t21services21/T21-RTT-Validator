@@ -128,9 +128,9 @@ def render_final_landing_page():
         .hero {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
-            padding: 80px 60px 80px 60px;
+            padding: 50px 60px 70px 60px;
             margin: 0 -70px 0 -70px;
-            min-height: 450px;
+            min-height: 400px;
         }
         
         .hero h1 {
@@ -171,11 +171,11 @@ def render_final_landing_page():
     </div>
     
     <div class='hero'>
-        <h1>NHS Healthcare Intelligence</h1>
-        <h2>Training, Talent & Technology<br>aligned to your people.</h2>
-        <p>We train individuals for NHS careers, upskill NHS staff, supply qualified healthcare professionals, 
-        and provide AI-powered automation tools that transform NHS operations. From student to system—we empower 
-        your entire healthcare workforce.</p>
+        <h1>Transform Your NHS Workforce</h1>
+        <h2>Training • Talent • Technology</h2>
+        <p>The UK's leading provider of TQUK-certified NHS training, qualified healthcare talent, and AI-powered 
+        automation. We train individuals, upskill NHS staff, supply certified professionals, and deliver intelligent 
+        systems that save NHS trusts £2M+ annually. Your complete workforce solution.</p>
     </div>
     """, unsafe_allow_html=True)
     
