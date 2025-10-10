@@ -15,18 +15,26 @@ def render_final_landing_page():
         /* Hide sidebar on landing page */
         [data-testid="stSidebar"] {display: none;}
         
+        /* Hide Streamlit header toolbar */
+        header[data-testid="stHeader"] {
+            display: none !important;
+        }
+        
         /* Remove ALL top padding/margin */
         .main .block-container {
             padding-top: 0 !important;
             margin-top: 0 !important;
+            max-width: 100% !important;
         }
         
         .main {
             padding-top: 0 !important;
+            margin-top: 0 !important;
         }
         
-        header {
-            background-color: transparent !important;
+        /* Remove Streamlit's default spacing */
+        .stApp {
+            margin-top: 0 !important;
         }
         
         .top-nav {
