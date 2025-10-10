@@ -11,8 +11,12 @@ st.set_page_config(
     layout="wide"
 )
 
+# Initialize session state
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+
 # ⚠️ AUTHENTICATION CHECK - MUST BE LOGGED IN
-if 'logged_in' not in st.session_state or not st.session_state.logged_in:
+if not st.session_state.logged_in:
     st.error("🔒 **Access Denied - Login Required**")
     st.warning("You must be logged in to access the Appointment System.")
     st.info("This feature is available to all enrolled students. Please login to continue.")
