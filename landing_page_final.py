@@ -128,32 +128,32 @@ def render_final_landing_page():
         .hero {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
-            padding: 50px 60px 70px 60px;
+            padding: 40px 60px 60px 60px;
             margin: 0 -70px 0 -70px;
-            min-height: 400px;
+            min-height: 380px;
         }
         
         .hero h1 {
             color: white;
-            font-size: 72px;
+            font-size: 68px;
             font-weight: 800;
-            margin: 0 0 20px 0;
-            line-height: 1.1;
+            margin: 0 0 15px 0;
+            line-height: 1.05;
         }
         
         .hero h2 {
             color: #d4af37;
-            font-size: 48px;
+            font-size: 44px;
             font-weight: 700;
-            margin: 0 0 40px 0;
-            line-height: 1.2;
+            margin: 0 0 25px 0;
+            line-height: 1.1;
         }
         
         .hero p {
             color: rgba(255,255,255,0.95);
-            font-size: 20px;
-            max-width: 700px;
-            line-height: 1.8;
+            font-size: 18px;
+            max-width: 750px;
+            line-height: 1.6;
         }
     </style>
     
@@ -173,9 +173,9 @@ def render_final_landing_page():
     <div class='hero'>
         <h1>Transform Your NHS Workforce</h1>
         <h2>Training • Talent • Technology</h2>
-        <p>The UK's leading provider of TQUK-certified NHS training, qualified healthcare talent, and AI-powered 
-        automation. We train individuals, upskill NHS staff, supply certified professionals, and deliver intelligent 
-        systems that save NHS trusts £2M+ annually. Your complete workforce solution.</p>
+        <p>UK's leading provider of TQUK-certified NHS training, qualified healthcare professionals, and AI automation 
+        that saves trusts £2M+ annually. We train individuals, upskill staff, supply certified talent, and deliver 
+        intelligent systems. Your complete workforce solution.</p>
     </div>
     """, unsafe_allow_html=True)
     
