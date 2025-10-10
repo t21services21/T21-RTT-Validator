@@ -285,21 +285,22 @@ st.set_page_config(
 # PROFESSIONAL NAVIGATION BAR (Inline - No Import)
 # ============================================
 st.markdown("""
-<div style='background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); 
-            padding: 15px 40px; 
+<div style='background: #2c3e50; 
+            padding: 12px 40px; 
             margin: -70px -70px 20px -70px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
             display: flex;
             justify-content: space-between;
-            align-items: center;'>
+            align-items: center;
+            border-bottom: 3px solid #3498db;'>
     <div style='display: flex; align-items: center; gap: 15px;'>
         <div>
             <div style='font-size: 20px; font-weight: 700; color: white; margin: 0;'>T21 Services Limited</div>
-            <div style='font-size: 11px; color: rgba(255,255,255,0.9); margin: 0;'>Healthcare Intelligence Platform</div>
+            <div style='font-size: 11px; color: #95a5a6; margin: 0;'>Healthcare Intelligence Platform</div>
         </div>
     </div>
     <div>
-        <span style='font-size: 11px; color: rgba(255,255,255,0.85);'>Co. No: 13091053 | Liverpool, UK 🇬🇧</span>
+        <span style='font-size: 11px; color: #bdc3c7;'>Co. No: 13091053 | Liverpool, UK 🇬🇧</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
