@@ -455,4 +455,4 @@ if not os.path.exists(TRACKING_DB):
 if not os.path.exists(LOGIN_HISTORY_DB):
     save_login_history_db({})
 
-print("✅ User Tracking System Initialized")
+# User Tracking System Initialized (no unicode output)

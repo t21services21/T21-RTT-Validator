@@ -279,11 +279,12 @@ ACCOUNT_STATUS = {
 class UserAccount:
     """Enhanced user account with full access control"""
     
-    def __init__(self, user_id, email, role, full_name, created_by="system", password_hash=None):
-        self.user_id = user_id
+    def __init__(self, user_id=None, email=None, role=None, full_name=None, created_by="system", password_hash=None, user_type=None):
+        self.user_id = user_id or email  # Use email as ID if no user_id
         self.email = email
-        self.role = role
-        self.full_name = full_name
+        self.role = role or "trial"
+        self.full_name = full_name or "User"
+        self._user_type = user_type  # Store as private variable (used by property below)
         self.created_by = created_by
         self.created_at = datetime.now()
         self.password_hash = password_hash  # Store password hash
@@ -328,6 +329,11 @@ class UserAccount:
     @property
     def user_type(self):
         """Get user type from role for backwards compatibility"""
+        # If explicitly set during init, use that
+        if hasattr(self, '_user_type') and self._user_type:
+            return self._user_type
+        
+        # Otherwise, derive from role
         if self.role in ['admin', 'super_admin']:
             return 'admin'
         elif self.role in ['staff', 'staff_trainer', 'staff_support']:
