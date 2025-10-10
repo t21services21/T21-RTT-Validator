@@ -184,7 +184,7 @@ def render_final_landing_page():
             <a href='/contact_us' class='nav-link'>CONTACT</a>
         </div>
         <div style='display: flex; gap: 15px;'>
-            <a href='#login' style='background: linear-gradient(135deg, #d4af37, #f4d03f); color: #1a1a1a; padding: 10px 30px; border-radius: 25px; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px;'>LOGIN</a>
+            <a href='#login' style='background: linear-gradient(135deg, #d4af37, #f4d03f); color: #1a1a1a; padding: 10px 30px; border-radius: 25px; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px;'>LOGIN / REGISTER</a>
         </div>
     </div>
     
@@ -213,12 +213,10 @@ def render_final_landing_page():
             st.switch_page("pages/staff_login.py")
     
     with col4:
-        if st.button("🏥 NHS LOGIN", key="nhs_login_btn", use_container_width=True, type="primary"):
+        if st.button("🏥 NHS LOGIN / REGISTER", key="nhs_login_btn", use_container_width=True, type="primary"):
             st.switch_page("pages/nhs_login.py")
     
     st.markdown("<br>", unsafe_allow_html=True)
-    
-    # Trust Badges
     st.markdown("""
     <div style='display: flex; gap: 30px; justify-content: center; padding: 60px 0; background: #f8f9fa; margin: 0 -70px;'>
         <div style='background: white; padding: 30px 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>✅ COMPANIES HOUSE<br>REGISTERED</div>
@@ -227,9 +225,6 @@ def render_final_landing_page():
         <div style='background: white; padding: 30px 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>🇬🇧 UK<br>BASED</div>
     </div>
     """, unsafe_allow_html=True)
-    
-    # About Section - EXPANDED
-    st.markdown("<div id='about'></div>", unsafe_allow_html=True)
     st.markdown("## About T21 Services")
     st.markdown("""
     **T21 Services Limited** is a UK Certified Centre and leading healthcare training, talent supply, and technology company serving the NHS and healthcare sector.

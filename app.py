@@ -364,10 +364,10 @@ if not st.session_state.logged_in and st.session_state.session_email:
 
 # Login/Registration Page
 if not st.session_state.logged_in:
-    # Import and render final landing page
+    # Import and render clean landing page
     try:
-        from landing_page_final import render_final_landing_page
-        render_final_landing_page()
+        from landing_page_clean import render_clean_landing_page
+        render_clean_landing_page()
     except Exception as e:
         st.error(f"Error loading landing page: {e}")
         # Fallback hero section
