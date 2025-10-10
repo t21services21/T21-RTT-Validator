@@ -284,8 +284,19 @@ st.set_page_config(
 # ============================================
 # PROFESSIONAL NAVIGATION BAR (Like Big Companies)
 # ============================================
-from navigation_bar import render_navigation_bar
-render_navigation_bar()
+try:
+    from navigation_bar import render_navigation_bar
+    render_navigation_bar()
+except Exception as e:
+    # Fallback if navigation bar fails
+    st.markdown(f"""
+    <div style='background: white; padding: 10px 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin: -1rem -1rem 1rem -1rem;'>
+        <div style='display: flex; justify-content: space-between; align-items: center;'>
+            <div style='font-size: 18px; font-weight: 700; color: #2c3e50;'>T21 Services Limited</div>
+            <div style='font-size: 11px; color: #95a5a6;'>Co. No: 13091053 | Liverpool, UK 🇬🇧</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ============================================
 # CUSTOM SIDEBAR (Show/Hide based on login)
