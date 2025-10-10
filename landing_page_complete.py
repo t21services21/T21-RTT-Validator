@@ -268,6 +268,12 @@ def render_complete_landing_page():
             </div>
         </div>
         <div class='footer-bottom'>
+            <div style='margin-bottom: 15px;'>
+                <a href='/privacy_policy' style='color: rgba(255,255,255,0.8); margin: 0 15px; text-decoration: none;'>Privacy Policy</a> |
+                <a href='/terms_of_service' style='color: rgba(255,255,255,0.8); margin: 0 15px; text-decoration: none;'>Terms of Service</a> |
+                <a href='/gdpr_compliance' style='color: rgba(255,255,255,0.8); margin: 0 15px; text-decoration: none;'>GDPR Compliance</a> |
+                <a href='/cookie_policy' style='color: rgba(255,255,255,0.8); margin: 0 15px; text-decoration: none;'>Cookie Policy</a>
+            </div>
             © 2025 T21 Services Limited | Company No: 13091053 | Liverpool, England 🇬🇧
         </div>
     </div>

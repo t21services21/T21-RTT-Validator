@@ -2,20 +2,19 @@
 T21 HEALTHCARE INTELLIGENCE PLATFORM
 Contact Us Page
 
-By T21 Services Limited
-Company No: 13091053
 """
 
 import streamlit as st
-import json
-import os
 from datetime import datetime
 
-st.set_page_config(
-    page_title="Contact Us | T21 Services Limited",
-    page_icon="📧",
-    layout="wide"
-)
+st.set_page_config(page_title="Contact Us | T21 Services", page_icon="📧", layout="wide")
+
+# Hide sidebar
+st.markdown("""
+<style>
+    [data-testid="stSidebar"] {display: none;}
+</style>
+""", unsafe_allow_html=True)
 
 # Hide default sidebar navigation
 st.markdown("""

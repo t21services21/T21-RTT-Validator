@@ -26,41 +26,20 @@ st.markdown("""
 # Header
 st.markdown("""
 <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px; margin-bottom: 30px;'>
-    <h1 style='color: white; margin: 0;'>🔒 Privacy Policy</h1>
-    <p style='color: white; margin: 10px 0 0 0;'>T21 Services Limited - Healthcare Intelligence Platform</p>
-</div>
-""", unsafe_allow_html=True)
-
-st.markdown("**Last Updated:** October 9, 2025")
-st.markdown("**Company:** T21 Services Limited (Company No: 13091053)")
-st.markdown("**Address:** 64 Upper Parliament Street, Liverpool, L8 7LF, England")
-
 st.markdown("---")
 
-# Privacy Policy Content
 st.markdown("""
-## 1. Introduction
+## T21 Services Limited - Privacy Policy
 
-Welcome to T21 Services Limited ("we," "our," or "us"). We are committed to protecting your personal data and respecting your privacy.
-
-This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our T21 Healthcare Intelligence Platform.
-
-**Contact Information:**
-- **Company Name:** T21 Services Limited
-- **Company Number:** 13091053
-- **Registered Address:** 64 Upper Parliament Street, Liverpool, L8 7LF, England
-- **Email:** privacy@t21services.co.uk
-- **Website:** www.t21services.co.uk
+**Last Updated:** October 10, 2025  
+**Company Number:** 13091053  
+**Registered Address:** Liverpool, England, UK
 
 ---
 
-## 2. Information We Collect
+### 1. Introduction
 
-### 2.1 Personal Information
-When you register or use our platform, we collect:
-- **Account Information:** Name, email address, password (encrypted)
-- **Professional Information:** Job title, organization, role
-- **Contact Details:** Phone number, mailing address (if provided)
+T21 Services Limited ("we", "our", "us") is committed to protecting and respecting your privacy. This policy explains how we collect, use, and protect your personal data in accordance with the UK General Data Protection Regulation (UK GDPR) and the Data Protection Act 2018.
 - **Payment Information:** Processed securely through third-party payment processors
 
 ### 2.2 Usage Information
