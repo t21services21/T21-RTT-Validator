@@ -15,12 +15,44 @@ def render_sidebar():
     user_type = st.session_state.get('user_type', 'student')
     
     with st.sidebar:
-        # Logo and branding
+        # Professional Header with Logo
+        st.markdown("""
+        <style>
+            .sidebar-header {
+                text-align: center;
+                padding: 10px 0;
+                margin-bottom: 15px;
+            }
+            .sidebar-title {
+                font-size: 16px;
+                font-weight: 600;
+                color: #1f1f1f;
+                margin: 10px 0 5px 0;
+            }
+            .sidebar-subtitle {
+                font-size: 12px;
+                color: #666;
+                margin: 0;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        # Logo
         try:
-            st.image("assets/logo.png", width=180)
+            col1, col2, col3 = st.columns([0.5, 2, 0.5])
+            with col2:
+                st.image("assets/logo.png", width=120)
         except:
-            st.markdown("# 🏥 T21 Services")
-        st.markdown("**Healthcare Intelligence Platform**")
+            pass
+        
+        # Company name and tagline
+        st.markdown("""
+        <div class="sidebar-header">
+            <div class="sidebar-title">T21 Services Limited</div>
+            <div class="sidebar-subtitle">Healthcare Intelligence Platform</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
         st.markdown("---")
         
         if not is_logged_in:
