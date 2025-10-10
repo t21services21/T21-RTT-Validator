@@ -40,7 +40,7 @@ def render_final_landing_page():
         .top-nav {
             background: rgba(26, 26, 26, 0.95);
             padding: 15px 60px;
-            margin: 0 -70px 0 -70px;
+            margin: -100px -70px 0 -70px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -129,7 +129,7 @@ def render_final_landing_page():
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
             padding: 150px 60px 120px 60px;
-            margin: -20px -70px 0 -70px;
+            margin: 0 -70px 0 -70px;
             min-height: 550px;
         }
         
