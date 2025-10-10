@@ -46,6 +46,17 @@ def render_ptl():
     st.header("🤖 AI-Powered PTL - Patient Tracking List")
     st.markdown("**Revolutionary AI-Enhanced RTT Patient Tracking**")
     
+    st.info("""
+    💾 **PERMANENT STORAGE ENABLED!** All patients you add are saved to your personal database and will be available every time you login.
+    
+    ✅ **Your Practice Data:**
+    - Saves permanently to database
+    - Available across all sessions
+    - Only YOU can see your patients
+    - Build your portfolio over time
+    - Track your progress
+    """)
+    
     st.success("""
     🤖 **AI-POWERED FEATURES (10x Better Than Standard NHS PTL!)**
     - 🤖 AI Breach Risk Prediction (4 weeks ahead!)

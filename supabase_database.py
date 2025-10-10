@@ -23,6 +23,103 @@ except:
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
+# ============================================
+# PTL SYSTEM - PERMANENT STUDENT STORAGE
+# ============================================
+
+def add_ptl_patient(user_email, patient_data):
+    """Add patient to PTL for specific user - PERMANENT STORAGE"""
+    try:
+        patient_data['user_email'] = user_email
+        patient_data['created_at'] = datetime.now().isoformat()
+        patient_data['updated_at'] = datetime.now().isoformat()
+        
+        result = supabase.table('ptl_patients').insert(patient_data).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+
+def get_ptl_patients_for_user(user_email):
+    """Get all PTL patients for specific user - ONLY THEIR DATA"""
+    try:
+        result = supabase.table('ptl_patients').select('*').eq('user_email', user_email).execute()
+        return result.data if result.data else []
+    except Exception as e:
+        print(f"Error getting PTL patients: {e}")
+        return []
+
+
+def get_ptl_patient_by_id(patient_id, user_email):
+    """Get specific patient - ONLY if belongs to user"""
+    try:
+        result = supabase.table('ptl_patients').select('*').eq('patient_id', patient_id).eq('user_email', user_email).execute()
+        return result.data[0] if result.data else None
+    except Exception as e:
+        print(f"Error getting patient: {e}")
+        return None
+
+
+def update_ptl_patient(patient_id, user_email, updates):
+    """Update patient - ONLY if belongs to user"""
+    try:
+        updates['updated_at'] = datetime.now().isoformat()
+        result = supabase.table('ptl_patients').update(updates).eq('patient_id', patient_id).eq('user_email', user_email).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+
+def delete_ptl_patient(patient_id, user_email):
+    """Delete patient - ONLY if belongs to user"""
+    try:
+        result = supabase.table('ptl_patients').delete().eq('patient_id', patient_id).eq('user_email', user_email).execute()
+        return True
+    except Exception as e:
+        return False
+
+
+def get_ptl_stats_for_user(user_email):
+    """Get PTL statistics for user's data only"""
+    try:
+        patients = get_ptl_patients_for_user(user_email)
+        
+        total = len(patients)
+        active_breaches = sum(1 for p in patients if p.get('clock_status') == 'BREACH')
+        
+        # Calculate average wait
+        from datetime import datetime as dt
+        total_days = 0
+        max_days = 0
+        
+        for p in patients:
+            try:
+                start_date = dt.fromisoformat(p.get('clock_start_date', ''))
+                days = (dt.now() - start_date).days
+                total_days += days
+                max_days = max(max_days, days)
+            except:
+                pass
+        
+        avg_weeks = (total_days / total / 7) if total > 0 else 0
+        max_weeks = max_days / 7
+        
+        return {
+            'total_patients': total,
+            'active_breaches': active_breaches,
+            'avg_wait_weeks': round(avg_weeks, 1),
+            'max_wait_weeks': round(max_weeks, 1)
+        }
+    except Exception as e:
+        print(f"Error getting stats: {e}")
+        return {
+            'total_patients': 0,
+            'active_breaches': 0,
+            'avg_wait_weeks': 0,
+            'max_wait_weeks': 0
+        }
+
+
 def create_user(email, password_hash, full_name, role="trial", user_type="student"):
     """Create new user in Supabase"""
     try:

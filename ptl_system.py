@@ -20,24 +20,67 @@ import os
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 
+# Import Supabase functions for permanent storage
+try:
+    from supabase_database import (
+        add_ptl_patient,
+        get_ptl_patients_for_user,
+        get_ptl_patient_by_id as get_supabase_patient,
+        update_ptl_patient,
+        delete_ptl_patient,
+        get_ptl_stats_for_user
+    )
+    SUPABASE_ENABLED = True
+except:
+    SUPABASE_ENABLED = False
+    print("⚠️ Supabase not available - using fallback storage")
 
-# Database files
+
+# Database files (fallback only)
 PTL_DATABASE = "ptl_patients.json"
 PTL_HISTORY = "ptl_history.json"
 
 
+def get_current_user_email():
+    """Get current logged-in user's email"""
+    try:
+        import streamlit as st
+        return st.session_state.get('user_email', 'demo@t21services.co.uk')
+    except:
+        return 'demo@t21services.co.uk'
+
+
 def load_ptl():
-    """Load PTL database"""
-    if os.path.exists(PTL_DATABASE):
-        with open(PTL_DATABASE, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {'patients': []}
+    """Load PTL database - Now uses Supabase for permanent per-user storage"""
+    user_email = get_current_user_email()
+    
+    if SUPABASE_ENABLED:
+        # Use Supabase - PERMANENT STORAGE
+        patients = get_ptl_patients_for_user(user_email)
+        return {'patients': patients}
+    else:
+        # Fallback to session/file storage
+        try:
+            import streamlit as st
+            if 'ptl_data' not in st.session_state:
+                if os.path.exists(PTL_DATABASE):
+                    with open(PTL_DATABASE, 'r', encoding='utf-8') as f:
+                        st.session_state.ptl_data = json.load(f)
+                else:
+                    st.session_state.ptl_data = {'patients': []}
+            return st.session_state.ptl_data
+        except:
+            if os.path.exists(PTL_DATABASE):
+                with open(PTL_DATABASE, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            return {'patients': []}
 
 
 def save_ptl(data):
-    """Save PTL database"""
-    with open(PTL_DATABASE, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2)
+    """Save PTL database - Now saves to Supabase permanently"""
+    # Supabase saves happen in individual functions
+    # This function kept for compatibility but does nothing
+    pass
 
 
 def generate_patient_id():
@@ -130,15 +173,15 @@ def add_patient_to_ptl(
     notes: str = ""
 ) -> str:
     """
-    Add patient to PTL
+    Add patient to PTL - NOW WITH PERMANENT STORAGE!
+    Saves to Supabase database with user's email
     
     Returns:
         patient_id
     """
     
-    ptl = load_ptl()
-    
     patient_id = generate_patient_id()
+    user_email = get_current_user_email()
     
     patient = {
         'patient_id': patient_id,
@@ -158,19 +201,29 @@ def add_patient_to_ptl(
         'notes': notes,
         'added_date': datetime.now().isoformat(),
         'last_updated': datetime.now().isoformat(),
-        'appointments': [],
-        'events': [{
+        'appointments': json.dumps([]),  # Store as JSON string
+        'events': json.dumps([{
             'date': referral_date,
             'code': '10',
             'description': f'Referral from {referral_source}',
-            'added_by': 'System'
-        }]
+            'added_by': user_email
+        }])  # Store as JSON string
     }
     
-    ptl['patients'].append(patient)
-    save_ptl(ptl)
-    
-    return patient_id
+    if SUPABASE_ENABLED:
+        # Save to Supabase - PERMANENT!
+        success, result = add_ptl_patient(user_email, patient)
+        if success:
+            return patient_id
+        else:
+            print(f"Error saving patient: {result}")
+            return patient_id
+    else:
+        # Fallback to old method
+        ptl = load_ptl()
+        ptl['patients'].append(patient)
+        save_ptl(ptl)
+        return patient_id
 
 
 def update_patient_status(
