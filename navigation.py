@@ -90,4 +90,8 @@ def render_navigation(current_page="home"):
             st.switch_page("app.py")
     
     with col9:
-        st.write("")
+        if st.session_state.get("logged_in"):
+            if st.button("SECURITY", key="nav_security", use_container_width=True):
+                st.switch_page("pages/security_2fa.py")
+        else:
+            st.write("")
