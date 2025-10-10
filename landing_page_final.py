@@ -128,9 +128,9 @@ def render_final_landing_page():
         .hero {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
-            padding: 100px 60px 100px 60px;
+            padding: 80px 60px 80px 60px;
             margin: 0 -70px 0 -70px;
-            min-height: 500px;
+            min-height: 450px;
         }
         
         .hero h1 {
