@@ -11,10 +11,24 @@ st.markdown("""
 <style>
     [data-testid="stSidebar"] {display: none;}
     
+    /* Remove all top spacing */
+    .main .block-container {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    
+    .main {
+        padding-top: 0 !important;
+    }
+    
+    header[data-testid="stHeader"] {
+        display: none !important;
+    }
+    
     .top-nav {
         background: rgba(26, 26, 26, 0.95);
         padding: 15px 60px;
-        margin: -70px -70px 30px -70px;
+        margin: -100px -70px 30px -70px;
         display: flex;
         justify-content: space-between;
         align-items: center;
