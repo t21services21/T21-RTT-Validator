@@ -15,37 +15,37 @@ def render_sidebar():
     user_type = st.session_state.get('user_type', 'student')
     
     with st.sidebar:
-        # Professional Header with Logo
+        # Compact Professional Header
         st.markdown("""
         <style>
             .sidebar-header {
                 text-align: center;
-                padding: 10px 0;
-                margin-bottom: 15px;
+                padding: 0;
+                margin: 0 0 10px 0;
             }
             .sidebar-title {
-                font-size: 16px;
+                font-size: 15px;
                 font-weight: 600;
                 color: #1f1f1f;
-                margin: 10px 0 5px 0;
+                margin: 5px 0 3px 0;
             }
             .sidebar-subtitle {
-                font-size: 12px;
+                font-size: 11px;
                 color: #666;
-                margin: 0;
+                margin: 0 0 10px 0;
             }
         </style>
         """, unsafe_allow_html=True)
         
-        # Logo
+        # Logo - centered and compact
         try:
-            col1, col2, col3 = st.columns([0.5, 2, 0.5])
+            col1, col2, col3 = st.columns([0.3, 2.4, 0.3])
             with col2:
-                st.image("assets/logo.png", width=120)
+                st.image("assets/logo.png", width=100)
         except:
             pass
         
-        # Company name and tagline
+        # Company name and tagline - compact
         st.markdown("""
         <div class="sidebar-header">
             <div class="sidebar-title">T21 Services Limited</div>
