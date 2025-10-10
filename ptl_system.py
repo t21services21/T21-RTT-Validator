@@ -201,13 +201,13 @@ def add_patient_to_ptl(
         'notes': notes,
         'added_date': datetime.now().isoformat(),
         'last_updated': datetime.now().isoformat(),
-        'appointments': json.dumps([]),  # Store as JSON string
-        'events': json.dumps([{
+        'appointments': [],  # JSONB - store as list, not string
+        'events': [{
             'date': referral_date,
             'code': '10',
             'description': f'Referral from {referral_source}',
             'added_by': user_email
-        }])  # Store as JSON string
+        }]  # JSONB - store as list, not string
     }
     
     if SUPABASE_ENABLED:
