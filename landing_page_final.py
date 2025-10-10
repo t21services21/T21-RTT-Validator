@@ -401,10 +401,10 @@ def render_final_landing_page():
             <p style='color: #666;'>12 Months</p>
             <ul style='text-align: left; color: #555; line-height: 1.8; font-size: 14px;'>
                 <li>✅ Everything in Tier 2</li>
-                <li>✅ <strong>We apply to jobs for you</strong></li>
+                <li>✅ <strong>Job application support</strong> (CV, forms, monitoring)</li>
                 <li>✅ Dedicated career coach</li>
                 <li>✅ Interview scheduling</li>
-                <li>✅ Job placement guarantee</li>
+                <li>✅ Ongoing support (no employment guarantee)</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)

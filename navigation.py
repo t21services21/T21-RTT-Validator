@@ -56,7 +56,7 @@ def render_navigation(current_page="home"):
     """, unsafe_allow_html=True)
     
     # Navigation buttons
-    col1, col2, col3, col4, col5, col6, col7 = st.columns([2, 1, 1, 1, 1, 1, 1])
+    col1, col2, col3, col4, col5, col6, col7, col8, col9 = st.columns([2, 1, 1, 1, 1, 1, 1, 1, 1])
     
     with col1:
         st.write("")  # Spacer for logo
@@ -78,10 +78,16 @@ def render_navigation(current_page="home"):
             st.switch_page("pages/contact_us.py")
     
     with col6:
-        st.write("")  # Spacer
-    
+        if st.button("TESTIMONIALS", key="nav_testimonials", use_container_width=True):
+            st.switch_page("pages/testimonials.py")
+
     with col7:
+        if st.button("PROCUREMENT", key="nav_procurement", use_container_width=True):
+            st.switch_page("pages/procurement.py")
+
+    with col8:
         if st.button("🏠 HOME", key="nav_home", use_container_width=True, type="primary"):
             st.switch_page("app.py")
     
-    st.markdown("<br>", unsafe_allow_html=True)
+    with col9:
+        st.write("")

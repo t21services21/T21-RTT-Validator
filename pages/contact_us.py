@@ -6,6 +6,8 @@ Contact Us Page
 
 import streamlit as st
 from datetime import datetime
+import os
+import json
 
 st.set_page_config(page_title="Contact Us | T21 Services", page_icon="📧", layout="wide")
 
@@ -30,6 +32,29 @@ st.markdown("""
     <p style='color: white; margin: 10px 0 0 0; font-size: 18px;'>We'd love to hear from you!</p>
 </div>
 """, unsafe_allow_html=True)
+
+# Navigation buttons (Streamlit - smooth navigation)
+st.markdown("<div style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: -10px -70px 20px -70px;'>", unsafe_allow_html=True)
+nav1, nav2, nav3, nav4, nav5, nav6 = st.columns(6)
+with nav1:
+    if st.button("🏠 HOME", key="nav_home_contact", use_container_width=True, type="primary"):
+        st.switch_page("app.py")
+with nav2:
+    if st.button("📋 ABOUT", key="nav_about_contact", use_container_width=True):
+        st.switch_page("pages/about.py")
+with nav3:
+    if st.button("🛠️ SERVICES", key="nav_services_contact", use_container_width=True):
+        st.switch_page("pages/services.py")
+with nav4:
+    if st.button("💰 PRICING", key="nav_pricing_contact", use_container_width=True):
+        st.switch_page("pages/pricing.py")
+with nav5:
+    if st.button("⭐ TESTIMONIALS", key="nav_testimonials_contact", use_container_width=True):
+        st.switch_page("pages/testimonials.py")
+with nav6:
+    if st.button("🏛️ PROCUREMENT", key="nav_procurement_contact", use_container_width=True):
+        st.switch_page("pages/procurement.py")
+st.markdown("</div>", unsafe_allow_html=True)
 
 # Two column layout
 col1, col2 = st.columns([2, 1])
@@ -148,7 +173,7 @@ with col1:
                     - Our team will review your inquiry
                     - We'll get back to you with next steps
                     
-                    **For urgent matters:** Call [Your Phone Number] or email support@t21services.co.uk
+                    **For urgent matters:** Call +44 20 3375 2061 or email info@t21services.co.uk
                     """)
                     
                 except Exception as e:
@@ -245,7 +270,7 @@ with faq_col1:
         - **Taster:** £99 / 1 month (try it out)
         - **Tier 1 Practice:** £499 / 6 months (full platform)
         - **Tier 2 Certified:** £1,299 / 12 months (TQUK certification)
-        - **Tier 3 Premium:** £1,799 / 12 months (cert + job placement)
+        - **Tier 3 Premium:** £1,799 / 12 months (cert + job application support)
         
         **For NHS Organizations:**
         - Custom pricing based on trust size

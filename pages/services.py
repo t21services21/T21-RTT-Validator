@@ -63,13 +63,14 @@ st.markdown("""
 </style>
 
 <div class='top-nav'>
+    <img src='assets/t21_logo.png' alt='T21 SERVICES' style='height:34px; vertical-align: middle; border-radius: 50%; margin-right:10px;' onerror="this.style.display='none';">
     <span class='nav-logo-text'>T21 SERVICES</span>
 </div>
 """, unsafe_allow_html=True)
 
 # Navigation buttons
 st.markdown("<div style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: -30px -70px 20px -70px;'>", unsafe_allow_html=True)
-col1, col2, col3, col4, col5 = st.columns(5)
+col1, col2, col3, col4, col5, col6 = st.columns(6)
 with col1:
     if st.button("🏠 HOME", key="nav_home", use_container_width=True, type="primary"):
         st.switch_page("app.py")
@@ -85,6 +86,9 @@ with col4:
 with col5:
     if st.button("⭐ TESTIMONIALS", key="nav_testimonials", use_container_width=True):
         st.switch_page("pages/testimonials.py")
+with col6:
+    if st.button("🏛️ PROCUREMENT", key="nav_procurement", use_container_width=True):
+        st.switch_page("pages/procurement.py")
 st.markdown("</div>", unsafe_allow_html=True)
 
 st.title("Our Complete Services")
@@ -164,9 +168,9 @@ with col1:
     st.markdown("""
     ### What We Provide
     - **Certified Healthcare Professionals**
-    - **RTT-trained staff**
+    - **RTT-trained learners and graduates**
     - **Hospital Administration specialists**
-    - **Temporary & permanent placements**
+    - **Job application & interview support**
     - **Pre-vetted & qualified candidates**
     """)
 
@@ -177,8 +181,8 @@ with col2:
     2. TQUK-endorsed certification
     3. Job application support
     4. Interview preparation
-    5. Placement into NHS roles
-    6. Ongoing support
+    5. NHS employer hiring (we do not directly place; we support your applications)
+    6. Ongoing alumni support
     """)
 
 st.markdown("---")

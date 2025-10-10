@@ -63,13 +63,14 @@ st.markdown("""
 </style>
 
 <div class='top-nav'>
+    <img src='assets/t21_logo.png' alt='T21 SERVICES' style='height:34px; vertical-align: middle; border-radius: 50%; margin-right:10px;' onerror="this.style.display='none';">
     <span class='nav-logo-text'>T21 SERVICES</span>
 </div>
 """, unsafe_allow_html=True)
 
 # Navigation buttons
 st.markdown("<div style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: -30px -70px 20px -70px;'>", unsafe_allow_html=True)
-col1, col2, col3, col4, col5 = st.columns(5)
+col1, col2, col3, col4, col5, col6 = st.columns(6)
 with col1:
     if st.button("🏠 HOME", key="nav_home", use_container_width=True, type="primary"):
         st.switch_page("app.py")
@@ -85,6 +86,9 @@ with col4:
 with col5:
     if st.button("📞 CONTACT", key="nav_contact", use_container_width=True):
         st.switch_page("pages/contact_us.py")
+with col6:
+    if st.button("🏛️ PROCUREMENT", key="nav_procurement", use_container_width=True):
+        st.switch_page("pages/procurement.py")
 st.markdown("</div>", unsafe_allow_html=True)
 
 st.title("⭐ Student Success Stories & Testimonials")

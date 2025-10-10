@@ -101,20 +101,41 @@ def render_clean_landing_page():
     </style>
     
     <div class='top-nav'>
-        <a href='/' style='text-decoration: none;'>
-            <span class='nav-logo-text'>T21 SERVICES</span>
-        </a>
-        <div class='nav-menu'>
-            <a href='/about' class='nav-link'>ABOUT</a>
-            <a href='/services' class='nav-link'>SERVICES</a>
-            <a href='/pricing' class='nav-link'>PRICING</a>
-            <a href='/contact_us' class='nav-link'>CONTACT</a>
-        </div>
+        <span class='nav-logo-text'>T21 SERVICES</span>
+        <div class='nav-menu' style='gap:0;'></div>
         <div>
             <a href='#login' style='background: linear-gradient(135deg, #d4af37, #f4d03f); color: #1a1a1a; padding: 10px 30px; border-radius: 25px; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px;'>LOGIN / REGISTER</a>
         </div>
     </div>
     
+    <!-- hero moved below as a separate Streamlit block -->
+    """, unsafe_allow_html=True)
+    
+    # Top navigation buttons (Streamlit for smooth navigation)
+    st.markdown("<div style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: 0 -70px 0 -70px;'>", unsafe_allow_html=True)
+    nb1, nb2, nb3, nb4, nb5, nb6 = st.columns(6)
+    with nb1:
+        if st.button("📋 ABOUT", key="top_about", use_container_width=True):
+            st.switch_page("pages/about.py")
+    with nb2:
+        if st.button("🛠️ SERVICES", key="top_services", use_container_width=True):
+            st.switch_page("pages/services.py")
+    with nb3:
+        if st.button("💰 PRICING", key="top_pricing", use_container_width=True):
+            st.switch_page("pages/pricing.py")
+    with nb4:
+        if st.button("📞 CONTACT", key="top_contact", use_container_width=True):
+            st.switch_page("pages/contact_us.py")
+    with nb5:
+        if st.button("🏠 HOME", key="top_home", use_container_width=True, type="primary"):
+            st.switch_page("app.py")
+    with nb6:
+        if st.button("🏛️ PROCUREMENT", key="top_procurement", use_container_width=True):
+            st.switch_page("pages/procurement.py")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # Hero section (separate)
+    st.markdown("""
     <div class='hero'>
         <h1>Your NHS Career & Workforce Partner</h1>
         <h2>Training • Talent • Technology</h2>
@@ -123,7 +144,7 @@ def render_clean_landing_page():
         and AI automation saving £2M+ annually. From student to system—we empower everyone.</p>
     </div>
     """, unsafe_allow_html=True)
-    
+
     # Login buttons section
     st.markdown("<div id='login'></div>", unsafe_allow_html=True)
     st.markdown("## 🔐 Login or Register")

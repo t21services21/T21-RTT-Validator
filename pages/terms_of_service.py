@@ -103,15 +103,15 @@ You agree to provide accurate, current, and complete information during registra
 - Alumni network access (lifetime)
 - 10 months continued platform access after certification
 
-**Tier 3 - Premium Job Placement (12 Months):**
+**Tier 3 - Premium Job Application Support (12 Months):**
 - £1,799 for 12 months
 - Everything in Tier 2 PLUS:
-- Our staff applies to NHS jobs on your behalf
-- 3-5 NHS interview invitations guaranteed (no time limit)
+- Personalized NHS job application support (CV, forms, tracking)
+- Interview targeting and scheduling support (no guarantees)
 - 5 × 1-on-1 mock interview coaching sessions
 - Unlimited application reviews
 - Weekly accountability check-ins
-- Support until employed
+- Ongoing support (no employment guarantee)
 
 **NHS Organization Licenses:**
 - Custom pricing based on trust size
@@ -158,7 +158,7 @@ All fees are in GBP (£) and exclude VAT (if applicable).
 - 2 payments: £700 (month 1) + £650 (month 5) = £1,350 (+£51)
 - 3 payments: £475 × 3 (months 1, 4, 7) = £1,425 (+£126)
 
-**Tier 3 (£1,799 regular - 8 week program + job placement):**
+**Tier 3 (£1,799 regular - 8 week program + job application support):**
 - 2 payments: £925 (month 1) + £925 (month 5) = £1,850 (+£51)
 - 3 payments: £625 × 3 (months 1, 4, 7) = £1,875 (+£76)
 
@@ -190,11 +190,12 @@ ALL tiers include a 14-day cancellation right:
 
 **NHS Organizations:** As per contract terms
 
-### 5.4 Tier 3 Job Placement Service Terms
-**Our Guarantee:**
-- We guarantee 3-5 NHS interview invitations
-- No time limit - we continue applying until target achieved
-- Service is non-refundable (we provide unlimited support, not money back)
+### 5.4 Tier 3 Job Application Support Terms
+**Our Support Includes:**
+- Application strategy, CV/profile optimization, and guided submissions (with your consent)
+- Ongoing monitoring of roles and application follow-up
+- Mock interview preparation and scheduling support
+- Service is non-refundable (we provide time and expertise, not outcomes)
 
 **Your Obligations:**
 - Must complete TQUK certification program
@@ -204,7 +205,7 @@ ALL tiers include a 14-day cancellation right:
 - Must accept interviews when offered
 
 **Service Termination:**
-We may terminate job placement service if you:
+We may stop application support if you:
 - Stop responding for 30+ consecutive days
 - Decline 3+ interview invitations without valid reason
 - Fail to attend scheduled mock interview sessions
@@ -368,14 +369,14 @@ Training scenarios are for educational purposes only and supplement (but do not 
 - Verifiable by employers
 - Valid indefinitely (does not expire)
 
-### 8.3 Job Placement Support (Tier 3 Only)
+### 8.3 Job Application Support (Tier 3 Only)
 **What We Provide:**
-- Professional NHS job application writing and submission
-- 3-5 guaranteed interview invitations (no time limit)
+- Professional NHS job application support (CV, forms, submission tracking)
+- Interview targeting and scheduling support (no guarantees)
 - Mock interview preparation sessions
 - Application strategy and guidance
 - LinkedIn profile optimization
-- Support until employed
+- Ongoing support (no employment guarantee)
 
 **What We Do NOT Guarantee:**
 - Job offers (hiring decisions are made by NHS employers)
@@ -392,7 +393,7 @@ Training scenarios are for educational purposes only and supplement (but do not 
 We do not guarantee:
 - Employment outcomes
 - Specific salary levels
-- Job placement timelines (though average is 2-4 months)
+- Employment timelines (though average is 2-4 months)
 - Acceptance by any specific NHS trust
 
 ---
@@ -606,7 +607,7 @@ For questions about these Terms:
 
 **General Inquiries:**
 - **Email:** info@t21services.co.uk
-- **Phone:** [Your Phone Number]
+- **Phone:** +44 20 3375 2061
 
 **Legal Department:**
 - **Email:** legal@t21services.co.uk
