@@ -172,9 +172,10 @@ def render_final_landing_page():
     
     <div class='hero'>
         <h1>NHS Healthcare Intelligence</h1>
-        <h2>Training aligned to your people,<br>not only your technology.</h2>
-        <p>Imagine if your NHS training was something you could always feel happy about, 
-        knowing it was always aligned with your workforce and was never an obstacle to getting things done.</p>
+        <h2>Training, Talent & Technology<br>aligned to your people.</h2>
+        <p>We train individuals for NHS careers, upskill NHS staff, supply qualified healthcare professionals, 
+        and provide AI-powered automation tools that transform NHS operations. From student to system—we empower 
+        your entire healthcare workforce.</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -213,7 +214,14 @@ def render_final_landing_page():
     st.markdown("<div id='about'></div>", unsafe_allow_html=True)
     st.markdown("## About T21 Services")
     st.markdown("""
-    **T21 Services Limited** is a leading UK-based healthcare training and technology company, specializing in comprehensive NHS administration training, AI-powered automation solutions, and digital transformation services for healthcare organizations.
+    **T21 Services Limited** is a leading UK-based healthcare training, talent supply, and technology company serving the NHS and healthcare sector.
+    
+    **What We Do:**
+    - 🎓 **Train Individuals** - TQUK-certified NHS administration courses for career starters
+    - 👥 **Upskill NHS Staff** - Professional development for existing healthcare professionals
+    - 💼 **Supply Qualified Talent** - Place our trained graduates into NHS roles
+    - 🤖 **Provide AI Automation** - 7 intelligent systems with 188 scenarios to transform NHS operations
+    - 🏥 **Support NHS Trusts** - End-to-end workforce and technology solutions
     
     Established in 2020 and registered with Companies House (No: 13091053), we're committed to transforming healthcare workforce development through innovative training programs and cutting-edge technology solutions.
     """)
