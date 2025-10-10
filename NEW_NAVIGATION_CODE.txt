@@ -1,0 +1,94 @@
+==============================================
+COPY THIS CODE TO GITHUB - LINES 284-349
+==============================================
+
+# ============================================
+# PROFESSIONAL NAVIGATION BAR (Like Big Companies)
+# ============================================
+st.markdown("""
+<style>
+    /* Remove default Streamlit padding */
+    .block-container {
+        padding-top: 0 !important;
+        max-width: 100% !important;
+    }
+    
+    /* Professional Navigation Bar */
+    .top-nav {
+        background: white;
+        padding: 15px 50px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: -1rem -1rem 2rem -1rem;
+    }
+    
+    .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .nav-logo-text {
+        font-size: 20px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .nav-subtitle {
+        font-size: 11px;
+        color: #7f8c8d;
+        margin: 0;
+    }
+    
+    .nav-right {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .company-reg {
+        font-size: 11px;
+        color: #95a5a6;
+    }
+</style>
+
+<div class="top-nav">
+    <div class="nav-logo">
+        <img src="app/static/logo.png" width="50" onerror="this.style.display='none'">
+        <div>
+            <div class="nav-logo-text">T21 Services Limited</div>
+            <div class="nav-subtitle">Healthcare Intelligence Platform</div>
+        </div>
+    </div>
+    <div class="nav-right">
+        <span class="company-reg">Co. No: 13091053 | Liverpool, UK 🇬🇧</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+==============================================
+INSTRUCTIONS:
+==============================================
+
+1. Go to: https://github.com/t21services21/T21-RTT-Validator/edit/main/app.py
+
+2. Find lines 284-349 (the old header section)
+
+3. Delete those lines
+
+4. Paste this code in their place
+
+5. Scroll to bottom, add commit message: "Professional navigation bar"
+
+6. Click "Commit changes"
+
+7. Wait 3 minutes
+
+8. Streamlit will auto-deploy
+
+9. Refresh your browser
+
+10. NEW DESIGN WILL APPEAR!
