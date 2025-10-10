@@ -3,10 +3,11 @@ T21 SERVICES - PROCUREMENT (NHS BUYERS)
 """
 
 import streamlit as st
+from navigation import render_navigation
 
 st.set_page_config(page_title="Procurement | T21 Services", page_icon="🏛️", layout="wide")
 
-# Basic chrome
+# Basic chrome + reusable nav
 st.markdown("""
 <style>
     [data-testid="stSidebar"] {display: none;}
@@ -15,28 +16,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Simple top bar (text + buttons)
-st.markdown("<div style='background: rgba(26,26,26,0.95); padding: 15px 60px; margin: -100px -70px 20px -70px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); color: #d4af37; font-weight: 800; text-transform: uppercase;'>T21 SERVICES</div>", unsafe_allow_html=True)
-
-nav = st.columns(6)
-with nav[0]:
-    if st.button("🏠 HOME", use_container_width=True, type="primary"):
-        st.switch_page("app.py")
-with nav[1]:
-    if st.button("📋 ABOUT", use_container_width=True):
-        st.switch_page("pages/about.py")
-with nav[2]:
-    if st.button("🛠️ SERVICES", use_container_width=True):
-        st.switch_page("pages/services.py")
-with nav[3]:
-    if st.button("💰 PRICING", use_container_width=True):
-        st.switch_page("pages/pricing.py")
-with nav[4]:
-    if st.button("📞 CONTACT", use_container_width=True):
-        st.switch_page("pages/contact_us.py")
-with nav[5]:
-    if st.button("⭐ TESTIMONIALS", use_container_width=True):
-        st.switch_page("pages/testimonials.py")
+render_navigation(current_page="procurement")
 
 st.title("🏛️ Procurement for NHS Buyers")
 
@@ -125,6 +105,16 @@ with cta[1]:
 with cta[2]:
     if st.button("🏗️ Implementation Planning", use_container_width=True):
         st.switch_page("pages/contact_us.py")
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+cta2 = st.columns(2)
+with cta2[0]:
+    if st.button("🛡️ Compliance & DSPT", use_container_width=True):
+        st.switch_page("pages/compliance.py")
+with cta2[1]:
+    if st.button("📄 Download Brochure (PDF)", use_container_width=True):
+        st.switch_page("pages/brochure.py")
 
 st.markdown("---")
 

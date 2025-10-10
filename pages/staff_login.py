@@ -101,7 +101,7 @@ else:
         st.warning("⚠️ This portal is restricted to authorized T21 Services staff, training providers, and approved partners only.")
         
         with st.form("staff_login"):
-            email = st.text_input("Staff/Partner Email", placeholder="your.name@t21services.com")
+            email = st.text_input("Staff/Partner Email", placeholder="your.name@t21services.co.uk")
             password = st.text_input("Password", type="password")
             
             col_a, col_b = st.columns(2)
@@ -117,10 +117,14 @@ else:
                 if email and password:
                     password_hash = hashlib.sha256(password.encode()).hexdigest()
                     
-                    # Try Supabase first
+                    # Try Supabase first, but gracefully fall back if not available
+                    supabase_user = None
                     try:
                         from supabase_database import get_user_by_email, update_user_last_login
-                        supabase_user = get_user_by_email(email)
+                        try:
+                            supabase_user = get_user_by_email(email)
+                        except Exception:
+                            supabase_user = None
                         
                         if supabase_user and supabase_user.get('password_hash') == password_hash:
                             user_type = supabase_user.get('user_type', 'student')
@@ -134,7 +138,10 @@ else:
                                     st.rerun()
                                 else:
                                     # No 2FA, proceed with login
-                                    update_user_last_login(email)
+                                    try:
+                                        update_user_last_login(email)
+                                    except Exception:
+                                        pass
                                     
                                     class SimpleUser:
                                         def __init__(self, data):
@@ -150,24 +157,26 @@ else:
                                     st.session_state.user_email = email
                                     st.session_state.session_email = email
                                     
-                                    st.success(f"✅ Welcome to Staff Portal, {user_account.full_name}!")
                                     st.switch_page("app.py")
                             else:
                                 st.error("❌ This portal is for staff/partners only")
                         elif supabase_user:
                             st.error("❌ Incorrect password")
-                        else:
-                            # Fall back to old system
-                            users_db = load_users_db()
-                            
-                            if email in users_db:
-                                user_data = users_db[email]
+                    except Exception as e:
+                        supabase_user = None
+                        st.error(f"❌ Unable to connect to Supabase: {e}")
+                    
+                    # Fallback to local JSON if Supabase not available or user not found
+                    if not supabase_user:
+                        users_db = load_users_db()
+                        
+                        if email in users_db:
+                            user_data = users_db[email]
                                 
                                 # Handle UserAccount object
                                 if hasattr(user_data, 'password_hash'):
                                     stored_hash = user_data.password_hash
                                 else:
-                                    stored_hash = user_data.get('password_hash') if isinstance(user_data, dict) else None
                                 
                                 if stored_hash == password_hash:
                                     # Check if user is staff/admin
@@ -186,8 +195,6 @@ else:
                                     st.error("❌ Incorrect password")
                             else:
                                 st.error("❌ Staff/Partner account not found. Please contact IT support.")
-                    except Exception as e:
-                        st.error(f"❌ Login error. Please try the main app login page.")
                 else:
                     st.error("❌ Please enter both email and password")
         

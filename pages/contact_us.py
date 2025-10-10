@@ -6,6 +6,7 @@ Contact Us Page
 
 import streamlit as st
 from datetime import datetime
+from navigation import render_navigation
 import os
 import json
 
@@ -27,34 +28,12 @@ st.markdown("""
 
 # Header
 st.markdown("""
-<div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 10px; margin-bottom: 30px; text-align: center;'>
     <h1 style='color: white; margin: 0;'>📧 Contact Us</h1>
     <p style='color: white; margin: 10px 0 0 0; font-size: 18px;'>We'd love to hear from you!</p>
 </div>
 """, unsafe_allow_html=True)
 
-# Navigation buttons (Streamlit - smooth navigation)
-st.markdown("<div style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: -10px -70px 20px -70px;'>", unsafe_allow_html=True)
-nav1, nav2, nav3, nav4, nav5, nav6 = st.columns(6)
-with nav1:
-    if st.button("🏠 HOME", key="nav_home_contact", use_container_width=True, type="primary"):
-        st.switch_page("app.py")
-with nav2:
-    if st.button("📋 ABOUT", key="nav_about_contact", use_container_width=True):
-        st.switch_page("pages/about.py")
-with nav3:
-    if st.button("🛠️ SERVICES", key="nav_services_contact", use_container_width=True):
-        st.switch_page("pages/services.py")
-with nav4:
-    if st.button("💰 PRICING", key="nav_pricing_contact", use_container_width=True):
-        st.switch_page("pages/pricing.py")
-with nav5:
-    if st.button("⭐ TESTIMONIALS", key="nav_testimonials_contact", use_container_width=True):
-        st.switch_page("pages/testimonials.py")
-with nav6:
-    if st.button("🏛️ PROCUREMENT", key="nav_procurement_contact", use_container_width=True):
-        st.switch_page("pages/procurement.py")
-st.markdown("</div>", unsafe_allow_html=True)
+render_navigation(current_page="contact")
 
 # Two column layout
 col1, col2 = st.columns([2, 1])

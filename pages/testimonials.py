@@ -3,6 +3,7 @@ T21 SERVICES - TESTIMONIALS & SUCCESS STORIES
 """
 
 import streamlit as st
+from navigation import render_navigation
 
 st.set_page_config(page_title="Testimonials | T21 Services", page_icon="⭐", layout="wide")
 
@@ -68,28 +69,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Navigation buttons
-st.markdown("<div style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: -30px -70px 20px -70px;'>", unsafe_allow_html=True)
-col1, col2, col3, col4, col5, col6 = st.columns(6)
-with col1:
-    if st.button("🏠 HOME", key="nav_home", use_container_width=True, type="primary"):
-        st.switch_page("app.py")
-with col2:
-    if st.button("📋 ABOUT", key="nav_about", use_container_width=True):
-        st.switch_page("pages/about.py")
-with col3:
-    if st.button("🛠️ SERVICES", key="nav_services", use_container_width=True):
-        st.switch_page("pages/services.py")
-with col4:
-    if st.button("💰 PRICING", key="nav_pricing", use_container_width=True):
-        st.switch_page("pages/pricing.py")
-with col5:
-    if st.button("📞 CONTACT", key="nav_contact", use_container_width=True):
-        st.switch_page("pages/contact_us.py")
-with col6:
-    if st.button("🏛️ PROCUREMENT", key="nav_procurement", use_container_width=True):
-        st.switch_page("pages/procurement.py")
-st.markdown("</div>", unsafe_allow_html=True)
+render_navigation(current_page="testimonials")
 
 st.title("⭐ Student Success Stories & Testimonials")
 

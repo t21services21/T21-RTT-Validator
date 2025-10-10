@@ -3,93 +3,12 @@ T21 SERVICES - SERVICES PAGE
 """
 
 import streamlit as st
+from navigation import render_navigation
 
 st.set_page_config(page_title="Our Services | T21 Services", page_icon="🎯", layout="wide")
 
-# Navigation bar
-st.markdown("""
-<style>
-    [data-testid="stSidebar"] {display: none;}
-    
-    /* Remove all top spacing */
-    .main .block-container {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-    }
-    
-    .main {
-        padding-top: 0 !important;
-    }
-    
-    header[data-testid="stHeader"] {
-        display: none !important;
-    }
-    
-    .top-nav {
-        background: rgba(26, 26, 26, 0.95);
-        padding: 15px 60px;
-        margin: -100px -70px 30px -70px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    }
-    
-    .nav-logo-text {
-        font-size: 24px;
-        font-weight: 800;
-        color: #d4af37;
-        text-transform: uppercase;
-        text-decoration: none;
-    }
-    
-    .nav-menu {
-        display: flex;
-        gap: 40px;
-    }
-    
-    .nav-link {
-        color: white !important;
-        font-size: 14px;
-        font-weight: 700;
-        text-transform: uppercase;
-        text-decoration: none;
-        padding: 10px 15px;
-    }
-    
-    .nav-link:hover {
-        color: #d4af37 !important;
-    }
-</style>
-
-<div class='top-nav'>
-    <img src='assets/t21_logo.png' alt='T21 SERVICES' style='height:34px; vertical-align: middle; border-radius: 50%; margin-right:10px;' onerror="this.style.display='none';">
-    <span class='nav-logo-text'>T21 SERVICES</span>
-</div>
-""", unsafe_allow_html=True)
-
-# Navigation buttons
-st.markdown("<div style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: -30px -70px 20px -70px;'>", unsafe_allow_html=True)
-col1, col2, col3, col4, col5, col6 = st.columns(6)
-with col1:
-    if st.button("🏠 HOME", key="nav_home", use_container_width=True, type="primary"):
-        st.switch_page("app.py")
-with col2:
-    if st.button("📋 ABOUT", key="nav_about", use_container_width=True):
-        st.switch_page("pages/about.py")
-with col3:
-    if st.button("💰 PRICING", key="nav_pricing", use_container_width=True):
-        st.switch_page("pages/pricing.py")
-with col4:
-    if st.button("📞 CONTACT", key="nav_contact", use_container_width=True):
-        st.switch_page("pages/contact_us.py")
-with col5:
-    if st.button("⭐ TESTIMONIALS", key="nav_testimonials", use_container_width=True):
-        st.switch_page("pages/testimonials.py")
-with col6:
-    if st.button("🏛️ PROCUREMENT", key="nav_procurement", use_container_width=True):
-        st.switch_page("pages/procurement.py")
-st.markdown("</div>", unsafe_allow_html=True)
+# Reusable navigation
+render_navigation(current_page="services")
 
 st.title("Our Complete Services")
 
