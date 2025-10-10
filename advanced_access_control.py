@@ -352,9 +352,22 @@ class UserAccount:
             return False
         if self.status == "suspended":
             return False
-        if datetime.now() > self.expiry_date:
-            self.status = "expired"
-            return False
+        
+        # Safety check for expiry_date
+        try:
+            if hasattr(self.expiry_date, '__call__'):
+                # If it's a method, call it
+                expiry = self.expiry_date()
+            else:
+                expiry = self.expiry_date
+            
+            if datetime.now() > expiry:
+                self.status = "expired"
+                return False
+        except:
+            # If comparison fails, assume active
+            pass
+        
         return self.status == "active"
     
     def has_permission(self, feature_name):
