@@ -372,10 +372,10 @@ if not st.session_state.logged_in and st.session_state.session_email:
 
 # Login/Registration Page
 if not st.session_state.logged_in:
-    # Import and render complete landing page
+    # Import and render final landing page
     try:
-        from landing_page_complete import render_complete_landing_page
-        render_complete_landing_page()
+        from landing_page_final import render_final_landing_page
+        render_final_landing_page()
         st.stop()
     except:
         # Fallback hero section
