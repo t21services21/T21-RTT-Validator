@@ -88,7 +88,7 @@ def render_clean_landing_page():
     <div class="hero-section">
         <h1>Your NHS Career & Workforce Partner</h1>
         <h2>Training • Talent • Technology</h2>
-        <p><strong>COMPLETE NHS SOLUTION:</strong> Train individuals for NHS careers with TQUK certification • Supply qualified staff to NHS trusts • AI automation saving £2M+ per trust. 120x faster validation • 99.9% accuracy • Zero breaches. Training, talent supply, and technology transformation - your one-stop NHS workforce solution.</p>
+        <p><strong>COMPLETE NHS SOLUTION:</strong> Train individuals seeking NHS careers + Upskill existing NHS staff with TQUK certification • Supply qualified talent to NHS trusts • AI automation saving £2M+ per trust. 120x faster validation • 99.9% accuracy • Zero breaches. Training, talent supply, and technology transformation - your one-stop NHS workforce solution.</p>
     </div>
     """, unsafe_allow_html=True)
     

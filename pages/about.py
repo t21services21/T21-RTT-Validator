@@ -30,11 +30,12 @@ st.markdown("""
 - ✅ **Contact:** Amb. Tosin Michael Owonifari, FCISM (t.owonifari@t21services.co.uk)
 
 **What We Do:**
-- 🎓 **Train Individuals** - TQUK-endorsed RTT & Hospital Administration courses
-- 👥 **Upskill NHS Staff** - Professional development for existing healthcare professionals
-- 💼 **Job Application Support** - Help our trained graduates secure NHS roles with proven success
-- 🤖 **Provide AI Automation** - 7 intelligent systems with 188 scenarios to transform NHS operations
-- 🏥 **Support NHS Trusts** - End-to-end workforce and technology solutions
+- 🎓 **Train Individuals** - TQUK-certified RTT & Hospital Administration courses for career starters
+- 👥 **Upskill NHS Staff** - Professional development and certification for existing healthcare professionals
+- 💼 **Supply Qualified Talent** - Place trained, job-ready staff in NHS organizations
+- 🤝 **Job Application Support** - Help our trained graduates secure NHS roles with proven success
+- 🤖 **Provide AI Automation** - 50+ intelligent modules saving £2M+ per trust annually
+- 🏥 **Support NHS Trusts** - End-to-end workforce training, talent supply, and technology solutions
 
 Established in 2020 and registered with Companies House (No: 13091053), we're a TQUK Approved Centre committed to transforming healthcare workforce development through officially endorsed training programs and cutting-edge technology solutions.
 """)
@@ -53,11 +54,11 @@ with col_mv1:
     
     To be the UK's leading NHS workforce partner by:
     
-    1. **Training** individuals for rewarding NHS careers with TQUK-certified qualifications
+    1. **Training** individuals seeking NHS careers + Upskilling existing NHS staff with TQUK-certified qualifications
     2. **Supplying** qualified, job-ready talent to healthcare organizations
     3. **Transforming** NHS operations through AI-powered technology
     
-    We bridge the gap between aspiring healthcare professionals and NHS employment, while revolutionizing operations with cutting-edge automation.
+    We serve both aspiring healthcare professionals and current NHS staff, bridging training gaps and revolutionizing operations with cutting-edge automation.
     """)
 
 with col_mv2:
