@@ -4,13 +4,13 @@ Complete NHS Healthcare Administration - Training & Automation Suite
 By T21 Services Limited | Company No: 13091053 | Liverpool, England
 www.t21services.co.uk | info@t21services.co.uk
 
-7 Integrated Modules:
-- RTT & Pathway Intelligence
-- Cancer Pathway Management  
-- MDT Coordination Suite
-- Intelligent Appointment System
-- Medical Secretary AI
-- Data Quality & Governance
+55+ Integrated Modules:
+- 12 Core RTT & Pathway Modules
+- 9 Advanced AI Features
+- 14 Training & Learning Modules
+- 8 Digital Transformation Tools
+- 6 Admin & Management Tools
+- 6+ Support & Information Pages
 - Professional Training Academy (15+ NHS Roles)
 
 Trusted by NHS Trusts, Training Providers, and Healthcare Professionals
@@ -1131,7 +1131,7 @@ st.markdown("""
 # Header - Professional Branding
 st.markdown('<div class="main-header">🏥 T21 Healthcare Intelligence Platform</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">Complete NHS Healthcare Administration - Training & Automation Suite | T21 Services UK</div>', unsafe_allow_html=True)
-st.markdown('<p style="text-align: center; color: #666; font-size: 14px; margin-top: -10px;">✨ 7 Integrated Modules | 15+ NHS Roles | AI-Powered Throughout | Trusted by Healthcare Professionals</p>', unsafe_allow_html=True)
+st.markdown('<p style="text-align: center; color: #666; font-size: 14px; margin-top: -10px;">✨ 55+ Integrated Modules | 15+ NHS Roles | AI-Powered Throughout | Trusted by Healthcare Professionals</p>', unsafe_allow_html=True)
 
 # Sidebar - User License Info
 st.sidebar.title("👤 User Profile")
