@@ -26,25 +26,47 @@ import os
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 
+# Import Supabase functions for permanent storage
+try:
+    from supabase_database import (
+        create_correspondence as create_correspondence_in_db,
+        get_correspondence_for_user,
+        create_diary_event as create_diary_event_in_db,
+        get_diary_events_for_user
+    )
+    SUPABASE_ENABLED = True
+except ImportError:
+    SUPABASE_ENABLED = False
+    print("⚠️ Supabase not available for Secretary Module - using fallback storage")
 
-# Database files
+
+def get_current_user_email():
+    """Get current logged-in user's email"""
+    try:
+        import streamlit as st
+        return st.session_state.get('user_email', 'demo@t21services.co.uk')
+    except:
+        return 'demo@t21services.co.uk'
+
+
+# Database files (fallback only)
 CORRESPONDENCE_DB = "correspondence.json"
 DIARY_DB = "diary.json"
-TASKS_DB = "secretary_tasks.json"
-
 
 def load_correspondence():
-    """Load correspondence database"""
-    if os.path.exists(CORRESPONDENCE_DB):
-        with open(CORRESPONDENCE_DB, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {'letters': []}
-
+    """Load correspondence database - Now uses Supabase"""
+    user_email = get_current_user_email()
+    if SUPABASE_ENABLED:
+        return {'letters': get_correspondence_for_user(user_email)}
+    else:
+        if os.path.exists(CORRESPONDENCE_DB):
+            with open(CORRESPONDENCE_DB, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {'letters': []}
 
 def save_correspondence(data):
-    """Save correspondence database"""
-    with open(CORRESPONDENCE_DB, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2)
+    """Save correspondence database - Deprecated"""
+    pass
 
 
 def ai_draft_clinic_letter(
@@ -61,24 +83,20 @@ def ai_draft_clinic_letter(
     follow_up: str = "",
     additional_notes: str = ""
 ) -> Dict:
-    """
-    AI generates professional clinic letter
+    """AI generates professional clinic letter - NOW WITH SUPABASE!"""
     
-    TRAINING: Students learn letter structure
-    AUTOMATION: NHS generates real letters
-    """
-    
+    user_email = get_current_user_email()
     letter_id = f"LETTER_{datetime.now().strftime('%Y%m%d%H%M%S')}"
     
-    # AI-generated letter template (would use GPT-4 in production)
     letter_content = generate_clinic_letter_template(
         letter_type, patient_name, nhs_number, gp_name, gp_address,
         clinic_date, consultant_name, diagnosis, investigations or [],
         treatment_plan, follow_up, additional_notes
     )
     
-    letter = {
+    letter_data = {
         'letter_id': letter_id,
+        'user_email': user_email,
         'letter_type': letter_type,
         'patient_name': patient_name,
         'nhs_number': nhs_number,
@@ -91,10 +109,13 @@ def ai_draft_clinic_letter(
         'created_date': datetime.now().isoformat(),
         'ai_generated': True
     }
-    
-    correspondence = load_correspondence()
-    correspondence['letters'].append(letter)
-    save_correspondence(correspondence)
+
+    if SUPABASE_ENABLED:
+        create_correspondence_in_db(user_email, letter_data)
+    else:
+        correspondence = load_correspondence()
+        correspondence['letters'].append(letter_data)
+        save_correspondence(correspondence)
     
     return {
         'success': True,
@@ -200,58 +221,56 @@ def ai_manage_diary(
 
 
 def add_diary_event(consultant_name: str, event: Dict) -> Dict:
-    """Add event to diary with conflict checking"""
+    """Add event to diary with conflict checking - NOW WITH SUPABASE!"""
     
-    # Check for conflicts
-    conflicts = check_diary_conflicts(
-        consultant_name,
-        event['date'],
-        event['start_time'],
-        event['end_time']
-    )
-    
+    user_email = get_current_user_email()
+    conflicts = check_diary_conflicts(consultant_name, event['date'], event['start_time'], event['end_time'])
+
     if conflicts:
-        # AI suggests alternative times
         alternatives = ai_suggest_alternative_times(consultant_name, event)
-        return {
-            'success': False,
-            'message': 'Time conflict detected',
-            'conflicts': conflicts,
-            'ai_alternatives': alternatives
-        }
-    
-    # Add event
-    diary = load_diary()
-    
-    event['event_id'] = f"EVENT_{datetime.now().strftime('%Y%m%d%H%M%S')}"
-    event['consultant'] = consultant_name
-    event['created_date'] = datetime.now().isoformat()
-    
-    if 'events' not in diary:
-        diary['events'] = []
-    
-    diary['events'].append(event)
-    save_diary(diary)
-    
-    return {
-        'success': True,
-        'event_id': event['event_id'],
-        'message': 'Event added successfully'
+        return {'success': False, 'message': 'Time conflict detected', 'conflicts': conflicts, 'ai_alternatives': alternatives}
+
+    event_id = f"EVENT_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    event_data = {
+        'event_id': event_id,
+        'user_email': user_email,
+        'consultant': consultant_name,
+        'date': event['date'],
+        'start_time': event['start_time'],
+        'end_time': event['end_time'],
+        'event_type': event['event_type'],
+        'location': event.get('location'),
+        'description': event.get('description'),
+        'created_date': datetime.now().isoformat()
     }
+
+    if SUPABASE_ENABLED:
+        success, _ = create_diary_event_in_db(user_email, event_data)
+        if success:
+            return {'success': True, 'event_id': event_id, 'message': 'Event added successfully'}
+        else:
+            return {'success': False, 'message': 'Failed to save event to database'}
+    else:
+        diary = load_diary()
+        diary['events'].append(event_data)
+        save_diary(diary)
+        return {'success': True, 'event_id': event_id, 'message': 'Event added successfully'}
 
 
 def load_diary():
-    """Load diary database"""
-    if os.path.exists(DIARY_DB):
-        with open(DIARY_DB, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {'events': []}
-
+    """Load diary database - Now uses Supabase"""
+    user_email = get_current_user_email()
+    if SUPABASE_ENABLED:
+        return {'events': get_diary_events_for_user(user_email)}
+    else:
+        if os.path.exists(DIARY_DB):
+            with open(DIARY_DB, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {'events': []}
 
 def save_diary(data):
-    """Save diary database"""
-    with open(DIARY_DB, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2)
+    """Save diary database - Deprecated"""
+    pass
 
 
 def check_diary_conflicts(consultant: str, date: str, start: str, end: str) -> List[Dict]:

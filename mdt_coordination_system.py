@@ -18,24 +18,49 @@ import os
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 
+# Import Supabase functions for permanent storage
+try:
+    from supabase_database import (
+        create_mdt_meeting as create_mdt_meeting_in_db,
+        get_mdt_meetings_for_user,
+        update_mdt_meeting as update_mdt_meeting_in_db,
+        delete_mdt_meeting as delete_mdt_meeting_from_db
+    )
+    SUPABASE_ENABLED = True
+except ImportError:
+    SUPABASE_ENABLED = False
+    print("⚠️ Supabase not available for MDT Module - using fallback storage")
 
-# Database files
+
+def get_current_user_email():
+    """Get current logged-in user's email"""
+    try:
+        import streamlit as st
+        return st.session_state.get('user_email', 'demo@t21services.co.uk')
+    except:
+        return 'demo@t21services.co.uk'
+
+
+# Database files (fallback only)
 MDT_MEETINGS_DB = "mdt_meetings.json"
-MDT_PATIENTS_DB = "mdt_patients.json"
 
 
 def load_mdt_meetings():
-    """Load MDT meetings database"""
-    if os.path.exists(MDT_MEETINGS_DB):
-        with open(MDT_MEETINGS_DB, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {'meetings': []}
+    """Load MDT meetings database - Now uses Supabase for permanent per-user storage"""
+    user_email = get_current_user_email()
+    
+    if SUPABASE_ENABLED:
+        return {'meetings': get_mdt_meetings_for_user(user_email)}
+    else:
+        if os.path.exists(MDT_MEETINGS_DB):
+            with open(MDT_MEETINGS_DB, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {'meetings': []}
 
 
 def save_mdt_meetings(data):
-    """Save MDT meetings database"""
-    with open(MDT_MEETINGS_DB, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2)
+    """Save MDT meetings database - Deprecated, Supabase saves happen in individual functions"""
+    pass
 
 
 def load_mdt_patients():
@@ -62,14 +87,14 @@ def create_mdt_meeting(
     meeting_type: str = "Regular",
     notes: str = ""
 ) -> str:
-    """Create new MDT meeting"""
+    """Create new MDT meeting - NOW WITH SUPABASE!"""
     
-    meetings = load_mdt_meetings()
-    
+    user_email = get_current_user_email()
     meeting_id = f"MDT_{datetime.now().strftime('%Y%m%d%H%M%S')}"
     
-    meeting = {
+    meeting_data = {
         'meeting_id': meeting_id,
+        'user_email': user_email,
         'meeting_date': meeting_date,
         'meeting_time': meeting_time,
         'specialty': specialty,
@@ -84,11 +109,19 @@ def create_mdt_meeting(
         'created_date': datetime.now().isoformat(),
         'last_updated': datetime.now().isoformat()
     }
-    
-    meetings['meetings'].append(meeting)
-    save_mdt_meetings(meetings)
-    
-    return meeting_id
+
+    if SUPABASE_ENABLED:
+        success, result = create_mdt_meeting_in_db(user_email, meeting_data)
+        if success:
+            return meeting_id
+        else:
+            print(f"Error saving MDT meeting to Supabase: {result}")
+            return meeting_id
+    else:
+        meetings = load_mdt_meetings()
+        meetings['meetings'].append(meeting_data)
+        save_mdt_meetings(meetings)
+        return meeting_id
 
 
 def add_patient_to_mdt(
@@ -101,38 +134,54 @@ def add_patient_to_mdt(
     urgency: str = "Standard",
     presentation_order: int = None
 ) -> bool:
-    """Add patient to MDT meeting"""
+    """Add patient to MDT meeting - NOW WITH SUPABASE!"""
     
-    meetings = load_mdt_meetings()
-    
-    for meeting in meetings['meetings']:
-        if meeting['meeting_id'] == meeting_id:
-            # Determine presentation order
-            if presentation_order is None:
-                presentation_order = len(meeting['patients']) + 1
-            
-            patient = {
-                'patient_name': patient_name,
-                'nhs_number': nhs_number,
-                'diagnosis': diagnosis,
-                'presenting_clinician': presenting_clinician,
-                'discussion_points': discussion_points,
-                'urgency': urgency,
-                'presentation_order': presentation_order,
-                'outcome': '',
-                'decision': '',
-                'actions': [],
-                'discussed': False,
-                'added_date': datetime.now().isoformat()
-            }
-            
-            meeting['patients'].append(patient)
-            meeting['last_updated'] = datetime.now().isoformat()
-            
-            save_mdt_meetings(meetings)
-            return True
-    
-    return False
+    user_email = get_current_user_email()
+    meeting = get_mdt_meeting_by_id(meeting_id)
+
+    if not meeting:
+        return False
+
+    if presentation_order is None:
+        presentation_order = len(meeting.get('patients', [])) + 1
+
+    patient_data = {
+        'patient_name': patient_name,
+        'nhs_number': nhs_number,
+        'diagnosis': diagnosis,
+        'presenting_clinician': presenting_clinician,
+        'discussion_points': discussion_points,
+        'urgency': urgency,
+        'presentation_order': presentation_order,
+        'outcome': '',
+        'decision': '',
+        'actions': [],
+        'discussed': False,
+        'added_date': datetime.now().isoformat()
+    }
+
+    # The 'patients' field is a JSONB array. We need to append to it.
+    current_patients = meeting.get('patients', [])
+    current_patients.append(patient_data)
+
+    updates = {
+        'patients': current_patients,
+        'last_updated': datetime.now().isoformat()
+    }
+
+    if SUPABASE_ENABLED:
+        success, _ = update_mdt_meeting_in_db(user_email, meeting_id, updates)
+        return success
+    else:
+        # Fallback logic
+        meetings = load_mdt_meetings()
+        for m in meetings['meetings']:
+            if m['meeting_id'] == meeting_id:
+                m['patients'] = current_patients
+                m['last_updated'] = datetime.now().isoformat()
+                save_mdt_meetings(meetings)
+                return True
+        return False
 
 
 def record_mdt_outcome(
@@ -143,51 +192,84 @@ def record_mdt_outcome(
     actions: List[str],
     next_steps: str = ""
 ) -> bool:
-    """Record MDT outcome for a patient"""
-    
-    meetings = load_mdt_meetings()
-    
-    for meeting in meetings['meetings']:
-        if meeting['meeting_id'] == meeting_id:
-            for patient in meeting['patients']:
-                if patient['nhs_number'] == nhs_number:
-                    patient['outcome'] = outcome
-                    patient['decision'] = decision
-                    patient['actions'] = actions
-                    patient['next_steps'] = next_steps
-                    patient['discussed'] = True
-                    patient['outcome_recorded_date'] = datetime.now().isoformat()
-                    
-                    meeting['last_updated'] = datetime.now().isoformat()
-                    save_mdt_meetings(meetings)
-                    return True
-    
-    return False
+    """Record MDT outcome for a patient - NOW WITH SUPABASE!"""
+
+    user_email = get_current_user_email()
+    meeting = get_mdt_meeting_by_id(meeting_id)
+
+    if not meeting:
+        return False
+
+    patients = meeting.get('patients', [])
+    patient_updated = False
+    for patient in patients:
+        if patient['nhs_number'] == nhs_number:
+            patient['outcome'] = outcome
+            patient['decision'] = decision
+            patient['actions'] = actions
+            patient['next_steps'] = next_steps
+            patient['discussed'] = True
+            patient['outcome_recorded_date'] = datetime.now().isoformat()
+            patient_updated = True
+            break
+
+    if not patient_updated:
+        return False
+
+    updates = {
+        'patients': patients,
+        'last_updated': datetime.now().isoformat()
+    }
+
+    if SUPABASE_ENABLED:
+        success, _ = update_mdt_meeting_in_db(user_email, meeting_id, updates)
+        return success
+    else:
+        # Fallback logic
+        meetings = load_mdt_meetings()
+        for m in meetings['meetings']:
+            if m['meeting_id'] == meeting_id:
+                m['patients'] = patients
+                m['last_updated'] = datetime.now().isoformat()
+                save_mdt_meetings(meetings)
+                return True
+        return False
 
 
 def complete_mdt_meeting(meeting_id: str, summary: str = "") -> bool:
-    """Mark MDT meeting as completed"""
-    
-    meetings = load_mdt_meetings()
-    
-    for meeting in meetings['meetings']:
-        if meeting['meeting_id'] == meeting_id:
-            meeting['status'] = 'COMPLETED'
-            meeting['completion_date'] = datetime.now().isoformat()
-            meeting['summary'] = summary
-            
-            # Count outcomes
-            total_patients = len(meeting['patients'])
-            discussed = sum(1 for p in meeting['patients'] if p['discussed'])
-            
-            meeting['total_patients'] = total_patients
-            meeting['discussed_count'] = discussed
-            meeting['not_discussed_count'] = total_patients - discussed
-            
-            save_mdt_meetings(meetings)
-            return True
-    
-    return False
+    """Mark MDT meeting as completed - NOW WITH SUPABASE!"""
+
+    user_email = get_current_user_email()
+    meeting = get_mdt_meeting_by_id(meeting_id)
+
+    if not meeting:
+        return False
+
+    total_patients = len(meeting.get('patients', []))
+    discussed = sum(1 for p in meeting.get('patients', []) if p.get('discussed'))
+
+    updates = {
+        'status': 'COMPLETED',
+        'completion_date': datetime.now().isoformat(),
+        'summary': summary,
+        'total_patients': total_patients,
+        'discussed_count': discussed,
+        'not_discussed_count': total_patients - discussed,
+        'last_updated': datetime.now().isoformat()
+    }
+
+    if SUPABASE_ENABLED:
+        success, _ = update_mdt_meeting_in_db(user_email, meeting_id, updates)
+        return success
+    else:
+        # Fallback logic
+        meetings = load_mdt_meetings()
+        for m in meetings['meetings']:
+            if m['meeting_id'] == meeting_id:
+                m.update(updates)
+                save_mdt_meetings(meetings)
+                return True
+        return False
 
 
 def get_all_mdt_meetings() -> List[Dict]:

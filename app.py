@@ -282,6 +282,216 @@ st.set_page_config(
 )
 
 # ============================================
+# ONE-TIME DATABASE SETUP
+# ============================================
+def setup_cancer_table():
+    """Creates the cancer_patients table in Supabase. One-time setup."""
+    try:
+        from supabase_database import supabase
+        
+        # Check if table already exists by trying to select from it
+        try:
+            supabase.table('cancer_patients').select('id').limit(1).execute()
+            st.session_state.cancer_table_exists = True
+            return True # Table already exists
+        except Exception as e:
+            # If it fails, table likely doesn't exist, so we create it
+            pass
+
+        sql_command = """
+        CREATE TABLE IF NOT EXISTS cancer_patients (
+            id SERIAL PRIMARY KEY,
+            patient_id VARCHAR(50) UNIQUE NOT NULL,
+            user_email VARCHAR(255) NOT NULL,
+            patient_name VARCHAR(255) NOT NULL,
+            nhs_number VARCHAR(20) NOT NULL,
+            cancer_type VARCHAR(100) NOT NULL,
+            pathway_type VARCHAR(50) NOT NULL,
+            referral_date DATE NOT NULL,
+            pathway_start_date DATE NOT NULL,
+            referring_clinician VARCHAR(255),
+            primary_site VARCHAR(255),
+            suspected_diagnosis TEXT,
+            urgency VARCHAR(50),
+            contact_number VARCHAR(50),
+            current_status VARCHAR(255),
+            pathway_status VARCHAR(50),
+            notes TEXT,
+            added_date TIMESTAMP DEFAULT NOW(),
+            last_updated TIMESTAMP DEFAULT NOW(),
+            milestones JSONB DEFAULT '[]',
+            appointments JSONB DEFAULT '[]',
+            diagnostics JSONB DEFAULT '[]',
+            mdt_dates JSONB DEFAULT '[]',
+            events JSONB DEFAULT '[]',
+            created_at TIMESTAMP DEFAULT NOW(),
+            updated_at TIMESTAMP DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_cancer_user_email ON cancer_patients(user_email);
+        CREATE INDEX IF NOT EXISTS idx_cancer_patient_id ON cancer_patients(patient_id);
+        ALTER TABLE cancer_patients ENABLE ROW LEVEL SECURITY;
+        CREATE POLICY \"Users can view their own cancer patients\" ON cancer_patients FOR SELECT USING (auth.email() = user_email);
+        CREATE POLICY \"Users can insert their own cancer patients\" ON cancer_patients FOR INSERT WITH CHECK (auth.email() = user_email);
+        CREATE POLICY \"Users can update their own cancer patients\" ON cancer_patients FOR UPDATE USING (auth.email() = user_email);
+        CREATE POLICY \"Users can delete their own cancer patients\" ON cancer_patients FOR DELETE USING (auth.email() = user_email);
+
+        -- MDT Meetings Table
+        CREATE TABLE IF NOT EXISTS mdt_meetings (
+            id SERIAL PRIMARY KEY,
+            meeting_id VARCHAR(50) UNIQUE NOT NULL,
+            user_email VARCHAR(255) NOT NULL,
+            meeting_date DATE NOT NULL,
+            meeting_time VARCHAR(10),
+            specialty VARCHAR(100),
+            location VARCHAR(255),
+            chair VARCHAR(255),
+            attendees JSONB DEFAULT '[]',
+            meeting_type VARCHAR(50),
+            status VARCHAR(50) DEFAULT 'SCHEDULED',
+            patients JSONB DEFAULT '[]',
+            outcomes JSONB DEFAULT '[]',
+            notes TEXT,
+            summary TEXT,
+            completion_date TIMESTAMP,
+            total_patients INTEGER,
+            discussed_count INTEGER,
+            not_discussed_count INTEGER,
+            created_date TIMESTAMP DEFAULT NOW(),
+            last_updated TIMESTAMP DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_mdt_user_email ON mdt_meetings(user_email);
+        ALTER TABLE mdt_meetings ENABLE ROW LEVEL SECURITY;
+        CREATE POLICY \"Users can manage their own MDT meetings\" ON mdt_meetings FOR ALL USING (auth.email() = user_email);
+
+        -- Clinics Table
+        CREATE TABLE IF NOT EXISTS clinics (
+            id SERIAL PRIMARY KEY,
+            clinic_id VARCHAR(50) UNIQUE NOT NULL,
+            user_email VARCHAR(255) NOT NULL,
+            clinic_name VARCHAR(255) NOT NULL,
+            specialty VARCHAR(100),
+            location VARCHAR(255),
+            consultant VARCHAR(255),
+            day_of_week VARCHAR(20),
+            start_time VARCHAR(10),
+            end_time VARCHAR(10),
+            slot_duration INTEGER,
+            capacity INTEGER,
+            clinic_type VARCHAR(50),
+            slots_template JSONB DEFAULT '[]',
+            active BOOLEAN DEFAULT TRUE,
+            created_date TIMESTAMP DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_clinic_user_email ON clinics(user_email);
+        ALTER TABLE clinics ENABLE ROW LEVEL SECURITY;
+        CREATE POLICY \"Users can manage their own clinics\" ON clinics FOR ALL USING (auth.email() = user_email);
+
+        -- Appointments Table
+        CREATE TABLE IF NOT EXISTS appointments (
+            id SERIAL PRIMARY KEY,
+            appointment_id VARCHAR(50) UNIQUE NOT NULL,
+            user_email VARCHAR(255) NOT NULL,
+            patient_name VARCHAR(255) NOT NULL,
+            nhs_number VARCHAR(20) NOT NULL,
+            clinic_id VARCHAR(50) NOT NULL,
+            appointment_date DATE NOT NULL,
+            slot_time VARCHAR(10) NOT NULL,
+            appointment_type VARCHAR(100),
+            priority VARCHAR(50),
+            status VARCHAR(50) DEFAULT 'BOOKED',
+            special_requirements TEXT,
+            contact_number VARCHAR(50),
+            transport_required BOOLEAN,
+            booked_date TIMESTAMP DEFAULT NOW(),
+            booked_by VARCHAR(100),
+            confirmed BOOLEAN DEFAULT FALSE,
+            attendance_status VARCHAR(50) DEFAULT 'PENDING',
+            dna_risk_score FLOAT,
+            cancellation_reason TEXT,
+            cancelled_by VARCHAR(100),
+            cancelled_date TIMESTAMP,
+            last_updated TIMESTAMP DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_appt_user_email ON appointments(user_email);
+        ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
+        CREATE POLICY \"Users can manage their own appointments\" ON appointments FOR ALL USING (auth.email() = user_email);
+
+        -- Correspondence Table
+        CREATE TABLE IF NOT EXISTS correspondence (
+            id SERIAL PRIMARY KEY,
+            letter_id VARCHAR(50) UNIQUE NOT NULL,
+            user_email VARCHAR(255) NOT NULL,
+            letter_type VARCHAR(100),
+            patient_name VARCHAR(255),
+            nhs_number VARCHAR(20),
+            gp_name VARCHAR(255),
+            gp_address TEXT,
+            clinic_date DATE,
+            consultant_name VARCHAR(255),
+            content TEXT,
+            status VARCHAR(50) DEFAULT 'DRAFT',
+            created_date TIMESTAMP DEFAULT NOW(),
+            ai_generated BOOLEAN
+        );
+        CREATE INDEX IF NOT EXISTS idx_corr_user_email ON correspondence(user_email);
+        ALTER TABLE correspondence ENABLE ROW LEVEL SECURITY;
+        CREATE POLICY \"Users can manage their own correspondence\" ON correspondence FOR ALL USING (auth.email() = user_email);
+
+        -- Diary Events Table
+        CREATE TABLE IF NOT EXISTS diary_events (
+            id SERIAL PRIMARY KEY,
+            event_id VARCHAR(50) UNIQUE NOT NULL,
+            user_email VARCHAR(255) NOT NULL,
+            consultant VARCHAR(255) NOT NULL,
+            date DATE NOT NULL,
+            start_time VARCHAR(10) NOT NULL,
+            end_time VARCHAR(10) NOT NULL,
+            event_type VARCHAR(100),
+            location VARCHAR(255),
+            description TEXT,
+            created_date TIMESTAMP DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_diary_user_email ON diary_events(user_email);
+        ALTER TABLE diary_events ENABLE ROW LEVEL SECURITY;
+        CREATE POLICY \"Users can manage their own diary events\" ON diary_events FOR ALL USING (auth.email() = user_email);
+
+        -- Audit Log Table
+        CREATE TABLE IF NOT EXISTS audit_log (
+            id SERIAL PRIMARY KEY,
+            audit_id VARCHAR(50) UNIQUE NOT NULL,
+            user_email VARCHAR(255) NOT NULL,
+            timestamp TIMESTAMP DEFAULT NOW(),
+            user_action VARCHAR(100),
+            record_type VARCHAR(100),
+            record_id VARCHAR(100),
+            changes JSONB,
+            reason TEXT,
+            ip_address VARCHAR(50),
+            session_id VARCHAR(100)
+        );
+        CREATE INDEX IF NOT EXISTS idx_audit_user_email ON audit_log(user_email);
+        ALTER TABLE audit_log ENABLE ROW LEVEL SECURITY;
+        CREATE POLICY \"Users can manage their own audit logs\" ON audit_log FOR ALL USING (auth.email() = user_email);
+        """
+        
+        # The rpc method is not standard in the supabase-py client, this is a placeholder.
+        # A direct DB connection or a different method would be needed.
+        # For now, we'll assume this is a placeholder for a manual step.
+        # I will add a button for the user to click to indicate they've done this.
+        st.session_state.cancer_table_setup_sql = sql_command
+        return False
+
+    except Exception as e:
+        st.error(f"Database setup failed: {e}")
+        st.session_state.cancer_table_setup_sql = str(e)
+        return False
+
+# Check for setup on startup
+if 'cancer_table_exists' not in st.session_state:
+    setup_cancer_table()
+
+
+# ============================================
 # CUSTOM SIDEBAR (Show/Hide based on login)
 # ============================================
 try:

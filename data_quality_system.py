@@ -27,25 +27,44 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 import re
 
+# Import Supabase functions for permanent storage
+try:
+    from supabase_database import (
+        create_audit_log as create_audit_log_in_db,
+        get_audit_logs_for_user
+    )
+    SUPABASE_ENABLED = True
+except ImportError:
+    SUPABASE_ENABLED = False
+    print("⚠️ Supabase not available for Data Quality Module - using fallback storage")
 
-# Database files
-QUALITY_CHECKS_DB = "quality_checks.json"
+
+def get_current_user_email():
+    """Get current logged-in user's email"""
+    try:
+        import streamlit as st
+        return st.session_state.get('user_email', 'demo@t21services.co.uk')
+    except:
+        return 'demo@t21services.co.uk'
+
+
+# Database files (fallback only)
 AUDIT_LOG_DB = "audit_log.json"
-DATA_ISSUES_DB = "data_issues.json"
 
+def load_audit_log():
+    """Load audit log database - Now uses Supabase"""
+    user_email = get_current_user_email()
+    if SUPABASE_ENABLED:
+        return {'entries': get_audit_logs_for_user(user_email)}
+    else:
+        if os.path.exists(AUDIT_LOG_DB):
+            with open(AUDIT_LOG_DB, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {'entries': []}
 
-def load_quality_checks():
-    """Load quality checks database"""
-    if os.path.exists(QUALITY_CHECKS_DB):
-        with open(QUALITY_CHECKS_DB, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {'checks': []}
-
-
-def save_quality_checks(data):
-    """Save quality checks database"""
-    with open(QUALITY_CHECKS_DB, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2)
+def save_audit_log(data):
+    """Save audit log database - Deprecated"""
+    pass
 
 
 def ai_validate_patient_data(patient_record: Dict) -> Dict:
@@ -493,16 +512,14 @@ def create_audit_trail(
     changes: Dict = None,
     reason: str = ""
 ) -> str:
-    """
-    Create audit trail entry
+    """Create audit trail entry - NOW WITH SUPABASE!"""
     
-    CRITICAL for NHS compliance and data governance
-    """
-    
+    user_email = get_current_user_email()
     audit_id = f"AUDIT_{datetime.now().strftime('%Y%m%d%H%M%S')}"
     
-    audit_entry = {
+    audit_data = {
         'audit_id': audit_id,
+        'user_email': user_email,
         'timestamp': datetime.now().isoformat(),
         'user': user,
         'action': action,
@@ -510,21 +527,16 @@ def create_audit_trail(
         'record_id': record_id,
         'changes': changes or {},
         'reason': reason,
-        'ip_address': 'SYSTEM',  # Would capture real IP in production
-        'session_id': 'SESSION_ID'
+        'ip_address': 'SYSTEM',  # Placeholder
+        'session_id': 'SESSION_ID' # Placeholder
     }
-    
-    # Save to audit log
-    if os.path.exists(AUDIT_LOG_DB):
-        with open(AUDIT_LOG_DB, 'r', encoding='utf-8') as f:
-            audit_log = json.load(f)
+
+    if SUPABASE_ENABLED:
+        create_audit_log_in_db(user_email, audit_data)
     else:
-        audit_log = {'entries': []}
-    
-    audit_log['entries'].append(audit_entry)
-    
-    with open(AUDIT_LOG_DB, 'w', encoding='utf-8') as f:
-        json.dump(audit_log, f, indent=2)
+        audit_log = load_audit_log()
+        audit_log['entries'].append(audit_data)
+        save_audit_log(audit_log)
     
     return audit_id
 

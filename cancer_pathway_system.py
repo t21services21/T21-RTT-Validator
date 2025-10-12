@@ -20,24 +20,49 @@ import os
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 
+# Import Supabase functions for permanent storage
+try:
+    from supabase_database import (
+        add_cancer_patient as add_cancer_patient_to_db,
+        get_cancer_patients_for_user,
+        update_cancer_patient as update_cancer_patient_in_db,
+        delete_cancer_patient as delete_cancer_patient_from_db
+    )
+    SUPABASE_ENABLED = True
+except ImportError:
+    SUPABASE_ENABLED = False
+    print("⚠️ Supabase not available for Cancer Module - using fallback storage")
 
-# Database files
+
+def get_current_user_email():
+    """Get current logged-in user's email"""
+    try:
+        import streamlit as st
+        return st.session_state.get('user_email', 'demo@t21services.co.uk')
+    except:
+        return 'demo@t21services.co.uk'
+
+
+# Database files (fallback only)
 CANCER_PTL_DB = "cancer_ptl.json"
-CANCER_PATHWAYS_DB = "cancer_pathways.json"
 
 
 def load_cancer_ptl():
-    """Load cancer PTL database"""
-    if os.path.exists(CANCER_PTL_DB):
-        with open(CANCER_PTL_DB, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {'patients': []}
+    """Load cancer PTL database - Now uses Supabase for permanent per-user storage"""
+    user_email = get_current_user_email()
+    
+    if SUPABASE_ENABLED:
+        return {'patients': get_cancer_patients_for_user(user_email)}
+    else:
+        if os.path.exists(CANCER_PTL_DB):
+            with open(CANCER_PTL_DB, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {'patients': []}
 
 
 def save_cancer_ptl(data):
-    """Save cancer PTL database"""
-    with open(CANCER_PTL_DB, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2)
+    """Save cancer PTL database - Deprecated, Supabase saves happen in individual functions"""
+    pass
 
 
 def calculate_cancer_days_waiting(start_date: str) -> int:
@@ -120,13 +145,12 @@ def add_cancer_patient(
     contact_number: str = "",
     notes: str = ""
 ) -> str:
-    """Add patient to cancer PTL"""
+    """Add patient to cancer PTL - NOW WITH SUPABASE!"""
     
-    ptl = load_cancer_ptl()
-    
+    user_email = get_current_user_email()
     patient_id = f"CANCER_{datetime.now().strftime('%Y%m%d%H%M%S')}"
     
-    patient = {
+    patient_data = {
         'patient_id': patient_id,
         'patient_name': patient_name,
         'nhs_number': nhs_number,
@@ -155,11 +179,20 @@ def add_cancer_patient(
             'days_from_start': 0
         }]
     }
-    
-    ptl['patients'].append(patient)
-    save_cancer_ptl(ptl)
-    
-    return patient_id
+
+    if SUPABASE_ENABLED:
+        success, result = add_cancer_patient_to_db(user_email, patient_data)
+        if success:
+            return patient_id
+        else:
+            print(f"Error saving cancer patient to Supabase: {result}")
+            # Still return patient_id for fallback UI to work
+            return patient_id
+    else:
+        ptl = load_cancer_ptl()
+        ptl['patients'].append(patient_data)
+        save_cancer_ptl(ptl)
+        return patient_id
 
 
 def add_cancer_milestone(
@@ -212,9 +245,13 @@ def add_cancer_milestone(
 
 
 def get_all_cancer_patients() -> List[Dict]:
-    """Get all patients on cancer PTL"""
-    ptl = load_cancer_ptl()
-    return ptl['patients']
+    """Get all patients on cancer PTL - NOW WITH SUPABASE!"""
+    user_email = get_current_user_email()
+    if SUPABASE_ENABLED:
+        return get_cancer_patients_for_user(user_email)
+    else:
+        ptl = load_cancer_ptl()
+        return ptl.get('patients', [])
 
 
 def get_cancer_patient_by_id(patient_id: str) -> Optional[Dict]:

@@ -42,11 +42,24 @@ def add_ptl_patient(user_email, patient_data):
 
 def get_ptl_patients_for_user(user_email):
     """Get all PTL patients for specific user - ONLY THEIR DATA"""
+    print(f"DEBUG: Fetching PTL patients for {user_email}")
     try:
         result = supabase.table('ptl_patients').select('*').eq('user_email', user_email).execute()
-        return result.data if result.data else []
+        
+        # Detailed logging of the result
+        print(f"DEBUG: Supabase query result for {user_email}: {result}")
+        
+        if hasattr(result, 'data') and isinstance(result.data, list):
+            print(f"SUCCESS: Found {len(result.data)} patients for {user_email}.")
+            return result.data
+        else:
+            print(f"WARNING: No data found or incorrect format for {user_email}. Result: {result}")
+            return []
+            
     except Exception as e:
-        print(f"Error getting PTL patients: {e}")
+        print(f"CRITICAL ERROR in get_ptl_patients_for_user: {e}")
+        # Also print the Supabase client details to check if it's initialized
+        print(f"DEBUG: Supabase client object: {supabase}")
         return []
 
 
@@ -256,6 +269,202 @@ def test_connection():
     except Exception as e:
         print(f"❌ Supabase connection failed: {e}")
         return False
+
+
+# ============================================
+# CANCER PATHWAY MODULE - PERMANENT STORAGE
+# ============================================
+
+def add_cancer_patient(user_email, patient_data):
+    """Add a cancer patient for a specific user."""
+    try:
+        patient_data['user_email'] = user_email
+        patient_data['created_at'] = datetime.now().isoformat()
+        patient_data['updated_at'] = datetime.now().isoformat()
+        result = supabase.table('cancer_patients').insert(patient_data).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+def get_cancer_patients_for_user(user_email):
+    """Get all cancer patients for a specific user."""
+    try:
+        result = supabase.table('cancer_patients').select('*').eq('user_email', user_email).execute()
+        return result.data if result.data else []
+    except Exception as e:
+        print(f"Error getting cancer patients: {e}")
+        return []
+
+def update_cancer_patient(patient_id, user_email, updates):
+    """Update a cancer patient's details."""
+    try:
+        updates['updated_at'] = datetime.now().isoformat()
+        result = supabase.table('cancer_patients').update(updates).eq('patient_id', patient_id).eq('user_email', user_email).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+def delete_cancer_patient(patient_id, user_email):
+    """Delete a cancer patient."""
+    try:
+        supabase.table('cancer_patients').delete().eq('patient_id', patient_id).eq('user_email', user_email).execute()
+        return True
+    except Exception as e:
+        return False, str(e)
+
+
+# ============================================
+# MDT COORDINATION MODULE - PERMANENT STORAGE
+# ============================================
+
+def create_mdt_meeting(user_email, meeting_data):
+    """Create a new MDT meeting for a specific user."""
+    try:
+        meeting_data['user_email'] = user_email
+        result = supabase.table('mdt_meetings').insert(meeting_data).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+def get_mdt_meetings_for_user(user_email):
+    """Get all MDT meetings for a specific user."""
+    try:
+        result = supabase.table('mdt_meetings').select('*').eq('user_email', user_email).execute()
+        return result.data if result.data else []
+    except Exception as e:
+        print(f"Error getting MDT meetings: {e}")
+        return []
+
+def update_mdt_meeting(user_email, meeting_id, updates):
+    """Update an MDT meeting's details."""
+    try:
+        updates['last_updated'] = datetime.now().isoformat()
+        result = supabase.table('mdt_meetings').update(updates).eq('meeting_id', meeting_id).eq('user_email', user_email).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+def delete_mdt_meeting(user_email, meeting_id):
+    """Delete an MDT meeting."""
+    try:
+        supabase.table('mdt_meetings').delete().eq('meeting_id', meeting_id).eq('user_email', user_email).execute()
+        return True
+    except Exception as e:
+        return False, str(e)
+
+
+# ============================================
+# ADVANCED BOOKING SYSTEM - PERMANENT STORAGE
+# ============================================
+
+def create_clinic_template(user_email, clinic_data):
+    """Create a new clinic template for a specific user."""
+    try:
+        clinic_data['user_email'] = user_email
+        result = supabase.table('clinics').insert(clinic_data).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+def get_clinics_for_user(user_email):
+    """Get all clinic templates for a specific user."""
+    try:
+        result = supabase.table('clinics').select('*').eq('user_email', user_email).execute()
+        return result.data if result.data else []
+    except Exception as e:
+        print(f"Error getting clinics: {e}")
+        return []
+
+def create_appointment(user_email, appointment_data):
+    """Create a new appointment for a specific user."""
+    try:
+        appointment_data['user_email'] = user_email
+        result = supabase.table('appointments').insert(appointment_data).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+def get_appointments_for_user(user_email):
+    """Get all appointments for a specific user."""
+    try:
+        result = supabase.table('appointments').select('*').eq('user_email', user_email).execute()
+        return result.data if result.data else []
+    except Exception as e:
+        print(f"Error getting appointments: {e}")
+        return []
+
+def update_appointment(user_email, appointment_id, updates):
+    """Update an appointment's details."""
+    try:
+        updates['last_updated'] = datetime.now().isoformat()
+        result = supabase.table('appointments').update(updates).eq('appointment_id', appointment_id).eq('user_email', user_email).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+
+# ============================================
+# MEDICAL SECRETARY AI - PERMANENT STORAGE
+# ============================================
+
+def create_correspondence(user_email, letter_data):
+    """Create a new correspondence letter for a specific user."""
+    try:
+        letter_data['user_email'] = user_email
+        result = supabase.table('correspondence').insert(letter_data).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+def get_correspondence_for_user(user_email):
+    """Get all correspondence for a specific user."""
+    try:
+        result = supabase.table('correspondence').select('*').eq('user_email', user_email).execute()
+        return result.data if result.data else []
+    except Exception as e:
+        print(f"Error getting correspondence: {e}")
+        return []
+
+def create_diary_event(user_email, event_data):
+    """Create a new diary event for a specific user."""
+    try:
+        event_data['user_email'] = user_email
+        result = supabase.table('diary_events').insert(event_data).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+def get_diary_events_for_user(user_email):
+    """Get all diary events for a specific user."""
+    try:
+        result = supabase.table('diary_events').select('*').eq('user_email', user_email).execute()
+        return result.data if result.data else []
+    except Exception as e:
+        print(f"Error getting diary events: {e}")
+        return []
+
+
+# ============================================
+# DATA QUALITY SYSTEM - PERMANENT STORAGE
+# ============================================
+
+def create_audit_log(user_email, audit_data):
+    """Create a new audit log entry for a specific user."""
+    try:
+        audit_data['user_email'] = user_email
+        result = supabase.table('audit_log').insert(audit_data).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+def get_audit_logs_for_user(user_email):
+    """Get all audit logs for a specific user."""
+    try:
+        result = supabase.table('audit_log').select('*').eq('user_email', user_email).execute()
+        return result.data if result.data else []
+    except Exception as e:
+        print(f"Error getting audit logs: {e}")
+        return []
 
 
 # ============================================

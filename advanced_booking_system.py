@@ -27,39 +27,63 @@ from datetime import datetime, timedelta, time
 from typing import List, Dict, Optional
 import calendar
 
+# Import Supabase functions for permanent storage
+try:
+    from supabase_database import (
+        create_clinic_template as create_clinic_in_db,
+        get_clinics_for_user,
+        create_appointment as create_appointment_in_db,
+        get_appointments_for_user,
+        update_appointment as update_appointment_in_db
+    )
+    SUPABASE_ENABLED = True
+except ImportError:
+    SUPABASE_ENABLED = False
+    print("⚠️ Supabase not available for Booking Module - using fallback storage")
 
-# Database files
+
+def get_current_user_email():
+    """Get current logged-in user's email"""
+    try:
+        import streamlit as st
+        return st.session_state.get('user_email', 'demo@t21services.co.uk')
+    except:
+        return 'demo@t21services.co.uk'
+
+
+# Database files (fallback only)
 APPOINTMENTS_DB = "appointments.json"
 CLINICS_DB = "clinics.json"
-SLOTS_DB = "appointment_slots.json"
-
 
 def load_appointments():
-    """Load appointments database"""
-    if os.path.exists(APPOINTMENTS_DB):
-        with open(APPOINTMENTS_DB, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {'appointments': []}
-
+    """Load appointments database - Now uses Supabase"""
+    user_email = get_current_user_email()
+    if SUPABASE_ENABLED:
+        return {'appointments': get_appointments_for_user(user_email)}
+    else:
+        if os.path.exists(APPOINTMENTS_DB):
+            with open(APPOINTMENTS_DB, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {'appointments': []}
 
 def save_appointments(data):
-    """Save appointments database"""
-    with open(APPOINTMENTS_DB, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2)
-
+    """Save appointments database - Deprecated"""
+    pass
 
 def load_clinics():
-    """Load clinics database"""
-    if os.path.exists(CLINICS_DB):
-        with open(CLINICS_DB, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {'clinics': []}
-
+    """Load clinics database - Now uses Supabase"""
+    user_email = get_current_user_email()
+    if SUPABASE_ENABLED:
+        return {'clinics': get_clinics_for_user(user_email)}
+    else:
+        if os.path.exists(CLINICS_DB):
+            with open(CLINICS_DB, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {'clinics': []}
 
 def save_clinics(data):
-    """Save clinics database"""
-    with open(CLINICS_DB, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2)
+    """Save clinics database - Deprecated"""
+    pass
 
 
 def create_clinic_template(
@@ -74,17 +98,16 @@ def create_clinic_template(
     capacity: int = 20,
     clinic_type: str = "Outpatient"
 ) -> str:
-    """Create recurring clinic template"""
+    """Create recurring clinic template - NOW WITH SUPABASE!"""
     
-    clinics = load_clinics()
-    
+    user_email = get_current_user_email()
     clinic_id = f"CLINIC_{datetime.now().strftime('%Y%m%d%H%M%S')}"
     
-    # Generate appointment slots
     slots = generate_clinic_slots(start_time, end_time, slot_duration, capacity)
     
-    clinic = {
+    clinic_data = {
         'clinic_id': clinic_id,
+        'user_email': user_email,
         'clinic_name': clinic_name,
         'specialty': specialty,
         'location': location,
@@ -99,11 +122,18 @@ def create_clinic_template(
         'active': True,
         'created_date': datetime.now().isoformat()
     }
-    
-    clinics['clinics'].append(clinic)
-    save_clinics(clinics)
-    
-    return clinic_id
+
+    if SUPABASE_ENABLED:
+        success, _ = create_clinic_in_db(user_email, clinic_data)
+        if success:
+            return clinic_id
+        else:
+            return "ERROR"
+    else:
+        clinics = load_clinics()
+        clinics['clinics'].append(clinic_data)
+        save_clinics(clinics)
+        return clinic_id
 
 
 def generate_clinic_slots(start_time: str, end_time: str, duration: int, capacity: int) -> List[Dict]:
@@ -147,35 +177,20 @@ def book_appointment(
     transport_required: bool = False
 ) -> Dict:
     """
-    Book appointment with AI optimization
-    
-    Returns booking confirmation or alternative suggestions
+    Book appointment with AI optimization - NOW WITH SUPABASE!
     """
     
-    appointments = load_appointments()
-    
-    # Check slot availability
+    user_email = get_current_user_email()
     available = check_slot_availability(clinic_id, appointment_date, slot_time)
-    
+
     if not available:
-        # AI suggests alternative slots
-        alternatives = ai_suggest_alternative_slots(clinic_id, appointment_date, patient_data={
-            'priority': priority,
-            'appointment_type': appointment_type
-        })
-        
-        return {
-            'success': False,
-            'message': 'Slot not available',
-            'alternatives': alternatives,
-            'ai_recommendation': alternatives[0] if alternatives else None
-        }
-    
-    # Create booking
+        alternatives = ai_suggest_alternative_slots(clinic_id, appointment_date, patient_data={'priority': priority, 'appointment_type': appointment_type})
+        return {'success': False, 'message': 'Slot not available', 'alternatives': alternatives, 'ai_recommendation': alternatives[0] if alternatives else None}
+
     appointment_id = f"APPT_{datetime.now().strftime('%Y%m%d%H%M%S')}"
-    
-    appointment = {
+    appointment_data = {
         'appointment_id': appointment_id,
+        'user_email': user_email,
         'patient_name': patient_name,
         'nhs_number': nhs_number,
         'clinic_id': clinic_id,
@@ -191,25 +206,20 @@ def book_appointment(
         'booked_by': 'System',
         'confirmed': False,
         'attendance_status': 'PENDING',
-        'dna_risk_score': calculate_dna_risk(patient_data={
-            'nhs_number': nhs_number,
-            'appointment_type': appointment_type,
-            'priority': priority
-        })
+        'dna_risk_score': calculate_dna_risk(patient_data={'nhs_number': nhs_number, 'appointment_type': appointment_type, 'priority': priority})
     }
-    
-    appointments['appointments'].append(appointment)
-    save_appointments(appointments)
-    
-    # Mark slot as booked
-    mark_slot_booked(clinic_id, appointment_date, slot_time, appointment_id)
-    
-    return {
-        'success': True,
-        'appointment_id': appointment_id,
-        'confirmation': f"Appointment booked for {appointment_date} at {slot_time}",
-        'details': appointment
-    }
+
+    if SUPABASE_ENABLED:
+        success, _ = create_appointment_in_db(user_email, appointment_data)
+        if success:
+            return {'success': True, 'appointment_id': appointment_id, 'confirmation': f"Appointment booked for {appointment_date} at {slot_time}", 'details': appointment_data}
+        else:
+            return {'success': False, 'message': 'Failed to save appointment to database'}
+    else:
+        appointments = load_appointments()
+        appointments['appointments'].append(appointment_data)
+        save_appointments(appointments)
+        return {'success': True, 'appointment_id': appointment_id, 'confirmation': f"Appointment booked for {appointment_date} at {slot_time}", 'details': appointment_data}
 
 
 def check_slot_availability(clinic_id: str, appointment_date: str, slot_time: str) -> bool:
@@ -397,21 +407,27 @@ def get_available_slots(clinic_id: str, date: str) -> List[Dict]:
 
 
 def cancel_appointment(appointment_id: str, reason: str, cancelled_by: str = "Patient") -> bool:
-    """Cancel an appointment"""
+    """Cancel an appointment - NOW WITH SUPABASE!"""
     
-    appointments = load_appointments()
-    
-    for appt in appointments['appointments']:
-        if appt['appointment_id'] == appointment_id:
-            appt['status'] = 'CANCELLED'
-            appt['cancellation_reason'] = reason
-            appt['cancelled_by'] = cancelled_by
-            appt['cancelled_date'] = datetime.now().isoformat()
-            
-            save_appointments(appointments)
-            return True
-    
-    return False
+    user_email = get_current_user_email()
+    updates = {
+        'status': 'CANCELLED',
+        'cancellation_reason': reason,
+        'cancelled_by': cancelled_by,
+        'cancelled_date': datetime.now().isoformat()
+    }
+
+    if SUPABASE_ENABLED:
+        success, _ = update_appointment_in_db(user_email, appointment_id, updates)
+        return success
+    else:
+        appointments = load_appointments()
+        for appt in appointments['appointments']:
+            if appt['appointment_id'] == appointment_id:
+                appt.update(updates)
+                save_appointments(appointments)
+                return True
+        return False
 
 
 def reschedule_appointment(
@@ -420,22 +436,20 @@ def reschedule_appointment(
     new_date: str,
     new_time: str
 ) -> Dict:
-    """Reschedule an appointment with AI optimization"""
+    """Reschedule an appointment with AI optimization - NOW WITH SUPABASE!"""
     
-    # Cancel old appointment
-    cancel_appointment(appointment_id, "Rescheduled", "System")
-    
-    # Get patient details from old appointment
-    appointments = load_appointments()
-    old_appt = None
-    for appt in appointments['appointments']:
-        if appt['appointment_id'] == appointment_id:
-            old_appt = appt
-            break
-    
+    user_email = get_current_user_email()
+    appointments = load_appointments()['appointments']
+    old_appt = next((a for a in appointments if a['appointment_id'] == appointment_id), None)
+
     if not old_appt:
-        return {'success': False, 'message': 'Appointment not found'}
-    
+        return {'success': False, 'message': 'Original appointment not found'}
+
+    # Cancel old appointment
+    cancel_success = cancel_appointment(appointment_id, "Rescheduled by system", "System")
+    if not cancel_success:
+        return {'success': False, 'message': 'Failed to cancel the original appointment'}
+
     # Book new appointment
     return book_appointment(
         patient_name=old_appt['patient_name'],
@@ -446,7 +460,8 @@ def reschedule_appointment(
         appointment_type=old_appt['appointment_type'],
         priority=old_appt['priority'],
         special_requirements=old_appt.get('special_requirements', ''),
-        contact_number=old_appt.get('contact_number', '')
+        contact_number=old_appt.get('contact_number', ''),
+        transport_required=old_appt.get('transport_required', False)
     )
 
 
