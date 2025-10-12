@@ -17,15 +17,21 @@ def render_clean_landing_page():
         /* Remove ALL top padding/margin */
         .main .block-container {
             padding-top: 0 !important;
-            margin-top: 0 !important;
+            margin-top: -80px !important;
+            max-width: 100% !important;
         }
         
         .main {
             padding-top: 0 !important;
+            margin-top: 0 !important;
         }
         
         header[data-testid="stHeader"] {
             display: none !important;
+        }
+        
+        section[data-testid="stAppViewContainer"] {
+            padding-top: 0 !important;
         }
         
         .top-nav {
