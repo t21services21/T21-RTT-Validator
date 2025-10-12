@@ -21,6 +21,13 @@ import json
 import os
 from datetime import datetime
 
+# Import browser history handler for back/forward buttons
+try:
+    from browser_history_handler import setup_history_listener, navigate_with_history
+    BROWSER_HISTORY_ENABLED = True
+except:
+    BROWSER_HISTORY_ENABLED = False
+
 # Import with error handling
 try:
     from rtt_validator import (validate_pathway, validate_clinic_letter, validate_timeline, 
@@ -281,6 +288,10 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Setup browser history listener for back/forward buttons
+if BROWSER_HISTORY_ENABLED:
+    setup_history_listener()
 
 # ============================================
 # ONE-TIME DATABASE SETUP
@@ -1381,7 +1392,10 @@ tool = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.info("💡 **Navigation:** Use dropdown selector above or 'Back' buttons on pages for easy navigation.")
+if BROWSER_HISTORY_ENABLED:
+    st.sidebar.success("✅ **Navigation:** Dropdown, back buttons, AND browser arrows all work!")
+else:
+    st.sidebar.info("💡 **Navigation:** Use dropdown selector above or 'Back' buttons on pages.")
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 🏢 **T21 Services Limited**")
 st.sidebar.markdown("*Healthcare Training & Technology Solutions*")
@@ -4734,19 +4748,37 @@ elif tool == "📜 Terms of Service":
     © 2020-2025 T21 Services Limited. All rights reserved.
     """)
 
-# NEW COMPREHENSIVE RTT MODULES (clean URLs via st.switch_page)
+# NEW COMPREHENSIVE RTT MODULES (with browser history support)
 elif tool == "📵 DNA Management":
-    st.switch_page("pages/dna_management.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("DNA Management", "/dna_management", "pages/dna_management.py")
+    else:
+        st.switch_page("pages/dna_management.py")
 elif tool == "❌ Cancellation Management":
-    st.switch_page("pages/cancellation_management.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Cancellation Management", "/cancellation_management", "pages/cancellation_management.py")
+    else:
+        st.switch_page("pages/cancellation_management.py")
 elif tool == "🤔 Patient Choice & Deferrals":
-    st.switch_page("pages/patient_choice.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Patient Choice", "/patient_choice", "pages/patient_choice.py")
+    else:
+        st.switch_page("pages/patient_choice.py")
 elif tool == "📋 Waiting List Validator":
-    st.switch_page("pages/waiting_list_validator.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Waiting List Validator", "/waiting_list_validator", "pages/waiting_list_validator.py")
+    else:
+        st.switch_page("pages/waiting_list_validator.py")
 elif tool == "🔄 Transfer of Care":
-    st.switch_page("pages/transfer_of_care.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Transfer of Care", "/transfer_of_care", "pages/transfer_of_care.py")
+    else:
+        st.switch_page("pages/transfer_of_care.py")
 elif tool == "⚕️ Clinical Exceptions":
-    st.switch_page("pages/clinical_exceptions.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Clinical Exceptions", "/clinical_exceptions", "pages/clinical_exceptions.py")
+    else:
+        st.switch_page("pages/clinical_exceptions.py")
 elif tool == "🏥 Capacity Planner":
     st.switch_page("pages/capacity_planner.py")
 elif tool == "📊 Commissioner Reporting":
