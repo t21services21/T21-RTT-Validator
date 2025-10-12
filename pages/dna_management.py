@@ -1,12 +1,19 @@
 """
 T21 HEALTHCARE PLATFORM - DNA MANAGEMENT MODULE
-Educational module for tracking Did Not Attend (DNA) appointments
+Production-grade DNA tracking with full CRUD functionality
 """
 
 import streamlit as st
 from datetime import datetime, timedelta
 from navigation import render_navigation
 import pandas as pd
+import sys
+sys.path.append('..')
+from universal_crud import (
+    create_record, read_all_records, read_record_by_id,
+    update_record, delete_record, search_records,
+    render_record_table, export_to_csv
+)
 
 st.set_page_config(page_title="DNA Management | T21 Services", page_icon="📵", layout="wide")
 
@@ -198,9 +205,260 @@ with col2:
     - Urgent/Cancer pathways
     """)
 
-# Educational scenarios
+# PRODUCTION CRUD INTERFACE
 st.markdown("---")
-st.markdown("## 🎓 Practice Scenarios")
+st.markdown("## 💼 DNA Case Management")
+
+tab1, tab2, tab3, tab4 = st.tabs(["📋 View All Cases", "➕ Add New DNA", "📊 Analytics", "🎓 Training"])
+
+with tab1:
+    st.subheader("📋 All DNA Cases")
+    
+    # Search and filter
+    col1, col2, col3 = st.columns([3, 1, 1])
+    with col1:
+        search_term = st.text_input("🔍 Search (patient name, NHS number, etc.)", key="search_dna")
+    with col2:
+        filter_period = st.selectbox("Period", ["All Time", "This Month", "Last 3 Months", "This Year"])
+    with col3:
+        records = read_all_records('dna_cases')
+        if records:
+            csv_data = export_to_csv(records)
+            st.download_button("📥 Export CSV", csv_data, "dna_cases.csv", "text/csv")
+    
+    # Get and filter records
+    records = read_all_records('dna_cases')
+    
+    if search_term:
+        records = search_records('dna_cases', search_term, ['patient_name', 'nhs_number', 'appointment_type'])
+    
+    # Display records
+    if records:
+        st.info(f"📊 Total DNA Cases: **{len(records)}**")
+        
+        # Show as table with action buttons
+        for idx, record in enumerate(records):
+            with st.expander(f"DNA #{idx+1}: {record.get('patient_name', 'Unknown')} - {record.get('dna_date', 'No date')}", expanded=False):
+                col_a, col_b = st.columns(2)
+                
+                with col_a:
+                    st.markdown(f"""
+                    **Patient Details:**
+                    - Name: {record.get('patient_name', 'N/A')}
+                    - NHS Number: {record.get('nhs_number', 'N/A')}
+                    - Contact: {record.get('contact_number', 'N/A')}
+                    """)
+                
+                with col_b:
+                    st.markdown(f"""
+                    **Appointment Details:**
+                    - Type: {record.get('appointment_type', 'N/A')}
+                    - Date: {record.get('appointment_date', 'N/A')}
+                    - DNA Date: {record.get('dna_date', 'N/A')}
+                    - DNA Number: {record.get('dna_count', '1')}
+                    """)
+                
+                st.markdown(f"""
+                **RTT Impact:**
+                - Weeks Waiting: {record.get('weeks_waiting', 'N/A')}
+                - Breach Risk: {record.get('breach_risk', 'N/A')}
+                - Action Taken: {record.get('action_taken', 'N/A')}
+                
+                **Reason:** {record.get('reason', 'No reason recorded')}
+                
+                **Notes:** {record.get('notes', 'No additional notes')}
+                """)
+                
+                # Action buttons
+                col_btn1, col_btn2, col_btn3 = st.columns(3)
+                with col_btn1:
+                    if st.button(f"✏️ Edit", key=f"edit_{record['id']}"):
+                        st.session_state['editing_record'] = record['id']
+                        st.rerun()
+                with col_btn2:
+                    if st.button(f"🗑️ Delete", key=f"delete_{record['id']}"):
+                        if delete_record('dna_cases', record['id']):
+                            st.success("Deleted!")
+                            st.rerun()
+                with col_btn3:
+                    st.markdown(f"*Created: {record.get('created_at', 'Unknown')}*")
+        
+        # Edit form (if editing)
+        if 'editing_record' in st.session_state:
+            st.markdown("---")
+            st.subheader("✏️ Edit DNA Case")
+            
+            edit_record = read_record_by_id('dna_cases', st.session_state['editing_record'])
+            
+            if edit_record:
+                with st.form("edit_dna_form"):
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        patient_name = st.text_input("Patient Name *", value=edit_record.get('patient_name', ''))
+                        nhs_number = st.text_input("NHS Number *", value=edit_record.get('nhs_number', ''))
+                        contact_number = st.text_input("Contact Number", value=edit_record.get('contact_number', ''))
+                        appointment_type = st.text_input("Appointment Type *", value=edit_record.get('appointment_type', ''))
+                    
+                    with col2:
+                        appointment_date = st.date_input("Appointment Date *")
+                        dna_date = st.date_input("DNA Date *")
+                        dna_count = st.number_input("DNA Number (1st, 2nd, 3rd) *", min_value=1, max_value=10, value=int(edit_record.get('dna_count', 1)))
+                        weeks_waiting = st.number_input("Weeks Waiting *", min_value=0, max_value=104, value=int(edit_record.get('weeks_waiting', 0)))
+                    
+                    breach_risk = st.selectbox("Breach Risk *", ["Low", "Medium", "High", "Critical"], index=["Low", "Medium", "High", "Critical"].index(edit_record.get('breach_risk', 'Low')))
+                    action_taken = st.selectbox("Action Taken *", [
+                        "Warning letter sent + Re-booked",
+                        "Final warning sent + Re-booked", 
+                        "Discharged to GP",
+                        "Patient contacted - Re-booked",
+                        "Awaiting contact"
+                    ])
+                    reason = st.text_area("Reason for DNA", value=edit_record.get('reason', ''))
+                    notes = st.text_area("Additional Notes", value=edit_record.get('notes', ''))
+                    
+                    col_submit1, col_submit2 = st.columns(2)
+                    with col_submit1:
+                        if st.form_submit_button("💾 Update DNA Case", use_container_width=True):
+                            updated_data = {
+                                'patient_name': patient_name,
+                                'nhs_number': nhs_number,
+                                'contact_number': contact_number,
+                                'appointment_type': appointment_type,
+                                'appointment_date': str(appointment_date),
+                                'dna_date': str(dna_date),
+                                'dna_count': dna_count,
+                                'weeks_waiting': weeks_waiting,
+                                'breach_risk': breach_risk,
+                                'action_taken': action_taken,
+                                'reason': reason,
+                                'notes': notes
+                            }
+                            
+                            if update_record('dna_cases', st.session_state['editing_record'], updated_data):
+                                st.success("✅ DNA case updated successfully!")
+                                del st.session_state['editing_record']
+                                st.rerun()
+                    
+                    with col_submit2:
+                        if st.form_submit_button("❌ Cancel", use_container_width=True):
+                            del st.session_state['editing_record']
+                            st.rerun()
+    else:
+        st.info("📝 No DNA cases recorded yet. Add your first case in the 'Add New DNA' tab!")
+
+with tab2:
+    st.subheader("➕ Record New DNA Case")
+    
+    with st.form("add_dna_form"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("**Patient Information**")
+            patient_name = st.text_input("Patient Name *", placeholder="SURNAME, Forename")
+            nhs_number = st.text_input("NHS Number *", placeholder="1234567890")
+            contact_number = st.text_input("Contact Number", placeholder="07XXX XXXXXX")
+            appointment_type = st.text_input("Appointment Type *", placeholder="e.g., First Outpatient, Follow-up")
+        
+        with col2:
+            st.markdown("**Appointment Details**")
+            appointment_date = st.date_input("Scheduled Appointment Date *")
+            dna_date = st.date_input("DNA Date *", value=datetime.now())
+            dna_count = st.number_input("DNA Number (1st, 2nd, 3rd) *", min_value=1, max_value=10, value=1)
+            weeks_waiting = st.number_input("Weeks on Waiting List *", min_value=0, max_value=104, value=0)
+        
+        breach_risk = st.selectbox("Breach Risk Assessment *", ["Low (<12 weeks)", "Medium (12-16 weeks)", "High (16-18 weeks)", "Critical (>18 weeks)"])
+        
+        action_taken = st.selectbox("Action Taken *", [
+            "Warning letter sent + Re-booked",
+            "Final warning sent + Re-booked",
+            "Discharged to GP (3rd DNA)",
+            "Patient contacted - Will re-book",
+            "Awaiting patient contact"
+        ])
+        
+        reason = st.text_area("Reason for DNA (if known)", placeholder="e.g., Patient forgot, Transport issues, Feeling unwell")
+        notes = st.text_area("Additional Notes", placeholder="Any other relevant information...")
+        
+        submitted = st.form_submit_button("💾 Save DNA Case", use_container_width=True)
+        
+        if submitted:
+            if patient_name and nhs_number and appointment_type:
+                dna_data = {
+                    'patient_name': patient_name,
+                    'nhs_number': nhs_number,
+                    'contact_number': contact_number,
+                    'appointment_type': appointment_type,
+                    'appointment_date': str(appointment_date),
+                    'dna_date': str(dna_date),
+                    'dna_count': dna_count,
+                    'weeks_waiting': weeks_waiting,
+                    'breach_risk': breach_risk,
+                    'action_taken': action_taken,
+                    'reason': reason,
+                    'notes': notes,
+                    'recorded_by': st.session_state.get('user_email', 'Unknown')
+                }
+                
+                if create_record('dna_cases', dna_data):
+                    st.success("✅ DNA case recorded successfully!")
+                    st.info("💡 Case saved to your records. View all cases in the 'View All Cases' tab.")
+                    st.rerun()
+            else:
+                st.error("❌ Please fill in all required fields (*)")
+
+with tab3:
+    st.subheader("📊 DNA Analytics & Reports")
+    
+    records = read_all_records('dna_cases')
+    
+    if records:
+        # Key metrics
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric("Total DNA Cases", len(records))
+        
+        with col2:
+            high_risk = len([r for r in records if 'High' in r.get('breach_risk', '')])
+            st.metric("High/Critical Risk", high_risk)
+        
+        with col3:
+            first_dna = len([r for r in records if r.get('dna_count') == 1])
+            st.metric("First-time DNAs", first_dna)
+        
+        with col4:
+            repeat_dna = len([r for r in records if r.get('dna_count', 1) >= 2])
+            st.metric("Repeat DNAs", repeat_dna)
+        
+        st.markdown("---")
+        
+        # Charts
+        col_chart1, col_chart2 = st.columns(2)
+        
+        with col_chart1:
+            st.markdown("**DNA by Risk Level**")
+            risk_counts = {}
+            for r in records:
+                risk = r.get('breach_risk', 'Unknown')
+                risk_counts[risk] = risk_counts.get(risk, 0) + 1
+            st.bar_chart(risk_counts)
+        
+        with col_chart2:
+            st.markdown("**DNA Count Distribution**")
+            dna_counts = {}
+            for r in records:
+                count = r.get('dna_count', 1)
+                dna_counts[f"{count}{'st' if count==1 else 'nd' if count==2 else 'rd' if count==3 else 'th'} DNA"] = dna_counts.get(f"{count}{'st' if count==1 else 'nd' if count==2 else 'rd' if count==3 else 'th'} DNA", 0) + 1
+            st.bar_chart(dna_counts)
+    else:
+        st.info("📝 No data available for analytics yet. Record some DNA cases to see statistics and charts!")
+
+with tab4:
+    st.subheader("🎓 Training & Practice Scenarios")
+    
+    # Educational scenarios (moved from main area)
+    st.markdown("## 🎓 Practice Scenarios")
 
 scenario = st.selectbox("Select a scenario to learn:", [
     "Select a scenario...",

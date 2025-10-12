@@ -1866,7 +1866,7 @@ elif tool == "👤 Patient Registration Validator":
         patient_name = st.text_input("Patient Name *", placeholder="SURNAME, Forename")
         nhs_number = st.text_input("NHS Number *", placeholder="1234567890 (10 digits)")
         district_number = st.text_input("District Number", placeholder="Hospital number")
-        dob = st.date_input("Date of Birth *", value=None)
+        dob = st.date_input("Date of Birth *", value=None, min_value=datetime(1900, 1, 1), max_value=datetime.now())
         age = st.number_input("Age (optional)", min_value=0, max_value=120, value=0)
         
     with col2:
