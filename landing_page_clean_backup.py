@@ -1,35 +1,66 @@
 """
 T21 SERVICES - PROFESSIONAL LANDING PAGE
-Clean, gap-free design for NHS platform
+Production-grade, edge-to-edge design for NHS platform
 """
 
 import streamlit as st
 
 def render_clean_landing_page():
-    """Render professional landing page - zero gaps"""
+    """Render professional landing page - production quality"""
     
     st.markdown("""
     <style>
-        /* Remove scrollbar and all spacing */
-        html, body {overflow-x: hidden !important; margin: 0 !important; padding: 0 !important;}
+        /* FORCE edge-to-edge layout */
+        html, body {overflow-x: hidden !important; margin: 0 !important; padding: 0 !important; width: 100% !important;}
         [data-testid="stSidebar"] {display: none !important;}
         header[data-testid="stHeader"] {display: none !important;}
-        .main, .main .block-container, .stApp {padding: 0 !important; margin: 0 !important; margin-top: -100px !important; max-width: 100% !important; overflow-x: hidden !important;}
-        .element-container, .stMarkdown, div[data-testid="stVerticalBlock"] > div {margin: 0 !important; padding: 0 !important; gap: 0 !important;}
         
-        /* Full-width sections - no gaps */
-        .top-bar {background: #1a1a1a; padding: 15px 60px; display: flex; justify-content: space-between; align-items: center; width: 100%; margin: 0;}
+        /* Reset ALL Streamlit containers to zero */
+        .main, .main .block-container, .stApp, section[data-testid="stAppViewContainer"] {
+            padding: 0 !important; 
+            margin: 0 !important; 
+            margin-top: -100px !important; 
+            max-width: none !important; 
+            width: 100% !important;
+            overflow-x: hidden !important;
+        }
+        
+        .element-container, .stMarkdown, div[data-testid="stVerticalBlock"] > div {
+            margin: 0 !important; 
+            padding: 0 !important; 
+            gap: 0 !important;
+        }
+        
+        /* Professional full-width sections */
+        .top-bar {
+            background: #1a1a1a; 
+            padding: 15px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            width: 100%; 
+            box-sizing: border-box;
+            margin: 0;
+        }
         .logo {font-size: 24px; font-weight: 800; color: #d4af37; text-transform: uppercase;}
-        .nav-buttons {background: #1a1a1a; padding: 10px 60px; width: 100%; margin: 0;}
-        .hero {background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover; padding: 50px 60px 80px; color: white; width: 100%; margin: 0;}
-        .hero h1 {font-size: 64px; font-weight: 800; margin: 0 0 10px 0; line-height: 1;}
-        .hero h2 {font-size: 40px; font-weight: 700; color: #d4af37; margin: 0 0 20px 0;}
-        .hero p {font-size: 17px; max-width: 800px; line-height: 1.6;}
+        .nav-buttons {background: #1a1a1a; padding: 10px 5%; width: 100%; box-sizing: border-box; margin: 0;}
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover; 
+            padding: 50px 5% 80px; 
+            color: white; 
+            width: 100%; 
+            box-sizing: border-box;
+            margin: 0;
+        }
+        .hero h1 {font-size: 64px; font-weight: 800; margin: 0 0 10px 0; line-height: 1; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
+        .hero h2 {font-size: 40px; font-weight: 700; color: #d4af37; margin: 0 0 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
+        .hero p {font-size: 17px; max-width: 900px; line-height: 1.6; text-shadow: 1px 1px 2px rgba(0,0,0,0.7);}
     </style>
     
     <div class='top-bar'>
         <span class='logo'>T21 SERVICES</span>
-        <a href='#login' style='background: linear-gradient(135deg, #d4af37, #f4d03f); color: #1a1a1a; padding: 10px 30px; border-radius: 25px; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px;'>LOGIN / REGISTER</a>
+        <a href='#login' style='background: linear-gradient(135deg, #d4af37, #f4d03f); color: #1a1a1a; padding: 10px 30px; border-radius: 25px; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px; box-shadow: 0 2px 10px rgba(212,175,55,0.3);'>LOGIN / REGISTER</a>
     </div>
     <div class='nav-buttons'>
     """, unsafe_allow_html=True)
