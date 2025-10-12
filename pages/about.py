@@ -7,6 +7,15 @@ from navigation import render_navigation
 
 st.set_page_config(page_title="About Us | T21 Services", page_icon="🏢", layout="wide")
 
+# Remove top white space
+st.markdown("""
+<style>
+    [data-testid="stSidebar"] {display: none;}
+    header[data-testid="stHeader"] {display: none !important;}
+    .main .block-container {padding-top: 0 !important; margin-top: -80px !important;}
+</style>
+""", unsafe_allow_html=True)
+
 render_navigation(current_page="about")
 
 st.title("About T21 Services")
