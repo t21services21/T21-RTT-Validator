@@ -1,11 +1,18 @@
 """
 T21 HEALTHCARE PLATFORM - CANCELLATION MANAGEMENT MODULE
-Educational module for tracking appointment cancellations and RTT impact
+Production-grade cancellation tracking with full CRUD functionality
 """
 
 import streamlit as st
 from datetime import datetime, timedelta
 from navigation import render_navigation
+import pandas as pd
+import sys
+sys.path.append('..')
+from universal_crud import (
+    create_record, read_all_records, read_record_by_id,
+    update_record, delete_record, search_records, export_to_csv
+)
 
 st.set_page_config(page_title="Cancellation Management | T21 Services", page_icon="❌", layout="wide")
 

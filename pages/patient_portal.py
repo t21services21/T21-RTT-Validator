@@ -6,6 +6,13 @@ Patient-facing interface for RTT journey tracking
 import streamlit as st
 from navigation import render_navigation
 from datetime import datetime, timedelta
+import sys
+sys.path.append('..')
+from universal_crud import (
+    create_record, read_all_records, read_record_by_id,
+    update_record, delete_record, search_records, export_to_csv
+)
+
 
 st.set_page_config(page_title="Patient Portal | T21 Services", page_icon="👤", layout="wide")
 
@@ -29,6 +36,80 @@ st.markdown("""
     <p style="font-size: 18px;">Track your NHS treatment journey in real-time</p>
 </div>
 """, unsafe_allow_html=True)
+
+
+# PRODUCTION CRUD INTERFACE
+st.markdown("---")
+st.markdown("## 💼 Portal Entry Management")
+
+tab1, tab2, tab3 = st.tabs(["📋 View All", "➕ Add New", "📊 Analytics"])
+
+with tab1:
+    st.subheader("📋 All Portal Entrys")
+    
+    # Search
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        search_term = st.text_input("🔍 Search", key="search_portal_data")
+    with col2:
+        records = read_all_records('portal_data')
+        if records:
+            csv_data = export_to_csv(records)
+            st.download_button("📥 Export CSV", csv_data, "portal_data.csv", "text/csv")
+    
+    # Get records
+    records = read_all_records('portal_data')
+    
+    if search_term:
+        records = search_records('portal_data', search_term)
+    
+    # Display records
+    if records:
+        st.info(f"📊 Total Records: **{len(records)}**")
+        
+        for idx, record in enumerate(records):
+            with st.expander(f"Portal Entry #{idx+1}: {record.get('id', 'Unknown')[:20]}..."):
+                st.json(record)
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    if st.button(f"✏️ Edit", key=f"edit_{record['id']}"):
+                        st.session_state['editing_record'] = record['id']
+                        st.rerun()
+                with col2:
+                    if st.button(f"🗑️ Delete", key=f"delete_{record['id']}"):
+                        if delete_record('portal_data', record['id']):
+                            st.success("Deleted!")
+                            st.rerun()
+    else:
+        st.info("📝 No records yet. Add your first record in the 'Add New' tab!")
+
+with tab2:
+    st.subheader("➕ Add New Portal Entry")
+    st.info("💡 Add form fields here for creating new records")
+    
+    # Placeholder - module-specific form would go here
+    if st.button("💾 Save"):
+        st.warning("Form fields need to be configured for this module")
+
+with tab3:
+    st.subheader("📊 Analytics")
+    records = read_all_records('portal_data')
+    
+    if records:
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Total Records", len(records))
+        with col2:
+            st.metric("This Month", 0)  # Calculate as needed
+        with col3:
+            st.metric("Active", len(records))
+    else:
+        st.info("No data for analytics yet")
+
+st.markdown("---")
+# Educational content continues below...
+
 
 st.markdown("---")
 

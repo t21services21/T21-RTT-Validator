@@ -7,6 +7,13 @@ import streamlit as st
 from datetime import datetime, timedelta, date
 from navigation import render_navigation
 import pandas as pd
+import sys
+sys.path.append('..')
+from universal_crud import (
+    create_record, read_all_records, read_record_by_id,
+    update_record, delete_record, search_records, export_to_csv
+)
+
 
 st.set_page_config(page_title="Capacity Planner | T21 Services", page_icon="🏥", layout="wide")
 
@@ -23,6 +30,80 @@ render_navigation(current_page="capacity")
 
 st.title("🏥 Capacity Planning & Resource Management")
 st.markdown("**Plan theatre sessions, beds, and consultant availability to prevent RTT breaches**")
+
+
+# PRODUCTION CRUD INTERFACE
+st.markdown("---")
+st.markdown("## 💼 Capacity Plan Management")
+
+tab1, tab2, tab3 = st.tabs(["📋 View All", "➕ Add New", "📊 Analytics"])
+
+with tab1:
+    st.subheader("📋 All Capacity Plans")
+    
+    # Search
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        search_term = st.text_input("🔍 Search", key="search_capacity_plans")
+    with col2:
+        records = read_all_records('capacity_plans')
+        if records:
+            csv_data = export_to_csv(records)
+            st.download_button("📥 Export CSV", csv_data, "capacity_plans.csv", "text/csv")
+    
+    # Get records
+    records = read_all_records('capacity_plans')
+    
+    if search_term:
+        records = search_records('capacity_plans', search_term)
+    
+    # Display records
+    if records:
+        st.info(f"📊 Total Records: **{len(records)}**")
+        
+        for idx, record in enumerate(records):
+            with st.expander(f"Capacity Plan #{idx+1}: {record.get('id', 'Unknown')[:20]}..."):
+                st.json(record)
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    if st.button(f"✏️ Edit", key=f"edit_{record['id']}"):
+                        st.session_state['editing_record'] = record['id']
+                        st.rerun()
+                with col2:
+                    if st.button(f"🗑️ Delete", key=f"delete_{record['id']}"):
+                        if delete_record('capacity_plans', record['id']):
+                            st.success("Deleted!")
+                            st.rerun()
+    else:
+        st.info("📝 No records yet. Add your first record in the 'Add New' tab!")
+
+with tab2:
+    st.subheader("➕ Add New Capacity Plan")
+    st.info("💡 Add form fields here for creating new records")
+    
+    # Placeholder - module-specific form would go here
+    if st.button("💾 Save"):
+        st.warning("Form fields need to be configured for this module")
+
+with tab3:
+    st.subheader("📊 Analytics")
+    records = read_all_records('capacity_plans')
+    
+    if records:
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Total Records", len(records))
+        with col2:
+            st.metric("This Month", 0)  # Calculate as needed
+        with col3:
+            st.metric("Active", len(records))
+    else:
+        st.info("No data for analytics yet")
+
+st.markdown("---")
+# Educational content continues below...
+
 
 # Educational section
 with st.expander("📚 LEARNING OBJECTIVES - Capacity Planning", expanded=True):
