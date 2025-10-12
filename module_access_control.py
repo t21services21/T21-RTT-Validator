@@ -463,6 +463,206 @@ DEFAULT_MODULE_ACCESS = {
         "admin": True,
         "staff": True,
         "nhs_trust": True
+    },
+    # NEW RTT CORE MODULES
+    "📵 DNA Management": {
+        "trial": False,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "❌ Cancellation Management": {
+        "trial": False,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "🤔 Patient Choice & Deferrals": {
+        "trial": False,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "📋 Waiting List Validator": {
+        "trial": False,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "🔄 Transfer of Care": {
+        "trial": False,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "⚕️ Clinical Exceptions": {
+        "trial": False,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "🏥 Capacity Planner": {
+        "trial": False,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "📊 Commissioner Reporting": {
+        "trial": False,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "🔍 Audit Trail": {
+        "trial": False,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "✉️ Communications Tracker": {
+        "trial": False,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "✍️ Consent Manager": {
+        "trial": False,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "💰 Funding & IFR": {
+        "trial": False,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    # ADVANCED FEATURES
+    "📱 Mobile App Preview": {
+        "trial": True,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "📊 Executive Dashboard": {
+        "trial": False,
+        "basic": False,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "🗣️ Voice AI Interface": {
+        "trial": True,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "🔌 PAS Integration": {
+        "trial": False,
+        "basic": False,
+        "professional": False,
+        "ultimate": False,
+        "admin": True,
+        "staff": False,
+        "nhs_trust": True
+    },
+    "👤 Patient Portal": {
+        "trial": True,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "📝 AI Documentation": {
+        "trial": False,
+        "basic": True,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "🔐 Blockchain Audit": {
+        "trial": False,
+        "basic": False,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "🧠 Predictive AI": {
+        "trial": False,
+        "basic": False,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "🏆 National Benchmarking": {
+        "trial": False,
+        "basic": False,
+        "professional": True,
+        "ultimate": True,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": True
+    },
+    "👨‍🏫 Student Progress Monitor": {
+        "trial": False,
+        "basic": False,
+        "professional": False,
+        "ultimate": False,
+        "admin": True,
+        "staff": True,
+        "nhs_trust": False
     }
 }
 
