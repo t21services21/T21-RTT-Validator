@@ -64,7 +64,25 @@ def navigate_with_history(page_name, page_path, streamlit_page):
         page_path: URL path (e.g., '/clinical_exceptions')
         streamlit_page: Streamlit page to switch to
     """
-    # Push to history
-    push_history_state(page_name, page_path)
-    # Switch page
-    st.switch_page(streamlit_page)
+    # Store the target page in session state
+    st.session_state['_target_page'] = streamlit_page
+    
+    # Push to history and trigger navigation
+    components.html(f"""
+    <script>
+        // Push new state to browser history
+        if (window.parent) {{
+            window.parent.history.pushState(
+                {{page: '{page_name}'}}, 
+                '{page_name}', 
+                '{page_path}'
+            );
+            
+            // Force navigation by reloading
+            window.parent.location.href = window.parent.location.origin + '{page_path}';
+        }}
+    </script>
+    """, height=0)
+    
+    # Don't call st.switch_page() - let the URL change handle it
+    st.stop()
