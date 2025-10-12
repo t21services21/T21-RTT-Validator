@@ -19,7 +19,7 @@ def render_clean_landing_page():
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: -1rem -1rem 0 -1rem;
+            margin: -5rem -5rem 0 -5rem;
         }
         .logo {font-size: 24px; font-weight: 800; color: #d4af37; text-transform: uppercase;}
         
@@ -27,7 +27,7 @@ def render_clean_landing_page():
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
             padding: 50px 40px;
-            margin: 0 -1rem;
+            margin: 0 -5rem;
             color: white;
         }
         .hero-section h1 {color: white; font-size: 56px; font-weight: 800; margin: 0 0 10px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
