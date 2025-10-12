@@ -5,30 +5,45 @@ T21 SERVICES - PROFESSIONAL LANDING PAGE
 import streamlit as st
 
 def render_clean_landing_page():
-    """Professional landing page"""
+    """Professional landing page with hero image"""
     
     st.markdown("""
     <style>
         [data-testid="stSidebar"] {display: none;}
         header[data-testid="stHeader"] {display: none;}
-        .main .block-container {padding: 2rem 1rem; margin-top: -80px;}
+        .main .block-container {padding: 0; margin-top: -80px; max-width: 100%;}
+        
+        .top-nav {
+            background: #1a1a1a;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: -1rem -1rem 0 -1rem;
+        }
+        .logo {font-size: 24px; font-weight: 800; color: #d4af37; text-transform: uppercase;}
         
         .hero-section {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            padding: 3rem 2rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
+            padding: 50px 40px;
+            margin: 0 -1rem;
             color: white;
         }
-        .hero-section h1 {color: white; margin-bottom: 0.5rem;}
-        .hero-section h2 {color: #d4af37; margin-bottom: 1rem;}
+        .hero-section h1 {color: white; font-size: 56px; font-weight: 800; margin: 0 0 10px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
+        .hero-section h2 {color: #d4af37; font-size: 36px; font-weight: 700; margin: 0 0 15px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
+        .hero-section p {font-size: 16px; max-width: 850px; text-shadow: 1px 1px 2px rgba(0,0,0,0.7);}
     </style>
     
+    <div class="top-nav">
+        <span class="logo">T21 SERVICES</span>
+        <a href="#login" style="background: linear-gradient(135deg, #d4af37, #f4d03f); color: #1a1a1a; padding: 10px 30px; border-radius: 25px; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px;">LOGIN / REGISTER</a>
+    </div>
+    
     <div class="hero-section">
-        <h1>T21 Healthcare Intelligence Platform</h1>
-        <h2>Your NHS Career & Workforce Partner</h2>
-        <p style="font-size: 1.1rem; margin: 0;"><strong>Training • Talent • Technology</strong></p>
-        <p style="margin-top: 1rem;">UK Certified Centre serving individuals seeking NHS careers, NHS staff advancing their skills, and NHS trusts transforming operations.</p>
+        <h1>Your NHS Career & Workforce Partner</h1>
+        <h2>Training • Talent • Technology</h2>
+        <p>UK Certified Centre serving individuals seeking NHS careers, NHS staff advancing their skills, and NHS trusts transforming operations. TQUK-endorsed training, job application support with proven success, and AI automation saving £2M+ annually.</p>
     </div>
     """, unsafe_allow_html=True)
     
