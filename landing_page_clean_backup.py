@@ -13,7 +13,8 @@ def render_clean_landing_page():
         /* Remove ALL Streamlit defaults */
         [data-testid="stSidebar"] {display: none !important;}
         header[data-testid="stHeader"] {display: none !important;}
-        .main, .main .block-container, .stApp {padding: 0 !important; margin: 0 !important; margin-top: -100px !important; max-width: 100% !important;}
+        .main, .main .block-container, .stApp {padding: 0 !important; margin: 0 !important; margin-top: -100px !important; max-width: 100% !important; overflow-x: hidden !important;}
+        body {overflow-x: hidden !important;}
         .element-container, .stMarkdown, div[data-testid="stVerticalBlock"] > div {margin: 0 !important; padding: 0 !important; gap: 0 !important;}
         
         /* Full-width sections */
