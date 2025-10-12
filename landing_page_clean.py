@@ -9,70 +9,49 @@ def render_clean_landing_page():
     
     st.markdown("""
     <style>
-        /* Complete reset - force edge-to-edge */
-        html, body {overflow-x: hidden; margin: 0; padding: 0;}
-        [data-testid="stSidebar"] {display: none !important;}
-        header[data-testid="stHeader"] {display: none !important;}
-        .main, .main .block-container, .stApp {
-            padding: 0 !important;
-            margin: 0 !important;
-            margin-top: -80px !important;
-            max-width: 100% !important;
-            width: 100% !important;
-        }
+        [data-testid="stSidebar"] {display: none;}
+        header[data-testid="stHeader"] {display: none;}
+        .main .block-container {padding: 0; margin-top: -80px; max-width: 100%;}
         
-        /* True full-width navigation */
         .top-nav {
             background: #1a1a1a;
-            padding: 15px 5%;
+            padding: 15px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            box-sizing: border-box;
-            position: relative;
-            margin: 0;
+            margin: -5rem -5rem 0 -5rem;
         }
-        .logo {font-size: 24px; font-weight: 800; color: #d4af37; text-transform: uppercase; letter-spacing: 1px;}
+        .logo {font-size: 24px; font-weight: 800; color: #d4af37; text-transform: uppercase;}
         
-        /* Professional hero with proper centering */
         .hero-section {
-            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), 
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
-            padding: 60px 5% 70px;
-            width: 100%;
-            box-sizing: border-box;
+            padding: 45px 40px 50px;
+            margin: 0 -5rem;
             color: white;
-            margin: 0;
-        }
-        .hero-content {
-            max-width: 1200px;
-            margin: 0;
         }
         .hero-section h1 {
-            color: white;
-            font-size: 52px;
-            font-weight: 800;
-            margin: 0 0 15px 0;
+            color: white; 
+            font-size: 56px; 
+            font-weight: 800; 
+            margin: 0 0 12px 0; 
             line-height: 1.1;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
-            letter-spacing: -0.5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         .hero-section h2 {
-            color: #f4d03f;
-            font-size: 34px;
-            font-weight: 700;
-            margin: 0 0 25px 0;
+            color: #d4af37; 
+            font-size: 36px; 
+            font-weight: 700; 
+            margin: 0 0 20px 0; 
             line-height: 1.2;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         .hero-section p {
-            font-size: 17px;
-            max-width: 900px;
+            font-size: 16px; 
+            max-width: 850px; 
             margin: 0;
-            line-height: 1.7;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            font-weight: 400;
+            line-height: 1.6;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
         }
     </style>
     
@@ -82,11 +61,9 @@ def render_clean_landing_page():
     </div>
     
     <div class="hero-section">
-        <div class="hero-content">
-            <h1>Your NHS Career & Workforce Partner</h1>
-            <h2>Training • Talent • Technology</h2>
-            <p>UK Certified Centre serving individuals seeking NHS careers, NHS staff advancing their skills, and NHS trusts transforming operations. TQUK-endorsed training, job application support with proven success, and AI automation saving £2M+ annually.</p>
-        </div>
+        <h1>Your NHS Career & Workforce Partner</h1>
+        <h2>Training • Talent • Technology</h2>
+        <p>UK Certified Centre serving individuals seeking NHS careers, NHS staff advancing their skills, and NHS trusts transforming operations. TQUK-endorsed training, job application support with proven success, and AI automation saving £2M+ annually.</p>
     </div>
     """, unsafe_allow_html=True)
     
