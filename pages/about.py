@@ -39,6 +39,92 @@ st.markdown("""
 Established in 2020 and registered with Companies House (No: 13091053), we're a TQUK Approved Centre committed to transforming healthcare workforce development through officially endorsed training programs and cutting-edge technology solutions.
 """)
 
+st.markdown("---")
+
+# Mission & Vision
+st.markdown("## 🎯 Our Mission & Vision")
+
+col_mv1, col_mv2 = st.columns(2)
+
+with col_mv1:
+    st.markdown("""
+    ### 🎯 Our Mission
+    **"Training • Talent • Technology"**
+    
+    To be the UK's leading NHS workforce partner by:
+    
+    1. **Training** individuals for rewarding NHS careers with TQUK-certified qualifications
+    2. **Supplying** qualified, job-ready talent to healthcare organizations
+    3. **Transforming** NHS operations through AI-powered technology
+    
+    We bridge the gap between aspiring healthcare professionals and NHS employment, while revolutionizing operations with cutting-edge automation.
+    """)
+
+with col_mv2:
+    st.markdown("""
+    ### 🚀 Our Vision
+    **"Empowering Healthcare Through Excellence"**
+    
+    To become the NHS sector's most trusted partner for:
+    - World-class healthcare training (TQUK-certified)
+    - Reliable supply of qualified professionals
+    - Innovative AI automation solutions
+    - Sustainable workforce transformation
+    
+    **By 2030:** Train 10,000+ healthcare professionals • Place 5,000+ staff in NHS roles • Save NHS £500M+ through automation
+    """)
+
+st.markdown("---")
+
+# Three Pillars
+st.markdown("## 🏛️ Our Three Pillars")
+
+col_p1, col_p2, col_p3 = st.columns(3)
+
+with col_p1:
+    st.markdown("""
+    ### 🎓 Training
+    **TQUK-Certified Excellence**
+    
+    - RTT & Hospital Administration
+    - Hands-on platform practice
+    - Job-ready skills
+    - Professional certifications
+    - Career development
+    
+    *Building competent healthcare professionals*
+    """)
+
+with col_p2:
+    st.markdown("""
+    ### 💼 Talent
+    **Workforce Supply**
+    
+    - Supply trained NHS staff
+    - Pre-vetted candidates
+    - Job application support
+    - Interview preparation
+    - Placement assistance
+    
+    *Connecting talent with opportunity*
+    """)
+
+with col_p3:
+    st.markdown("""
+    ### 🤖 Technology
+    **AI-Powered Innovation**
+    
+    - 50+ automation modules
+    - £2M+ savings per trust
+    - 120x faster validation
+    - 99.9% accuracy
+    - Zero breaches
+    
+    *Revolutionizing NHS operations*
+    """)
+
+st.markdown("---")
+
 col1, col2, col3 = st.columns(3)
 
 with col1:

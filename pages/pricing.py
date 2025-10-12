@@ -50,7 +50,11 @@ with col2:
         <p style='font-size: 42px; font-weight: 800; color: #1a1a1a; margin: 15px 0;'>£499</p>
         <p style='color: #666;'>6 Months</p>
         <ul style='text-align: left; color: #555; line-height: 1.8; font-size: 14px;'>
-            <li>✅ Full platform access</li>
+            <li>✅ Full platform access (50+ modules)</li>
+            <li>✅ AI Auto-Validator</li>
+            <li>✅ DNA Management</li>
+            <li>✅ Cancellation Management</li>
+            <li>✅ All 12 RTT core modules</li>
             <li>✅ Unlimited AI tutor</li>
             <li>✅ All training scenarios</li>
             <li>✅ CV & interview prep</li>
@@ -106,15 +110,26 @@ with col1:
         <p style='color: #666; text-align: center;'>Tailored to your trust</p>
         <ul style='color: #555; line-height: 2;'>
             <li>✅ Trust-wide deployment (unlimited users)</li>
-            <li>✅ NHS framework compliant</li>
-            <li>✅ Data Processing Agreement included</li>
-            <li>✅ On-site training & implementation</li>
-            <li>✅ Integration with EPR systems (SystmOne, EMIS, etc.)</li>
-            <li>✅ AI-powered automation (188 scenarios)</li>
-            <li>✅ Dedicated account manager</li>
+            <li>✅ <strong>50+ Advanced Modules including:</strong></li>
+            <li style='margin-left: 20px;'>• AI Auto-Validator (120x faster)</li>
+            <li style='margin-left: 20px;'>• DNA Management</li>
+            <li style='margin-left: 20px;'>• Cancellation Management</li>
+            <li style='margin-left: 20px;'>• Patient Choice & Deferrals</li>
+            <li style='margin-left: 20px;'>• Waiting List Validator</li>
+            <li style='margin-left: 20px;'>• Transfer of Care</li>
+            <li style='margin-left: 20px;'>• Clinical Exceptions</li>
+            <li style='margin-left: 20px;'>• Capacity Planner</li>
+            <li style='margin-left: 20px;'>• Commissioner Reporting</li>
+            <li style='margin-left: 20px;'>• Blockchain Audit Trail</li>
+            <li style='margin-left: 20px;'>• Predictive AI (4 weeks ahead)</li>
+            <li style='margin-left: 20px;'>• National Benchmarking</li>
+            <li>✅ Real-time PAS Integration</li>
+            <li>✅ Patient Portal</li>
+            <li>✅ Executive Dashboard</li>
+            <li>✅ AI Documentation (auto-generate letters)</li>
+            <li>✅ Mobile App (iOS & Android)</li>
             <li>✅ 24/7 priority support</li>
-            <li>✅ Custom reporting & analytics</li>
-            <li>✅ Annual cost savings: £2M+ proven</li>
+            <li>✅ Annual cost savings: £4.7M proven</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -159,6 +174,75 @@ with col2:
 with col3:
     if st.button("🏥 Contact Sales", use_container_width=True, type="primary"):
         st.switch_page("pages/contact_us.py")
+
+st.markdown("---")
+
+# Complete module list
+st.markdown("## 📋 Complete Platform Features")
+st.markdown("### All modules included in student tiers and NHS packages:")
+
+col_feat1, col_feat2, col_feat3 = st.columns(3)
+
+with col_feat1:
+    st.markdown("""
+    **Core RTT Modules:**
+    - 📋 PTL - Patient Tracking List
+    - 🤖 AI Auto-Validator
+    - 📵 DNA Management
+    - ❌ Cancellation Management
+    - 🤔 Patient Choice & Deferrals
+    - 📋 Waiting List Validator
+    - 🔄 Transfer of Care
+    - ⚕️ Clinical Exceptions
+    - 🏥 Capacity Planner
+    - 📊 Commissioner Reporting
+    - 🔍 Audit Trail
+    - ✉️ Communications Tracker
+    - ✍️ Consent Manager
+    - 💰 Funding & IFR
+    """)
+
+with col_feat2:
+    st.markdown("""
+    **Advanced Features:**
+    - 📱 Mobile App (iOS & Android)
+    - 📊 Executive Dashboard
+    - 🗣️ Voice AI Interface
+    - 🔌 Real-time PAS Integration
+    - 👤 Patient Portal
+    - 📝 AI Documentation Generator
+    - 🔐 Blockchain Audit Trail
+    - 🧠 Predictive AI
+    - 🏆 National Benchmarking
+    - 🎗️ Cancer Pathways
+    - 👥 MDT Coordination
+    - 📅 Advanced Booking System
+    - 📧 Medical Secretary AI
+    """)
+
+with col_feat3:
+    st.markdown("""
+    **Training & Support:**
+    - 📊 Data Quality System
+    - 📊 Pathway Validator
+    - 📝 Clinic Letter Interpreter
+    - 📅 Timeline Auditor
+    - 👤 Patient Registration Validator
+    - 📆 Appointment & Booking Checker
+    - 💬 Comment Line Generator
+    - ✍️ Clinic Letter Creator
+    - 🎓 Training Library
+    - 🎮 Interactive Learning Center
+    - 🎓 Certification Exam
+    - 🤖 AI RTT Tutor
+    - 📚 LMS - My Courses
+    """)
+
+st.success("""
+💡 **For Students:** All modules accessible with practice mode  
+🏥 **For NHS:** Production mode + real data integration  
+🎓 **TQUK Certified:** Official NHS training credentials
+""")
 
 st.markdown("---")
 

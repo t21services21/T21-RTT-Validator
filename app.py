@@ -1042,8 +1042,8 @@ if not st.session_state.logged_in:
     with footer_col2:
         st.markdown("### 📞 Contact Us")
         st.markdown("📧 info@t21services.co.uk")
-        st.markdown("📧 support@t21services.co.uk")
-        st.markdown("📧 sales@t21services.co.uk")
+        st.markdown("📧 admin@t21services.co.uk")
+        st.markdown("📧 training@t21services.co.uk")
         st.markdown("🌐 [www.t21services.co.uk](https://www.t21services.co.uk)")
     
     with footer_col3:
@@ -1333,7 +1333,7 @@ st.sidebar.markdown("*Healthcare Training & Technology Solutions*")
 st.sidebar.markdown("**Company No:** 13091053")
 st.sidebar.markdown("**Address:** 64 Upper Parliament St, Liverpool, L8 7LF")
 st.sidebar.markdown("📧 info@t21services.co.uk")
-st.sidebar.markdown("📧 support@t21services.co.uk")
+st.sidebar.markdown("📧 admin@t21services.co.uk")
 st.sidebar.markdown("🌐 [www.t21services.co.uk](https://www.t21services.co.uk)")
 st.sidebar.markdown("💼 [LinkedIn](https://linkedin.com/company/t21services) | 🐦 [X](https://x.com/t21services)")
 st.sidebar.markdown("📘 [Facebook](https://facebook.com/t21services) | 📸 [Instagram](https://instagram.com/t21services)")
@@ -4375,7 +4375,7 @@ elif tool == "🎓 Practical Training Portal (All Courses)":
     Use the "Forgot Password?" link on the Training Portal login page
     
     **Technical issues?**  
-    Contact our support team: support@t21services.co.uk
+    Contact our support team: admin@t21services.co.uk
     """)
 
 
@@ -4671,7 +4671,7 @@ elif tool == "📜 Terms of Service":
     
     **General:** info@t21services.co.uk  
     **Legal:** legal@t21services.co.uk  
-    **Support:** support@t21services.co.uk
+    **Admin/Technical:** admin@t21services.co.uk
     
     ---
     
@@ -4809,8 +4809,8 @@ elif tool == "📧 Contact Us":
         
         **📧 Email Us**  
         General: info@t21services.co.uk  
-        Support: support@t21services.co.uk  
-        Sales: sales@t21services.co.uk
+        Admin/Technical: admin@t21services.co.uk  
+        Training: training@t21services.co.uk
         
         **🌐 Website**  
         www.t21services.co.uk

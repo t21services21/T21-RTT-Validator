@@ -229,7 +229,7 @@ with faq_col1:
         3. Start with Taster tier (£99) or go straight to full access
         4. Access AI-powered training & hands-on tools
         
-        **Need help?** Email student-support@t21services.co.uk
+        **Need help?** Email training@t21services.co.uk
         """)
     
     with st.expander("💰 What are your pricing options?"):

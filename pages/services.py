@@ -88,29 +88,33 @@ with col2:
 st.markdown("---")
 
 # Talent Supply
-st.markdown("## 💼 Talent Supply Services")
+st.markdown("## 💼 Talent Supply & Placement Services")
+st.markdown("*Supply NHS-Ready Certified Staff to Healthcare Organizations*")
 
 col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("""
-    ### What We Provide
-    - **Certified Healthcare Professionals**
-    - **RTT-trained learners and graduates**
-    - **Hospital Administration specialists**
-    - **Job application & interview support**
+    ### What We Supply
+    - **TQUK-Certified Healthcare Professionals**
+    - **RTT-trained coordinators & specialists**
+    - **Hospital Administration experts**
+    - **Medical secretaries & data quality staff**
     - **Pre-vetted & qualified candidates**
+    - **Job-ready from day one**
     """)
 
 with col2:
     st.markdown("""
     ### Our Process
-    1. Train individuals to NHS standards
-    2. TQUK-endorsed certification
-    3. Job application support
-    4. Interview preparation
-    5. NHS employer hiring (we do not directly place; we support your applications)
-    6. Ongoing alumni support
+    1. Train individuals to NHS standards (TQUK-certified)
+    2. Hands-on practice with our AI platform
+    3. Job application support & CV building
+    4. Interview preparation & coaching
+    5. **Place qualified staff in NHS trusts**
+    6. Ongoing support & alumni network
+    
+    **We supply trained, qualified staff ready for NHS employment.**
     """)
 
 st.markdown("---")

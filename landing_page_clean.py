@@ -86,9 +86,9 @@ def render_clean_landing_page():
     
     st.markdown("""
     <div class="hero-section">
-        <h1>AI-Powered NHS Transformation Platform</h1>
-        <h2>🤖 Automate • Optimize • Revolutionize</h2>
-        <p><strong>THE ULTIMATE RTT SOLUTION:</strong> AI does in 1 MINUTE what takes 100,000 staff WEEKS. 120x faster validation • 99.9% accuracy • £2M+ savings per trust annually • Zero breaches • Complete automation + TQUK-certified training. The NHS solution for the next 100 years.</p>
+        <h1>Your NHS Career & Workforce Partner</h1>
+        <h2>Training • Talent • Technology</h2>
+        <p><strong>COMPLETE NHS SOLUTION:</strong> Train individuals for NHS careers with TQUK certification • Supply qualified staff to NHS trusts • AI automation saving £2M+ per trust. 120x faster validation • 99.9% accuracy • Zero breaches. Training, talent supply, and technology transformation - your one-stop NHS workforce solution.</p>
     </div>
     """, unsafe_allow_html=True)
     
