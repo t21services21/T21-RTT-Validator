@@ -19,7 +19,13 @@ def render_clean_landing_page():
         .main, .main .block-container, section[data-testid="stAppViewContainer"], .stApp {
             padding: 0 !important;
             margin: 0 !important;
+            margin-top: -100px !important;
             max-width: 100% !important;
+        }
+        
+        /* Kill the top white space completely */
+        .main > div:first-child {
+            margin-top: -100px !important;
         }
         
         /* Remove ALL element gaps */
