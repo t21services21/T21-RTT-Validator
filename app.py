@@ -1379,6 +1379,8 @@ tool = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
+st.sidebar.info("💡 **Navigation Tip:** Use module selector above. Browser back/forward buttons may not work due to Streamlit architecture.")
+st.sidebar.markdown("---")
 st.sidebar.markdown("### 🏢 **T21 Services Limited**")
 st.sidebar.markdown("*Healthcare Training & Technology Solutions*")
 st.sidebar.markdown("**Company No:** 13091053")

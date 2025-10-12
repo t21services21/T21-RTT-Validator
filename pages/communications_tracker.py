@@ -137,3 +137,10 @@ with col4:
 
 st.markdown("---")
 st.info("💡 **RTT Protection:** Detailed communication log proves compliance if disputes arise!")
+
+# Back to main platform button
+st.markdown("---")
+col_back1, col_back2, col_back3 = st.columns([1, 2, 1])
+with col_back2:
+    if st.button("← Back to Platform Dashboard", use_container_width=True, type="primary"):
+        st.switch_page("app.py")
