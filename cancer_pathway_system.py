@@ -23,10 +23,10 @@ from typing import List, Dict, Optional
 # Import Supabase functions for permanent storage
 try:
     from supabase_database import (
-        add_cancer_patient,
+        add_cancer_patient as supabase_add_cancer_patient,
         get_cancer_patients_for_user,
-        update_cancer_patient,
-        delete_cancer_patient
+        update_cancer_patient as supabase_update_cancer_patient,
+        delete_cancer_patient as supabase_delete_cancer_patient
     )
     SUPABASE_ENABLED = True
 except ImportError:
@@ -43,26 +43,35 @@ def get_current_user_email():
         return 'demo@t21services.co.uk'
 
 
-# Database files (fallback only)
-CANCER_PTL_DB = "cancer_ptl.json"
+# Import universal data persistence
+try:
+    from universal_data_persistence import load_cancer_patients, save_cancer_patients
+except:
+    # Fallback if not available
+    def load_cancer_patients(): return []
+    def save_cancer_patients(data): pass
 
 
 def load_cancer_ptl():
-    """Load cancer PTL database - Now uses Supabase for permanent per-user storage"""
+    """Load cancer PTL database - Now uses per-user permanent storage"""
     user_email = get_current_user_email()
     
     if SUPABASE_ENABLED:
         return {'patients': get_cancer_patients_for_user(user_email)}
     else:
-        if os.path.exists(CANCER_PTL_DB):
-            with open(CANCER_PTL_DB, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        return {'patients': []}
+        # Use universal data persistence (per-user files)
+        return {'patients': load_cancer_patients()}
 
 
 def save_cancer_ptl(data):
-    """Save cancer PTL database - Deprecated, Supabase saves happen in individual functions"""
-    pass
+    """Save cancer PTL database - Now uses per-user permanent storage"""
+    if SUPABASE_ENABLED:
+        # Supabase saves happen in individual functions
+        pass
+    else:
+        # Use universal data persistence (per-user files)
+        if 'patients' in data:
+            save_cancer_patients(data['patients'])
 
 
 def calculate_cancer_days_waiting(start_date: str) -> int:
@@ -181,7 +190,7 @@ def add_cancer_patient(
     }
 
     if SUPABASE_ENABLED:
-        success, result = add_cancer_patient(user_email, patient_data)
+        success, result = supabase_add_cancer_patient(user_email, patient_data)
         if success:
             return patient_id
         else:

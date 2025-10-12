@@ -1287,61 +1287,86 @@ accessible_modules = list(dict.fromkeys(accessible_modules))
 # If no accessible modules (error), show all
 if not accessible_modules:
     accessible_modules = [
+        # === STEP 1: PATIENT ENTRY & REGISTRATION ===
         "📋 PTL - Patient Tracking List",
+        "👤 Patient Registration Validator",
         "🎗️ Cancer Pathways",
-        "👥 MDT Coordination",
-        "📅 Advanced Booking System",
-        "📧 Medical Secretary AI",
-        "📊 Data Quality System",
+        
+        # === STEP 2: RTT CLOCK START & VALIDATION ===
         "🤖 AI Auto-Validator",
         "📊 Pathway Validator",
-        "📝 Clinic Letter Interpreter",
         "📅 Timeline Auditor",
-        "👤 Patient Registration Validator",
+        "📋 Waiting List Validator",
+        
+        # === STEP 3: APPOINTMENTS & SCHEDULING ===
+        "📅 Advanced Booking System",
         "📆 Appointment & Booking Checker",
-        "💬 Comment Line Generator",
-        "✍️ Clinic Letter Creator",
+        "👥 MDT Coordination",
+        
+        # === STEP 4: PATIENT EVENTS & CHANGES ===
         "📵 DNA Management",
         "❌ Cancellation Management",
         "🤔 Patient Choice & Deferrals",
-        "📋 Waiting List Validator",
         "🔄 Transfer of Care",
         "⚕️ Clinical Exceptions",
+        "✍️ Consent Manager",
+        
+        # === STEP 5: COMMUNICATIONS & DOCUMENTATION ===
+        "📧 Medical Secretary AI",
+        "📝 Clinic Letter Interpreter",
+        "✍️ Clinic Letter Creator",
+        "💬 Comment Line Generator",
+        "✉️ Communications Tracker",
+        
+        # === STEP 6: CAPACITY & PLANNING ===
         "🏥 Capacity Planner",
+        "💰 Funding & IFR",
+        
+        # === STEP 7: REPORTING & COMPLIANCE ===
         "📊 Commissioner Reporting",
         "🔍 Audit Trail",
-        "✉️ Communications Tracker",
-        "✍️ Consent Manager",
-        "💰 Funding & IFR",
-        "📱 Mobile App Preview",
-        "📊 Executive Dashboard",
-        "🗣️ Voice AI Interface",
-        "🔌 PAS Integration",
-        "👤 Patient Portal",
-        "📝 AI Documentation",
-        "🔐 Blockchain Audit",
-        "🧠 Predictive AI",
-        "🏆 National Benchmarking",
-        "🎓 Training Library",
-        "🎮 Interactive Learning Center",
-        "🎓 Certification Exam",
-        "🤖 AI RTT Tutor",
-        "💼 Job Interview Prep",
-        "📄 CV Builder",
+        "📊 Data Quality System",
+        
+        # === STEP 8: MONITORING & ANALYTICS ===
         "📊 Interactive Reports",
         "📈 Dashboard & Analytics",
         "🚨 Smart Alerts",
         "📜 Validation History",
-        "⚙️ My Account & Upgrade",
-        "🛒 Module Marketplace",
+        
+        # === ADVANCED AI FEATURES ===
+        "🧠 Predictive AI",
+        "📝 AI Documentation",
+        "🗣️ Voice AI Interface",
+        "🏆 National Benchmarking",
+        "🔐 Blockchain Audit",
+        
+        # === DIGITAL TRANSFORMATION ===
+        "📱 Mobile App Preview",
+        "📊 Executive Dashboard",
+        "🔌 PAS Integration",
+        "👤 Patient Portal",
+        "🏥 PAS Integration Demo (Hands-On)",
+        "🔌 Custom PAS Integration",
+        
+        # === TRAINING & LEARNING ===
+        "🎓 Training Library",
+        "🎮 Interactive Learning Center",
+        "🤖 AI RTT Tutor",
+        "🎓 Certification Exam",
         "📚 LMS - My Courses",
         "🎓 My Academic Portal",
+        "🎓 Practical Training Portal (All Courses)",
+        "💼 Job Interview Prep",
+        "📄 CV Builder",
+        
+        # === ADMIN & MANAGEMENT ===
+        "⚙️ My Account & Upgrade",
         "👥 Staff Management",
         "👨‍🏫 Student Progress Monitor",
         "🔧 Admin Panel",
-        "🏥 PAS Integration Demo (Hands-On)",
-        "🔌 Custom PAS Integration",
-        "🎓 Practical Training Portal (All Courses)",
+        "🛒 Module Marketplace",
+        
+        # === INFORMATION & SUPPORT ===
         "ℹ️ About RTT Rules",
         "📄 Privacy Policy",
         "📜 Terms of Service",
