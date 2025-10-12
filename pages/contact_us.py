@@ -12,17 +12,13 @@ import json
 
 st.set_page_config(page_title="Contact Us | T21 Services", page_icon="📧", layout="wide")
 
-# Hide sidebar
+# Remove all top spacing and hide sidebar
 st.markdown("""
 <style>
     [data-testid="stSidebar"] {display: none;}
-</style>
-""", unsafe_allow_html=True)
-
-# Hide default sidebar navigation
-st.markdown("""
-<style>
     [data-testid="stSidebarNav"] {display: none;}
+    header[data-testid="stHeader"] {display: none !important;}
+    .main .block-container {padding-top: 0 !important; margin-top: -80px !important;}
 </style>
 """, unsafe_allow_html=True)
 
