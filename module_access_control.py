@@ -156,8 +156,9 @@ BUNDLES = {
     }
 }
 
-# Default module access by role
+# Default module access by role (IN LOGICAL NHS WORKFLOW ORDER)
 DEFAULT_MODULE_ACCESS = {
+    # === STEP 1: PATIENT ENTRY & REGISTRATION ===
     "📋 PTL - Patient Tracking List": {
         "trial": True,  # Trial gets basic PTL access only
         "basic": True,
@@ -167,8 +168,8 @@ DEFAULT_MODULE_ACCESS = {
         "staff": True,
         "nhs_trust": True
     },
-    "🤖 AI Auto-Validator": {
-        "trial": False,  # NO AI for trial users!
+    "👤 Patient Registration Validator": {
+        "trial": False,  # NO validator for trial
         "basic": True,
         "professional": True,
         "ultimate": True,
