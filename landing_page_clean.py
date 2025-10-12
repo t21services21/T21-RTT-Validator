@@ -92,6 +92,7 @@ def render_clean_landing_page():
     </div>
     """, unsafe_allow_html=True)
     
+    st.markdown('<div id="login"></div>', unsafe_allow_html=True)
     st.markdown("### 🔐 Login or Register")
     st.markdown("*Select your portal to access the platform*")
     
