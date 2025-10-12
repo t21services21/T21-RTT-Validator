@@ -8,45 +8,31 @@ import streamlit as st
 def render_clean_landing_page():
     """Render clean landing page with hero and login only"""
     
-    # Custom CSS and Navigation
+    # Professional CSS - Complete Spacing Control
     st.markdown("""
     <style>
-        /* Hide sidebar */
-        [data-testid="stSidebar"] {display: none;}
+        /* ===== STREAMLIT FRAMEWORK OVERRIDES ===== */
+        [data-testid="stSidebar"] {display: none !important;}
+        header[data-testid="stHeader"] {display: none !important; height: 0 !important;}
         
-        /* COMPLETE removal of ALL top spacing */
-        .main .block-container {
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-            margin-top: -150px !important;
+        /* Force zero padding/margin on all Streamlit containers */
+        .main, .main .block-container, section[data-testid="stAppViewContainer"], .stApp {
+            padding: 0 !important;
+            margin: 0 !important;
             max-width: 100% !important;
         }
         
-        .main {
-            padding: 0 !important;
+        /* Remove ALL element gaps */
+        .element-container, .stMarkdown, div[data-testid="stVerticalBlock"] > div {
             margin: 0 !important;
+            padding: 0 !important;
+            gap: 0 !important;
         }
         
-        header[data-testid="stHeader"] {
-            display: none !important;
-            height: 0 !important;
-        }
-        
-        section[data-testid="stAppViewContainer"] {
-            padding-top: 0 !important;
-            margin-top: 0 !important;
-        }
-        
-        /* Force remove Streamlit's default padding */
-        .stApp {
-            margin-top: 0 !important;
-            padding-top: 0 !important;
-        }
-        
+        /* ===== TOP NAVIGATION BAR ===== */
         .top-nav {
             background: rgba(26, 26, 26, 0.95);
             padding: 15px 60px;
-            margin: -100px -70px 0 -70px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -54,6 +40,8 @@ def render_clean_landing_page():
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
         }
         
         .nav-logo-text {
@@ -63,30 +51,26 @@ def render_clean_landing_page():
             text-transform: uppercase;
         }
         
-        .nav-menu {
-            display: flex;
-            gap: 40px;
+        /* ===== NAVIGATION BUTTONS SECTION ===== */
+        .nav-buttons-wrapper {
+            background: rgba(26, 26, 26, 0.95);
+            padding: 10px 60px;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            margin-top: 0;
+            margin-bottom: 0;
         }
         
-        .nav-link {
-            color: white !important;
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            text-decoration: none;
-            padding: 10px 15px;
-        }
-        
-        .nav-link:hover {
-            color: #d4af37 !important;
-        }
-        
+        /* ===== HERO SECTION ===== */
         .hero {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
             padding: 40px 60px 60px 60px;
-            margin: 0 -70px 0 -70px;
             min-height: 380px;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            margin-top: 0;
+            margin-bottom: 0;
         }
         
         .hero h1 {
@@ -113,32 +97,6 @@ def render_clean_landing_page():
             line-height: 1.55;
             margin: 0;
         }
-        
-        /* Remove ALL gaps between Streamlit elements */
-        .element-container {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        
-        .stMarkdown {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        
-        /* Force no spacing between elements */
-        div[data-testid="stVerticalBlock"] > div {
-            gap: 0 !important;
-        }
-        
-        /* Target the navigation buttons container and FORCE negative margin on parent */
-        .nav-buttons-section {
-            margin-bottom: 0 !important;
-        }
-        
-        /* Target parent container of nav buttons and pull hero up */
-        .stMarkdown:has(.nav-buttons-section) {
-            margin-bottom: -60px !important;
-        }
     </style>
     
     <div class='top-nav'>
@@ -153,7 +111,7 @@ def render_clean_landing_page():
     """, unsafe_allow_html=True)
     
     # Top navigation buttons (Streamlit for smooth navigation)
-    st.markdown("""<div class='nav-buttons-section' style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: 0 -70px 0 -70px;'>""", unsafe_allow_html=True)
+    st.markdown("""<div class='nav-buttons-wrapper'>""", unsafe_allow_html=True)
     
     nb1, nb2, nb3, nb4, nb5, nb6 = st.columns(6)
     with nb1:
@@ -176,9 +134,9 @@ def render_clean_landing_page():
             st.switch_page("pages/procurement.py")
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # Hero section (separate)
+    # Hero section (professional, zero-gap)
     st.markdown("""
-    <div class='hero' style='margin-top: -10px;'>
+    <div class='hero'>
         <h1>Your NHS Career & Workforce Partner</h1>
         <h2>Training • Talent • Technology</h2>
         <p>UK Certified Centre serving individuals seeking NHS careers, NHS staff advancing their skills, and NHS trusts 
