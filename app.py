@@ -1233,20 +1233,44 @@ if hasattr(user_license, 'role') and user_license.role == "trial":
 
 st.sidebar.markdown("---")
 
-# Data Migration Button
-if 'data_migrated' not in st.session_state:
+# Data Migration Button - Check if already migrated (PERMANENTLY)
+def check_migration_done():
+    """Check if migration has been completed"""
+    migration_flag = "data/.migration_completed"
+    return os.path.exists(migration_flag)
+
+def mark_migration_done():
+    """Mark migration as completed permanently"""
+    migration_flag = "data/.migration_completed"
+    os.makedirs("data", exist_ok=True)
+    with open(migration_flag, 'w') as f:
+        f.write(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+# Only show migration if NOT already done
+if not check_migration_done():
     st.warning("**Optional: Migrate Old Data**")
-    st.info("If you have old data from a previous version of the platform, you can migrate it to the new system.")
-    if st.button(" Migrate Old Data to New System"):
-        from data_migration import run_full_migration
-        with st.spinner("Migrating data... This might take a moment."):
-            success = run_full_migration()
-            if success:
-                st.success("Data migration complete! Your old data is now available.")
-                st.session_state.data_migrated = True
-                st.rerun()
-            else:
-                st.error("Data migration failed. Please contact support.")
+    st.info("If you have old data from a previous version, click below (only needed once).")
+    
+    col_mig1, col_mig2 = st.columns([1, 1])
+    
+    with col_mig1:
+        if st.button("✅ Migrate Old Data"):
+            from data_migration import run_full_migration
+            with st.spinner("Migrating data..."):
+                success = run_full_migration()
+                if success:
+                    mark_migration_done()
+                    st.success("✅ Migration complete! This won't show again.")
+                    st.rerun()
+                else:
+                    st.error("❌ Migration failed. Contact support.")
+    
+    with col_mig2:
+        if st.button("❌ Skip (No Old Data)"):
+            mark_migration_done()
+            st.success("✅ Skipped. This won't show again.")
+            st.rerun()
+    
     st.markdown("---")
 
 # Sidebar navigation
