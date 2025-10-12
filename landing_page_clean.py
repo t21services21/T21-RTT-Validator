@@ -19,7 +19,7 @@ def render_clean_landing_page():
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: -5rem -5rem 0 -5rem;
+            margin: -10rem -10rem 0 -10rem;
         }
         .logo {font-size: 24px; font-weight: 800; color: #d4af37; text-transform: uppercase;}
         
@@ -27,7 +27,7 @@ def render_clean_landing_page():
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
             padding: 45px 40px 50px;
-            margin: 0 -5rem;
+            margin: 0 -10rem;
             color: white;
         }
         .hero-section h1 {
@@ -62,7 +62,7 @@ def render_clean_landing_page():
     """, unsafe_allow_html=True)
     
     # Navigation buttons
-    st.markdown('<div style="background: #1a1a1a; padding: 10px 40px; margin: 0 -5rem;">', unsafe_allow_html=True)
+    st.markdown('<div style="background: #1a1a1a; padding: 10px 40px; margin: 0 -10rem;">', unsafe_allow_html=True)
     c1, c2, c3, c4, c5, c6 = st.columns(6)
     with c1:
         if st.button("📋 ABOUT", key="nav_about", use_container_width=True):
