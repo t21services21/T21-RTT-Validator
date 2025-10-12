@@ -127,7 +127,7 @@ def render_clean_landing_page():
     """, unsafe_allow_html=True)
     
     # Top navigation buttons (Streamlit for smooth navigation)
-    st.markdown("<div style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: 0 -70px 0 -70px;'>", unsafe_allow_html=True)
+    st.markdown("<div style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: 0 -70px -1px -70px;'>", unsafe_allow_html=True)
     nb1, nb2, nb3, nb4, nb5, nb6 = st.columns(6)
     with nb1:
         if st.button("📋 ABOUT", key="top_about", use_container_width=True):
@@ -151,7 +151,7 @@ def render_clean_landing_page():
 
     # Hero section (separate)
     st.markdown("""
-    <div class='hero'>
+    <div class='hero' style='margin-top: -10px;'>
         <h1>Your NHS Career & Workforce Partner</h1>
         <h2>Training • Talent • Technology</h2>
         <p>UK Certified Centre serving individuals seeking NHS careers, NHS staff advancing their skills, and NHS trusts 
