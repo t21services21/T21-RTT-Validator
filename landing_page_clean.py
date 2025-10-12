@@ -113,6 +113,22 @@ def render_clean_landing_page():
             line-height: 1.55;
             margin: 0;
         }
+        
+        /* Remove ALL gaps between Streamlit elements */
+        .element-container {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        .stMarkdown {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        /* Force no spacing between elements */
+        div[data-testid="stVerticalBlock"] > div {
+            gap: 0 !important;
+        }
     </style>
     
     <div class='top-nav'>
