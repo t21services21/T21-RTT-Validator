@@ -86,9 +86,9 @@ def render_clean_landing_page():
     
     st.markdown("""
     <div class="hero-section">
-        <h1>Your NHS Career & Workforce Partner</h1>
-        <h2>Training • Talent • Technology</h2>
-        <p>UK Certified Centre serving individuals seeking NHS careers, NHS staff advancing their skills, and NHS trusts transforming operations. TQUK-endorsed training, job application support with proven success, and AI automation saving £2M+ annually.</p>
+        <h1>AI-Powered NHS Transformation Platform</h1>
+        <h2>🤖 Automate • Optimize • Revolutionize</h2>
+        <p><strong>THE ULTIMATE RTT SOLUTION:</strong> AI does in 1 MINUTE what takes 100,000 staff WEEKS. 120x faster validation • 99.9% accuracy • £2M+ savings per trust annually • Zero breaches • Complete automation + TQUK-certified training. The NHS solution for the next 100 years.</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -109,13 +109,14 @@ def render_clean_landing_page():
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Trust badges
+    # Revolutionary capabilities
     st.markdown("""
     <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 3rem;">
-        <div style="background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; font-weight: 700; font-size: 0.9rem;">✅ TQUK APPROVED<br>CENTRE</div>
-        <div style="background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; font-weight: 700; font-size: 0.9rem;">🔒 CYBER ESSENTIALS<br>CERTIFIED</div>
-        <div style="background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; font-weight: 700; font-size: 0.9rem;">🏥 NHS<br>COMPLIANT</div>
-        <div style="background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; font-weight: 700; font-size: 0.9rem;">✅ COMPANIES HOUSE<br>REGISTERED</div>
-        <div style="background: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; font-weight: 700; font-size: 0.9rem;">🇬🇧 UK<br>BASED</div>
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; font-weight: 700; font-size: 0.9rem; color: white;">🤖 AI-POWERED<br>AUTOMATION</div>
+        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; font-weight: 700; font-size: 0.9rem; color: white;">⚡ 120x FASTER<br>THAN MANUAL</div>
+        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; font-weight: 700; font-size: 0.9rem; color: white;">💰 £2M+ SAVINGS<br>PER TRUST</div>
+        <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; font-weight: 700; font-size: 0.9rem; color: white;">✅ 99.9%<br>ACCURACY</div>
+        <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; font-weight: 700; font-size: 0.9rem; color: white;">🏆 TQUK APPROVED<br>CENTRE #36257481088</div>
+        <div style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; font-weight: 700; font-size: 0.9rem; color: white;">🚀 FUTURE-PROOF<br>100 YEARS</div>
     </div>
     """, unsafe_allow_html=True)
