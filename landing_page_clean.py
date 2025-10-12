@@ -19,7 +19,7 @@ def render_clean_landing_page():
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: -8rem -5rem -1rem -5rem;
+            margin: -5rem -5rem 0 -5rem;
         }
         .logo {font-size: 24px; font-weight: 800; color: #d4af37; text-transform: uppercase;}
         
