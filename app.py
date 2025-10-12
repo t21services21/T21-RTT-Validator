@@ -1276,6 +1276,27 @@ if not accessible_modules:
         "📆 Appointment & Booking Checker",
         "💬 Comment Line Generator",
         "✍️ Clinic Letter Creator",
+        "📵 DNA Management",
+        "❌ Cancellation Management",
+        "🤔 Patient Choice & Deferrals",
+        "📋 Waiting List Validator",
+        "🔄 Transfer of Care",
+        "⚕️ Clinical Exceptions",
+        "🏥 Capacity Planner",
+        "📊 Commissioner Reporting",
+        "🔍 Audit Trail",
+        "✉️ Communications Tracker",
+        "✍️ Consent Manager",
+        "💰 Funding & IFR",
+        "📱 Mobile App Preview",
+        "📊 Executive Dashboard",
+        "🗣️ Voice AI Interface",
+        "🔌 PAS Integration",
+        "👤 Patient Portal",
+        "📝 AI Documentation",
+        "🔐 Blockchain Audit",
+        "🧠 Predictive AI",
+        "🏆 National Benchmarking",
         "🎓 Training Library",
         "🎮 Interactive Learning Center",
         "🎓 Certification Exam",
@@ -4657,6 +4678,52 @@ elif tool == "📜 Terms of Service":
     **T21 Services Limited** | Company No: 13091053  
     © 2020-2025 T21 Services Limited. All rights reserved.
     """)
+
+# NEW COMPREHENSIVE RTT MODULES
+elif tool == "📵 DNA Management":
+    st.switch_page("pages/dna_management.py")
+elif tool == "❌ Cancellation Management":
+    st.switch_page("pages/cancellation_management.py")
+elif tool == "🤔 Patient Choice & Deferrals":
+    st.switch_page("pages/patient_choice.py")
+elif tool == "📋 Waiting List Validator":
+    st.switch_page("pages/waiting_list_validator.py")
+elif tool == "🔄 Transfer of Care":
+    st.switch_page("pages/transfer_of_care.py")
+elif tool == "⚕️ Clinical Exceptions":
+    st.switch_page("pages/clinical_exceptions.py")
+elif tool == "🏥 Capacity Planner":
+    st.switch_page("pages/capacity_planner.py")
+elif tool == "📊 Commissioner Reporting":
+    st.switch_page("pages/commissioner_reporting.py")
+elif tool == "🔍 Audit Trail":
+    st.switch_page("pages/audit_trail.py")
+elif tool == "✉️ Communications Tracker":
+    st.switch_page("pages/communications_tracker.py")
+elif tool == "✍️ Consent Manager":
+    st.switch_page("pages/consent_manager.py")
+elif tool == "💰 Funding & IFR":
+    st.switch_page("pages/funding_ifr.py")
+
+# ADVANCED FEATURES (PROTOTYPES)
+elif tool == "📱 Mobile App Preview":
+    st.switch_page("pages/mobile_app_preview.py")
+elif tool == "📊 Executive Dashboard":
+    st.switch_page("pages/executive_dashboard.py")
+elif tool == "🗣️ Voice AI Interface":
+    st.switch_page("pages/voice_ai_interface.py")
+elif tool == "🔌 PAS Integration":
+    st.switch_page("pages/pas_integration.py")
+elif tool == "👤 Patient Portal":
+    st.switch_page("pages/patient_portal.py")
+elif tool == "📝 AI Documentation":
+    st.switch_page("pages/ai_documentation.py")
+elif tool == "🔐 Blockchain Audit":
+    st.switch_page("pages/blockchain_audit.py")
+elif tool == "🧠 Predictive AI":
+    st.switch_page("pages/predictive_ai.py")
+elif tool == "🏆 National Benchmarking":
+    st.switch_page("pages/national_benchmarking.py")
 
 elif tool == "📧 Contact Us":
     st.header("📧 Contact Us")
