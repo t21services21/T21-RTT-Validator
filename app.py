@@ -18,6 +18,7 @@ Trusted by NHS Trusts, Training Providers, and Healthcare Professionals
 
 import streamlit as st
 import json
+import os
 from datetime import datetime
 
 # Import with error handling
