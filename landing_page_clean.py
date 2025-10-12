@@ -129,6 +129,16 @@ def render_clean_landing_page():
         div[data-testid="stVerticalBlock"] > div {
             gap: 0 !important;
         }
+        
+        /* Target the navigation buttons container and FORCE negative margin on parent */
+        .nav-buttons-section {
+            margin-bottom: 0 !important;
+        }
+        
+        /* Target parent container of nav buttons and pull hero up */
+        .stMarkdown:has(.nav-buttons-section) {
+            margin-bottom: -60px !important;
+        }
     </style>
     
     <div class='top-nav'>
@@ -143,7 +153,8 @@ def render_clean_landing_page():
     """, unsafe_allow_html=True)
     
     # Top navigation buttons (Streamlit for smooth navigation)
-    st.markdown("<div style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: 0 -70px -1px -70px;'>", unsafe_allow_html=True)
+    st.markdown("""<div class='nav-buttons-section' style='background: rgba(26, 26, 26, 0.95); padding: 10px; margin: 0 -70px 0 -70px;'>""", unsafe_allow_html=True)
+    
     nb1, nb2, nb3, nb4, nb5, nb6 = st.columns(6)
     with nb1:
         if st.button("📋 ABOUT", key="top_about", use_container_width=True):
