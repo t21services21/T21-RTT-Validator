@@ -14,23 +14,32 @@ def render_clean_landing_page():
         /* Hide sidebar */
         [data-testid="stSidebar"] {display: none;}
         
-        /* Remove ALL top padding/margin */
+        /* COMPLETE removal of ALL top spacing */
         .main .block-container {
             padding-top: 0 !important;
-            margin-top: -80px !important;
+            padding-bottom: 0 !important;
+            margin-top: -150px !important;
             max-width: 100% !important;
         }
         
         .main {
-            padding-top: 0 !important;
-            margin-top: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
         }
         
         header[data-testid="stHeader"] {
             display: none !important;
+            height: 0 !important;
         }
         
         section[data-testid="stAppViewContainer"] {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+        
+        /* Force remove Streamlit's default padding */
+        .stApp {
+            margin-top: 0 !important;
             padding-top: 0 !important;
         }
         
