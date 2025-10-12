@@ -1373,13 +1373,26 @@ if not accessible_modules:
         "📧 Contact Us"
     ]
 
-tool = st.sidebar.radio(
-    "Select Tool:",
-    accessible_modules
-)
+# Get current module from URL query parameters (for browser history support)
+query_params = st.query_params
+current_module_from_url = query_params.get("module", None)
+
+# If URL has a module parameter, use it
+if current_module_from_url and current_module_from_url in accessible_modules:
+    tool = current_module_from_url
+else:
+    # Otherwise show the radio selector
+    tool = st.sidebar.radio(
+        "Select Tool:",
+        accessible_modules,
+        key="module_selector"
+    )
+    # Update URL when selection changes
+    if tool:
+        st.query_params["module"] = tool
 
 st.sidebar.markdown("---")
-st.sidebar.info("💡 **Navigation Tip:** Use module selector above. Browser back/forward buttons may not work due to Streamlit architecture.")
+st.sidebar.success("✅ **Navigation:** Use dropdown above OR browser back/forward buttons - both work!")
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 🏢 **T21 Services Limited**")
 st.sidebar.markdown("*Healthcare Training & Technology Solutions*")
@@ -4732,54 +4745,76 @@ elif tool == "📜 Terms of Service":
     © 2020-2025 T21 Services Limited. All rights reserved.
     """)
 
-# NEW COMPREHENSIVE RTT MODULES
+# NEW COMPREHENSIVE RTT MODULES (with browser history support)
 elif tool == "📵 DNA Management":
+    st.query_params["module"] = tool
     st.switch_page("pages/dna_management.py")
 elif tool == "❌ Cancellation Management":
+    st.query_params["module"] = tool
     st.switch_page("pages/cancellation_management.py")
 elif tool == "🤔 Patient Choice & Deferrals":
+    st.query_params["module"] = tool
     st.switch_page("pages/patient_choice.py")
 elif tool == "📋 Waiting List Validator":
+    st.query_params["module"] = tool
     st.switch_page("pages/waiting_list_validator.py")
 elif tool == "🔄 Transfer of Care":
+    st.query_params["module"] = tool
     st.switch_page("pages/transfer_of_care.py")
 elif tool == "⚕️ Clinical Exceptions":
+    st.query_params["module"] = tool
     st.switch_page("pages/clinical_exceptions.py")
 elif tool == "🏥 Capacity Planner":
+    st.query_params["module"] = tool
     st.switch_page("pages/capacity_planner.py")
 elif tool == "📊 Commissioner Reporting":
+    st.query_params["module"] = tool
     st.switch_page("pages/commissioner_reporting.py")
 elif tool == "🔍 Audit Trail":
+    st.query_params["module"] = tool
     st.switch_page("pages/audit_trail.py")
 elif tool == "✉️ Communications Tracker":
+    st.query_params["module"] = tool
     st.switch_page("pages/communications_tracker.py")
 elif tool == "✍️ Consent Manager":
+    st.query_params["module"] = tool
     st.switch_page("pages/consent_manager.py")
 elif tool == "💰 Funding & IFR":
+    st.query_params["module"] = tool
     st.switch_page("pages/funding_ifr.py")
 
 # ADVANCED FEATURES (PROTOTYPES)
 elif tool == "📱 Mobile App Preview":
+    st.query_params["module"] = tool
     st.switch_page("pages/mobile_app_preview.py")
 elif tool == "📊 Executive Dashboard":
+    st.query_params["module"] = tool
     st.switch_page("pages/executive_dashboard.py")
 elif tool == "🗣️ Voice AI Interface":
+    st.query_params["module"] = tool
     st.switch_page("pages/voice_ai_interface.py")
 elif tool == "🔌 PAS Integration":
+    st.query_params["module"] = tool
     st.switch_page("pages/pas_integration.py")
 elif tool == "👤 Patient Portal":
+    st.query_params["module"] = tool
     st.switch_page("pages/patient_portal.py")
 elif tool == "📝 AI Documentation":
+    st.query_params["module"] = tool
     st.switch_page("pages/ai_documentation.py")
 elif tool == "🔐 Blockchain Audit":
+    st.query_params["module"] = tool
     st.switch_page("pages/blockchain_audit.py")
 elif tool == "🧠 Predictive AI":
+    st.query_params["module"] = tool
     st.switch_page("pages/predictive_ai.py")
 elif tool == "🏆 National Benchmarking":
+    st.query_params["module"] = tool
     st.switch_page("pages/national_benchmarking.py")
 
 # STUDENT PROGRESS MONITOR (Admin/Staff only)
 elif tool == "👨‍🏫 Student Progress Monitor":
+    st.query_params["module"] = tool
     st.switch_page("pages/student_progress_monitor.py")
 
 elif tool == "📧 Contact Us":

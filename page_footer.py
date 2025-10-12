@@ -11,6 +11,9 @@ def render_back_button(button_text="← Back to Platform Dashboard"):
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         if st.button(button_text, use_container_width=True, type="primary", key="back_to_platform"):
+            # Clear module parameter for browser history
+            if "module" in st.query_params:
+                del st.query_params["module"]
             st.switch_page("app.py")
 
 def render_page_footer_with_info(info_text=None):
