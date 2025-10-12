@@ -13,14 +13,14 @@ def render_clean_landing_page():
         /* Remove ALL Streamlit defaults */
         [data-testid="stSidebar"] {display: none !important;}
         header[data-testid="stHeader"] {display: none !important;}
-        .main, .main .block-container, .stApp {padding: 0 !important; margin: 0 !important; max-width: 100% !important;}
+        .main, .main .block-container, .stApp {padding: 0 !important; margin: 0 !important; margin-top: -100px !important; max-width: 100% !important;}
         .element-container, .stMarkdown, div[data-testid="stVerticalBlock"] > div {margin: 0 !important; padding: 0 !important; gap: 0 !important;}
         
-        /* Professional sections */
-        .top-bar {background: #1a1a1a; padding: 15px 60px; display: flex; justify-content: space-between; align-items: center;}
+        /* Full-width sections */
+        .top-bar {background: #1a1a1a; padding: 15px 60px; display: flex; justify-content: space-between; align-items: center; width: 100vw; margin-left: calc(-50vw + 50%);}
         .logo {font-size: 24px; font-weight: 800; color: #d4af37; text-transform: uppercase;}
-        .nav-buttons {background: #1a1a1a; padding: 10px 60px;}
-        .hero {background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover; padding: 50px 60px 80px; color: white;}
+        .nav-buttons {background: #1a1a1a; padding: 10px 60px; width: 100vw; margin-left: calc(-50vw + 50%);}
+        .hero {background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover; padding: 50px 60px 80px; color: white; width: 100vw; margin-left: calc(-50vw + 50%);}
         .hero h1 {font-size: 64px; font-weight: 800; margin: 0 0 10px 0; line-height: 1;}
         .hero h2 {font-size: 40px; font-weight: 700; color: #d4af37; margin: 0 0 20px 0;}
         .hero p {font-size: 17px; max-width: 800px; line-height: 1.6;}
