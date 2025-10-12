@@ -322,23 +322,27 @@ def add_appointment(
     return False
 
 
-def remove_from_ptl(patient_id: str, reason: str = "") -> bool:
-    """Remove patient from PTL (treatment complete, discharged, etc.)"""
+def remove_from_ptl(patient_id: str) -> bool:
+    """Remove patient from PTL - NOW WITH SUPABASE!"""
     
-    ptl = load_ptl()
+    user_email = get_current_user_email()
     
-    # Find and remove patient
-    for i, patient in enumerate(ptl['patients']):
-        if patient['patient_id'] == patient_id:
-            # Archive to history
-            archive_patient(patient, reason)
-            
-            # Remove from active PTL
-            ptl['patients'].pop(i)
-            save_ptl(ptl)
-            return True
-    
-    return False
+    if SUPABASE_ENABLED:
+        # Delete from Supabase
+        success = delete_ptl_patient(patient_id, user_email)
+        return success
+    else:
+        # Fallback to old method
+        ptl = load_ptl()
+        
+        for i, patient in enumerate(ptl['patients']):
+            if patient['patient_id'] == patient_id:
+                # Remove from active PTL
+                ptl['patients'].pop(i)
+                save_ptl(ptl)
+                return True
+        
+        return False
 
 
 def archive_patient(patient: Dict, reason: str):

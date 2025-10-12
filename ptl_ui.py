@@ -300,8 +300,23 @@ def render_patient_card(patient: dict):
                 # Events history
                 if patient.get('events'):
                     st.markdown("### 📝 Events History")
-                    for event in patient['events']:
-                        st.markdown(f"- **{event['date']}** - Code {event['code']}: {event['description']}")
+                    try:
+                        events = patient['events']
+                        # Handle different data formats from Supabase
+                        if isinstance(events, str):
+                            import json
+                            events = json.loads(events)
+                        elif not isinstance(events, list):
+                            events = []
+                        
+                        for event in events:
+                            if isinstance(event, dict) and 'date' in event and 'code' in event and 'description' in event:
+                                st.markdown(f"- **{event['date']}** - Code {event['code']}: {event['description']}")
+                            else:
+                                st.markdown(f"- **Event data format error** - {str(event)[:50]}...")
+                    except Exception as e:
+                        st.error(f"Error loading events: {str(e)}")
+                        st.markdown("📝 Events history temporarily unavailable")
                 
                 if st.button("Close", key=f"close_{patient['patient_id']}"):
                     st.session_state[f"viewing_{patient['patient_id']}"] = False
