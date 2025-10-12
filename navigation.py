@@ -4,9 +4,48 @@ Reusable navigation for all pages
 """
 
 import streamlit as st
+import streamlit.components.v1 as components
+
+def navigate_with_clean_url(page_name, page_path):
+    """Navigate to a page with browser history support"""
+    # Push to browser history and navigate
+    components.html(f"""
+    <script>
+        if (window.parent) {{
+            window.parent.history.pushState(
+                {{page: '{page_name}'}}, 
+                '{page_name}', 
+                '{page_path}'
+            );
+            window.parent.location.href = window.parent.location.origin + '{page_path}';
+        }}
+    </script>
+    """, height=0)
+    st.stop()
 
 def render_navigation(current_page="home"):
     """Render navigation bar with Streamlit buttons"""
+    
+    # Setup history listener for browser back/forward
+    components.html("""
+    <script>
+        // Handle browser back/forward
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.page) {
+                window.parent.location.reload();
+            }
+        });
+        
+        // Set initial state if needed
+        if (!window.parent.history.state) {
+            window.parent.history.replaceState(
+                {page: 'current'}, 
+                'Current Page', 
+                window.parent.location.pathname
+            );
+        }
+    </script>
+    """, height=0)
     
     # CSS for navigation
     st.markdown("""
@@ -74,31 +113,31 @@ def render_navigation(current_page="home"):
     
     with col2:
         if st.button("ABOUT", key="nav_about", use_container_width=True):
-            st.switch_page("pages/about.py")
+            navigate_with_clean_url("About", "/about")
     
     with col3:
         if st.button("SERVICES", key="nav_services", use_container_width=True):
-            st.switch_page("pages/services.py")
+            navigate_with_clean_url("Services", "/services")
     
     with col4:
         if st.button("PRICING", key="nav_pricing", use_container_width=True):
-            st.switch_page("pages/pricing.py")
+            navigate_with_clean_url("Pricing", "/pricing")
     
     with col5:
         if st.button("CONTACT", key="nav_contact", use_container_width=True):
-            st.switch_page("pages/contact_us.py")
+            navigate_with_clean_url("Contact", "/contact_us")
     
     with col6:
         if st.button("TESTIMONIALS", key="nav_testimonials", use_container_width=True):
-            st.switch_page("pages/testimonials.py")
+            navigate_with_clean_url("Testimonials", "/testimonials")
 
     with col7:
         if st.button("PROCUREMENT", key="nav_procurement", use_container_width=True):
-            st.switch_page("pages/procurement.py")
+            navigate_with_clean_url("Procurement", "/procurement")
 
     with col8:
         if st.button("🏠 HOME", key="nav_home", use_container_width=True, type="primary"):
-            st.switch_page("app.py")
+            navigate_with_clean_url("Home", "/landing_page_clean")
     
     with col9:
         if st.session_state.get("logged_in"):

@@ -4780,41 +4780,89 @@ elif tool == "⚕️ Clinical Exceptions":
     else:
         st.switch_page("pages/clinical_exceptions.py")
 elif tool == "🏥 Capacity Planner":
-    st.switch_page("pages/capacity_planner.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Capacity Planner", "/capacity_planner", "pages/capacity_planner.py")
+    else:
+        st.switch_page("pages/capacity_planner.py")
 elif tool == "📊 Commissioner Reporting":
-    st.switch_page("pages/commissioner_reporting.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Commissioner Reporting", "/commissioner_reporting", "pages/commissioner_reporting.py")
+    else:
+        st.switch_page("pages/commissioner_reporting.py")
 elif tool == "🔍 Audit Trail":
-    st.switch_page("pages/audit_trail.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Audit Trail", "/audit_trail", "pages/audit_trail.py")
+    else:
+        st.switch_page("pages/audit_trail.py")
 elif tool == "✉️ Communications Tracker":
-    st.switch_page("pages/communications_tracker.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Communications Tracker", "/communications_tracker", "pages/communications_tracker.py")
+    else:
+        st.switch_page("pages/communications_tracker.py")
 elif tool == "✍️ Consent Manager":
-    st.switch_page("pages/consent_manager.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Consent Manager", "/consent_manager", "pages/consent_manager.py")
+    else:
+        st.switch_page("pages/consent_manager.py")
 elif tool == "💰 Funding & IFR":
-    st.switch_page("pages/funding_ifr.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Funding & IFR", "/funding_ifr", "pages/funding_ifr.py")
+    else:
+        st.switch_page("pages/funding_ifr.py")
 
 # ADVANCED FEATURES (PROTOTYPES)
 elif tool == "📱 Mobile App Preview":
-    st.switch_page("pages/mobile_app_preview.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Mobile App", "/mobile_app_preview", "pages/mobile_app_preview.py")
+    else:
+        st.switch_page("pages/mobile_app_preview.py")
 elif tool == "📊 Executive Dashboard":
-    st.switch_page("pages/executive_dashboard.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Executive Dashboard", "/executive_dashboard", "pages/executive_dashboard.py")
+    else:
+        st.switch_page("pages/executive_dashboard.py")
 elif tool == "🗣️ Voice AI Interface":
-    st.switch_page("pages/voice_ai_interface.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Voice AI", "/voice_ai_interface", "pages/voice_ai_interface.py")
+    else:
+        st.switch_page("pages/voice_ai_interface.py")
 elif tool == "🔌 PAS Integration":
-    st.switch_page("pages/pas_integration.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("PAS Integration", "/pas_integration", "pages/pas_integration.py")
+    else:
+        st.switch_page("pages/pas_integration.py")
 elif tool == "👤 Patient Portal":
-    st.switch_page("pages/patient_portal.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Patient Portal", "/patient_portal", "pages/patient_portal.py")
+    else:
+        st.switch_page("pages/patient_portal.py")
 elif tool == "📝 AI Documentation":
-    st.switch_page("pages/ai_documentation.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("AI Documentation", "/ai_documentation", "pages/ai_documentation.py")
+    else:
+        st.switch_page("pages/ai_documentation.py")
 elif tool == "🔐 Blockchain Audit":
-    st.switch_page("pages/blockchain_audit.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Blockchain Audit", "/blockchain_audit", "pages/blockchain_audit.py")
+    else:
+        st.switch_page("pages/blockchain_audit.py")
 elif tool == "🧠 Predictive AI":
-    st.switch_page("pages/predictive_ai.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Predictive AI", "/predictive_ai", "pages/predictive_ai.py")
+    else:
+        st.switch_page("pages/predictive_ai.py")
 elif tool == "🏆 National Benchmarking":
-    st.switch_page("pages/national_benchmarking.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("National Benchmarking", "/national_benchmarking", "pages/national_benchmarking.py")
+    else:
+        st.switch_page("pages/national_benchmarking.py")
 
 # STUDENT PROGRESS MONITOR (Admin/Staff only)
 elif tool == "👨‍🏫 Student Progress Monitor":
-    st.switch_page("pages/student_progress_monitor.py")
+    if BROWSER_HISTORY_ENABLED:
+        navigate_with_history("Student Progress Monitor", "/student_progress_monitor", "pages/student_progress_monitor.py")
+    else:
+        st.switch_page("pages/student_progress_monitor.py")
 
 elif tool == "📧 Contact Us":
     st.header("📧 Contact Us")
