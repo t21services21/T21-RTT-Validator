@@ -15,13 +15,18 @@ def render_clean_landing_page():
         [data-testid="stSidebar"] {display: none !important;}
         header[data-testid="stHeader"] {display: none !important;}
         
-        /* Reset ALL Streamlit containers to zero */
-        .main, .main .block-container, .stApp, section[data-testid="stAppViewContainer"] {
+        /* BRUTALLY reset ALL Streamlit containers */
+        .main, .main .block-container, .stApp, section[data-testid="stAppViewContainer"], .main > div {
             padding: 0 !important; 
             margin: 0 !important; 
+            margin-left: 0 !important;
+            margin-right: 0 !important;
             margin-top: -100px !important; 
             max-width: none !important; 
-            width: 100% !important;
+            width: 100vw !important;
+            left: 0 !important;
+            right: 0 !important;
+            position: relative !important;
             overflow-x: hidden !important;
         }
         
@@ -31,31 +36,47 @@ def render_clean_landing_page():
             gap: 0 !important;
         }
         
-        /* Professional full-width sections */
+        /* TRUE full-width sections using viewport units */
         .top-bar {
             background: #1a1a1a; 
-            padding: 15px 5%; 
+            padding: 15px 60px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            width: 100%; 
-            box-sizing: border-box;
-            margin: 0;
+            width: 100vw; 
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
         }
         .logo {font-size: 24px; font-weight: 800; color: #d4af37; text-transform: uppercase;}
-        .nav-buttons {background: #1a1a1a; padding: 10px 5%; width: 100%; box-sizing: border-box; margin: 0;}
+        .nav-buttons {
+            background: #1a1a1a; 
+            padding: 10px 60px; 
+            width: 100vw; 
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
         .hero {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover; 
-            padding: 50px 5% 80px; 
+            padding: 35px 60px 50px; 
             color: white; 
-            width: 100%; 
-            box-sizing: border-box;
-            margin: 0;
+            width: 100vw; 
+            min-height: 300px;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
         }
-        .hero h1 {font-size: 64px; font-weight: 800; margin: 0 0 10px 0; line-height: 1; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
-        .hero h2 {font-size: 40px; font-weight: 700; color: #d4af37; margin: 0 0 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
-        .hero p {font-size: 17px; max-width: 900px; line-height: 1.6; text-shadow: 1px 1px 2px rgba(0,0,0,0.7);}
+        .hero h1 {font-size: 56px; font-weight: 800; margin: 0 0 8px 0; line-height: 1.1; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
+        .hero h2 {font-size: 36px; font-weight: 700; color: #d4af37; margin: 0 0 15px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
+        .hero p {font-size: 16px; max-width: 850px; line-height: 1.5; text-shadow: 1px 1px 2px rgba(0,0,0,0.7);}
     </style>
     
     <div class='top-bar'>
