@@ -21,7 +21,6 @@ from universal_crud import (
 )
 
 
-st.set_page_config(page_title="Audit Trail | T21 Services", page_icon="🔍", layout="wide")
 
 st.markdown("""
 <style>

@@ -10,11 +10,6 @@ import os
 # Add parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-st.set_page_config(
-    page_title="Welcome | T21 Healthcare Intelligence Platform",
-    page_icon="🏥",
-    layout="wide"
-)
 
 # Custom sidebar
 try:

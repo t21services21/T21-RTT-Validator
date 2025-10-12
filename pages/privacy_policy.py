@@ -4,7 +4,6 @@ T21 SERVICES - PRIVACY POLICY PAGE
 
 import streamlit as st
 
-st.set_page_config(page_title="Privacy Policy | T21 Services", page_icon="🔒", layout="wide")
 
 st.markdown("""
 <style>

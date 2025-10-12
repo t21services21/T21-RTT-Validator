@@ -10,7 +10,6 @@ from navigation import render_navigation
 import os
 import json
 
-st.set_page_config(page_title="Contact Us | T21 Services", page_icon="📧", layout="wide")
 
 # Remove all top spacing and hide sidebar
 st.markdown("""

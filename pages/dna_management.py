@@ -21,7 +21,6 @@ from universal_crud import (
     render_record_table, export_to_csv
 )
 
-st.set_page_config(page_title="DNA Management | T21 Services", page_icon="📵", layout="wide")
 
 # Remove top white space
 st.markdown("""

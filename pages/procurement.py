@@ -5,7 +5,6 @@ T21 SERVICES - PROCUREMENT (NHS BUYERS)
 import streamlit as st
 from navigation import render_navigation
 
-st.set_page_config(page_title="Procurement | T21 Services", page_icon="🏛️", layout="wide")
 
 # Remove top white space
 st.markdown("""

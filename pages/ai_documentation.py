@@ -20,7 +20,6 @@ from universal_crud import (
 )
 
 
-st.set_page_config(page_title="AI Documentation | T21 Services", page_icon="📝", layout="wide")
 
 st.markdown("""
 <style>

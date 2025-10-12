@@ -5,7 +5,6 @@ T21 SERVICES - WHY CHOOSE T21
 import streamlit as st
 from navigation import render_navigation
 
-st.set_page_config(page_title="Why T21 | T21 Services", page_icon="🏆", layout="wide")
 
 render_navigation(current_page="why_t21")
 

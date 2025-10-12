@@ -13,11 +13,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fhir_integration import FHIRClient, FHIR_CONFIGS
 import pandas as pd
 
-st.set_page_config(
-    page_title="PAS Integration Demo | T21 Services",
-    page_icon="🏥",
-    layout="wide"
-)
 
 # ⚠️ AUTHENTICATION CHECK - MUST BE LOGGED IN
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:

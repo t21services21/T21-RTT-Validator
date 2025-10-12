@@ -20,7 +20,6 @@ from universal_crud import (
 )
 
 
-st.set_page_config(page_title="Clinical Exceptions | T21 Services", page_icon="⚕️", layout="wide")
 
 # Remove top white space
 st.markdown("""

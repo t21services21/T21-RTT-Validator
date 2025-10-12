@@ -5,7 +5,6 @@ T21 SERVICES - LEADERSHIP PAGE
 import streamlit as st
 from navigation import render_navigation
 
-st.set_page_config(page_title="Leadership | T21 Services", page_icon="👔", layout="wide")
 
 render_navigation(current_page="leadership")
 

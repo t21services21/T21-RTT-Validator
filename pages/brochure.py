@@ -5,7 +5,6 @@ T21 SERVICES - NHS PROCUREMENT BROCHURE (PRINTABLE)
 import streamlit as st
 from navigation import render_navigation
 
-st.set_page_config(page_title="Brochure | T21 Services", page_icon="📄", layout="wide")
 
 # Reusable navigation
 render_navigation(current_page="brochure")

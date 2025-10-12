@@ -7,7 +7,6 @@ import streamlit as st
 from datetime import datetime
 from navigation import render_navigation
 
-st.set_page_config(page_title="DNA Management | T21 Services", page_icon="📵", layout="wide")
 
 st.markdown("""
 <style>

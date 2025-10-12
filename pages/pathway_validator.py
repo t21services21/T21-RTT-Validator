@@ -5,11 +5,6 @@ Validate RTT Pathways for Compliance
 
 import streamlit as st
 
-st.set_page_config(
-    page_title="Pathway Validator | T21 Services",
-    page_icon="📊",
-    layout="wide"
-)
 
 # Initialize session state
 if 'logged_in' not in st.session_state:

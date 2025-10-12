@@ -16,11 +16,6 @@ from admin_management import load_users_db
 from advanced_access_control import UserAccount
 import hashlib
 
-st.set_page_config(
-    page_title="Staff & Partner Portal | T21 Healthcare Intelligence",
-    page_icon="👥",
-    layout="wide"
-)
 
 # Remove ALL spacing and center logo
 st.markdown("""

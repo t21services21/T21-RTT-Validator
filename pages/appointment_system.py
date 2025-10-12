@@ -5,11 +5,6 @@ Book, Manage, and Track NHS Appointments
 
 import streamlit as st
 
-st.set_page_config(
-    page_title="Appointment System | T21 Services",
-    page_icon="📅",
-    layout="wide"
-)
 
 # Initialize session state
 if 'logged_in' not in st.session_state:

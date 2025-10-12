@@ -5,7 +5,6 @@ T21 SERVICES - SERVICES PAGE
 import streamlit as st
 from navigation import render_navigation
 
-st.set_page_config(page_title="Our Services | T21 Services", page_icon="🎯", layout="wide")
 
 # Remove top white space
 st.markdown("""

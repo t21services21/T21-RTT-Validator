@@ -22,7 +22,6 @@ from universal_crud import (
 )
 
 
-st.set_page_config(page_title="Student Progress Monitor | T21 Services", page_icon="👨‍🏫", layout="wide")
 
 st.markdown("""
 <style>

@@ -10,11 +10,6 @@ import streamlit as st
 import sys
 import os
 
-st.set_page_config(
-    page_title="Terms of Service | T21 Services Limited",
-    page_icon="📄",
-    layout="wide"
-)
 
 # Hide default sidebar navigation
 st.markdown("""

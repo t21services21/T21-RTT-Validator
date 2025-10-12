@@ -6,11 +6,6 @@ Access ALL patient registration, pathway validation, and clinical tools
 
 import streamlit as st
 
-st.set_page_config(
-    page_title="RTT Clinical Validator | T21 Services",
-    page_icon="🏥",
-    layout="wide"
-)
 
 # ⚠️ AUTHENTICATION CHECK - MUST BE LOGGED IN
 if 'logged_in' not in st.session_state or not st.session_state.logged_in:

@@ -4,7 +4,6 @@ TEST PAGE - Simple test to see if imports work
 
 import streamlit as st
 
-st.set_page_config(page_title="Test CRUD", page_icon="🧪", layout="wide")
 
 st.title("🧪 CRUD Import Test")
 

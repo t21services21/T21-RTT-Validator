@@ -15,11 +15,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from student_auth import login_student, register_student
 from advanced_access_control import UserAccount
 
-st.set_page_config(
-    page_title="Student Training Portal | T21 Healthcare Intelligence",
-    page_icon="🎓",
-    layout="wide"
-)
 
 # Remove ALL spacing and center logo
 st.markdown("""

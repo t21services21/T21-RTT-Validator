@@ -20,7 +20,6 @@ from universal_crud import (
     update_record, delete_record, search_records, export_to_csv
 )
 
-st.set_page_config(page_title="Cancellation Management | T21 Services", page_icon="❌", layout="wide")
 
 # Remove top white space
 st.markdown("""

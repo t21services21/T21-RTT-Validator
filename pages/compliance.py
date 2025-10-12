@@ -5,7 +5,6 @@ T21 SERVICES - COMPLIANCE & GOVERNANCE
 import streamlit as st
 from navigation import render_navigation
 
-st.set_page_config(page_title="Compliance & DSPT | T21 Services", page_icon="🛡️", layout="wide")
 
 # Reusable nav
 render_navigation(current_page="compliance")
