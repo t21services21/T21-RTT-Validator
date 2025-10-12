@@ -71,12 +71,19 @@ def render_clean_landing_page():
         .hero {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
-            padding: 40px 60px 60px 60px;
+            padding: 40px 60px 80px 60px;
             min-height: 380px;
             width: 100vw;
             margin-left: calc(-50vw + 50%);
             margin-top: 0;
             margin-bottom: 0;
+            padding-bottom: 80px;
+        }
+        
+        /* Hero parent container - no gaps */
+        .stMarkdown:has(.hero) {
+            margin: 0 !important;
+            padding: 0 !important;
         }
         
         .hero h1 {
@@ -151,11 +158,13 @@ def render_clean_landing_page():
     </div>
     """, unsafe_allow_html=True)
 
-    # Login buttons section
-    st.markdown("<div id='login'></div>", unsafe_allow_html=True)
-    st.markdown("## 🔐 Login or Register")
-    st.markdown("*Select your portal to access the platform*")
-    st.markdown("<br>", unsafe_allow_html=True)
+    # Login buttons section (zero-gap)
+    st.markdown("""
+    <div id='login' style='padding: 40px 60px; margin: 0; background: white;'>
+        <h2 style='text-align: center; margin-bottom: 10px;'>🔐 Login or Register</h2>
+        <p style='text-align: center; margin-bottom: 30px; color: #666;'>Select your portal to access the platform</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     col1, col2, col3, col4, col5 = st.columns([2, 1.5, 1.5, 1.5, 2])
     
@@ -173,9 +182,9 @@ def render_clean_landing_page():
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Trust Badges
+    # Trust Badges (zero-gap, full-width)
     st.markdown("""
-    <div style='display: flex; gap: 20px; justify-content: center; padding: 60px 0; background: #f8f9fa; margin: 0 -70px; flex-wrap: wrap;'>
+    <div style='display: flex; gap: 20px; justify-content: center; padding: 60px 0; background: #f8f9fa; margin: 0; width: 100vw; margin-left: calc(-50vw + 50%); flex-wrap: wrap;'>
         <div style='background: white; padding: 25px 35px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>✅ TQUK APPROVED<br>CENTRE</div>
         <div style='background: white; padding: 25px 35px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>🔒 CYBER ESSENTIALS<br>CERTIFIED</div>
         <div style='background: white; padding: 25px 35px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700; color: #1a1a1a;'>🏥 NHS<br>COMPLIANT</div>
