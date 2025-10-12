@@ -4,7 +4,6 @@ Admin/Tutor dashboard to review student work and provide grading
 """
 
 import streamlit as st
-from navigation import render_navigation
 import os
 import json
 from datetime import datetime
@@ -17,7 +16,9 @@ if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
 from universal_crud import (
-    create_record, read_all_records, read_record_by_id,
+    create_
+from navigation import render_navigation
+record, read_all_records, read_record_by_id,
     update_record, delete_record, search_records, export_to_csv
 )
 

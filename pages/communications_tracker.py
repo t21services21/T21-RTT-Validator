@@ -5,7 +5,6 @@ Track all patient communications (letters, calls, SMS)
 
 import streamlit as st
 from datetime import datetime, timedelta
-from navigation import render_navigation
 import pandas as pd
 import os
 import sys
@@ -16,7 +15,9 @@ if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
 from universal_crud import (
-    create_record, read_all_records, read_record_by_id,
+    create_
+from navigation import render_navigation
+record, read_all_records, read_record_by_id,
     update_record, delete_record, search_records, export_to_csv
 )
 

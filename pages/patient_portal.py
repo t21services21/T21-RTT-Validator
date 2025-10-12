@@ -4,10 +4,16 @@ Patient-facing interface for RTT journey tracking
 """
 
 import streamlit as st
-from navigation import render_navigation
 from datetime import datetime, timedelta
 import os
 import sys
+
+# Add parent directory to path BEFORE importing navigation
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
+from navigation import render_navigation
 
 # Add parent directory to path for imports (works on Streamlit Cloud)
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
