@@ -26,13 +26,33 @@ def render_clean_landing_page():
         .hero-section {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
                         url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
-            padding: 50px 40px;
+            padding: 45px 40px 50px;
             margin: 0 -5rem;
             color: white;
         }
-        .hero-section h1 {color: white; font-size: 56px; font-weight: 800; margin: 0 0 10px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
-        .hero-section h2 {color: #d4af37; font-size: 36px; font-weight: 700; margin: 0 0 15px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);}
-        .hero-section p {font-size: 16px; max-width: 850px; text-shadow: 1px 1px 2px rgba(0,0,0,0.7);}
+        .hero-section h1 {
+            color: white; 
+            font-size: 56px; 
+            font-weight: 800; 
+            margin: 0 0 12px 0; 
+            line-height: 1.1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .hero-section h2 {
+            color: #d4af37; 
+            font-size: 36px; 
+            font-weight: 700; 
+            margin: 0 0 20px 0; 
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .hero-section p {
+            font-size: 16px; 
+            max-width: 850px; 
+            margin: 0;
+            line-height: 1.6;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
     </style>
     
     <div class="top-nav">
