@@ -71,12 +71,13 @@
 48. 📚 LMS - My Courses
 49. 🎓 My Academic Portal
 50. 👥 Staff Management
-51. 🔧 Admin Panel
-52. 🏥 PAS Integration Demo
-53. 🔌 Custom PAS Integration
-54. 🎓 Practical Training Portal
+51. 👨‍🏫 Student Progress Monitor
+52. 🔧 Admin Panel
+53. 🏥 PAS Integration Demo
+54. 🔌 Custom PAS Integration
+55. 🎓 Practical Training Portal
 
-**TOTAL: 54 MODULES!**
+**TOTAL: 55 MODULES!**
 
 ---
 
@@ -236,13 +237,68 @@ Complete automation + TQUK training
 
 ---
 
+## 👨‍🏫 MONITOR & GRADE STUDENT WORK:
+
+### **New Module: Student Progress Monitor**
+
+**Access:** Select "👨‍🏫 Student Progress Monitor" from dropdown
+
+### **What You Can Do:**
+
+**1. View All Students:**
+- See every student registered
+- Check activity levels (active/inactive)
+- See total patients added
+- See total validations performed
+
+**2. Review Individual Work:**
+- Select any student
+- View all their patient cases
+- See their validation history
+- Check their progress
+
+**3. Grade Their Work:**
+- Click on any patient case they created
+- Review their work
+- Add written feedback
+- Assign grade (Excellent/Good/Needs Improvement/Incorrect)
+- Save feedback
+- Student sees feedback next login
+
+**4. Track Progress:**
+- See engagement rates
+- Identify top performers
+- Find students needing help
+- Monitor toward certification
+
+### **How Students Save Work:**
+
+Each student has **permanent private database**:
+- ✅ All patients they add saved forever
+- ✅ All validations recorded
+- ✅ Progress tracked automatically
+- ✅ Portfolio builds over time
+
+**YOU (admin/tutor) can:**
+- ✅ See all their work
+- ✅ Grade each submission
+- ✅ Provide feedback
+- ✅ Track progress to certification
+- ✅ Identify who needs help
+
+**See full guide:** STUDENT_MONITORING_GUIDE.md
+
+---
+
 ## 💡 KEY POINTS:
 
-✅ **Admin sees EVERYTHING** (all 54 modules)
+✅ **Admin sees EVERYTHING** (all 55 modules)
 ✅ **Students see based on tier** (limited by license)
+✅ **Tutors can grade student work** (new!)
 ✅ **NHS sees production mode** (real data enabled)
 ✅ **Pricing page lists ALL features**
 ✅ **Upgrade notifications automatic**
+✅ **Student monitoring built-in** (new!)
 ✅ **Platform fully automated**
 
 ---
@@ -267,12 +323,14 @@ Complete automation + TQUK training
 ## 🎉 SUMMARY:
 
 **YOU HAVE:**
-- 54 comprehensive modules
+- 55 comprehensive modules
 - Complete admin control
+- **Student monitoring & grading system** (NEW!)
 - Automated upgrade system
 - Professional pricing pages
 - All features visible to visitors
 - Training + Production modes
 - £4.7M value proposition
+- Quality assurance through tutor oversight
 
 **READY TO DOMINATE NHS MARKET! 🚀**

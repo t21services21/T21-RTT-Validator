@@ -1312,6 +1312,7 @@ if not accessible_modules:
         "📚 LMS - My Courses",
         "🎓 My Academic Portal",
         "👥 Staff Management",
+        "👨‍🏫 Student Progress Monitor",
         "🔧 Admin Panel",
         "🏥 PAS Integration Demo (Hands-On)",
         "🔌 Custom PAS Integration",
@@ -4724,6 +4725,10 @@ elif tool == "🧠 Predictive AI":
     st.switch_page("pages/predictive_ai.py")
 elif tool == "🏆 National Benchmarking":
     st.switch_page("pages/national_benchmarking.py")
+
+# STUDENT PROGRESS MONITOR (Admin/Staff only)
+elif tool == "👨‍🏫 Student Progress Monitor":
+    st.switch_page("pages/student_progress_monitor.py")
 
 elif tool == "📧 Contact Us":
     st.header("📧 Contact Us")
