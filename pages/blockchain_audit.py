@@ -7,8 +7,14 @@ import streamlit as st
 from navigation import render_navigation
 from datetime import datetime
 import hashlib
+import os
 import sys
-sys.path.append('..')
+
+# Add parent directory to path for imports (works on Streamlit Cloud)
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
 from universal_crud import (
     create_record, read_all_records, read_record_by_id,
     update_record, delete_record, search_records, export_to_csv
