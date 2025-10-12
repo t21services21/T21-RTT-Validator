@@ -59,7 +59,32 @@ def render_clean_landing_page():
         <span class="logo">T21 SERVICES</span>
         <a href="#login" style="background: linear-gradient(135deg, #d4af37, #f4d03f); color: #1a1a1a; padding: 10px 30px; border-radius: 25px; font-weight: 800; text-decoration: none; text-transform: uppercase; font-size: 14px;">LOGIN / REGISTER</a>
     </div>
+    """, unsafe_allow_html=True)
     
+    # Navigation buttons
+    st.markdown('<div style="background: #1a1a1a; padding: 10px 40px; margin: 0 -5rem;">', unsafe_allow_html=True)
+    c1, c2, c3, c4, c5, c6 = st.columns(6)
+    with c1:
+        if st.button("📋 ABOUT", key="nav_about", use_container_width=True):
+            st.switch_page("pages/about.py")
+    with c2:
+        if st.button("🛠️ SERVICES", key="nav_services", use_container_width=True):
+            st.switch_page("pages/services.py")
+    with c3:
+        if st.button("💰 PRICING", key="nav_pricing", use_container_width=True):
+            st.switch_page("pages/pricing.py")
+    with c4:
+        if st.button("📞 CONTACT", key="nav_contact", use_container_width=True):
+            st.switch_page("pages/contact_us.py")
+    with c5:
+        if st.button("🏠 HOME", key="nav_home", use_container_width=True, type="primary"):
+            st.switch_page("app.py")
+    with c6:
+        if st.button("🏛️ PROCUREMENT", key="nav_procurement", use_container_width=True):
+            st.switch_page("pages/procurement.py")
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown("""
     <div class="hero-section">
         <h1>Your NHS Career & Workforce Partner</h1>
         <h2>Training • Talent • Technology</h2>
