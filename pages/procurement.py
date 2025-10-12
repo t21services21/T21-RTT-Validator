@@ -7,12 +7,12 @@ from navigation import render_navigation
 
 st.set_page_config(page_title="Procurement | T21 Services", page_icon="🏛️", layout="wide")
 
-# Basic chrome + reusable nav
+# Remove top white space
 st.markdown("""
 <style>
     [data-testid="stSidebar"] {display: none;}
-    .main .block-container { padding-top: 0 !important; margin-top: 0 !important; }
-    header[data-testid="stHeader"] { display: none !important; }
+    header[data-testid="stHeader"] {display: none !important;}
+    .main .block-container {padding-top: 0 !important; margin-top: -80px !important;}
 </style>
 """, unsafe_allow_html=True)
 
