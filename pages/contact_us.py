@@ -22,13 +22,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Header
-st.markdown("""
-    <h1 style='color: white; margin: 0;'>📧 Contact Us</h1>
-    <p style='color: white; margin: 10px 0 0 0; font-size: 18px;'>We'd love to hear from you!</p>
-</div>
-""", unsafe_allow_html=True)
-
 render_navigation(current_page="contact")
 
 # Two column layout
