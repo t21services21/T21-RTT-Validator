@@ -30,11 +30,11 @@ import calendar
 # Import Supabase functions for permanent storage
 try:
     from supabase_database import (
-        create_clinic_template as create_clinic_in_db,
+        create_clinic_template,
         get_clinics_for_user,
-        create_appointment as create_appointment_in_db,
+        create_appointment,
         get_appointments_for_user,
-        update_appointment as update_appointment_in_db
+        update_appointment
     )
     SUPABASE_ENABLED = True
 except ImportError:
@@ -124,7 +124,7 @@ def create_clinic_template(
     }
 
     if SUPABASE_ENABLED:
-        success, _ = create_clinic_in_db(user_email, clinic_data)
+        success, _ = create_clinic_template(user_email, clinic_data)
         if success:
             return clinic_id
         else:
@@ -210,7 +210,7 @@ def book_appointment(
     }
 
     if SUPABASE_ENABLED:
-        success, _ = create_appointment_in_db(user_email, appointment_data)
+        success, _ = create_appointment(user_email, appointment_data)
         if success:
             return {'success': True, 'appointment_id': appointment_id, 'confirmation': f"Appointment booked for {appointment_date} at {slot_time}", 'details': appointment_data}
         else:
@@ -418,7 +418,7 @@ def cancel_appointment(appointment_id: str, reason: str, cancelled_by: str = "Pa
     }
 
     if SUPABASE_ENABLED:
-        success, _ = update_appointment_in_db(user_email, appointment_id, updates)
+        success, _ = update_appointment(user_email, appointment_id, updates)
         return success
     else:
         appointments = load_appointments()

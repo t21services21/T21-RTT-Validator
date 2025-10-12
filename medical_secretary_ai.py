@@ -29,9 +29,9 @@ from typing import List, Dict, Optional
 # Import Supabase functions for permanent storage
 try:
     from supabase_database import (
-        create_correspondence as create_correspondence_in_db,
+        create_correspondence,
         get_correspondence_for_user,
-        create_diary_event as create_diary_event_in_db,
+        create_diary_event,
         get_diary_events_for_user
     )
     SUPABASE_ENABLED = True
@@ -111,7 +111,7 @@ def ai_draft_clinic_letter(
     }
 
     if SUPABASE_ENABLED:
-        create_correspondence_in_db(user_email, letter_data)
+        create_correspondence(user_email, letter_data)
     else:
         correspondence = load_correspondence()
         correspondence['letters'].append(letter_data)
@@ -245,7 +245,7 @@ def add_diary_event(consultant_name: str, event: Dict) -> Dict:
     }
 
     if SUPABASE_ENABLED:
-        success, _ = create_diary_event_in_db(user_email, event_data)
+        success, _ = create_diary_event(user_email, event_data)
         if success:
             return {'success': True, 'event_id': event_id, 'message': 'Event added successfully'}
         else:

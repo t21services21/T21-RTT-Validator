@@ -1233,8 +1233,24 @@ if hasattr(user_license, 'role') and user_license.role == "trial":
 
 st.sidebar.markdown("---")
 
+# Data Migration Button
+if 'data_migrated' not in st.session_state:
+    st.warning("**Optional: Migrate Old Data**")
+    st.info("If you have old data from a previous version of the platform, you can migrate it to the new system.")
+    if st.button(" Migrate Old Data to New System"):
+        from data_migration import run_full_migration
+        with st.spinner("Migrating data... This might take a moment."):
+            success = run_full_migration()
+            if success:
+                st.success("Data migration complete! Your old data is now available.")
+                st.session_state.data_migrated = True
+                st.rerun()
+            else:
+                st.error("Data migration failed. Please contact support.")
+    st.markdown("---")
+
 # Sidebar navigation
-st.sidebar.title("🧭 Platform Modules")
+st.sidebar.title(" Platform Modules")
 # Get user's accessible modules based on their role AND user-specific access
 user_role = st.session_state.user_license.role if hasattr(st.session_state.user_license, 'role') else "trial"
 user_email = st.session_state.user_email if 'user_email' in st.session_state else None

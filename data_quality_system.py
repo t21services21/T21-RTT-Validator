@@ -30,7 +30,7 @@ import re
 # Import Supabase functions for permanent storage
 try:
     from supabase_database import (
-        create_audit_log as create_audit_log_in_db,
+        create_audit_log,
         get_audit_logs_for_user
     )
     SUPABASE_ENABLED = True
@@ -532,7 +532,7 @@ def create_audit_trail(
     }
 
     if SUPABASE_ENABLED:
-        create_audit_log_in_db(user_email, audit_data)
+        create_audit_log(user_email, audit_data)
     else:
         audit_log = load_audit_log()
         audit_log['entries'].append(audit_data)

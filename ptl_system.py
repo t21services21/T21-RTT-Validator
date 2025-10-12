@@ -25,7 +25,7 @@ try:
     from supabase_database import (
         add_ptl_patient,
         get_ptl_patients_for_user,
-        get_ptl_patient_by_id as get_supabase_patient,
+        get_ptl_patient_by_id,
         update_ptl_patient,
         delete_ptl_patient,
         get_ptl_stats_for_user
@@ -251,7 +251,7 @@ def update_patient_status(
             updates['notes'] = notes
         
         # Get current patient to append to events
-        patient = get_supabase_patient(patient_id, user_email)
+        patient = get_ptl_patient_by_id(patient_id, user_email)
         if patient:
             current_events = patient.get('events', [])
             current_events.append({

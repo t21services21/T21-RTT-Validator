@@ -23,10 +23,10 @@ from typing import List, Dict, Optional
 # Import Supabase functions for permanent storage
 try:
     from supabase_database import (
-        add_cancer_patient as add_cancer_patient_to_db,
+        add_cancer_patient,
         get_cancer_patients_for_user,
-        update_cancer_patient as update_cancer_patient_in_db,
-        delete_cancer_patient as delete_cancer_patient_from_db
+        update_cancer_patient,
+        delete_cancer_patient
     )
     SUPABASE_ENABLED = True
 except ImportError:
@@ -181,7 +181,7 @@ def add_cancer_patient(
     }
 
     if SUPABASE_ENABLED:
-        success, result = add_cancer_patient_to_db(user_email, patient_data)
+        success, result = add_cancer_patient(user_email, patient_data)
         if success:
             return patient_id
         else:
