@@ -247,40 +247,31 @@ def render_sidebar():
                 st.switch_page("pages/ultra_fast_validation_demo.py")
             
             if st.button("🎤 Medical Secretary AI", key="btn_secretary_ai_new", use_container_width=True):
-                st.session_state['selected_tool'] = "🎤 Medical Secretary AI Complete"
-                st.switch_page("app.py")
+                st.switch_page("pages/medical_secretary_ai.py")
             
             if st.button("📅 Booking AI", key="btn_booking_ai", use_container_width=True):
-                st.session_state['selected_tool'] = "📅 Booking AI"
-                st.switch_page("app.py")
+                st.switch_page("pages/booking_ai.py")
             
             if st.button("💬 Communication AI", key="btn_communication_ai", use_container_width=True):
-                st.session_state['selected_tool'] = "💬 Communication AI"
-                st.switch_page("app.py")
+                st.switch_page("pages/communication_ai.py")
             
             if st.button("💰 Finance AI", key="btn_finance_ai", use_container_width=True):
-                st.session_state['selected_tool'] = "💰 Finance AI"
-                st.switch_page("app.py")
+                st.switch_page("pages/finance_ai.py")
             
             if st.button("👥 HR AI", key="btn_hr_ai", use_container_width=True):
-                st.session_state['selected_tool'] = "👥 HR AI"
-                st.switch_page("app.py")
+                st.switch_page("pages/hr_ai.py")
             
             if st.button("📦 Procurement AI", key="btn_procurement_ai", use_container_width=True):
-                st.session_state['selected_tool'] = "📦 Procurement AI"
-                st.switch_page("app.py")
+                st.switch_page("pages/procurement_ai.py")
             
             if st.button("🎓 Training AI", key="btn_training_ai_new", use_container_width=True):
-                st.session_state['selected_tool'] = "🎓 Training AI"
-                st.switch_page("app.py")
+                st.switch_page("pages/training_ai.py")
             
             if st.button("📊 Analytics AI", key="btn_analytics_ai", use_container_width=True):
-                st.session_state['selected_tool'] = "📊 Analytics AI"
-                st.switch_page("app.py")
+                st.switch_page("pages/analytics_ai.py")
             
             if st.button("🏢 Facilities AI", key="btn_facilities_ai", use_container_width=True):
-                st.session_state['selected_tool'] = "🏢 Facilities AI"
-                st.switch_page("app.py")
+                st.switch_page("pages/facilities_ai.py")
             
             st.markdown("---")
             st.markdown("### ⚙️ Settings")

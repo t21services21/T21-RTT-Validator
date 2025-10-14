@@ -1,12 +1,50 @@
 """
 T21 RTT Pathway Validation Logic Module
 Core validation functions for NHS RTT pathways
+
+ENHANCED WITH AI CAPABILITIES:
+- NLP Letter Reading (OpenAI GPT-4)
+- Audio Transcription (Whisper)
+- Handwriting OCR (Vision API)
+- Auto-Fix Engine
+- Bulk Processing
 """
 
 from datetime import datetime, timedelta
 from typing import Dict, List, Tuple, Optional
 import json
 import re
+
+# AI ENHANCEMENTS - Safe imports with fallbacks
+try:
+    from nlp_letter_reader import NLPLetterReader
+    NLP_AVAILABLE = True
+except:
+    NLP_AVAILABLE = False
+
+try:
+    from audio_transcription_service import AudioTranscriptionService
+    AUDIO_AVAILABLE = True
+except:
+    AUDIO_AVAILABLE = False
+
+try:
+    from handwriting_ocr_service import HandwritingOCRService
+    OCR_AVAILABLE = True
+except:
+    OCR_AVAILABLE = False
+
+try:
+    from auto_fix_engine import AutoFixEngine
+    AUTOFIX_AVAILABLE = True
+except:
+    AUTOFIX_AVAILABLE = False
+
+try:
+    from batch_validation_engine import BatchValidationEngine
+    BATCH_AVAILABLE = True
+except:
+    BATCH_AVAILABLE = False
 
 
 def parse_date(date_str: str) -> Optional[datetime]:
@@ -1582,4 +1620,245 @@ def generate_comment_line(data: Dict) -> Dict:
     
     return {
         "Standardised_Comment_Line": comment
+    }
+
+
+# ============================================================================
+# AI-ENHANCED FUNCTIONS (NEW!)
+# ============================================================================
+
+def validate_clinic_letter_ai_enhanced(letter_text: str, pas_summary: Dict, use_ai: bool = False) -> Dict:
+    """
+    AI-Enhanced Clinic Letter Interpreter
+    
+    Combines traditional keyword-based validation with optional AI NLP
+    
+    Args:
+        letter_text: The clinic letter text
+        pas_summary: PAS data summary
+        use_ai: If True, uses AI NLP for enhanced accuracy (requires OpenAI API key)
+    
+    Returns:
+        Enhanced validation results with AI insights
+    """
+    # Always run traditional validation (fast, reliable)
+    traditional_result = validate_clinic_letter(letter_text, pas_summary)
+    
+    # If AI is available and requested, enhance with NLP
+    if use_ai and NLP_AVAILABLE:
+        try:
+            nlp_reader = NLPLetterReader()
+            ai_result = nlp_reader.read_letter(letter_text)
+            
+            # Merge AI insights with traditional results
+            traditional_result['ai_enhanced'] = True
+            traditional_result['ai_confidence'] = ai_result.get('confidence', 0)
+            traditional_result['ai_extracted_data'] = ai_result.get('extracted_data', {})
+            traditional_result['ai_suggestions'] = ai_result.get('suggestions', [])
+            
+            # If AI detects different code, flag for review
+            if ai_result.get('rtt_code') != traditional_result.get('rtt_code'):
+                traditional_result['code_conflict'] = {
+                    'traditional': traditional_result.get('rtt_code'),
+                    'ai_suggested': ai_result.get('rtt_code'),
+                    'review_required': True
+                }
+        except Exception as e:
+            traditional_result['ai_error'] = str(e)
+            traditional_result['ai_enhanced'] = False
+    else:
+        traditional_result['ai_enhanced'] = False
+        traditional_result['ai_available'] = NLP_AVAILABLE
+    
+    return traditional_result
+
+
+def transcribe_audio_letter(audio_file_path: str) -> Dict:
+    """
+    Transcribe doctor's audio dictation to text
+    
+    Args:
+        audio_file_path: Path to audio file (mp3, wav, m4a, etc.)
+    
+    Returns:
+        {
+            'success': bool,
+            'text': str (transcribed text),
+            'duration': float (seconds),
+            'confidence': float,
+            'error': str (if failed)
+        }
+    """
+    if not AUDIO_AVAILABLE:
+        return {
+            'success': False,
+            'error': 'Audio transcription not available. Install OpenAI Whisper.'
+        }
+    
+    try:
+        service = AudioTranscriptionService()
+        result = service.transcribe_audio(audio_file_path)
+        return {
+            'success': True,
+            'text': result.get('text', ''),
+            'duration': result.get('duration', 0),
+            'confidence': result.get('confidence', 0),
+            'efficiency': result.get('efficiency', '')
+        }
+    except Exception as e:
+        return {
+            'success': False,
+            'error': str(e)
+        }
+
+
+def ocr_handwritten_letter(image_path: str) -> Dict:
+    """
+    Extract text from handwritten clinic letter
+    
+    Args:
+        image_path: Path to image file (jpg, png, pdf, etc.)
+    
+    Returns:
+        {
+            'success': bool,
+            'text': str (extracted text),
+            'confidence': float,
+            'error': str (if failed)
+        }
+    """
+    if not OCR_AVAILABLE:
+        return {
+            'success': False,
+            'error': 'OCR not available. Install OpenAI Vision API.'
+        }
+    
+    try:
+        service = HandwritingOCRService()
+        result = service.extract_text_from_image(image_path)
+        return {
+            'success': True,
+            'text': result.get('text', ''),
+            'confidence': result.get('confidence', 0),
+            'processing_time': result.get('processing_time', 0)
+        }
+    except Exception as e:
+        return {
+            'success': False,
+            'error': str(e)
+        }
+
+
+def auto_fix_pas_errors(validation_result: Dict, pas_data: Dict) -> Dict:
+    """
+    Automatically fix detected errors in PAS
+    
+    Args:
+        validation_result: Result from validate_clinic_letter()
+        pas_data: Current PAS data
+    
+    Returns:
+        {
+            'success': bool,
+            'fixes_applied': int,
+            'fixes': List[Dict],
+            'updated_pas_data': Dict,
+            'confidence': float
+        }
+    """
+    if not AUTOFIX_AVAILABLE:
+        return {
+            'success': False,
+            'error': 'Auto-fix not available.'
+        }
+    
+    try:
+        engine = AutoFixEngine()
+        result = engine.fix_errors(validation_result, pas_data)
+        return result
+    except Exception as e:
+        return {
+            'success': False,
+            'error': str(e)
+        }
+
+
+def validate_bulk_letters(letters: List[Dict], use_ai: bool = False) -> Dict:
+    """
+    Validate multiple clinic letters at once (ULTRA-FAST!)
+    
+    Args:
+        letters: List of {'text': str, 'pas_summary': Dict}
+        use_ai: Use AI enhancement (slower but more accurate)
+    
+    Returns:
+        {
+            'total_letters': int,
+            'validation_time': float,
+            'results': List[Dict],
+            'errors_found': int,
+            'auto_fixed': int,
+            'efficiency': str
+        }
+    """
+    if not BATCH_AVAILABLE:
+        # Fallback to sequential processing
+        import time
+        start_time = time.time()
+        results = []
+        
+        for letter in letters:
+            result = validate_clinic_letter_ai_enhanced(
+                letter.get('text', ''),
+                letter.get('pas_summary', {}),
+                use_ai=use_ai
+            )
+            results.append(result)
+        
+        end_time = time.time()
+        
+        return {
+            'total_letters': len(letters),
+            'validation_time': end_time - start_time,
+            'results': results,
+            'errors_found': sum(1 for r in results if r.get('gaps')),
+            'efficiency': f"Processed {len(letters)} letters in {end_time - start_time:.2f}s"
+        }
+    
+    try:
+        engine = BatchValidationEngine()
+        result = engine.validate_batch(letters, use_ai=use_ai)
+        return result
+    except Exception as e:
+        return {
+            'success': False,
+            'error': str(e)
+        }
+
+
+# ============================================================================
+# FEATURE AVAILABILITY CHECK
+# ============================================================================
+
+def get_ai_features_status() -> Dict:
+    """
+    Check which AI features are available
+    
+    Returns:
+        {
+            'nlp': bool,
+            'audio_transcription': bool,
+            'ocr': bool,
+            'auto_fix': bool,
+            'batch_processing': bool,
+            'all_available': bool
+        }
+    """
+    return {
+        'nlp': NLP_AVAILABLE,
+        'audio_transcription': AUDIO_AVAILABLE,
+        'ocr': OCR_AVAILABLE,
+        'auto_fix': AUTOFIX_AVAILABLE,
+        'batch_processing': BATCH_AVAILABLE,
+        'all_available': all([NLP_AVAILABLE, AUDIO_AVAILABLE, OCR_AVAILABLE, AUTOFIX_AVAILABLE, BATCH_AVAILABLE])
     }
