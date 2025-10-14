@@ -80,7 +80,7 @@ if not is_logged_in:
     
     with pricing_col1:
         st.info("""
-        ### 🆓 Taster
+        ### 💰 Taster
         **£99 / 1 Month**
         
         ✅ Try the platform

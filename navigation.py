@@ -113,31 +113,31 @@ def render_navigation(current_page="home"):
     
     with col2:
         if st.button("ABOUT", key="nav_about", use_container_width=True):
-            navigate_with_clean_url("About", "/about")
+            st.switch_page("pages/about.py")
     
     with col3:
         if st.button("SERVICES", key="nav_services", use_container_width=True):
-            navigate_with_clean_url("Services", "/services")
+            st.switch_page("pages/services.py")
     
     with col4:
         if st.button("PRICING", key="nav_pricing", use_container_width=True):
-            navigate_with_clean_url("Pricing", "/pricing")
+            st.switch_page("pages/pricing.py")
     
     with col5:
         if st.button("CONTACT", key="nav_contact", use_container_width=True):
-            navigate_with_clean_url("Contact", "/contact_us")
+            st.switch_page("pages/contact_us.py")
     
     with col6:
         if st.button("TESTIMONIALS", key="nav_testimonials", use_container_width=True):
-            navigate_with_clean_url("Testimonials", "/testimonials")
+            st.switch_page("pages/testimonials.py")
 
     with col7:
         if st.button("PROCUREMENT", key="nav_procurement", use_container_width=True):
-            navigate_with_clean_url("Procurement", "/procurement")
+            st.switch_page("pages/procurement.py")
 
     with col8:
         if st.button("🏠 HOME", key="nav_home", use_container_width=True, type="primary"):
-            navigate_with_clean_url("Home", "/landing_page_clean")
+            st.switch_page("pages/welcome.py")
     
     with col9:
         if st.session_state.get("logged_in"):

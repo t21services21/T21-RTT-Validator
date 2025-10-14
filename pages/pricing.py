@@ -30,7 +30,7 @@ col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.markdown("""
     <div style='background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center;'>
-        <h3 style='color: #d4af37;'>🆓 Taster</h3>
+        <h3 style='color: #d4af37;'>💰 Taster</h3>
         <p style='font-size: 42px; font-weight: 800; color: #1a1a1a; margin: 15px 0;'>£99</p>
         <p style='color: #666;'>1 Month</p>
         <ul style='text-align: left; color: #555; line-height: 1.8; font-size: 14px;'>
