@@ -128,6 +128,53 @@ except:
     ROLES = {}
     def check_feature_access(role, feature): return True
 
+# NEW AI AUTOMATION MODULES - Safe imports with fallbacks
+try:
+    from t21_complete_platform import T21CompletePlatform, deploy_to_trust
+except:
+    class T21CompletePlatform:
+        def __init__(self, trust_name): pass
+        def complete_validation_workflow(self, file): return {"status": "Module not loaded"}
+        def complete_medical_secretary_workflow(self, file): return {"status": "Module not loaded"}
+        def complete_booking_workflow(self, patient_id): return {"status": "Module not loaded"}
+        def complete_communication_workflow(self, query): return {"status": "Module not loaded"}
+        def get_platform_analytics(self): return {"status": "Module not loaded"}
+    def deploy_to_trust(name): return T21CompletePlatform(name)
+
+try:
+    from medical_secretary_ai_complete import MedicalSecretaryAI
+except:
+    class MedicalSecretaryAI:
+        def __init__(self): pass
+
+try:
+    from booking_ai_complete import BookingAI
+except:
+    class BookingAI:
+        def __init__(self): pass
+
+try:
+    from communication_ai_complete import CommunicationAI
+except:
+    class CommunicationAI:
+        def __init__(self): pass
+
+try:
+    from remaining_modules_complete import FinanceAI, HRAI, ProcurementAI, TrainingAI, AnalyticsAI, FacilitiesAI
+except:
+    class FinanceAI:
+        def __init__(self): pass
+    class HRAI:
+        def __init__(self): pass
+    class ProcurementAI:
+        def __init__(self): pass
+    class TrainingAI:
+        def __init__(self): pass
+    class AnalyticsAI:
+        def __init__(self): pass
+    class FacilitiesAI:
+        def __init__(self): pass
+
 try:
     from student_auth import (login_student, register_student, hash_password,
                               list_all_students, upgrade_student, extend_student_license,
