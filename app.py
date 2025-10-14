@@ -1287,15 +1287,19 @@ if not check_migration_done():
 
 # Sidebar navigation
 st.sidebar.title(" Platform Modules")
+# TEMPORARILY: Show CORE modules only for all users (testing phase)
 # Get user's accessible modules based on their role AND user-specific access
 user_role = st.session_state.user_license.role if hasattr(st.session_state.user_license, 'role') else "trial"
 user_email = st.session_state.user_email if 'user_email' in st.session_state else None
-accessible_modules = get_accessible_modules(user_role, user_email)
+# accessible_modules = get_accessible_modules(user_role, user_email)  # DISABLED - showing too many modules
+
+# FORCE CORE MODULES ONLY (for testing)
+accessible_modules = []
 
 # Remove any duplicates (use dict to preserve order while removing duplicates)
 accessible_modules = list(dict.fromkeys(accessible_modules))
 
-# If no accessible modules (error), show CORE modules only
+# Show CORE modules only
 if not accessible_modules:
     accessible_modules = [
         # === 🏥 CORE CLINICAL TOOLS (7 TESTED MODULES) ===

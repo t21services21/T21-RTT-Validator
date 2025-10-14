@@ -9,6 +9,10 @@ import streamlit as st
 def render_sidebar():
     """Render sidebar with appropriate pages based on login status"""
     
+    # TEMPORARILY DISABLED - Using app.py's dropdown instead
+    # This prevents duplicate navigation
+    return
+    
     # Check if user is logged in
     is_logged_in = st.session_state.get('logged_in', False)
     user_role = st.session_state.get('user_role', 'trial')
