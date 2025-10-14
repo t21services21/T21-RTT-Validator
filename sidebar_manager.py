@@ -128,6 +128,82 @@ def render_sidebar():
             if st.button("📅 Appointment System", key="btn_appointments", use_container_width=True):
                 st.switch_page("pages/appointment_system.py")
             
+            # NEW CLINICAL MODULES WITH CRUD
+            st.markdown("---")
+            st.markdown("### 📋 Patient Management")
+            
+            if st.button("📵 DNA Management", key="btn_dna", use_container_width=True):
+                st.switch_page("pages/dna_management.py")
+            
+            if st.button("❌ Cancellation Management", key="btn_cancellation", use_container_width=True):
+                st.switch_page("pages/cancellation_management.py")
+            
+            if st.button("🎯 Patient Choice & Deferrals", key="btn_patient_choice", use_container_width=True):
+                st.switch_page("pages/patient_choice.py")
+            
+            if st.button("📋 Waiting List Validator", key="btn_waiting_list", use_container_width=True):
+                st.switch_page("pages/waiting_list_validator.py")
+            
+            if st.button("🔄 Transfer of Care", key="btn_transfer", use_container_width=True):
+                st.switch_page("pages/transfer_of_care.py")
+            
+            if st.button("⚕️ Clinical Exceptions", key="btn_clinical_exceptions", use_container_width=True):
+                st.switch_page("pages/clinical_exceptions.py")
+            
+            if st.button("📊 Capacity Planner", key="btn_capacity", use_container_width=True):
+                st.switch_page("pages/capacity_planner.py")
+            
+            if st.button("✍️ Consent Manager", key="btn_consent", use_container_width=True):
+                st.switch_page("pages/consent_manager.py")
+            
+            st.markdown("---")
+            st.markdown("### 📊 Reporting & Admin")
+            
+            if st.button("📈 Commissioner Reporting", key="btn_commissioner", use_container_width=True):
+                st.switch_page("pages/commissioner_reporting.py")
+            
+            if st.button("📜 Audit Trail", key="btn_audit", use_container_width=True):
+                st.switch_page("pages/audit_trail.py")
+            
+            if st.button("💬 Communications Tracker", key="btn_communications", use_container_width=True):
+                st.switch_page("pages/communications_tracker.py")
+            
+            if st.button("💰 Funding & IFR", key="btn_funding", use_container_width=True):
+                st.switch_page("pages/funding_ifr.py")
+            
+            st.markdown("---")
+            st.markdown("### 🚀 Advanced Features")
+            
+            if st.button("📱 Mobile App Preview", key="btn_mobile", use_container_width=True):
+                st.switch_page("pages/mobile_app_preview.py")
+            
+            if st.button("📊 Executive Dashboard", key="btn_executive", use_container_width=True):
+                st.switch_page("pages/executive_dashboard.py")
+            
+            if st.button("🎤 Voice AI Interface", key="btn_voice", use_container_width=True):
+                st.switch_page("pages/voice_ai_interface.py")
+            
+            if st.button("🔗 PAS Integration", key="btn_pas_integration", use_container_width=True):
+                st.switch_page("pages/pas_integration.py")
+            
+            if st.button("👤 Patient Portal", key="btn_patient_portal", use_container_width=True):
+                st.switch_page("pages/patient_portal.py")
+            
+            if st.button("📝 AI Documentation", key="btn_ai_docs", use_container_width=True):
+                st.switch_page("pages/ai_documentation.py")
+            
+            if st.button("🔐 Blockchain Audit", key="btn_blockchain", use_container_width=True):
+                st.switch_page("pages/blockchain_audit.py")
+            
+            if st.button("🤖 Predictive AI", key="btn_predictive", use_container_width=True):
+                st.switch_page("pages/predictive_ai.py")
+            
+            if st.button("🌍 National Benchmarking", key="btn_benchmarking", use_container_width=True):
+                st.switch_page("pages/national_benchmarking.py")
+            
+            if st.button("🎓 Student Progress Monitor", key="btn_student_progress", use_container_width=True):
+                st.switch_page("pages/student_progress_monitor.py")
+            
             st.markdown("---")
             st.markdown("### ⚙️ Settings")
             

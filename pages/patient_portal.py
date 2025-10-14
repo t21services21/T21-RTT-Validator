@@ -13,7 +13,7 @@ parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
-from navigation import render_navigation
+from sidebar_manager import render_sidebar
 
 # Add parent directory to path for imports (works on Streamlit Cloud)
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,13 +29,12 @@ from universal_crud import (
 
 st.markdown("""
 <style>
-    [data-testid="stSidebar"] {display: none;}
     header[data-testid="stHeader"] {display: none !important;}
-    .main .block-container {padding-top: 0 !important; margin-top: -80px !important;}
+    .main .block-container {padding-top: 1rem !important;}
 </style>
 """, unsafe_allow_html=True)
 
-render_navigation(current_page="patient_portal")
+render_sidebar()
 
 st.title("👤 Patient Portal - Track Your RTT Journey")
 st.markdown("**Empowering patients with transparency and control**")
