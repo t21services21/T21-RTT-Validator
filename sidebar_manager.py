@@ -120,6 +120,9 @@ def render_sidebar():
             if st.button("📊 Dashboard", key="btn_dashboard", use_container_width=True, type="primary"):
                 st.switch_page("app.py")
             
+            if st.button("👔 Executive Dashboard (Directors)", key="btn_exec_ultimate", use_container_width=True, type="secondary"):
+                st.switch_page("pages/executive_dashboard_ultimate.py")
+            
             st.markdown("---")
             st.markdown("### 🏥 Clinical Tools")
             
@@ -181,8 +184,8 @@ def render_sidebar():
             if st.button("📱 Mobile App Preview", key="btn_mobile", use_container_width=True):
                 st.switch_page("pages/mobile_app_preview.py")
             
-            if st.button("📊 Executive Dashboard", key="btn_executive", use_container_width=True):
-                st.switch_page("pages/executive_dashboard.py")
+            if st.button("📊 Executive Dashboard (AI Impact)", key="btn_executive", use_container_width=True):
+                st.switch_page("pages/executive_dashboard_enhanced.py")
             
             if st.button("🎤 Voice AI Interface", key="btn_voice", use_container_width=True):
                 st.switch_page("pages/voice_ai_interface.py")

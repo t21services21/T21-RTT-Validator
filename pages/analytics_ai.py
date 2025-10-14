@@ -69,6 +69,12 @@ with tab2:
     8. Anomaly detection
     9. Custom reports
     10. Data integration
+    
+    ### 📞 Support:
+    
+    Email: info@t21services.co.uk  
+    Website: www.t21services.co.uk  
+    Company: T21 Services Limited (No: 13091053)
     """)
 
 st.markdown("---")

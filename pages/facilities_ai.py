@@ -69,6 +69,12 @@ with tab2:
     8. Vendor management
     9. Cost tracking
     10. System integration
+    
+    ### 📞 Support:
+    
+    Email: info@t21services.co.uk  
+    Website: www.t21services.co.uk  
+    Company: T21 Services Limited (No: 13091053)
     """)
 
 st.markdown("---")

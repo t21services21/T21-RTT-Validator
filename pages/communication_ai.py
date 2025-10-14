@@ -74,6 +74,12 @@ with tab4:
     - Market: 80,000 communication staff
     - Savings: £2.56 BILLION/year
     - Automation: 85%
+    
+    ### 📞 Support:
+    
+    Email: info@t21services.co.uk  
+    Website: www.t21services.co.uk  
+    Company: T21 Services Limited (No: 13091053)
     """)
 
 st.markdown("---")
