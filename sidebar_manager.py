@@ -205,6 +205,37 @@ def render_sidebar():
                 st.switch_page("pages/student_progress_monitor.py")
             
             st.markdown("---")
+            st.markdown("### 🎓 Training & Learning")
+            
+            if st.button("💼 Job Interview Prep", key="btn_interview", use_container_width=True):
+                st.session_state['selected_tool'] = "💼 Job Interview Prep"
+                st.switch_page("app.py")
+            
+            if st.button("📄 CV Builder", key="btn_cv", use_container_width=True):
+                st.session_state['selected_tool'] = "📄 CV Builder"
+                st.switch_page("app.py")
+            
+            if st.button("🎓 Training Library", key="btn_training", use_container_width=True):
+                st.session_state['selected_tool'] = "🎓 Training Library"
+                st.switch_page("app.py")
+            
+            if st.button("🎮 Interactive Learning Center", key="btn_interactive", use_container_width=True):
+                st.session_state['selected_tool'] = "🎮 Interactive Learning Center"
+                st.switch_page("app.py")
+            
+            if st.button("🤖 AI RTT Tutor", key="btn_ai_tutor", use_container_width=True):
+                st.session_state['selected_tool'] = "🤖 AI RTT Tutor"
+                st.switch_page("app.py")
+            
+            if st.button("🎓 Certification Exam", key="btn_certification", use_container_width=True):
+                st.session_state['selected_tool'] = "🎓 Certification Exam"
+                st.switch_page("app.py")
+            
+            if st.button("📚 LMS - My Courses", key="btn_lms", use_container_width=True):
+                st.session_state['selected_tool'] = "📚 LMS - My Courses"
+                st.switch_page("app.py")
+            
+            st.markdown("---")
             st.markdown("### ⚙️ Settings")
             
             if st.button("🔐 2FA Security", key="btn_2fa", use_container_width=True):

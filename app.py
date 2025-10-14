@@ -1295,89 +1295,51 @@ accessible_modules = get_accessible_modules(user_role, user_email)
 # Remove any duplicates (use dict to preserve order while removing duplicates)
 accessible_modules = list(dict.fromkeys(accessible_modules))
 
-# If no accessible modules (error), show all
+# If no accessible modules (error), show CORE modules only
 if not accessible_modules:
     accessible_modules = [
-        # === STEP 1: PATIENT ENTRY & REGISTRATION ===
+        # === 🏥 CORE CLINICAL TOOLS (7 TESTED MODULES) ===
         "📋 PTL - Patient Tracking List",
-        "👤 Patient Registration Validator",
-        "🎗️ Cancer Pathways",
-        
-        # === STEP 2: RTT CLOCK START & VALIDATION ===
         "🤖 AI Auto-Validator",
-        "📊 Pathway Validator",
-        "📅 Timeline Auditor",
-        "📋 Waiting List Validator",
-        
-        # === STEP 3: APPOINTMENTS & SCHEDULING ===
-        "📅 Advanced Booking System",
-        "📆 Appointment & Booking Checker",
+        "🎗️ Cancer Pathways",
         "👥 MDT Coordination",
-        
-        # === STEP 4: PATIENT EVENTS & CHANGES ===
-        "📵 DNA Management",
-        "❌ Cancellation Management",
-        "🤔 Patient Choice & Deferrals",
-        "🔄 Transfer of Care",
-        "⚕️ Clinical Exceptions",
-        "✍️ Consent Manager",
-        
-        # === STEP 5: COMMUNICATIONS & DOCUMENTATION ===
+        "📅 Advanced Booking System",
         "📧 Medical Secretary AI",
-        "📝 Clinic Letter Interpreter",
-        "✍️ Clinic Letter Creator",
-        "💬 Comment Line Generator",
-        "✉️ Communications Tracker",
-        
-        # === STEP 6: CAPACITY & PLANNING ===
-        "🏥 Capacity Planner",
-        "💰 Funding & IFR",
-        
-        # === STEP 7: REPORTING & COMPLIANCE ===
-        "📊 Commissioner Reporting",
-        "🔍 Audit Trail",
         "📊 Data Quality System",
         
-        # === STEP 8: MONITORING & ANALYTICS ===
+        # === 📊 CORE RTT VALIDATORS (4 TESTED MODULES) ===
+        "📊 Pathway Validator",
+        "📝 Clinic Letter Interpreter",
+        "📅 Timeline Auditor",
+        "👤 Patient Registration Validator",
+        "📆 Appointment & Booking Checker",
+        "💬 Comment Line Generator",
+        "✍️ Clinic Letter Creator",
+        
+        # === 🎓 TRAINING & CAREER (6 TESTED MODULES) ===
+        "🎓 Training Library",
+        "🎮 Interactive Learning Center",
+        "🤖 AI RTT Tutor",
+        "🎓 Certification Exam",
+        "💼 Job Interview Prep",
+        "📄 CV Builder",
+        
+        # === 📊 MONITORING & REPORTS (4 TESTED MODULES) ===
         "📊 Interactive Reports",
         "📈 Dashboard & Analytics",
         "🚨 Smart Alerts",
         "📜 Validation History",
         
-        # === ADVANCED AI FEATURES ===
-        "🧠 Predictive AI",
-        "📝 AI Documentation",
-        "🗣️ Voice AI Interface",
-        "🏆 National Benchmarking",
-        "🔐 Blockchain Audit",
-        
-        # === DIGITAL TRANSFORMATION ===
-        "📱 Mobile App Preview",
-        "📊 Executive Dashboard",
-        "🔌 PAS Integration",
-        "👤 Patient Portal",
-        "🏥 PAS Integration Demo (Hands-On)",
-        "🔌 Custom PAS Integration",
-        
-        # === TRAINING & LEARNING ===
-        "🎓 Training Library",
-        "🎮 Interactive Learning Center",
-        "🤖 AI RTT Tutor",
-        "🎓 Certification Exam",
+        # === 🎓 LMS & LEARNING (2 TESTED MODULES) ===
         "📚 LMS - My Courses",
         "🎓 My Academic Portal",
-        "🎓 Practical Training Portal (All Courses)",
-        "💼 Job Interview Prep",
-        "📄 CV Builder",
         
-        # === ADMIN & MANAGEMENT ===
+        # === ⚙️ ADMIN & SETTINGS ===
         "⚙️ My Account & Upgrade",
-        "👥 Staff Management",
-        "👨‍🏫 Student Progress Monitor",
         "🔧 Admin Panel",
-        "🛒 Module Marketplace",
+        "👥 Staff Management",
         
-        # === INFORMATION & SUPPORT ===
+        # === ℹ️ INFORMATION & SUPPORT ===
         "ℹ️ About RTT Rules",
         "📄 Privacy Policy",
         "📜 Terms of Service",
@@ -1385,9 +1347,17 @@ if not accessible_modules:
     ]
 
 # Show module selector (st.switch_page creates clean URLs automatically)
+# Check if tool was pre-selected from sidebar_manager
+default_index = 0
+if 'selected_tool' in st.session_state and st.session_state['selected_tool'] in accessible_modules:
+    default_index = accessible_modules.index(st.session_state['selected_tool'])
+    # Clear it after using
+    del st.session_state['selected_tool']
+
 tool = st.sidebar.radio(
     "Select Tool:",
     accessible_modules,
+    index=default_index,
     key="module_selector"
 )
 
