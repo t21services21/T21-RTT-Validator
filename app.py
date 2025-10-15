@@ -1419,6 +1419,9 @@ if not accessible_modules:
         "📁 Pathway Management",  # NEW! RTT & Cancer pathways
         "📋 Episode Management",  # NEW! Consultant/Treatment/Diagnostic episodes
         
+        # === TEACHING & ASSESSMENT ===
+        "👨‍🏫 Teacher Dashboard",  # NEW! For TQUK assessors
+        
         # === CLINICAL MODULES ===
         "📋 PTL - Patient Tracking List",
         "🎗️ Cancer Pathways",
@@ -4950,6 +4953,10 @@ elif tool == "📁 Pathway Management":
 elif tool == "📋 Episode Management":
     from episode_management_ui import render_episode_management
     render_episode_management()
+
+elif tool == "👨‍🏫 Teacher Dashboard":
+    from teacher_dashboard import render_teacher_dashboard
+    render_teacher_dashboard()
 
 elif tool == "🗣️ Voice AI Interface":
     if BROWSER_HISTORY_ENABLED:
