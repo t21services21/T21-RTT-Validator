@@ -114,6 +114,11 @@ def save_cancer_ptl(data):
             save_cancer_patients(data['patients'])
 
 
+def get_pathway_start_date(patient: dict) -> str:
+    """Get pathway start date - handles both old and new field names"""
+    return patient.get('clock_start_date') or patient.get('pathway_start_date') or patient.get('referral_date')
+
+
 def calculate_cancer_days_waiting(start_date: str) -> int:
     """Calculate days from cancer pathway start"""
     try:
@@ -199,34 +204,36 @@ def add_cancer_patient(
     user_email = get_current_user_email()
     patient_id = f"CANCER_{datetime.now().strftime('%Y%m%d%H%M%S')}"
     
+    # Calculate target date based on pathway type
+    referral_dt = datetime.fromisoformat(referral_date)
+    if pathway_type == '2ww':
+        target_date = (referral_dt + timedelta(days=14)).isoformat()
+    elif pathway_type == '62day':
+        target_date = (referral_dt + timedelta(days=62)).isoformat()
+    elif pathway_type == '31day':
+        target_date = (referral_dt + timedelta(days=31)).isoformat()
+    else:
+        target_date = (referral_dt + timedelta(days=62)).isoformat()
+    
+    # CRITICAL FIX: Only send fields that EXIST in the SQL table!
     patient_data = {
-        'pathway_id': patient_id,  # CRITICAL FIX: Table expects pathway_id, not patient_id
+        'pathway_id': patient_id,
         'patient_name': patient_name,
         'nhs_number': nhs_number,
         'cancer_type': cancer_type,
         'pathway_type': pathway_type,
         'referral_date': referral_date,
-        'pathway_start_date': referral_date,
-        'referring_clinician': referring_clinician,
-        'primary_site': primary_site,
-        'suspected_diagnosis': suspected_diagnosis,
-        'urgency': urgency,
-        'contact_number': contact_number,
+        'clock_start_date': referral_date,  # FIXED: Was pathway_start_date
+        'target_date': target_date,
         'current_status': 'Awaiting First Appointment' if pathway_type == '2ww' else 'Awaiting Diagnostics',
-        'pathway_status': 'ACTIVE',
-        'notes': notes,
-        'added_date': datetime.now().isoformat(),
-        'last_updated': datetime.now().isoformat(),
-        'milestones': [],
-        'appointments': [],
-        'diagnostics': [],
-        'mdt_dates': [],
-        'events': [{
+        'notes': f"Referral from: {referring_clinician}\nPrimary site: {primary_site}\nSuspected: {suspected_diagnosis}\nUrgency: {urgency}\nContact: {contact_number}\n{notes}",
+        'milestones': [{
             'date': referral_date,
             'milestone': 'REFERRAL_RECEIVED',
             'description': f'{pathway_type.upper()} referral from {referring_clinician}',
             'days_from_start': 0
-        }]
+        }],
+        'treatments': []  # FIXED: Was sending wrong field names
     }
 
     if SUPABASE_ENABLED:
@@ -234,9 +241,12 @@ def add_cancer_patient(
         if success:
             return patient_id
         else:
+            # CRITICAL: Show error to user instead of hiding it!
+            import streamlit as st
+            st.error(f"❌ DATABASE ERROR: {result}")
+            st.error("⚠️ Patient NOT saved to database! Check error above.")
             print(f"Error saving cancer patient to Supabase: {result}")
-            # Still return patient_id for fallback UI to work
-            return patient_id
+            raise Exception(f"Failed to save cancer patient: {result}")
     else:
         ptl = load_cancer_ptl()
         ptl['patients'].append(patient_data)
@@ -257,8 +267,9 @@ def add_cancer_milestone(
     
     for patient in ptl['patients']:
         if patient.get('pathway_id') == patient_id or patient.get('patient_id') == patient_id:
-            # Calculate days from pathway start
-            start_date = datetime.fromisoformat(patient['pathway_start_date'])
+            # Calculate days from pathway start (check both field names for compatibility)
+            start_date_str = patient.get('clock_start_date') or patient.get('pathway_start_date')
+            start_date = datetime.fromisoformat(start_date_str)
             milestone_dt = datetime.fromisoformat(milestone_date)
             days_from_start = (milestone_dt - start_date).days
             
@@ -338,7 +349,7 @@ def search_cancer_patients(
         
         # Breach risk filter
         if breach_risk:
-            days = calculate_cancer_days_waiting(patient['pathway_start_date'])
+            days = calculate_cancer_days_waiting(get_pathway_start_date(patient))
             breach_status = get_cancer_breach_status(days, patient['pathway_type'])
             if breach_status['alert_level'] != breach_risk:
                 continue
@@ -382,14 +393,14 @@ def get_cancer_ptl_stats() -> Dict:
         pathway_type = patient['pathway_type']
         stats['pathway_types'][pathway_type] = stats['pathway_types'].get(pathway_type, 0) + 1
         
-        # Count pathway status
-        if patient['pathway_status'] == 'ACTIVE':
+        # Count pathway status (check if pathway is still active)
+        if patient.get('current_status') not in ['Completed', 'Discharged', 'Treatment Complete']:
             stats['active_pathways'] += 1
         else:
             stats['completed_pathways'] += 1
         
         # Calculate breach status
-        days = calculate_cancer_days_waiting(patient['pathway_start_date'])
+        days = calculate_cancer_days_waiting(get_pathway_start_date(patient))
         breach_status = get_cancer_breach_status(days, pathway_type)
         stats['breach_risks'][breach_status['alert_level']] += 1
         
@@ -499,10 +510,12 @@ def export_cancer_ptl_to_csv() -> str:
     csv_content = "Patient ID,Name,NHS Number,Cancer Type,Pathway Type,Referral Date,Days Waiting,Status,Breach Risk,Days to Breach,Milestones Completed\n"
     
     for patient in patients:
-        days = calculate_cancer_days_waiting(patient['pathway_start_date'])
+        days = calculate_cancer_days_waiting(get_pathway_start_date(patient))
         breach_status = get_cancer_breach_status(days, patient['pathway_type'])
         
-        csv_content += f"{patient['patient_id']},"
+        # Get patient ID (check both field names)
+        patient_id = patient.get('pathway_id') or patient.get('patient_id')
+        csv_content += f"{patient_id},"
         csv_content += f"\"{patient['patient_name']}\","
         csv_content += f"{patient['nhs_number']},"
         csv_content += f"{patient['cancer_type']},"
