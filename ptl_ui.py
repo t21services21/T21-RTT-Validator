@@ -114,6 +114,29 @@ def render_ptl_dashboard():
     
     st.subheader("📊 PTL Dashboard")
     
+    # DEBUG: Show current user email and session info
+    from ptl_system import get_current_user_email
+    current_email = get_current_user_email()
+    
+    with st.expander("🔍 DEBUG INFO - Click to see"):
+        st.write("**Current Session:**")
+        st.write(f"- user_email: `{st.session_state.get('user_email', 'NOT SET')}`")
+        st.write(f"- session_email: `{st.session_state.get('session_email', 'NOT SET')}`")
+        st.write(f"- get_current_user_email(): `{current_email}`")
+        st.write(f"- logged_in: `{st.session_state.get('logged_in', False)}`")
+        
+        st.write("\n**Patients in Supabase by user:**")
+        try:
+            from supabase_database import supabase
+            result = supabase.table('ptl_patients').select('user_email, patient_name').execute()
+            if result.data:
+                for p in result.data:
+                    st.write(f"- {p.get('patient_name')} → `{p.get('user_email')}`")
+            else:
+                st.write("No patients in database")
+        except Exception as e:
+            st.write(f"Error: {e}")
+    
     stats = get_ptl_stats()
     
     # Key metrics
