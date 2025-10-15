@@ -342,28 +342,33 @@ except:
 
 try:
     from unified_patient_ui import render_unified_patient_search
-except:
-    def render_unified_patient_search(): st.info("Patient search unavailable")
+except Exception as e:
+    print(f"❌ Error importing unified_patient_ui: {e}")
+    def render_unified_patient_search(): st.error(f"Patient search unavailable: {str(e)}")
 
 try:
     from task_management_ui import render_task_management
-except:
-    def render_task_management(): st.info("Task management unavailable")
+except Exception as e:
+    print(f"❌ Error importing task_management_ui: {e}")
+    def render_task_management(): st.error(f"Task management unavailable: {str(e)}")
 
 try:
     from executive_dashboard import render_executive_dashboard
-except:
-    def render_executive_dashboard(): st.info("Executive dashboard unavailable")
+except Exception as e:
+    print(f"❌ Error importing executive_dashboard: {e}")
+    def render_executive_dashboard(): st.error(f"Executive dashboard unavailable: {str(e)}")
 
 try:
     from clinical_letters_ui import render_clinical_letters
-except:
-    def render_clinical_letters(): st.info("Clinical letters unavailable")
+except Exception as e:
+    print(f"❌ Error importing clinical_letters_ui: {e}")
+    def render_clinical_letters(): st.error(f"Clinical letters unavailable: {str(e)}")
 
 try:
     from document_management_ui import render_document_management
-except:
-    def render_document_management(): st.info("Document management unavailable")
+except Exception as e:
+    print(f"❌ Error importing document_management_ui: {e}")
+    def render_document_management(): st.error(f"Document management unavailable: {str(e)}")
 
 try:
     from medical_secretary_ui import render_medical_secretary

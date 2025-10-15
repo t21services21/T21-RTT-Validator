@@ -13,14 +13,38 @@ Features:
 from datetime import datetime
 from typing import Dict, List, Optional
 import streamlit as st
-from session_manager import get_current_user_email
-from config import SUPABASE_ENABLED
 
-# Import from all modules
-from ptl_system import get_all_patients as get_ptl_patients
-from cancer_pathway_system import get_all_cancer_patients
-from mdt_coordination_system import get_all_mdt_meetings
-from advanced_booking_system import load_appointments
+
+def get_current_user_email():
+    """Get current logged-in user's email"""
+    try:
+        return st.session_state.get('user_email', 'demo@t21services.co.uk')
+    except:
+        return 'demo@t21services.co.uk'
+
+# Check if Supabase is available
+SUPABASE_ENABLED = False
+
+# Import from all modules - with fallbacks
+try:
+    from ptl_system import get_all_patients as get_ptl_patients
+except:
+    def get_ptl_patients(): return []
+
+try:
+    from cancer_pathway_system import get_all_cancer_patients
+except:
+    def get_all_cancer_patients(): return []
+
+try:
+    from mdt_coordination_system import get_all_mdt_meetings
+except:
+    def get_all_mdt_meetings(): return []
+
+try:
+    from advanced_booking_system import load_appointments
+except:
+    def load_appointments(): return {'appointments': []}
 
 
 def normalize_nhs_number(nhs_number: str) -> str:

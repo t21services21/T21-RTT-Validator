@@ -13,14 +13,21 @@ Features:
 """
 
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 import json
 import os
 import base64
-from session_manager import get_current_user_email
-from config import SUPABASE_ENABLED
 
-if SUPABASE_ENABLED:
+
+def get_current_user_email():
+    """Get current logged-in user's email"""
+    try:
+        import streamlit as st
+        return st.session_state.get('user_email', 'demo@t21services.co.uk')
+    except:
+        return 'demo@t21services.co.uk'
+
+try:
     from supabase_database import (
         supabase_upload_document,
         supabase_get_documents_for_patient,
@@ -28,6 +35,10 @@ if SUPABASE_ENABLED:
         supabase_delete_document,
         supabase_download_document
     )
+    SUPABASE_ENABLED = True
+except:
+    SUPABASE_ENABLED = False
+    print("⚠️ Supabase not available for documents - using fallback storage")
 
 # Document types
 DOCUMENT_TYPES = [
@@ -298,7 +309,7 @@ def get_patient_document_summary(patient_nhs: str) -> Dict:
     return summary
 
 
-def validate_file_type(filename: str) -> tuple[bool, str]:
+def validate_file_type(filename: str) -> Tuple[bool, str]:
     """Validate if file type is allowed"""
     
     allowed_extensions = [

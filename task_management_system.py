@@ -14,16 +14,27 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 import json
 import os
-from session_manager import get_current_user_email
-from config import SUPABASE_ENABLED
 
-if SUPABASE_ENABLED:
+
+def get_current_user_email():
+    """Get current logged-in user's email"""
+    try:
+        import streamlit as st
+        return st.session_state.get('user_email', 'demo@t21services.co.uk')
+    except:
+        return 'demo@t21services.co.uk'
+
+try:
     from supabase_database import (
         supabase_create_task,
         supabase_get_tasks_for_user,
         supabase_update_task,
         supabase_delete_task
     )
+    SUPABASE_ENABLED = True
+except:
+    SUPABASE_ENABLED = False
+    print("⚠️ Supabase not available for tasks - using fallback storage")
 
 TASKS_DB = "tasks.json"
 
