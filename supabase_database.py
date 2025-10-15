@@ -594,6 +594,101 @@ supabase_update_task = update_task
 supabase_delete_task = delete_task
 
 
+# ============================================
+# DOCUMENT MANAGEMENT - PERMANENT STORAGE
+# ============================================
+
+def upload_document(user_email, document_id, file_data, filename, document_metadata):
+    """Upload document to Supabase Storage and save metadata"""
+    try:
+        # Upload file to Supabase Storage bucket
+        storage_path = f"{user_email}/{document_id}/{filename}"
+        
+        # Upload to storage
+        supabase.storage.from_('documents').upload(
+            path=storage_path,
+            file=file_data,
+            file_options={"content-type": "application/octet-stream"}
+        )
+        
+        # Save metadata to database
+        document_metadata['user_email'] = user_email
+        document_metadata['storage_path'] = storage_path
+        result = supabase.table('documents').insert(document_metadata).execute()
+        
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+def get_documents_for_patient(user_email, patient_nhs):
+    """Get all documents for a specific patient"""
+    try:
+        result = supabase.table('documents').select('*').eq('user_email', user_email).eq('patient_nhs', patient_nhs).execute()
+        return result.data if result.data else []
+    except Exception as e:
+        print(f"Error getting patient documents: {e}")
+        return []
+
+def get_all_documents_for_user(user_email):
+    """Get all documents for a user"""
+    try:
+        result = supabase.table('documents').select('*').eq('user_email', user_email).execute()
+        return result.data if result.data else []
+    except Exception as e:
+        print(f"Error getting documents: {e}")
+        return []
+
+def delete_document(user_email, document_id):
+    """Delete a document and its file"""
+    try:
+        # Get document to find storage path
+        doc_result = supabase.table('documents').select('storage_path').eq('document_id', document_id).eq('user_email', user_email).execute()
+        
+        if doc_result.data:
+            storage_path = doc_result.data[0].get('storage_path')
+            
+            # Delete from storage
+            if storage_path:
+                try:
+                    supabase.storage.from_('documents').remove([storage_path])
+                except:
+                    pass  # Continue even if storage delete fails
+            
+            # Delete from database
+            supabase.table('documents').delete().eq('document_id', document_id).eq('user_email', user_email).execute()
+            return True
+        
+        return False
+    except Exception as e:
+        print(f"Error deleting document: {e}")
+        return False
+
+def download_document(user_email, document_id):
+    """Download document file data"""
+    try:
+        # Get storage path
+        doc_result = supabase.table('documents').select('storage_path').eq('document_id', document_id).eq('user_email', user_email).execute()
+        
+        if doc_result.data:
+            storage_path = doc_result.data[0].get('storage_path')
+            
+            # Download from storage
+            file_data = supabase.storage.from_('documents').download(storage_path)
+            return file_data
+        
+        return None
+    except Exception as e:
+        print(f"Error downloading document: {e}")
+        return None
+
+# Aliases
+supabase_upload_document = upload_document
+supabase_get_documents_for_patient = get_documents_for_patient
+supabase_get_all_documents = get_all_documents_for_user
+supabase_delete_document = delete_document
+supabase_download_document = download_document
+
+
 if __name__ == "__main__":
     # Test connection when run directly
     print("Testing Supabase connection...")

@@ -361,6 +361,11 @@ except:
     def render_clinical_letters(): st.info("Clinical letters unavailable")
 
 try:
+    from document_management_ui import render_document_management
+except:
+    def render_document_management(): st.info("Document management unavailable")
+
+try:
     from medical_secretary_ui import render_medical_secretary
 except:
     def render_medical_secretary(): st.info("Medical secretary unavailable")
@@ -1414,6 +1419,7 @@ if not accessible_modules:
         "🤖 AI Auto-Validator",
         "📧 Medical Secretary AI",
         "📄 Clinical Letters",  # NEW! Letter generator
+        "📁 Document Storage",  # NEW! Document management
         "📊 Data Quality System",
         
         # === 📊 CORE RTT VALIDATORS (4 TESTED MODULES) ===
@@ -1505,6 +1511,9 @@ elif tool == "✅ Task Management":
 
 elif tool == "📄 Clinical Letters":
     render_clinical_letters()
+
+elif tool == "📁 Document Storage":
+    render_document_management()
 
 
 # ============================================

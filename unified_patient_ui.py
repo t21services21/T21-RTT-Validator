@@ -97,12 +97,13 @@ def render_patient_full_record(nhs_number: str):
         st.metric("Appointments", len(unified['appointments']))
     
     # Tabs for different views
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "📅 Timeline",
         "📋 PTL Record",
         "🎗️ Cancer Record",
         "👥 MDT History",
-        "🗓️ Appointments"
+        "🗓️ Appointments",
+        "📁 Documents"
     ])
     
     with tab1:
@@ -119,6 +120,9 @@ def render_patient_full_record(nhs_number: str):
     
     with tab5:
         render_appointments_history(unified)
+    
+    with tab6:
+        render_patient_documents(unified)
 
 
 def render_patient_timeline(unified: dict):
@@ -306,3 +310,16 @@ def render_appointments_history(unified: dict):
             
             if appt.get('notes'):
                 st.markdown(f"**Notes:** {appt.get('notes')}")
+
+
+def render_patient_documents(unified: dict):
+    """Render patient documents"""
+    from document_management_ui import render_patient_documents_view
+    
+    st.markdown("### 📁 Patient Documents")
+    
+    # Call the document management UI function
+    render_patient_documents_view(
+        patient_nhs=unified['nhs_number'],
+        patient_name=unified['patient_name']
+    )
