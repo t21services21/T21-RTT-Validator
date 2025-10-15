@@ -306,9 +306,17 @@ def render_all_students():
                 st.write(f"**Status:** {student.get('status')}")
             
             with col2:
-                st.write(f"**Created:** {student.get('created_at', '')[:10]}")
-                st.write(f"**Last Login:** {student.get('last_login', 'Never')[:10]}")
-                st.write(f"**Expires:** {student.get('expiry_date', '')[:10]}")
+                created_at = student.get('created_at', '')
+                st.write(f"**Created:** {created_at[:10] if created_at else 'N/A'}")
+                
+                last_login = student.get('last_login')
+                if last_login:
+                    st.write(f"**Last Login:** {last_login[:10]}")
+                else:
+                    st.write(f"**Last Login:** Never")
+                
+                expiry_date = student.get('expiry_date', '')
+                st.write(f"**Expires:** {expiry_date[:10] if expiry_date else 'N/A'}")
             
             # Show access
             access_modules = get_student_access(student.get('email'))
