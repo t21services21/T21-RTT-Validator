@@ -119,6 +119,17 @@ def render_book_appointment():
                     st.success(f"✅ {result['confirmation']}")
                     st.markdown(f"**Appointment ID:** {result['appointment_id']}")
                     st.balloons()
+                    
+                    # Store success info in session state
+                    st.session_state['last_booked_appointment_id'] = result['appointment_id']
+                    st.session_state['last_booking_time'] = datetime.now().isoformat()
+                    
+                    st.info("""
+                    📋 **Next Steps:**
+                    - Your appointment has been saved
+                    - Go to "Manage Appointments" tab to view all bookings
+                    - Or click the refresh button there to see your new appointment
+                    """)
                 else:
                     st.warning(f"⚠️ {result['message']}")
                     
@@ -296,16 +307,48 @@ def render_capacity_analysis():
 
 def render_appointments_list():
     """View all booked appointments"""
-    from advanced_booking_system import load_appointments
+    from advanced_booking_system import load_appointments, get_current_user_email, SUPABASE_ENABLED
     
     st.markdown("### 📋 All Booked Appointments")
+    
+    # Add refresh button
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.markdown("**Loading appointments...**")
+    with col2:
+        if st.button("🔄 Refresh", use_container_width=True):
+            st.rerun()
+    
+    # Check if appointment was just booked
+    import streamlit as st
+    if 'last_booked_appointment_id' in st.session_state:
+        st.success(f"✅ **Recently Booked:** {st.session_state['last_booked_appointment_id']}")
+        st.info("👇 Your new appointment should appear below. If not, click Refresh.")
+    
+    # Debug info
+    user_email = get_current_user_email()
+    with st.expander("🔍 Debug Info - Click to see technical details"):
+        st.write(f"**User Email:** {user_email}")
+        st.write(f"**Supabase Enabled:** {SUPABASE_ENABLED}")
+        st.write(f"**Checking appointments for this user...**")
+        if 'last_booked_appointment_id' in st.session_state:
+            st.write(f"**Last Booked:** {st.session_state['last_booked_appointment_id']}")
+            st.write(f"**Booking Time:** {st.session_state.get('last_booking_time', 'Unknown')}")
     
     # Get all appointments
     appointments_data = load_appointments()
     appointments = appointments_data.get('appointments', [])
     
+    st.write(f"**Found {len(appointments)} appointments**")
+    
     if not appointments:
         st.info("📅 No appointments booked yet")
+        st.warning("""
+        **If you just booked an appointment:**
+        1. Click the "🔄 Refresh" button above
+        2. Or go back to "Book Appointment" tab
+        3. Check that Supabase is configured
+        """)
         return
     
     # Quick Stats Dashboard
