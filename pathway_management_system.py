@@ -128,7 +128,20 @@ def create_pathway(
     referral_source: str = "GP",
     priority: str = "Routine",
     reason: str = "",
-    notes: str = ""
+    notes: str = "",
+    # NEW NHS Workflow fields
+    referral_method: str = "",
+    referral_received_date: str = "",
+    clock_start_date: str = "",
+    earliest_reasonable_offer_date: str = "",
+    presenting_complaint: str = "",
+    suspected_diagnosis: str = "",
+    gp_name: str = "",
+    gp_practice: str = "",
+    patient_informed: bool = True,
+    interpreter_required: bool = False,
+    language_needed: str = "",
+    additional_needs: str = ""
 ) -> Dict:
     """Create new pathway for patient"""
     
@@ -168,7 +181,20 @@ def create_pathway(
         'risk_level': breach_info['risk_level'],
         'created_date': datetime.now().isoformat(),
         'created_by': user_email,
-        'user_email': user_email
+        'user_email': user_email,
+        # NEW NHS Workflow fields
+        'referral_method': referral_method,
+        'referral_received_date': referral_received_date,
+        'clock_start_date': clock_start_date or start_date,
+        'earliest_reasonable_offer_date': earliest_reasonable_offer_date,
+        'presenting_complaint': presenting_complaint,
+        'suspected_diagnosis': suspected_diagnosis,
+        'gp_name': gp_name,
+        'gp_practice': gp_practice,
+        'patient_informed': patient_informed,
+        'interpreter_required': interpreter_required,
+        'language_needed': language_needed,
+        'additional_needs': additional_needs
     }
     
     if SUPABASE_ENABLED:

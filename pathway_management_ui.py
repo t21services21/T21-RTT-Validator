@@ -115,45 +115,104 @@ def render_create_pathway():
                 'other': '📁 Other Pathway'
             }[x])
             
-            start_date = st.date_input("Pathway Start Date*", value=date.today(),
-                                      help="This is when RTT clock starts!")
+            specialty = st.selectbox("Specialty*", SPECIALTIES,
+                                    help="Which specialty is treating this patient?")
             
-            specialty = st.selectbox("Specialty*", SPECIALTIES)
+            consultant = st.text_input("Consultant*", placeholder="Dr. Smith",
+                                       help="Lead consultant for this pathway")
         
         with col2:
-            consultant = st.text_input("Consultant", placeholder="Dr. Smith")
-            
             referral_source = st.selectbox("Referral Source*", [
-                "GP", "Consultant", "A&E", "Dentist", "Optician", "Other"
+                "GP", "Consultant to Consultant", "A&E", "Dentist", "Optician", 
+                "Self Referral", "Screening Programme", "Other Healthcare Professional"
             ])
             
-            priority = st.selectbox("Priority", [
-                "Routine", "Urgent", "2WW", "Cancer"
+            priority = st.selectbox("Priority*", [
+                "Routine", "Urgent", "2WW (Two Week Wait)", "Emergency"
+            ])
+            
+            referral_method = st.selectbox("Referral Method", [
+                "e-Referral (Choose & Book)", "Letter", "Phone", "Email", "Fax", "Other"
             ])
         
-        reason = st.text_area("Reason for Referral*", height=100,
-                             placeholder="Why is patient on this pathway?")
+        st.markdown("### 📅 Key Dates")
+        col1, col2, col3 = st.columns(3)
         
-        notes = st.text_area("Clinical Notes", height=100)
+        with col1:
+            referral_received_date = st.date_input("Referral Received Date*", value=date.today(),
+                                                   help="Date referral was received by hospital")
+        
+        with col2:
+            clock_start_date = st.date_input("Clock Start Date*", value=date.today(),
+                                             help="Date RTT clock starts (usually referral date)")
+        
+        with col3:
+            earliest_reasonable_offer = st.date_input("Earliest Reasonable Offer Date", 
+                                                      value=None,
+                                                      help="Earliest date patient can attend (Optional)")
+        
+        st.markdown("### 📋 Clinical Information")
+        
+        presenting_complaint = st.text_area("Presenting Complaint*", height=80,
+                                           placeholder="Main symptoms/condition patient is presenting with...")
+        
+        suspected_diagnosis = st.text_area("Suspected Diagnosis", height=60,
+                                          placeholder="Initial suspected diagnosis (if known)...")
+        
+        reason = st.text_area("Detailed Reason for Referral*", height=100,
+                             placeholder="Full clinical reason for this referral...")
+        
+        st.markdown("### 📞 Contact & Communication")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            gp_name = st.text_input("Referring GP Name", placeholder="Dr. Jones",
+                                   help="Name of referring GP (if applicable)")
+            gp_practice = st.text_input("GP Practice", placeholder="High Street Surgery")
+        
+        with col2:
+            patient_informed = st.checkbox("Patient Informed of Referral", value=True)
+            interpreter_required = st.checkbox("Interpreter Required")
+            if interpreter_required:
+                language_needed = st.text_input("Language Required", placeholder="e.g., Polish, Urdu")
+        
+        additional_needs = st.text_area("Additional Patient Needs", height=60,
+                                       placeholder="e.g., Wheelchair access, hearing loop, etc...")
+        
+        notes = st.text_area("Additional Clinical Notes", height=80,
+                            placeholder="Any other relevant clinical information...")
         
         submit = st.form_submit_button("✅ Create Pathway & Start Clock", type="primary")
         
         if submit:
-            if not reason:
-                st.error("❌ Please provide reason for referral")
+            if not reason or not presenting_complaint or not consultant:
+                st.error("❌ Please fill all required fields (marked with *)")
             else:
                 with st.spinner("📁 Creating pathway..."):
                     result = create_pathway(
                         patient_id=selected_patient.get('patient_id'),
                         patient_name=selected_patient.get('full_name'),
                         pathway_type=pathway_type,
-                        start_date=str(start_date),
+                        start_date=str(clock_start_date),
                         specialty=specialty,
                         consultant=consultant,
                         referral_source=referral_source,
                         priority=priority,
                         reason=reason,
-                        notes=notes
+                        notes=notes,
+                        # NEW NHS Workflow fields
+                        referral_method=referral_method,
+                        referral_received_date=str(referral_received_date),
+                        clock_start_date=str(clock_start_date),
+                        earliest_reasonable_offer_date=str(earliest_reasonable_offer) if earliest_reasonable_offer else "",
+                        presenting_complaint=presenting_complaint,
+                        suspected_diagnosis=suspected_diagnosis,
+                        gp_name=gp_name,
+                        gp_practice=gp_practice,
+                        patient_informed=patient_informed,
+                        interpreter_required=interpreter_required,
+                        language_needed=language_needed if interpreter_required else "",
+                        additional_needs=additional_needs
                     )
                 
                 if result['success']:
@@ -235,7 +294,10 @@ def render_pathway_card(pathway: dict):
     risk_icon = risk_icons.get(pathway.get('risk_level', 'low'), '⚪')
     status_icon = '🟢' if pathway.get('status') == 'active' else '⚪'
     
-    with st.expander(f"{risk_icon} {status_icon} {pathway.get('pathway_id')} - {pathway.get('patient_name')} ({pathway.get('pathway_name')})"):
+    # Show specialty in title if available
+    specialty_text = f" - {pathway.get('specialty')}" if pathway.get('specialty') else ""
+    
+    with st.expander(f"{risk_icon} {status_icon} {pathway.get('pathway_id')} - {pathway.get('patient_name')} ({pathway.get('pathway_name')}{specialty_text})"):
         col1, col2, col3 = st.columns(3)
         
         with col1:
@@ -244,6 +306,10 @@ def render_pathway_card(pathway: dict):
             st.write(f"**Patient:** {pathway.get('patient_name')}")
             st.write(f"**Patient ID:** {pathway.get('patient_id')}")
             st.write(f"**Type:** {pathway.get('pathway_name')}")
+            if pathway.get('specialty'):
+                st.write(f"**🏥 Specialty:** {pathway.get('specialty')}")
+            if pathway.get('consultant'):
+                st.write(f"**👨‍⚕️ Consultant:** {pathway.get('consultant')}")
         
         with col2:
             st.markdown("**Timeline:**")
@@ -251,6 +317,8 @@ def render_pathway_card(pathway: dict):
             st.write(f"**Breach Date:** {pathway.get('breach_date')}")
             st.write(f"**Days Elapsed:** {pathway.get('days_elapsed', 0)}")
             st.write(f"**Days Remaining:** {pathway.get('days_remaining', 0)}")
+            if pathway.get('referral_source'):
+                st.write(f"**📨 Referral From:** {pathway.get('referral_source')}")
         
         with col3:
             st.markdown("**Status:**")
@@ -260,7 +328,13 @@ def render_pathway_card(pathway: dict):
             st.write(f"**Priority:** {pathway.get('priority', 'N/A')}")
         
         if pathway.get('reason'):
-            st.markdown(f"**Reason:** {pathway.get('reason')}")
+            st.markdown("---")
+            st.markdown("**📝 Reason for Referral:**")
+            st.write(pathway.get('reason'))
+        
+        if pathway.get('notes'):
+            st.markdown("**📄 Clinical Notes:**")
+            st.write(pathway.get('notes'))
         
         # Show episodes count
         episodes = get_patient_episodes(pathway.get('patient_id', ''))
