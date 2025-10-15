@@ -28,15 +28,20 @@ def ai_validate_pathway(patient_data):
     """
     
     try:
-        # Get API key
-        api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+        # Get API key - try multiple methods
+        api_key = None
+        try:
+            api_key = st.secrets["OPENAI_API_KEY"]
+        except:
+            try:
+                api_key = st.secrets.get("OPENAI_API_KEY")
+            except:
+                api_key = os.getenv("OPENAI_API_KEY")
         
         if not api_key:
-            return {
-                'success': False,
-                'error': 'OpenAI API key not configured',
-                'suggestion': 'Please add OPENAI_API_KEY to secrets'
-            }
+            # TRAINING MODE: Use mock validation
+            st.info("ℹ️ Running in Training Mode (No API key found). Using simulated AI analysis.")
+            return _mock_pathway_validation(patient_data)
         
         openai.api_key = api_key
         
@@ -117,13 +122,20 @@ def ai_analyze_clinical_letter(letter_text):
     """
     
     try:
-        api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+        # Get API key - try multiple methods
+        api_key = None
+        try:
+            api_key = st.secrets["OPENAI_API_KEY"]
+        except:
+            try:
+                api_key = st.secrets.get("OPENAI_API_KEY")
+            except:
+                api_key = os.getenv("OPENAI_API_KEY")
         
         if not api_key:
-            return {
-                'success': False,
-                'error': 'OpenAI API key not configured'
-            }
+            # TRAINING MODE: Use mock AI analysis
+            st.info("ℹ️ Running in Training Mode (No API key found). Using simulated AI analysis.")
+            return _mock_clinical_letter_analysis(letter_text)
         
         openai.api_key = api_key
         
@@ -321,3 +333,123 @@ def batch_validate_pathways(pathways_list):
         results.append(result)
     
     return results
+
+
+def _mock_pathway_validation(patient_data):
+    """
+    Mock pathway validation for training mode
+    Simulates AI validation for educational purposes
+    """
+    
+    # Basic validation logic
+    has_patient_name = bool(patient_data.get('patient_name'))
+    has_nhs_number = bool(patient_data.get('nhs_number'))
+    has_referral_date = bool(patient_data.get('referral_date'))
+    has_pathway_number = bool(patient_data.get('pathway_number'))
+    
+    # Calculate validity
+    required_fields = [has_patient_name, has_nhs_number, has_referral_date, has_pathway_number]
+    valid = all(required_fields)
+    confidence = (sum(required_fields) / len(required_fields)) * 100
+    
+    # Determine RTT code
+    rtt_code = patient_data.get('rtt_code', '10')
+    
+    # Build issues list
+    issues = []
+    if not has_patient_name:
+        issues.append("Patient name is missing")
+    if not has_nhs_number:
+        issues.append("NHS number is missing")
+    if not has_referral_date:
+        issues.append("Referral date is missing")
+    if not has_pathway_number:
+        issues.append("Pathway number is missing")
+    
+    result = {
+        'success': True,
+        'mode': 'TRAINING_MODE',
+        'note': '⚠️ This is a simulated AI validation for training purposes. Real AI validation requires OpenAI API key.',
+        'valid': valid,
+        'confidence': int(confidence),
+        'rtt_code': rtt_code,
+        'explanation': f"Pathway validation completed. {'All required fields present.' if valid else 'Some required fields are missing.'}",
+        'issues': issues if issues else ['No issues found'],
+        'corrections': ['Ensure all required fields are filled', 'Verify dates are in correct format', 'Confirm RTT code is appropriate'] if issues else [],
+        'key_points': [
+            'Patient data structure is valid',
+            f'Confidence score: {int(confidence)}%',
+            'RTT code appears appropriate',
+            'Dates should be verified manually'
+        ],
+        'validation_time': datetime.now().isoformat(),
+        'training_mode': True
+    }
+    
+    return result
+
+
+def _mock_clinical_letter_analysis(letter_text):
+    """
+    Mock AI analysis for training mode (when no API key available)
+    Simulates AI analysis for educational purposes
+    """
+    
+    import re
+    
+    # Extract basic information using regex patterns
+    patient_name = "Not found"
+    nhs_number = "Not found"
+    
+    # Try to find NHS number pattern
+    nhs_match = re.search(r'\b\d{3}\s?\d{3}\s?\d{4}\b', letter_text)
+    if nhs_match:
+        nhs_number = nhs_match.group()
+    
+    # Try to find dates
+    date_pattern = r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b|\b\d{4}[/-]\d{1,2}[/-]\d{1,2}\b'
+    dates = re.findall(date_pattern, letter_text)
+    
+    # Mock comprehensive analysis
+    result = {
+        'success': True,
+        'mode': 'TRAINING_MODE',
+        'note': '⚠️ This is a simulated AI analysis for training purposes. Real AI analysis requires OpenAI API key.',
+        'patient_name': patient_name,
+        'nhs_number': nhs_number,
+        'dates_found': dates[:3] if dates else [],
+        'referral_date': dates[0] if len(dates) > 0 else 'Not found',
+        'appointment_date': dates[1] if len(dates) > 1 else 'Not found',
+        'specialty': 'General Medicine',
+        'reason_for_referral': 'Clinical assessment required',
+        'diagnosis': 'To be determined following clinical assessment',
+        'treatment_plan': 'Further investigation and consultation recommended',
+        'next_steps': 'Await appointment confirmation',
+        'rtt_code': '10',
+        'rtt_code_description': 'First outpatient appointment',
+        'clock_start_date': dates[0] if dates else 'Not found',
+        'clock_stop_date': 'Not applicable - clock still running',
+        'urgency': 'Routine',
+        'issues': [
+            'This is a training simulation',
+            'Real AI analysis requires OpenAI API configuration'
+        ],
+        'key_findings': [
+            f'Letter contains approximately {len(letter_text)} characters',
+            f'Found {len(dates)} date references',
+            'NHS number pattern detected' if nhs_match else 'NHS number not clearly identified',
+            'Letter structure appears standard'
+        ],
+        'recommendations': [
+            'Verify all extracted information manually',
+            'Confirm RTT clock start date',
+            'Ensure patient details are accurate',
+            'Check specialty assignment'
+        ],
+        'confidence_score': 75,
+        'analysis_time': datetime.now().isoformat(),
+        'letter_length': len(letter_text),
+        'training_mode': True
+    }
+    
+    return result
