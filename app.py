@@ -1416,21 +1416,37 @@ if not accessible_modules:
         
         # === 🏥 CLINICAL & WORKFLOW ===
         "🏥 Clinical Workflows",  # PTL, Cancer, MDT, Booking
+        "📋 PTL - Patient Tracking List",  # Direct access
+        "🎗️ Cancer Pathways",  # Direct access
+        "👥 MDT Coordination",  # Direct access
+        "📅 Advanced Booking System",  # Direct access
         "✅ Task Management",
         
         # === 🤖 AI & TOOLS ===
         "🤖 AI & Automation",  # AI tools, letters, docs
+        "🤖 AI Auto-Validator",  # Direct access
+        "📧 Medical Secretary AI",  # Direct access
+        "📄 Clinical Letters",  # Direct access
         "📊 Reports & Analytics",  # Dashboard, reports, alerts
-        "📊 Data Quality",
+        "📊 Executive Dashboard",  # Direct access
+        "📊 Interactive Reports",  # Direct access
+        "📊 Data Quality",  # Quick overview
+        "📊 Data Quality System",  # Full feature
         
         # === 🎓 TRAINING & CAREER ===
         "🎓 Training & Certification",  # Training resources
+        "🎓 Training Library",  # Direct access
+        "🎮 Interactive Learning Center",  # Direct access
+        "🤖 AI RTT Tutor",  # Direct access
+        "🎓 Certification Exam",  # Direct access
         "💼 Career Development",  # Interview, CV
         "💼 Job Interview Prep",  # Individual access
         "📄 CV Builder",  # Individual access
         
         # === ⚙️ ADMIN ===
         "⚙️ Administration",  # Account, admin panel, staff
+        "⚙️ My Account & Upgrade",  # Direct access
+        "🔧 Admin Panel",  # Direct access
         
         # === ℹ️ INFO & SUPPORT ===
         "ℹ️ Help & Information",
