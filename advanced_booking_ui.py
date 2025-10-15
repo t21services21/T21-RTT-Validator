@@ -320,7 +320,6 @@ def render_appointments_list():
             st.rerun()
     
     # Check if appointment was just booked
-    import streamlit as st
     if 'last_booked_appointment_id' in st.session_state:
         st.success(f"✅ **Recently Booked:** {st.session_state['last_booked_appointment_id']}")
         st.info("👇 Your new appointment should appear below. If not, click Refresh.")
