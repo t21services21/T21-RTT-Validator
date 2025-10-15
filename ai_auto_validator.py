@@ -153,21 +153,33 @@ def ai_analyze_clinical_letter(letter_text):
         {{
             "patient_name": "extracted patient name",
             "nhs_number": "extracted NHS number",
-            "referral_date": "extracted referral date",
-            "appointment_date": "extracted appointment date",
-            "specialty": "extracted specialty",
+            "date_of_birth": "patient's date of birth",
+            "letter_date": "date this letter was written/dictated",
+            "clinic_date": "date patient was seen in clinic",
+            "referral_date": "date patient was referred",
+            "referral_received_date": "date referral was received",
+            "appointment_date": "date of appointment (future or past)",
+            "follow_up_date": "follow-up appointment date if mentioned",
+            "specialty": "clinical specialty",
+            "consultant": "consultant/doctor name",
+            "clinic_location": "clinic location/hospital",
             "referral_reason": "reason for referral",
-            "diagnosis": "diagnosis or findings",
-            "treatment_plan": "treatment plan",
-            "next_steps": "next steps",
-            "rtt_code": "RTT code (10, 11, 12, 20, 21, 30, 31, 32, 33, 34, 35, 36, 90, 91, 92, 98)",
+            "diagnosis": "diagnosis or findings from assessment",
+            "treatment_plan": "planned treatment or intervention",
+            "next_steps": "next steps in patient care",
+            "rtt_code": "RTT code if specified (10, 11, 12, 20, 21, 30, 31, 32, 33, 34, 35, 36, 90, 91, 92, 98)",
             "clock_start_date": "RTT clock start date",
             "clock_stop_date": "RTT clock stop date if applicable",
-            "issues_concerns": "any issues or concerns",
-            "urgency_level": "Routine, Urgent, or Two-Week-Wait"
+            "waiting_time_weeks": "current waiting time in weeks if mentioned",
+            "priority": "priority level (Routine/Urgent/Two-Week-Wait)",
+            "issues_concerns": "any issues, complications or concerns",
+            "urgency_level": "Routine, Urgent, or Two-Week-Wait",
+            "gp_copied": "yes/no - is GP being copied on this letter",
+            "other_recipients": "list any other letter recipients"
         }}
         
         Use "Not specified" if information is not found in the letter.
+        For dates, use format: DD/MM/YYYY or as written in letter.
         """
         
         response = client.chat.completions.create(

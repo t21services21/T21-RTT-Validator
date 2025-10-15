@@ -289,21 +289,46 @@ def render_letter_analysis():
                     
                     st.markdown("### 📊 Extracted Information")
                     
-                    # Display extracted data in a nice format
-                    col1, col2 = st.columns(2)
+                    # Display extracted data in organized sections
+                    col1, col2, col3 = st.columns(3)
                     
                     with col1:
-                        st.markdown("**Patient Information:**")
-                        st.info(f"Name: {result.get('patient_name', 'N/A')}")
-                        st.info(f"NHS Number: {result.get('nhs_number', 'N/A')}")
+                        st.markdown("**👤 Patient Information:**")
+                        st.info(f"**Name:** {result.get('patient_name', 'N/A')}")
+                        st.info(f"**NHS:** {result.get('nhs_number', 'N/A')}")
+                        st.info(f"**DOB:** {result.get('date_of_birth', 'N/A')}")
                     
                     with col2:
-                        st.markdown("**RTT Information:**")
-                        st.info(f"RTT Code: {result.get('rtt_code', 'N/A')}")
-                        st.info(f"Urgency: {result.get('urgency_level', 'N/A')}")
+                        st.markdown("**📅 Important Dates:**")
+                        st.info(f"**Letter Date:** {result.get('letter_date', 'N/A')}")
+                        st.info(f"**Clinic Date:** {result.get('clinic_date', 'N/A')}")
+                        st.info(f"**Referral Date:** {result.get('referral_date', 'N/A')}")
+                    
+                    with col3:
+                        st.markdown("**⏰ RTT Information:**")
+                        st.info(f"**RTT Code:** {result.get('rtt_code', 'N/A')}")
+                        st.info(f"**Priority:** {result.get('priority', 'N/A')}")
+                        st.info(f"**Specialty:** {result.get('specialty', 'N/A')}")
                     
                     st.markdown("---")
-                    st.markdown("### 📝 Full Analysis")
+                    
+                    # Clinical Details
+                    st.markdown("### 🏥 Clinical Details")
+                    
+                    col4, col5 = st.columns(2)
+                    
+                    with col4:
+                        st.markdown(f"**Consultant:** {result.get('consultant', 'N/A')}")
+                        st.markdown(f"**Location:** {result.get('clinic_location', 'N/A')}")
+                        st.markdown(f"**Referral Reason:** {result.get('referral_reason', 'N/A')}")
+                    
+                    with col5:
+                        st.markdown(f"**Diagnosis:** {result.get('diagnosis', 'N/A')}")
+                        st.markdown(f"**Treatment Plan:** {result.get('treatment_plan', 'N/A')}")
+                        st.markdown(f"**Next Steps:** {result.get('next_steps', 'N/A')}")
+                    
+                    st.markdown("---")
+                    st.markdown("### 📝 Full Analysis (JSON)")
                     st.json(result)
                 
                 else:
