@@ -72,8 +72,9 @@ def add_consultant_episode(
     expected_duration_weeks: int = 12,
     priority: str = "Routine",
     referral_source: str = "GP",
-    pathway_id: Optional[str] = None,
-    notes: str = ""
+    pathway_id: str = None,
+    notes: str = "",
+    episode_code: str = ""
 ) -> Dict:
     """Add new consultant episode"""
     
@@ -96,6 +97,7 @@ def add_consultant_episode(
         'referral_source': referral_source,
         'pathway_id': pathway_id,
         'notes': notes,
+        'episode_code': episode_code,  # NEW: Episode/HRG code
         'created_date': datetime.now().isoformat(),
         'created_by': user_email,
         'user_email': user_email
@@ -434,3 +436,172 @@ def get_episode_stats() -> Dict:
         'active_episodes': active,
         'closed_episodes': closed
     }
+
+
+# ============================================
+# UPDATE / EDIT / DELETE / MOVE EPISODES
+# ============================================
+
+def update_episode(episode_id: str, update_data: Dict) -> Dict:
+    """Update episode details"""
+    user_email = get_current_user_email()
+    
+    if SUPABASE_ENABLED:
+        try:
+            result = supabase.table('episodes')\
+                .update(update_data)\
+                .eq('episode_id', episode_id)\
+                .eq('user_email', user_email)\
+                .execute()
+            
+            return {'success': True, 'message': 'Episode updated successfully'}
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+    else:
+        return update_episode_local(episode_id, update_data)
+
+
+def delete_episode(episode_id: str) -> Dict:
+    """Delete episode (soft delete - mark as deleted)"""
+    user_email = get_current_user_email()
+    
+    if SUPABASE_ENABLED:
+        try:
+            # Soft delete: mark as deleted instead of actually deleting
+            result = supabase.table('episodes')\
+                .update({'status': 'deleted', 'deleted_date': datetime.now().isoformat()})\
+                .eq('episode_id', episode_id)\
+                .eq('user_email', user_email)\
+                .execute()
+            
+            return {'success': True, 'message': 'Episode deleted successfully'}
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+    else:
+        return delete_episode_local(episode_id)
+
+
+def move_episode_to_pathway(episode_id: str, new_pathway_id: str) -> Dict:
+    """Move episode from one pathway to another"""
+    user_email = get_current_user_email()
+    
+    if SUPABASE_ENABLED:
+        try:
+            result = supabase.table('episodes')\
+                .update({'pathway_id': new_pathway_id})\
+                .eq('episode_id', episode_id)\
+                .eq('user_email', user_email)\
+                .execute()
+            
+            return {'success': True, 'message': f'Episode moved to pathway {new_pathway_id}'}
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+    else:
+        return move_episode_local(episode_id, new_pathway_id)
+
+
+def get_episode_by_id(episode_id: str) -> Optional[Dict]:
+    """Get single episode by ID"""
+    user_email = get_current_user_email()
+    
+    if SUPABASE_ENABLED:
+        try:
+            result = supabase.table('episodes')\
+                .select('*')\
+                .eq('episode_id', episode_id)\
+                .eq('user_email', user_email)\
+                .execute()
+            
+            if result.data:
+                return result.data[0]
+            return None
+        except Exception as e:
+            print(f"Error fetching episode: {e}")
+            return None
+    else:
+        return get_episode_local(episode_id)
+
+
+# ============================================
+# LOCAL STORAGE HELPERS FOR NEW FUNCTIONS
+# ============================================
+
+def update_episode_local(episode_id: str, update_data: Dict) -> Dict:
+    """Update episode in local storage"""
+    episodes_file = 'episodes.json'
+    
+    if not os.path.exists(episodes_file):
+        return {'success': False, 'error': 'Episodes file not found'}
+    
+    with open(episodes_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    for episode in data['episodes']:
+        if episode.get('episode_id') == episode_id:
+            episode.update(update_data)
+            break
+    
+    with open(episodes_file, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    
+    return {'success': True, 'message': 'Episode updated'}
+
+
+def delete_episode_local(episode_id: str) -> Dict:
+    """Delete episode from local storage"""
+    episodes_file = 'episodes.json'
+    
+    if not os.path.exists(episodes_file):
+        return {'success': False, 'error': 'Episodes file not found'}
+    
+    with open(episodes_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    for episode in data['episodes']:
+        if episode.get('episode_id') == episode_id:
+            episode['status'] = 'deleted'
+            episode['deleted_date'] = datetime.now().isoformat()
+            break
+    
+    with open(episodes_file, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    
+    return {'success': True, 'message': 'Episode deleted'}
+
+
+def move_episode_local(episode_id: str, new_pathway_id: str) -> Dict:
+    """Move episode to different pathway in local storage"""
+    episodes_file = 'episodes.json'
+    
+    if not os.path.exists(episodes_file):
+        return {'success': False, 'error': 'Episodes file not found'}
+    
+    with open(episodes_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    for episode in data['episodes']:
+        if episode.get('episode_id') == episode_id:
+            episode['pathway_id'] = new_pathway_id
+            break
+    
+    with open(episodes_file, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    
+    return {'success': True, 'message': f'Episode moved to pathway {new_pathway_id}'}
+
+
+def get_episode_local(episode_id: str) -> Optional[Dict]:
+    """Get episode from local storage"""
+    episodes_file = 'episodes.json'
+    
+    if not os.path.exists(episodes_file):
+        return None
+    
+    with open(episodes_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    for episode in data.get('episodes', []):
+        if episode.get('episode_id') == episode_id:
+            return episode
+    
+    return None

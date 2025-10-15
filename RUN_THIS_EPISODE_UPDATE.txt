@@ -1,0 +1,14 @@
+===========================================
+COPY THIS SQL → PASTE IN SUPABASE → RUN
+UPDATE EPISODES TABLE WITH MANAGEMENT FEATURES
+===========================================
+
+ALTER TABLE public.episodes ADD COLUMN IF NOT EXISTS episode_code TEXT;
+ALTER TABLE public.episodes ADD COLUMN IF NOT EXISTS deleted_date TIMESTAMPTZ;
+
+SELECT 'Episodes table updated with episode codes and delete tracking!' as message;
+
+-------------------------------------------
+AFTER RUNNING: Should see "Success"
+Then: Refresh your Streamlit app!
+-------------------------------------------

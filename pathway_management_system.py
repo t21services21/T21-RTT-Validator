@@ -458,3 +458,247 @@ def get_pathway_stats() -> Dict:
         'critical_risk': critical,
         'high_risk': high_risk
     }
+
+
+# ============================================
+# RTT CLOCK PAUSE/RESUME
+# ============================================
+
+def pause_pathway_clock(pathway_id: str, pause_reason: str, pause_start_date: str) -> Dict:
+    """Pause RTT clock for pathway"""
+    user_email = get_current_user_email()
+    
+    # Get current pathway to add to history
+    pathway = get_pathway_by_id(pathway_id)
+    if not pathway:
+        return {'success': False, 'error': 'Pathway not found'}
+    
+    # Add to pause history
+    pause_history = pathway.get('pause_history', [])
+    pause_entry = {
+        'pause_start': pause_start_date,
+        'pause_reason': pause_reason,
+        'paused_by': user_email,
+        'paused_at': datetime.now().isoformat()
+    }
+    pause_history.append(pause_entry)
+    
+    update_data = {
+        'clock_paused': True,
+        'clock_status': 'paused',
+        'pause_reason': pause_reason,
+        'pause_start_date': pause_start_date,
+        'pause_history': pause_history
+    }
+    
+    if SUPABASE_ENABLED:
+        try:
+            result = supabase.table('pathways')\
+                .update(update_data)\
+                .eq('pathway_id', pathway_id)\
+                .eq('user_email', user_email)\
+                .execute()
+            
+            return {'success': True, 'message': 'RTT clock paused successfully'}
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+    else:
+        return update_pathway_local(pathway_id, update_data)
+
+
+def resume_pathway_clock(pathway_id: str, resume_date: str) -> Dict:
+    """Resume RTT clock for pathway"""
+    user_email = get_current_user_email()
+    
+    # Get current pathway
+    pathway = get_pathway_by_id(pathway_id)
+    if not pathway:
+        return {'success': False, 'error': 'Pathway not found'}
+    
+    if not pathway.get('clock_paused'):
+        return {'success': False, 'error': 'Clock is not paused'}
+    
+    # Calculate pause duration
+    pause_start = datetime.strptime(pathway.get('pause_start_date'), '%Y-%m-%d')
+    resume_dt = datetime.strptime(resume_date, '%Y-%m-%d')
+    pause_days = (resume_dt - pause_start).days
+    
+    # Update pause history
+    pause_history = pathway.get('pause_history', [])
+    if pause_history:
+        pause_history[-1]['pause_end'] = resume_date
+        pause_history[-1]['pause_days'] = pause_days
+        pause_history[-1]['resumed_by'] = user_email
+        pause_history[-1]['resumed_at'] = datetime.now().isoformat()
+    
+    # Calculate new totals
+    total_pause_days = pathway.get('total_pause_days', 0) + pause_days
+    
+    # Recalculate breach date with pause days added
+    original_breach_date = datetime.strptime(pathway.get('breach_date'), '%Y-%m-%d')
+    new_breach_date = original_breach_date + timedelta(days=pause_days)
+    
+    # Recalculate days remaining
+    today = datetime.now()
+    days_remaining = (new_breach_date - today).days
+    
+    update_data = {
+        'clock_paused': False,
+        'clock_status': 'running',
+        'pause_reason': None,
+        'pause_start_date': None,
+        'pause_end_date': resume_date,
+        'total_pause_days': total_pause_days,
+        'pause_history': pause_history,
+        'breach_date': new_breach_date.strftime('%Y-%m-%d'),
+        'days_remaining': days_remaining
+    }
+    
+    if SUPABASE_ENABLED:
+        try:
+            result = supabase.table('pathways')\
+                .update(update_data)\
+                .eq('pathway_id', pathway_id)\
+                .eq('user_email', user_email)\
+                .execute()
+            
+            return {
+                'success': True,
+                'message': f'Clock resumed. {pause_days} days added to pathway.',
+                'pause_days': pause_days,
+                'new_breach_date': new_breach_date.strftime('%Y-%m-%d')
+            }
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+    else:
+        result = update_pathway_local(pathway_id, update_data)
+        result['pause_days'] = pause_days
+        result['new_breach_date'] = new_breach_date.strftime('%Y-%m-%d')
+        return result
+
+
+# ============================================
+# MILESTONE DATE TRACKING
+# ============================================
+
+def record_milestone(pathway_id: str, milestone_type: str, milestone_date: str, **kwargs) -> Dict:
+    """Record key NHS milestone date"""
+    user_email = get_current_user_email()
+    
+    # Get pathway
+    pathway = get_pathway_by_id(pathway_id)
+    if not pathway:
+        return {'success': False, 'error': 'Pathway not found'}
+    
+    # Calculate days from clock start
+    clock_start = datetime.strptime(pathway.get('clock_start_date') or pathway.get('start_date'), '%Y-%m-%d')
+    milestone_dt = datetime.strptime(milestone_date, '%Y-%m-%d')
+    days_to_milestone = (milestone_dt - clock_start).days
+    
+    update_data = {}
+    
+    if milestone_type == 'first_appointment':
+        update_data = {
+            'first_appointment_date': milestone_date,
+            'days_to_first_appointment': days_to_milestone,
+            'first_appointment_attended': kwargs.get('attended', True)
+        }
+    
+    elif milestone_type == 'decision_to_treat':
+        update_data = {
+            'decision_to_treat_date': milestone_date,
+            'days_to_decision_to_treat': days_to_milestone
+        }
+    
+    elif milestone_type == 'treatment':
+        update_data = {
+            'treatment_start_date': milestone_date,
+            'days_to_treatment': days_to_milestone,
+            'treatment_received': True
+        }
+    
+    elif milestone_type == 'admission':
+        update_data = {
+            'admission_date': milestone_date
+        }
+    
+    elif milestone_type == 'surgery':
+        update_data = {
+            'surgery_date': milestone_date
+        }
+    
+    elif milestone_type == 'discharge':
+        update_data = {
+            'discharge_date': milestone_date,
+            'days_to_discharge': days_to_milestone,
+            'discharge_reason': kwargs.get('reason', ''),
+            'discharge_destination': kwargs.get('destination', ''),
+            'treatment_outcome': kwargs.get('outcome', ''),
+            'follow_up_required': kwargs.get('follow_up_required', False),
+            'follow_up_date': kwargs.get('follow_up_date', None)
+        }
+    
+    if SUPABASE_ENABLED:
+        try:
+            result = supabase.table('pathways')\
+                .update(update_data)\
+                .eq('pathway_id', pathway_id)\
+                .eq('user_email', user_email)\
+                .execute()
+            
+            return {'success': True, 'message': f'{milestone_type.replace("_", " ").title()} recorded successfully'}
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+    else:
+        return update_pathway_local(pathway_id, update_data)
+
+
+# ============================================
+# RTT STATUS MANAGEMENT
+# ============================================
+
+def update_rtt_status(pathway_id: str, new_status: str) -> Dict:
+    """Update RTT pathway status"""
+    user_email = get_current_user_email()
+    
+    valid_statuses = [
+        'active',
+        'paused',
+        'active_monitoring',
+        'suspended',
+        'completed',
+        'removed_died',
+        'removed_moved',
+        'removed_declined',
+        'cancelled'
+    ]
+    
+    if new_status not in valid_statuses:
+        return {'success': False, 'error': f'Invalid status. Must be one of: {valid_statuses}'}
+    
+    update_data = {
+        'rtt_status': new_status
+    }
+    
+    # Adjust clock status based on RTT status
+    if new_status == 'paused':
+        update_data['clock_status'] = 'paused'
+    elif new_status in ['completed', 'removed_died', 'removed_moved', 'removed_declined', 'cancelled']:
+        update_data['clock_status'] = 'stopped'
+        update_data['status'] = 'closed'
+    else:
+        update_data['clock_status'] = 'running'
+    
+    if SUPABASE_ENABLED:
+        try:
+            result = supabase.table('pathways')\
+                .update(update_data)\
+                .eq('pathway_id', pathway_id)\
+                .eq('user_email', user_email)\
+                .execute()
+            
+            return {'success': True, 'message': f'RTT status updated to: {new_status}'}
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+    else:
+        return update_pathway_local(pathway_id, update_data)

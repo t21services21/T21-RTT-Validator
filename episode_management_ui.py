@@ -12,7 +12,11 @@ from episode_management_system import (
     get_patient_episodes,
     get_all_episodes,
     close_consultant_episode,
-    get_episode_stats
+    get_episode_stats,
+    update_episode,
+    delete_episode,
+    move_episode_to_pathway,
+    get_episode_by_id
 )
 from patient_selector_component import render_patient_selector, render_pathway_selector
 
@@ -41,11 +45,12 @@ def render_episode_management():
     """)
     
     # Tabs
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "👨‍⚕️ Add Consultant Episode",
         "💉 Add Treatment Episode",
         "🔬 Add Diagnostic Episode",
         "📋 View All Episodes",
+        "✏️ Manage Episodes",
         "📊 Episode Statistics"
     ])
     
@@ -62,6 +67,9 @@ def render_episode_management():
         render_view_episodes()
     
     with tab5:
+        render_manage_episodes()
+    
+    with tab6:
         render_episode_stats()
 
 
@@ -114,6 +122,8 @@ def render_add_consultant_episode():
             consultant_name = st.text_input("Consultant Name*", placeholder="Dr. Smith")
             specialty = st.selectbox("Specialty*", SPECIALTIES)
             start_date = st.date_input("Episode Start Date*", value=date.today())
+            episode_code = st.text_input("Episode Code", placeholder="e.g., 10, AA10, 20C",
+                                        help="HRG code, procedure code, or episode identifier")
         
         with col2:
             priority = st.selectbox("Priority", ["Routine", "Urgent", "2WW", "Cancer"])
@@ -142,7 +152,8 @@ def render_add_consultant_episode():
                     priority=priority,
                     referral_source=referral_source,
                     pathway_id=pathway_id if pathway_id else None,
-                    notes=notes
+                    notes=notes,
+                    episode_code=episode_code
                 )
                 
                 if result['success']:
@@ -433,6 +444,196 @@ def render_diagnostic_episode_details(episode: dict):
     
     if episode.get('results'):
         st.markdown(f"**Results:** {episode.get('results')}")
+
+
+def render_manage_episodes():
+    """Manage episodes - Edit, Delete, Move"""
+    
+    st.subheader("✏️ Manage Episodes")
+    
+    st.info("""
+    **Episode Management:**
+    - ✏️ **Edit Episode** - Update episode code, details, or fix mistakes
+    - 🗑️ **Delete Episode** - Remove incorrect episodes
+    - 🔀 **Move Episode** - Transfer episode to different pathway
+    """)
+    
+    # Get all episodes
+    all_episodes = get_all_episodes()
+    
+    if not all_episodes:
+        st.warning("📋 No episodes found. Create episodes first.")
+        return
+    
+    # Filter out deleted episodes
+    active_episodes = [e for e in all_episodes if e.get('status') != 'deleted']
+    
+    if not active_episodes:
+        st.warning("📋 No active episodes found.")
+        return
+    
+    st.write(f"**Total Active Episodes:** {len(active_episodes)}")
+    
+    # Select episode to manage
+    episode_options = {
+        f"{e.get('episode_id')} - {e.get('patient_name')} ({e.get('episode_type').title()})": e
+        for e in active_episodes
+    }
+    
+    selected_option = st.selectbox(
+        "Select Episode to Manage:",
+        options=["-- Select Episode --"] + list(episode_options.keys())
+    )
+    
+    if selected_option == "-- Select Episode --":
+        return
+    
+    selected_episode = episode_options[selected_option]
+    
+    st.markdown("---")
+    st.markdown(f"### Managing: {selected_episode.get('episode_id')}")
+    
+    # Show current episode details
+    with st.expander("📋 Current Episode Details", expanded=True):
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.write(f"**Episode ID:** {selected_episode.get('episode_id')}")
+            st.write(f"**Type:** {selected_episode.get('episode_type').title()}")
+            st.write(f"**Patient:** {selected_episode.get('patient_name')}")
+        
+        with col2:
+            st.write(f"**Status:** {selected_episode.get('status')}")
+            if selected_episode.get('episode_code'):
+                st.write(f"**Episode Code:** {selected_episode.get('episode_code')}")
+            if selected_episode.get('pathway_id'):
+                st.write(f"**Pathway:** {selected_episode.get('pathway_id')}")
+        
+        with col3:
+            if selected_episode.get('specialty'):
+                st.write(f"**Specialty:** {selected_episode.get('specialty')}")
+            if selected_episode.get('consultant_name'):
+                st.write(f"**Consultant:** {selected_episode.get('consultant_name')}")
+    
+    st.markdown("---")
+    
+    # Management actions
+    action_tab1, action_tab2, action_tab3 = st.tabs([
+        "✏️ Edit Episode",
+        "🔀 Move to Pathway",
+        "🗑️ Delete Episode"
+    ])
+    
+    with action_tab1:
+        st.markdown("### ✏️ Edit Episode Details")
+        
+        with st.form("edit_episode_form"):
+            st.info("Update episode code or other details. Leave fields blank to keep current values.")
+            
+            new_episode_code = st.text_input(
+                "Episode Code",
+                value=selected_episode.get('episode_code', ''),
+                placeholder="e.g., 10, AA10, 20C"
+            )
+            
+            new_notes = st.text_area(
+                "Clinical Notes",
+                value=selected_episode.get('notes', ''),
+                height=100
+            )
+            
+            if selected_episode.get('episode_type') == 'consultant':
+                new_consultant = st.text_input(
+                    "Consultant Name",
+                    value=selected_episode.get('consultant_name', '')
+                )
+                new_specialty = st.selectbox(
+                    "Specialty",
+                    options=SPECIALTIES,
+                    index=SPECIALTIES.index(selected_episode.get('specialty', 'Other')) if selected_episode.get('specialty') in SPECIALTIES else 0
+                )
+            
+            submit_edit = st.form_submit_button("💾 Save Changes", type="primary")
+            
+            if submit_edit:
+                update_data = {
+                    'episode_code': new_episode_code,
+                    'notes': new_notes
+                }
+                
+                if selected_episode.get('episode_type') == 'consultant':
+                    update_data['consultant_name'] = new_consultant
+                    update_data['specialty'] = new_specialty
+                
+                result = update_episode(selected_episode.get('episode_id'), update_data)
+                
+                if result['success']:
+                    st.success("✅ Episode updated successfully!")
+                    st.balloons()
+                    st.rerun()
+                else:
+                    st.error(f"❌ Update failed: {result.get('error')}")
+    
+    with action_tab2:
+        st.markdown("### 🔀 Move Episode to Different Pathway")
+        
+        st.warning("⚠️ Moving episode will unlink it from current pathway and link to new pathway.")
+        
+        # Show current pathway
+        if selected_episode.get('pathway_id'):
+            st.info(f"**Current Pathway:** {selected_episode.get('pathway_id')}")
+        else:
+            st.info("**Current Pathway:** Not linked to any pathway")
+        
+        # Select new pathway
+        new_pathway = render_pathway_selector(
+            patient_id=selected_episode.get('patient_id'),
+            key_prefix=f"move_episode_{selected_episode.get('episode_id')}"
+        )
+        
+        if new_pathway:
+            st.success(f"✅ Selected New Pathway: **{new_pathway.get('pathway_id')}**")
+            
+            if st.button("🔀 Move Episode to This Pathway", type="primary"):
+                result = move_episode_to_pathway(
+                    selected_episode.get('episode_id'),
+                    new_pathway.get('pathway_id')
+                )
+                
+                if result['success']:
+                    st.success("✅ Episode moved successfully!")
+                    st.balloons()
+                    st.rerun()
+                else:
+                    st.error(f"❌ Move failed: {result.get('error')}")
+    
+    with action_tab3:
+        st.markdown("### 🗑️ Delete Episode")
+        
+        st.error("""
+        ⚠️ **WARNING: This will delete the episode!**
+        
+        The episode will be marked as deleted and removed from all views.
+        This action cannot be undone easily.
+        """)
+        
+        st.write(f"**Episode to Delete:** {selected_episode.get('episode_id')}")
+        st.write(f"**Patient:** {selected_episode.get('patient_name')}")
+        st.write(f"**Type:** {selected_episode.get('episode_type').title()}")
+        
+        confirm = st.text_input(
+            'Type "DELETE" to confirm:',
+            key=f"delete_confirm_{selected_episode.get('episode_id')}"
+        )
+        
+        if st.button("🗑️ DELETE EPISODE", type="primary", disabled=(confirm != "DELETE")):
+            result = delete_episode(selected_episode.get('episode_id'))
+            
+            if result['success']:
+                st.success("✅ Episode deleted successfully!")
+                st.rerun()
+            else:
+                st.error(f"❌ Delete failed: {result.get('error')}")
 
 
 def render_episode_stats():

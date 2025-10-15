@@ -12,7 +12,11 @@ from pathway_management_system import (
     get_pathway_by_id,
     update_pathway_progress,
     close_pathway,
-    get_pathway_stats
+    get_pathway_stats,
+    pause_pathway_clock,
+    resume_pathway_clock,
+    record_milestone,
+    update_rtt_status
 )
 from patient_selector_component import render_patient_selector, render_patient_quick_select
 from episode_management_system import get_patient_episodes
@@ -43,9 +47,10 @@ def render_pathway_management():
     """)
     
     # Tabs
-    tab1, tab2, tab3, tab4 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "➕ Create Pathway",
         "📋 All Pathways",
+        "⏸️ Manage Pathway",
         "📊 Pathway Timeline",
         "📈 Statistics"
     ])
@@ -57,9 +62,12 @@ def render_pathway_management():
         render_all_pathways()
     
     with tab3:
-        render_pathway_timeline()
+        render_manage_pathway()
     
     with tab4:
+        render_pathway_timeline()
+    
+    with tab5:
         render_pathway_stats()
 
 
@@ -339,6 +347,318 @@ def render_pathway_card(pathway: dict):
         # Show episodes count
         episodes = get_patient_episodes(pathway.get('patient_id', ''))
         st.info(f"📋 **Episodes Linked:** {episodes.get('total_count', 0)}")
+
+
+def render_manage_pathway():
+    """Manage pathway - Pause/Resume, Milestones, Status"""
+    
+    st.subheader("⏸️ Manage Pathway")
+    
+    st.success("""
+    **NHS Pathway Management:**
+    - ⏸️ **Pause/Resume RTT Clock** - Patient unavailable, clinical reasons
+    - 📅 **Record Milestones** - First appointment, DTT, treatment, discharge
+    - 🔄 **Update Status** - Active, suspended, completed, removed
+    """)
+    
+    # Get all active pathways
+    all_pathways = get_all_pathways()
+    active_pathways = [p for p in all_pathways if p.get('status') != 'closed']
+    
+    if not active_pathways:
+        st.warning("📁 No active pathways found. Create a pathway first.")
+        return
+    
+    # Select pathway to manage
+    pathway_options = {
+        f"{p.get('pathway_id')} - {p.get('patient_name')} ({p.get('specialty')})": p
+        for p in active_pathways
+    }
+    
+    selected_option = st.selectbox(
+        "Select Pathway to Manage:",
+        options=["-- Select Pathway --"] + list(pathway_options.keys())
+    )
+    
+    if selected_option == "-- Select Pathway --":
+        return
+    
+    selected_pathway = pathway_options[selected_option]
+    
+    st.markdown("---")
+    st.markdown(f"### Managing: {selected_pathway.get('pathway_id')}")
+    
+    # Show current pathway status
+    with st.expander("📋 Current Pathway Status", expanded=True):
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.write(f"**Patient:** {selected_pathway.get('patient_name')}")
+            st.write(f"**Specialty:** {selected_pathway.get('specialty')}")
+        
+        with col2:
+            st.write(f"**Clock Status:** {selected_pathway.get('clock_status', 'N/A').title()}")
+            st.write(f"**RTT Status:** {selected_pathway.get('rtt_status', 'active').title()}")
+        
+        with col3:
+            st.write(f"**Days Elapsed:** {selected_pathway.get('days_elapsed', 0)}")
+            st.write(f"**Days Remaining:** {selected_pathway.get('days_remaining', 0)}")
+        
+        with col4:
+            st.write(f"**Breach Date:** {selected_pathway.get('breach_date')}")
+            if selected_pathway.get('total_pause_days', 0) > 0:
+                st.write(f"**Total Paused:** {selected_pathway.get('total_pause_days')} days")
+    
+    st.markdown("---")
+    
+    # Management tabs
+    mgmt_tab1, mgmt_tab2, mgmt_tab3 = st.tabs([
+        "⏸️ Clock Pause/Resume",
+        "📅 Record Milestones",
+        "🔄 Update Status"
+    ])
+    
+    with mgmt_tab1:
+        render_clock_management(selected_pathway)
+    
+    with mgmt_tab2:
+        render_milestone_recording(selected_pathway)
+    
+    with mgmt_tab3:
+        render_status_management(selected_pathway)
+
+
+def render_clock_management(pathway: dict):
+    """Pause or resume RTT clock"""
+    
+    st.markdown("### ⏸️ RTT Clock Management")
+    
+    is_paused = pathway.get('clock_paused', False)
+    
+    if is_paused:
+        st.warning(f"⏸️ **Clock is PAUSED**")
+        st.write(f"**Paused on:** {pathway.get('pause_start_date')}")
+        st.write(f"**Reason:** {pathway.get('pause_reason')}")
+        
+        st.markdown("---")
+        st.markdown("### ▶️ Resume Clock")
+        
+        with st.form("resume_clock_form"):
+            resume_date = st.date_input("Resume Date*", value=date.today(),
+                                       help="Date when patient becomes available again")
+            
+            submit = st.form_submit_button("▶️ Resume RTT Clock", type="primary")
+            
+            if submit:
+                result = resume_pathway_clock(pathway.get('pathway_id'), str(resume_date))
+                
+                if result['success']:
+                    st.success(f"✅ {result['message']}")
+                    st.info(f"🆕 New Breach Date: **{result['new_breach_date']}**")
+                    st.balloons()
+                    st.rerun()
+                else:
+                    st.error(f"❌ Failed: {result.get('error')}")
+    
+    else:
+        st.success("▶️ **Clock is RUNNING**")
+        
+        st.markdown("---")
+        st.markdown("### ⏸️ Pause Clock")
+        
+        st.info("""
+        **Pause RTT clock when:**
+        - Patient unavailable (holiday, personal reasons)
+        - Clinical reasons (e.g., patient must lose weight first)
+        - Patient declined interim appointment
+        - Social/non-clinical reasons
+        
+        **Clock automatically extends breach date!**
+        """)
+        
+        with st.form("pause_clock_form"):
+            pause_date = st.date_input("Pause Start Date*", value=date.today())
+            
+            pause_reason = st.selectbox("Pause Reason*", [
+                "Patient unavailable - Holiday",
+                "Patient unavailable - Personal reasons",
+                "Patient declined appointment",
+                "Clinical - Must lose weight",
+                "Clinical - Must stop smoking",
+                "Clinical - Improve fitness",
+                "Social reasons",
+                "Other - See notes"
+            ])
+            
+            pause_notes = st.text_area("Additional Notes", height=80)
+            
+            submit = st.form_submit_button("⏸️ Pause RTT Clock", type="primary")
+            
+            if submit:
+                result = pause_pathway_clock(
+                    pathway.get('pathway_id'),
+                    pause_reason,
+                    str(pause_date)
+                )
+                
+                if result['success']:
+                    st.success("✅ RTT clock paused successfully!")
+                    st.warning("⚠️ Remember to resume clock when patient is available!")
+                    st.rerun()
+                else:
+                    st.error(f"❌ Failed: {result.get('error')}")
+
+
+def render_milestone_recording(pathway: dict):
+    """Record key NHS milestone dates"""
+    
+    st.markdown("### 📅 Record NHS Milestones")
+    
+    st.info("""
+    **Key NHS Milestones:**
+    - 📅 First Appointment
+    - 🩺 Decision to Treat (DTT)
+    - 💉 Treatment Start
+    - 🏥 Admission
+    - ⚕️ Surgery
+    - 🚪 Discharge
+    """)
+    
+    # Show recorded milestones
+    with st.expander("✅ Recorded Milestones", expanded=False):
+        if pathway.get('first_appointment_date'):
+            st.write(f"📅 First Appointment: **{pathway.get('first_appointment_date')}** ({pathway.get('days_to_first_appointment')} days)")
+        if pathway.get('decision_to_treat_date'):
+            st.write(f"🩺 Decision to Treat: **{pathway.get('decision_to_treat_date')}** ({pathway.get('days_to_decision_to_treat')} days)")
+        if pathway.get('treatment_start_date'):
+            st.write(f"💉 Treatment: **{pathway.get('treatment_start_date')}** ({pathway.get('days_to_treatment')} days)")
+        if pathway.get('admission_date'):
+            st.write(f"🏥 Admission: **{pathway.get('admission_date')}**")
+        if pathway.get('surgery_date'):
+            st.write(f"⚕️ Surgery: **{pathway.get('surgery_date')}**")
+        if pathway.get('discharge_date'):
+            st.write(f"🚪 Discharge: **{pathway.get('discharge_date')}** ({pathway.get('days_to_discharge')} days)")
+    
+    st.markdown("---")
+    
+    # Record new milestone
+    milestone_type = st.selectbox("Select Milestone to Record:", [
+        "-- Select Milestone --",
+        "first_appointment",
+        "decision_to_treat",
+        "treatment",
+        "admission",
+        "surgery",
+        "discharge"
+    ], format_func=lambda x: {
+        "-- Select Milestone --": "-- Select Milestone --",
+        "first_appointment": "📅 First Appointment",
+        "decision_to_treat": "🩺 Decision to Treat (DTT)",
+        "treatment": "💉 Treatment Start",
+        "admission": "🏥 Admission",
+        "surgery": "⚕️ Surgery",
+        "discharge": "🚪 Discharge"
+    }[x])
+    
+    if milestone_type != "-- Select Milestone --":
+        with st.form(f"milestone_{milestone_type}_form"):
+            milestone_date = st.date_input(f"{milestone_type.replace('_', ' ').title()} Date*", value=date.today())
+            
+            # Additional fields for specific milestones
+            if milestone_type == 'first_appointment':
+                attended = st.checkbox("Patient Attended", value=True)
+            
+            elif milestone_type == 'discharge':
+                discharge_reason = st.selectbox("Discharge Reason", [
+                    "Treatment completed",
+                    "Discharged to GP",
+                    "No further treatment needed",
+                    "Patient declined treatment",
+                    "Transferred to another provider",
+                    "Other"
+                ])
+                
+                discharge_destination = st.text_input("Discharge Destination", placeholder="e.g., GP, Community Care")
+                
+                outcome = st.selectbox("Treatment Outcome", [
+                    "Successful", "Partially successful", "No improvement", "Declined treatment"
+                ])
+                
+                follow_up_required = st.checkbox("Follow-up Required")
+                follow_up_date = None
+                if follow_up_required:
+                    follow_up_date = st.date_input("Follow-up Date")
+            
+            submit = st.form_submit_button(f"✅ Record {milestone_type.replace('_', ' ').title()}", type="primary")
+            
+            if submit:
+                kwargs = {}
+                if milestone_type == 'first_appointment':
+                    kwargs['attended'] = attended
+                elif milestone_type == 'discharge':
+                    kwargs['reason'] = discharge_reason
+                    kwargs['destination'] = discharge_destination
+                    kwargs['outcome'] = outcome
+                    kwargs['follow_up_required'] = follow_up_required
+                    if follow_up_required:
+                        kwargs['follow_up_date'] = str(follow_up_date)
+                
+                result = record_milestone(
+                    pathway.get('pathway_id'),
+                    milestone_type,
+                    str(milestone_date),
+                    **kwargs
+                )
+                
+                if result['success']:
+                    st.success(f"✅ {result['message']}")
+                    st.balloons()
+                    st.rerun()
+                else:
+                    st.error(f"❌ Failed: {result.get('error')}")
+
+
+def render_status_management(pathway: dict):
+    """Update RTT pathway status"""
+    
+    st.markdown("### 🔄 Update RTT Status")
+    
+    current_status = pathway.get('rtt_status', 'active')
+    st.write(f"**Current Status:** {current_status.title()}")
+    
+    st.info("""
+    **RTT Status Codes:**
+    - **Active**: Pathway in progress
+    - **Paused**: Clock temporarily stopped
+    - **Active Monitoring**: Patient being monitored
+    - **Suspended**: Temporarily suspended
+    - **Completed**: Treatment completed
+    - **Removed - Died**: Patient deceased
+    - **Removed - Moved**: Patient moved area
+    - **Removed - Declined**: Patient declined treatment
+    - **Cancelled**: Pathway cancelled
+    """)
+    
+    new_status = st.selectbox("New Status:", [
+        "active",
+        "paused",
+        "active_monitoring",
+        "suspended",
+        "completed",
+        "removed_died",
+        "removed_moved",
+        "removed_declined",
+        "cancelled"
+    ], format_func=lambda x: x.replace('_', ' ').title())
+    
+    if st.button(f"🔄 Update Status to: {new_status.title()}", type="primary"):
+        result = update_rtt_status(pathway.get('pathway_id'), new_status)
+        
+        if result['success']:
+            st.success(f"✅ {result['message']}")
+            st.rerun()
+        else:
+            st.error(f"❌ Failed: {result.get('error')}")
 
 
 def render_pathway_timeline():

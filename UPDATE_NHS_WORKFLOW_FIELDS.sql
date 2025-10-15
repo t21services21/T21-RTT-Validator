@@ -1,0 +1,65 @@
+-- CRITICAL NHS WORKFLOW FIELDS
+-- Add RTT Clock Pauses, Milestone Dates, and Status Management
+-- Run this in Supabase SQL Editor
+
+-- ============================================
+-- RTT CLOCK PAUSE/RESUME FIELDS
+-- ============================================
+
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS clock_paused BOOLEAN DEFAULT FALSE;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS pause_reason TEXT;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS pause_start_date DATE;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS pause_end_date DATE;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS total_pause_days INTEGER DEFAULT 0;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS pause_history JSONB DEFAULT '[]'::jsonb;
+
+-- ============================================
+-- KEY NHS MILESTONE DATES
+-- ============================================
+
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS first_appointment_date DATE;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS first_appointment_attended BOOLEAN;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS decision_to_treat_date DATE;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS treatment_start_date DATE;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS admission_date DATE;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS surgery_date DATE;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS discharge_date DATE;
+
+-- Days to milestones (calculated fields)
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS days_to_first_appointment INTEGER;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS days_to_decision_to_treat INTEGER;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS days_to_treatment INTEGER;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS days_to_discharge INTEGER;
+
+-- ============================================
+-- RTT STATUS & OUTCOME
+-- ============================================
+
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS rtt_status TEXT DEFAULT 'active';
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS waiting_list_status TEXT DEFAULT 'waiting';
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS treatment_received BOOLEAN DEFAULT FALSE;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS treatment_outcome TEXT;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS discharge_reason TEXT;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS discharge_destination TEXT;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS follow_up_required BOOLEAN DEFAULT FALSE;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS follow_up_date DATE;
+
+-- ============================================
+-- WAITING LIST FIELDS
+-- ============================================
+
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS waiting_list_entry_date DATE;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS waiting_list_position INTEGER;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS expected_wait_weeks INTEGER;
+
+-- ============================================
+-- CANCELLATIONS & DNA
+-- ============================================
+
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS dna_count INTEGER DEFAULT 0;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS cancellation_count INTEGER DEFAULT 0;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS last_cancellation_date DATE;
+ALTER TABLE public.pathways ADD COLUMN IF NOT EXISTS last_cancellation_reason TEXT;
+
+-- Success message
+SELECT 'Pathways table updated with complete NHS workflow fields!' as message;
