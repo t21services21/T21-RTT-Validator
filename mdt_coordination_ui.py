@@ -188,7 +188,7 @@ def render_add_patient_to_mdt():
         return
     
     meeting_options = [f"{m['specialty']} MDT - {m['meeting_date']} ({m['meeting_id']})" for m in upcoming]
-    selected_meeting = st.selectbox("Select MDT Meeting", meeting_options)
+    selected_meeting = st.selectbox("Select MDT Meeting", meeting_options, key="select_mdt_add_patient")
     
     if selected_meeting:
         meeting_id = selected_meeting.split('(')[1].strip(')')
@@ -246,7 +246,7 @@ def render_record_outcomes():
         return
     
     meeting_options = [f"{m['specialty']} MDT - {m['meeting_date']} ({m['meeting_id']})" for m in meetings[:10]]
-    selected_meeting = st.selectbox("Select MDT Meeting", meeting_options)
+    selected_meeting = st.selectbox("Select MDT Meeting", meeting_options, key="select_mdt_record_outcomes")
     
     if selected_meeting:
         meeting_id = selected_meeting.split('(')[1].strip(')')
@@ -325,7 +325,7 @@ def render_mdt_reports():
         return
     
     meeting_options = [f"{m['specialty']} MDT - {m['meeting_date']} ({m['meeting_id']})" for m in meetings[:20]]
-    selected_meeting = st.selectbox("Select MDT Meeting", meeting_options)
+    selected_meeting = st.selectbox("Select MDT Meeting", meeting_options, key="select_mdt_reports")
     
     if selected_meeting:
         meeting_id = selected_meeting.split('(')[1].strip(')')
