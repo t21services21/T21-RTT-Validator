@@ -281,7 +281,7 @@ def add_cancer_patient(user_email, patient_data):
         patient_data['user_email'] = user_email
         patient_data['created_at'] = datetime.now().isoformat()
         patient_data['updated_at'] = datetime.now().isoformat()
-        result = supabase.table('cancer_patients').insert(patient_data).execute()
+        result = supabase.table('cancer_pathways').insert(patient_data).execute()
         return True, result.data[0] if result.data else None
     except Exception as e:
         return False, str(e)
@@ -289,7 +289,7 @@ def add_cancer_patient(user_email, patient_data):
 def get_cancer_patients_for_user(user_email):
     """Get all cancer patients for a specific user."""
     try:
-        result = supabase.table('cancer_patients').select('*').eq('user_email', user_email).execute()
+        result = supabase.table('cancer_pathways').select('*').eq('user_email', user_email).execute()
         return result.data if result.data else []
     except Exception as e:
         print(f"Error getting cancer patients: {e}")
@@ -299,7 +299,7 @@ def update_cancer_patient(patient_id, user_email, updates):
     """Update a cancer patient's details."""
     try:
         updates['updated_at'] = datetime.now().isoformat()
-        result = supabase.table('cancer_patients').update(updates).eq('patient_id', patient_id).eq('user_email', user_email).execute()
+        result = supabase.table('cancer_pathways').update(updates).eq('patient_id', patient_id).eq('user_email', user_email).execute()
         return True, result.data[0] if result.data else None
     except Exception as e:
         return False, str(e)
@@ -307,7 +307,7 @@ def update_cancer_patient(patient_id, user_email, updates):
 def delete_cancer_patient(patient_id, user_email):
     """Delete a cancer patient."""
     try:
-        supabase.table('cancer_patients').delete().eq('patient_id', patient_id).eq('user_email', user_email).execute()
+        supabase.table('cancer_pathways').delete().eq('patient_id', patient_id).eq('user_email', user_email).execute()
         return True
     except Exception as e:
         return False, str(e)

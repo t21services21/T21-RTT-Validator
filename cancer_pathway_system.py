@@ -294,13 +294,10 @@ def add_cancer_milestone(
 
 
 def get_all_cancer_patients() -> List[Dict]:
-    """Get all patients on cancer PTL - NOW WITH SUPABASE!"""
-    user_email = get_current_user_email()
-    if SUPABASE_ENABLED:
-        return get_cancer_patients_for_user(user_email)
-    else:
-        ptl = load_cancer_ptl()
-        return ptl.get('patients', [])
+    """Get all patients on cancer PTL - ADMINS SEE ALL, students see own"""
+    # Use load_cancer_ptl which has admin logic built-in
+    ptl = load_cancer_ptl()
+    return ptl.get('patients', [])
 
 
 def get_cancer_patient_by_id(patient_id: str) -> Optional[Dict]:
