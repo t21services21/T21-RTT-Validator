@@ -149,23 +149,25 @@ def ai_analyze_clinical_letter(letter_text):
         CLINICAL LETTER:
         {letter_text}
         
-        EXTRACT:
-        1. Patient name
-        2. NHS number
-        3. Date of referral
-        4. Date of appointment
-        5. Clinical specialty
-        6. Reason for referral
-        7. Diagnosis/findings
-        8. Treatment plan
-        9. Next steps
-        10. RTT code (10, 11, 12, 20, 21, 30, 31, 32, 33, 34, 35, 36, 90, 91, 92, 98)
-        11. RTT clock start date
-        12. RTT clock stop date (if applicable)
-        13. Any issues or concerns
-        14. Urgency level (Routine, Urgent, Two-Week-Wait)
+        Respond in JSON format with EXACTLY these field names:
+        {{
+            "patient_name": "extracted patient name",
+            "nhs_number": "extracted NHS number",
+            "referral_date": "extracted referral date",
+            "appointment_date": "extracted appointment date",
+            "specialty": "extracted specialty",
+            "referral_reason": "reason for referral",
+            "diagnosis": "diagnosis or findings",
+            "treatment_plan": "treatment plan",
+            "next_steps": "next steps",
+            "rtt_code": "RTT code (10, 11, 12, 20, 21, 30, 31, 32, 33, 34, 35, 36, 90, 91, 92, 98)",
+            "clock_start_date": "RTT clock start date",
+            "clock_stop_date": "RTT clock stop date if applicable",
+            "issues_concerns": "any issues or concerns",
+            "urgency_level": "Routine, Urgent, or Two-Week-Wait"
+        }}
         
-        Respond in JSON format with all extracted information.
+        Use "Not specified" if information is not found in the letter.
         """
         
         response = client.chat.completions.create(
