@@ -47,11 +47,12 @@ def render_pathway_management():
     """)
     
     # Tabs
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "➕ Create Pathway",
         "📋 All Pathways",
         "⏸️ Manage Pathway",
         "📊 Pathway Timeline",
+        "🔗 Link Appointments",
         "📈 Statistics"
     ])
     
@@ -68,6 +69,9 @@ def render_pathway_management():
         render_pathway_timeline()
     
     with tab5:
+        render_link_appointments()
+    
+    with tab6:
         render_pathway_stats()
 
 
@@ -776,3 +780,9 @@ def render_pathway_stats():
     
     with col3:
         st.metric("🟠 High Risk", stats['high_risk'])
+
+
+def render_link_appointments():
+    """Link appointments to pathways"""
+    from appointment_pathway_link import render_appointment_linking_ui
+    render_appointment_linking_ui()

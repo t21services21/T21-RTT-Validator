@@ -1421,6 +1421,10 @@ if not accessible_modules:
         
         # === TEACHING & ASSESSMENT ===
         "👨‍🏫 Teacher Dashboard",  # NEW! For TQUK assessors
+        "📚 My Portfolio",  # NEW! Student self-view
+        "📋 Waiting List",  # NEW! Queue management
+        "📊 DNA & Cancellations",  # NEW! Track non-attendance
+        "⚠️ Data Alerts",  # NEW! Quality monitoring
         
         # === CLINICAL MODULES ===
         "📋 PTL - Patient Tracking List",
@@ -4957,6 +4961,22 @@ elif tool == "📋 Episode Management":
 elif tool == "👨‍🏫 Teacher Dashboard":
     from teacher_dashboard import render_teacher_dashboard
     render_teacher_dashboard()
+
+elif tool == "📚 My Portfolio":
+    from student_portfolio_ui import render_student_portfolio
+    render_student_portfolio()
+
+elif tool == "📋 Waiting List":
+    from waiting_list_management import render_waiting_list_ui
+    render_waiting_list_ui()
+
+elif tool == "📊 DNA & Cancellations":
+    from dna_cancellation_tracking import render_dna_cancellation_ui
+    render_dna_cancellation_ui()
+
+elif tool == "⚠️ Data Alerts":
+    from data_validation_alerts import render_alerts_dashboard
+    render_alerts_dashboard()
 
 elif tool == "🗣️ Voice AI Interface":
     if BROWSER_HISTORY_ENABLED:
