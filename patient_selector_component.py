@@ -29,50 +29,77 @@ def render_patient_selector(key_prefix: str = "patient_selector") -> dict:
     
     st.markdown("### 🔍 Select Patient")
     
-    # Search input
-    search_query = st.text_input(
-        "Search Patient (Name, NHS Number, or Patient ID)",
-        placeholder="Type to search...",
-        key=f"{key_prefix}_search",
-        help="Search by patient name, NHS number, or patient ID"
-    )
+    # Option to show all patients
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        # Search input
+        search_query = st.text_input(
+            "Search Patient (Name, NHS Number, or Patient ID)",
+            placeholder="Type to search...",
+            key=f"{key_prefix}_search",
+            help="Search by patient name, NHS number, or patient ID"
+        )
+    with col2:
+        show_all = st.checkbox("Show All", key=f"{key_prefix}_show_all")
     
     selected_patient = None
+    results = []
     
-    if search_query:
+    # Show all patients if checkbox is ticked
+    if show_all:
+        st.info("📋 Showing all registered patients...")
+        results = get_all_patients()
+    elif search_query:
         # Search patients
-        with st.spinner("Searching..."):
+        st.write(f"🔍 Searching for: **{search_query}**")
+        with st.spinner("Searching database..."):
             results = search_patients(search_query)
+        st.write(f"📊 Database returned: **{len(results)}** results")
         
-        if results:
-            st.success(f"✅ Found {len(results)} patient(s)")
+        # If no results from search, try getting ALL patients and filter locally
+        if not results:
+            st.warning(f"⚠️ Search returned 0 results. Trying alternate search...")
+            all_patients = get_all_patients()
+            query_lower = search_query.lower()
+            results = [
+                p for p in all_patients 
+                if query_lower in p.get('full_name', '').lower() or
+                   query_lower in p.get('nhs_number', '').lower() or
+                   query_lower in p.get('patient_id', '').lower() or
+                   query_lower in p.get('first_name', '').lower() or
+                   query_lower in p.get('surname', '').lower()
+            ]
+    
+    # Display results
+    if results:
+        st.success(f"✅ Found {len(results)} patient(s)")
+        
+        # Display results
+        for idx, patient in enumerate(results):
+            col1, col2, col3, col4 = st.columns([3, 2, 2, 1])
             
-            # Display results
-            for idx, patient in enumerate(results):
-                col1, col2, col3, col4 = st.columns([3, 2, 2, 1])
-                
-                with col1:
-                    st.write(f"**{patient.get('full_name', 'Unknown')}**")
-                
-                with col2:
-                    st.write(f"NHS: {patient.get('nhs_number', patient.get('patient_id', 'N/A'))}")
-                
-                with col3:
-                    st.write(f"DOB: {patient.get('date_of_birth', 'N/A')}")
-                
-                with col4:
-                    if st.button("Select", key=f"{key_prefix}_select_{idx}"):
-                        selected_patient = patient
-                        st.session_state[f'{key_prefix}_selected'] = patient
-                        st.rerun()
-                
-                st.markdown("---")
-        
-        else:
-            st.warning("⚠️ No patients found. Try different search terms.")
+            with col1:
+                st.write(f"**{patient.get('full_name', 'Unknown')}**")
+            
+            with col2:
+                st.write(f"NHS: {patient.get('nhs_number', patient.get('patient_id', 'N/A'))}")
+            
+            with col3:
+                st.write(f"DOB: {patient.get('date_of_birth', 'N/A')}")
+            
+            with col4:
+                if st.button("Select", key=f"{key_prefix}_select_{idx}"):
+                    selected_patient = patient
+                    st.session_state[f'{key_prefix}_selected'] = patient
+                    st.rerun()
+            
+            st.markdown("---")
+    
+    elif search_query and not show_all:
+        st.warning("⚠️ No patients found. Try different search terms or click 'Show All'.")
     
     else:
-        st.info("💡 Type patient name, NHS number, or ID to search")
+        st.info("💡 Type patient name, NHS number, or ID to search. Or click 'Show All' to see everyone.")
     
     # Show selected patient
     if f'{key_prefix}_selected' in st.session_state:

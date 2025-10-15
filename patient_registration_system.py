@@ -328,16 +328,95 @@ def search_patients(query: str) -> List[Dict]:
     
     if SUPABASE_ENABLED:
         try:
-            # Search by multiple fields
+            # Try multiple search strategies
+            results = []
+            
+            # Strategy 1: Search by full_name
             result = supabase.table('patients')\
                 .select('*')\
                 .eq('user_email', user_email)\
-                .or_(f'full_name.ilike.%{query}%,nhs_number.ilike.%{query}%,patient_id.ilike.%{query}%')\
+                .ilike('full_name', f'%{query}%')\
                 .execute()
             
-            return result.data if result.data else []
+            if result.data:
+                results.extend(result.data)
+            
+            # Strategy 2: Search by first_name
+            result = supabase.table('patients')\
+                .select('*')\
+                .eq('user_email', user_email)\
+                .ilike('first_name', f'%{query}%')\
+                .execute()
+            
+            if result.data:
+                for patient in result.data:
+                    if patient not in results:
+                        results.append(patient)
+            
+            # Strategy 3: Search by surname
+            result = supabase.table('patients')\
+                .select('*')\
+                .eq('user_email', user_email)\
+                .ilike('surname', f'%{query}%')\
+                .execute()
+            
+            if result.data:
+                for patient in result.data:
+                    if patient not in results:
+                        results.append(patient)
+            
+            # Strategy 4: Search by patient_id
+            result = supabase.table('patients')\
+                .select('*')\
+                .eq('user_email', user_email)\
+                .ilike('patient_id', f'%{query}%')\
+                .execute()
+            
+            if result.data:
+                for patient in result.data:
+                    if patient not in results:
+                        results.append(patient)
+            
+            # Strategy 5: Search by NHS number (if not None)
+            if query:
+                result = supabase.table('patients')\
+                    .select('*')\
+                    .eq('user_email', user_email)\
+                    .ilike('nhs_number', f'%{query}%')\
+                    .execute()
+                
+                if result.data:
+                    for patient in result.data:
+                        if patient not in results:
+                            results.append(patient)
+            
+            print(f"🔍 Search for '{query}' found {len(results)} patients")
+            return results
+            
         except Exception as e:
-            print(f"Error searching patients: {e}")
+            print(f"❌ Error searching patients: {e}")
+            # Fallback: Get all patients and filter locally
+            try:
+                all_result = supabase.table('patients')\
+                    .select('*')\
+                    .eq('user_email', user_email)\
+                    .execute()
+                
+                if all_result.data:
+                    query_lower = query.lower()
+                    filtered = [
+                        p for p in all_result.data
+                        if query_lower in p.get('full_name', '').lower() or
+                           query_lower in p.get('first_name', '').lower() or
+                           query_lower in p.get('surname', '').lower() or
+                           query_lower in p.get('patient_id', '').lower() or
+                           query_lower in (p.get('nhs_number') or '').lower()
+                    ]
+                    print(f"🔍 Fallback search found {len(filtered)} patients")
+                    return filtered
+            except Exception as e2:
+                print(f"❌ Fallback search failed: {e2}")
+            
             return []
     else:
         # Fallback to local storage
