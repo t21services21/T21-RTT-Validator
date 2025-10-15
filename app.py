@@ -1426,6 +1426,8 @@ if not accessible_modules:
         # === 🎓 TRAINING & CAREER ===
         "🎓 Training & Certification",  # Training resources
         "💼 Career Development",  # Interview, CV
+        "💼 Job Interview Prep",  # Individual access
+        "📄 CV Builder",  # Individual access
         
         # === ⚙️ ADMIN ===
         "⚙️ Administration",  # Account, admin panel, staff
