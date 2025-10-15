@@ -327,7 +327,7 @@ def render_view_episodes():
     st.subheader("📋 All Episodes")
     
     # Refresh
-    if st.button("🔄 Refresh"):
+    if st.button("🔄 Refresh", key="refresh_episodes_btn"):
         st.rerun()
     
     episodes = get_all_episodes()

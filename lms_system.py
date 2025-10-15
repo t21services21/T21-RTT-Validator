@@ -55,7 +55,7 @@ def render_materials_teacher():
         col1, col2 = st.columns(2)
         
         with col1:
-            title = st.text_input("Title*", placeholder="e.g., Week 1 - Introduction")
+            title = st.text_input("Title*", placeholder="e.g., Week 1 - Introduction", key="material_title_input")
             category = st.selectbox("Category*", [
                 "Lecture Notes",
                 "Tutorial Sheets",
@@ -63,17 +63,17 @@ def render_materials_teacher():
                 "Reference Materials",
                 "Templates",
                 "Other"
-            ])
-            week = st.number_input("Week Number", min_value=0, max_value=52, value=1)
+            ], key="material_category_select")
+            week = st.number_input("Week Number", min_value=0, max_value=52, value=1, key="material_week_input")
         
         with col2:
-            file_url = st.text_input("File URL*", placeholder="https://drive.google.com/file/d/...")
-            file_name = st.text_input("File Name*", placeholder="week1_intro.pdf")
-            required = st.checkbox("Required Material", value=True)
+            file_url = st.text_input("File URL*", placeholder="https://drive.google.com/file/d/...", key="material_file_url")
+            file_name = st.text_input("File Name*", placeholder="week1_intro.pdf", key="material_file_name")
+            required = st.checkbox("Required Material", value=True, key="material_required_check")
         
-        description = st.text_area("Description", placeholder="Brief description...")
+        description = st.text_area("Description", placeholder="Brief description...", key="material_description_area")
         
-        if st.button("📤 Upload Material", type="primary"):
+        if st.button("📤 Upload Material", type="primary", key="upload_material_btn"):
             if not title or not file_url:
                 st.error("Please fill in required fields")
                 return
@@ -130,7 +130,7 @@ def render_materials_student():
     
     st.info("**Student View:** Access learning materials")
     
-    week = st.selectbox("Select Week:", ["All Weeks"] + [f"Week {i}" for i in range(1, 13)])
+    week = st.selectbox("Select Week:", ["All Weeks"] + [f"Week {i}" for i in range(1, 13)], key="student_materials_week_select")
     
     try:
         query = supabase.table('learning_materials').select('*').eq('status', 'active')
@@ -211,18 +211,18 @@ def render_videos_teacher():
         col1, col2 = st.columns(2)
         
         with col1:
-            title = st.text_input("Video Title*", placeholder="e.g., Week 1 Lecture")
-            vimeo_url = st.text_input("Vimeo URL*", placeholder="https://vimeo.com/123456789")
-            week = st.number_input("Week Number", min_value=0, max_value=52, value=1)
+            title = st.text_input("Video Title*", placeholder="e.g., Week 1 Lecture", key="video_title_input")
+            vimeo_url = st.text_input("Vimeo URL*", placeholder="https://vimeo.com/123456789", key="vimeo_url_input")
+            week = st.number_input("Week Number", min_value=0, max_value=52, value=1, key="video_week_input")
         
         with col2:
-            duration = st.number_input("Duration (minutes)", min_value=0, max_value=300, value=30)
-            category = st.selectbox("Category", ["Lecture Recording", "Tutorial", "Demonstration", "Other"])
-            required = st.checkbox("Required Video", value=True)
+            duration = st.number_input("Duration (minutes)", min_value=0, max_value=300, value=30, key="video_duration_input")
+            category = st.selectbox("Category", ["Lecture Recording", "Tutorial", "Demonstration", "Other"], key="video_category_select")
+            required = st.checkbox("Required Video", value=True, key="video_required_check")
         
-        description = st.text_area("Description", placeholder="Brief description...")
+        description = st.text_area("Description", placeholder="Brief description...", key="video_description_area")
         
-        if st.button("🎥 Add Video", type="primary"):
+        if st.button("🎥 Add Video", type="primary", key="add_video_btn"):
             if not title or not vimeo_url:
                 st.error("Please fill in required fields")
                 return
@@ -302,7 +302,7 @@ def render_videos_student():
     
     st.info("**Student View:** Watch embedded videos")
     
-    week = st.selectbox("Select Week:", ["All Weeks"] + [f"Week {i}" for i in range(1, 13)])
+    week = st.selectbox("Select Week:", ["All Weeks"] + [f"Week {i}" for i in range(1, 13)], key="student_videos_week_select")
     
     try:
         query = supabase.table('video_library').select('*').eq('status', 'active')
@@ -386,7 +386,7 @@ def render_announcements_teacher():
     with tab1:
         st.markdown("### ➕ Post New Announcement")
         
-        title = st.text_input("Title*", placeholder="e.g., Week 2 Assignment Due Friday")
+        title = st.text_input("Title*", placeholder="e.g., Week 2 Assignment Due Friday", key="announcement_title_input")
         
         category = st.selectbox("Category", [
             "General",
@@ -394,13 +394,13 @@ def render_announcements_teacher():
             "Deadline",
             "Schedule Change",
             "Resources Available"
-        ])
+        ], key="announcement_category_select")
         
-        message = st.text_area("Message*", placeholder="Type your announcement...", height=150)
+        message = st.text_area("Message*", placeholder="Type your announcement...", height=150, key="announcement_message_area")
         
-        pinned = st.checkbox("📌 Pin to Top")
+        pinned = st.checkbox("📌 Pin to Top", key="announcement_pinned_check")
         
-        if st.button("📢 Post Announcement", type="primary"):
+        if st.button("📢 Post Announcement", type="primary", key="post_announcement_btn"):
             if not title or not message:
                 st.error("Please fill in required fields")
                 return
