@@ -184,7 +184,8 @@ def add_patient_to_mdt(
         return False
 
     if presentation_order is None:
-        presentation_order = len(meeting.get('patients', [])) + 1
+        current_patients = meeting.get('patients_discussed') or meeting.get('patients', [])
+        presentation_order = len(current_patients) + 1
 
     patient_data = {
         'patient_name': patient_name,
@@ -241,10 +242,11 @@ def record_mdt_outcome(
     if not meeting:
         return False
 
-    patients = meeting.get('patients', [])
+    # CRITICAL FIX: Use correct field name
+    patients = meeting.get('patients_discussed') or meeting.get('patients', [])
     patient_updated = False
     for patient in patients:
-        if patient['nhs_number'] == nhs_number:
+        if patient.get('nhs_number') == nhs_number:
             patient['outcome'] = outcome
             patient['decision'] = decision
             patient['actions'] = actions
