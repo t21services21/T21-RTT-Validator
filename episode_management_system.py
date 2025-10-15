@@ -23,6 +23,19 @@ except ImportError:
     SUPABASE_ENABLED = False
     print("⚠️ Supabase not available - using local storage")
 
+# Check if episodes table exists
+if SUPABASE_ENABLED:
+    try:
+        # Test if episodes table exists
+        test = supabase.table('episodes').select('*').limit(1).execute()
+    except Exception as e:
+        if 'Could not find the table' in str(e):
+            print("⚠️ Episodes table not found in Supabase - using local storage")
+            SUPABASE_ENABLED = False
+        else:
+            print(f"⚠️ Supabase connection issue - using local storage: {e}")
+            SUPABASE_ENABLED = False
+
 
 def get_current_user_email():
     """Get current logged-in user's email"""
