@@ -13,7 +13,7 @@ Features:
 import streamlit as st
 from datetime import datetime
 from typing import Dict, List
-from supabase_client import get_supabase_client
+from supabase_database import supabase
 from pathway_management_system import get_pathway_by_id, get_all_pathways
 
 
@@ -31,7 +31,7 @@ def record_dna(
     """Record a DNA (Did Not Attend) event"""
     
     try:
-        supabase = get_supabase_client()
+        # supabase already imported
         
         if supabase:
             return _record_dna_supabase(
@@ -167,7 +167,7 @@ def record_cancellation(
     """Record an appointment cancellation"""
     
     try:
-        supabase = get_supabase_client()
+        # supabase already imported
         
         if supabase:
             return _record_cancellation_supabase(
@@ -299,7 +299,7 @@ def get_dna_records(pathway_id: str = None) -> List[Dict]:
     """Get DNA records"""
     
     try:
-        supabase = get_supabase_client()
+        # supabase already imported
         
         if supabase:
             query = supabase.table('dna_records').select('*')
@@ -331,7 +331,7 @@ def get_cancellation_records(pathway_id: str = None) -> List[Dict]:
     """Get cancellation records"""
     
     try:
-        supabase = get_supabase_client()
+        # supabase already imported
         
         if supabase:
             query = supabase.table('cancellation_records').select('*')

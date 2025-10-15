@@ -17,7 +17,7 @@ from pathway_management_system import (
     record_milestone,
     get_all_pathways
 )
-from supabase_client import get_supabase_client
+from supabase_database import supabase
 
 
 def link_appointment_to_pathway(
@@ -33,7 +33,7 @@ def link_appointment_to_pathway(
     
     try:
         # Check if using Supabase
-        supabase = get_supabase_client()
+        # supabase already imported
         
         if supabase:
             return _link_appointment_supabase(
@@ -160,7 +160,7 @@ def get_pathway_appointments(pathway_id: str) -> List[Dict]:
     """Get all appointments linked to a pathway"""
     
     try:
-        supabase = get_supabase_client()
+        # supabase already imported
         
         if supabase:
             result = supabase.table('appointment_pathway_links')\
@@ -188,7 +188,7 @@ def get_appointment_pathway(appointment_id: str) -> Optional[Dict]:
     """Get pathway linked to an appointment"""
     
     try:
-        supabase = get_supabase_client()
+        # supabase already imported
         
         if supabase:
             result = supabase.table('appointment_pathway_links')\
@@ -218,7 +218,7 @@ def unlink_appointment(appointment_id: str) -> Dict:
     """Remove appointment-pathway link"""
     
     try:
-        supabase = get_supabase_client()
+        # supabase already imported
         
         if supabase:
             result = supabase.table('appointment_pathway_links')\

@@ -14,7 +14,7 @@ Features:
 import streamlit as st
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
-from supabase_client import get_supabase_client
+from supabase_database import supabase
 from pathway_management_system import get_pathway_by_id, get_all_pathways
 
 
@@ -31,7 +31,7 @@ def add_to_waiting_list(
     """Add patient to waiting list"""
     
     try:
-        supabase = get_supabase_client()
+        # supabase already imported
         
         if supabase:
             return _add_to_waiting_list_supabase(
@@ -167,7 +167,7 @@ def get_waiting_list(specialty: str = None, status: str = "waiting") -> List[Dic
     """Get waiting list entries"""
     
     try:
-        supabase = get_supabase_client()
+        # supabase already imported
         
         if supabase:
             query = supabase.table('waiting_list').select('*')
@@ -208,7 +208,7 @@ def remove_from_waiting_list(pathway_id: str, reason: str = "") -> Dict:
     """Remove patient from waiting list"""
     
     try:
-        supabase = get_supabase_client()
+        # supabase already imported
         
         if supabase:
             result = supabase.table('waiting_list').update({
@@ -251,7 +251,7 @@ def update_waiting_list_position(pathway_id: str, new_position: int) -> Dict:
     """Update position in waiting list (for priority changes)"""
     
     try:
-        supabase = get_supabase_client()
+        # supabase already imported
         
         if supabase:
             result = supabase.table('waiting_list').update({

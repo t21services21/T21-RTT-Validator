@@ -1406,84 +1406,33 @@ accessible_modules = []
 # Remove any duplicates (use dict to preserve order while removing duplicates)
 accessible_modules = list(dict.fromkeys(accessible_modules))
 
-# Show CORE modules only
+# Show CORE modules only - CONSOLIDATED STRUCTURE
 if not accessible_modules:
     accessible_modules = [
-        # === 🏥 CORE CLINICAL TOOLS (ENHANCED) ===
-        "📊 Executive Dashboard",  # NEW! Unified overview
-        "🔍 Patient Search",  # NEW! Unified patient records
-        "✅ Task Management",  # NEW! Track MDT actions
+        # === 🏥 CORE HUBS (CONSOLIDATED) ===
+        "🏥 Patient Administration Hub",  # 6 modules in tabs
+        "🎓 Learning Portal",  # 5 modules in tabs
+        "👨‍🏫 Teaching & Assessment",  # 4 modules in tabs
         
-        # === PATIENT ADMINISTRATION (NEW!) ===
-        "👤 Patient Registration",  # NEW! Complete patient registration
-        "📁 Pathway Management",  # NEW! RTT & Cancer pathways
-        "📋 Episode Management",  # NEW! Consultant/Treatment/Diagnostic episodes
+        # === 🏥 CLINICAL & WORKFLOW ===
+        "🏥 Clinical Workflows",  # PTL, Cancer, MDT, Booking
+        "✅ Task Management",
         
-        # === TEACHING & ASSESSMENT ===
-        "👨‍🏫 Teacher Dashboard",  # NEW! For TQUK assessors
-        "📚 My Portfolio",  # NEW! Student self-view
-        "👥 Student Management",  # NEW! Add students & manage access
-        "📋 Waiting List",  # NEW! Queue management
-        "📊 DNA & Cancellations",  # NEW! Track non-attendance
-        "⚠️ Data Alerts",  # NEW! Quality monitoring
+        # === 🤖 AI & TOOLS ===
+        "🤖 AI & Automation",  # AI tools, letters, docs
+        "📊 Reports & Analytics",  # Dashboard, reports, alerts
+        "📊 Data Quality",
         
-        # === LEARNING PORTAL ===
-        "📚 Learning Materials",  # NEW! Upload documents
-        "🎥 Video Library",  # NEW! Vimeo integration
-        "📢 Announcements",  # NEW! News & updates
-        "📝 Assignments",  # NEW! Create & grade assignments
-        "🎯 Quizzes",  # NEW! Auto-graded quizzes
+        # === 🎓 TRAINING & CAREER ===
+        "🎓 Training & Certification",  # Training resources
+        "💼 Career Development",  # Interview, CV
         
-        # === CLINICAL MODULES ===
-        "📋 PTL - Patient Tracking List",
-        "🎗️ Cancer Pathways",
-        "👥 MDT Coordination",
-        "📅 Advanced Booking System",
+        # === ⚙️ ADMIN ===
+        "⚙️ Administration",  # Account, admin panel, staff
         
-        # === AI & AUTOMATION ===
-        "🤖 AI Auto-Validator",
-        "📧 Medical Secretary AI",
-        "📄 Clinical Letters",  # NEW! Letter generator
-        "📁 Document Storage",  # NEW! Document management
-        "📊 Data Quality System",
-        
-        # === 📊 CORE RTT VALIDATORS (4 TESTED MODULES) ===
-        "📊 Pathway Validator",
-        "📝 Clinic Letter Interpreter",
-        "📅 Timeline Auditor",
-        "👤 Patient Registration Validator",
-        "📆 Appointment & Booking Checker",
-        "💬 Comment Line Generator",
-        "✍️ Clinic Letter Creator",
-        
-        # === 🎓 TRAINING & CAREER (6 TESTED MODULES) ===
-        "🎓 Training Library",
-        "🎮 Interactive Learning Center",
-        "🤖 AI RTT Tutor",
-        "🎓 Certification Exam",
-        "💼 Job Interview Prep",
-        "📄 CV Builder",
-        
-        # === 📊 MONITORING & REPORTS (4 TESTED MODULES) ===
-        "📊 Interactive Reports",
-        "📈 Dashboard & Analytics",
-        "🚨 Smart Alerts",
-        "📜 Validation History",
-        
-        # === 🎓 LMS & LEARNING (2 TESTED MODULES) ===
-        "📚 LMS - My Courses",
-        "🎓 My Academic Portal",
-        
-        # === ⚙️ ADMIN & SETTINGS ===
-        "⚙️ My Account & Upgrade",
-        "🔧 Admin Panel",
-        "👥 Staff Management",
-        
-        # === ℹ️ INFORMATION & SUPPORT ===
-        "ℹ️ About RTT Rules",
-        "📄 Privacy Policy",
-        "📜 Terms of Service",
-        "📧 Contact Us"
+        # === ℹ️ INFO & SUPPORT ===
+        "ℹ️ Help & Information",
+        "📧 Contact & Support"
     ]
 
 # Show module selector (st.switch_page creates clean URLs automatically)
@@ -5009,6 +4958,272 @@ elif tool == "📝 Assignments":
 elif tool == "🎯 Quizzes":
     from lms_system import render_lms_feature
     render_lms_feature("quizzes")
+
+# ============================================
+# CONSOLIDATED HUBS
+# ============================================
+
+elif tool == "🏥 Patient Administration Hub":
+    st.header("🏥 Patient Administration Hub")
+    st.info("Complete patient administration workflow in one place")
+    
+    tabs = st.tabs([
+        "👤 Registration",
+        "📁 Pathways",
+        "📋 Episodes",
+        "📋 Waiting List",
+        "📊 DNA/Cancel",
+        "⚠️ Alerts"
+    ])
+    
+    with tabs[0]:
+        from patient_registration_ui import render_patient_registration
+        render_patient_registration()
+    
+    with tabs[1]:
+        from pathway_management_ui import render_pathway_management
+        render_pathway_management()
+    
+    with tabs[2]:
+        from episode_management_ui import render_episode_management
+        render_episode_management()
+    
+    with tabs[3]:
+        from waiting_list_management import render_waiting_list_ui
+        render_waiting_list_ui()
+    
+    with tabs[4]:
+        from dna_cancellation_tracking import render_dna_cancellation_ui
+        render_dna_cancellation_ui()
+    
+    with tabs[5]:
+        from data_validation_alerts import render_alerts_dashboard
+        render_alerts_dashboard()
+
+elif tool == "🎓 Learning Portal":
+    st.header("🎓 Learning Portal")
+    st.info("All learning resources in one place")
+    
+    tabs = st.tabs([
+        "📚 Materials",
+        "🎥 Videos",
+        "📢 News",
+        "📝 Assignments",
+        "🎯 Quizzes"
+    ])
+    
+    with tabs[0]:
+        from lms_system import render_lms_feature
+        render_lms_feature("learning_materials")
+    
+    with tabs[1]:
+        from lms_system import render_lms_feature
+        render_lms_feature("video_library")
+    
+    with tabs[2]:
+        from lms_system import render_lms_feature
+        render_lms_feature("announcements")
+    
+    with tabs[3]:
+        from lms_system import render_lms_feature
+        render_lms_feature("assignments")
+    
+    with tabs[4]:
+        from lms_system import render_lms_feature
+        render_lms_feature("quizzes")
+
+elif tool == "👨‍🏫 Teaching & Assessment":
+    st.header("👨‍🏫 Teaching & Assessment Hub")
+    st.info("All teaching and assessment tools")
+    
+    tabs = st.tabs([
+        "👨‍🏫 Teacher Dashboard",
+        "👥 Student Management",
+        "📚 Student Portfolio",
+        "📊 Progress Reports"
+    ])
+    
+    with tabs[0]:
+        from teacher_dashboard import render_teacher_dashboard
+        render_teacher_dashboard()
+    
+    with tabs[1]:
+        from student_access_management import render_student_access_management
+        render_student_access_management()
+    
+    with tabs[2]:
+        from student_portfolio_ui import render_student_portfolio
+        render_student_portfolio()
+    
+    with tabs[3]:
+        st.info("📊 Progress reports coming soon - integrated with TQUK tracking")
+
+elif tool == "🏥 Clinical Workflows":
+    st.header("🏥 Clinical Workflows")
+    st.info("PTL, Cancer Pathways, MDT, and Advanced Booking")
+    
+    tabs = st.tabs([
+        "📋 PTL",
+        "🎗️ Cancer",
+        "👥 MDT",
+        "📅 Booking"
+    ])
+    
+    with tabs[0]:
+        st.switch_page("pages/ptl_system.py")
+    
+    with tabs[1]:
+        st.switch_page("pages/cancer_pathways.py")
+    
+    with tabs[2]:
+        st.switch_page("pages/mdt_coordination.py")
+    
+    with tabs[3]:
+        st.switch_page("pages/advanced_booking.py")
+
+elif tool == "🤖 AI & Automation":
+    st.header("🤖 AI & Automation Hub")
+    st.info("AI-powered tools and automation")
+    
+    tabs = st.tabs([
+        "🤖 Auto-Validator",
+        "📧 Secretary AI",
+        "📄 Letters",
+        "📁 Documents",
+        "🔍 Search"
+    ])
+    
+    with tabs[0]:
+        st.switch_page("pages/ai_validator.py")
+    
+    with tabs[1]:
+        st.switch_page("pages/medical_secretary_ai.py")
+    
+    with tabs[2]:
+        st.switch_page("pages/clinical_letters.py")
+    
+    with tabs[3]:
+        st.switch_page("pages/document_storage.py")
+    
+    with tabs[4]:
+        from patient_search import render_patient_search
+        render_patient_search()
+
+elif tool == "📊 Reports & Analytics":
+    st.header("📊 Reports & Analytics")
+    st.info("Dashboards, reports, and alerts")
+    
+    tabs = st.tabs([
+        "📊 Dashboard",
+        "📈 Reports",
+        "🚨 Alerts",
+        "📜 History"
+    ])
+    
+    with tabs[0]:
+        st.switch_page("pages/executive_dashboard.py")
+    
+    with tabs[1]:
+        st.switch_page("pages/interactive_reports.py")
+    
+    with tabs[2]:
+        st.switch_page("pages/smart_alerts.py")
+    
+    with tabs[3]:
+        st.switch_page("pages/validation_history.py")
+
+elif tool == "🎓 Training & Certification":
+    st.header("🎓 Training & Certification")
+    st.info("Training resources and certification prep")
+    
+    tabs = st.tabs([
+        "🎓 Library",
+        "🎮 Interactive",
+        "🤖 AI Tutor",
+        "🎓 Exam"
+    ])
+    
+    with tabs[0]:
+        st.switch_page("pages/training_library.py")
+    
+    with tabs[1]:
+        st.switch_page("pages/interactive_learning.py")
+    
+    with tabs[2]:
+        st.switch_page("pages/ai_rtt_tutor.py")
+    
+    with tabs[3]:
+        st.switch_page("pages/certification_exam.py")
+
+elif tool == "💼 Career Development":
+    st.header("💼 Career Development")
+    st.info("Interview prep and CV building")
+    
+    tabs = st.tabs([
+        "💼 Interview Prep",
+        "📄 CV Builder"
+    ])
+    
+    with tabs[0]:
+        st.switch_page("pages/job_interview_prep.py")
+    
+    with tabs[1]:
+        st.switch_page("pages/cv_builder.py")
+
+elif tool == "⚙️ Administration":
+    st.header("⚙️ Administration")
+    st.info("Account settings and admin tools")
+    
+    tabs = st.tabs([
+        "⚙️ My Account",
+        "🔧 Admin Panel",
+        "👥 Staff Mgmt"
+    ])
+    
+    with tabs[0]:
+        st.switch_page("pages/account_settings.py")
+    
+    with tabs[1]:
+        st.switch_page("pages/admin_panel.py")
+    
+    with tabs[2]:
+        st.switch_page("pages/staff_management.py")
+
+elif tool == "ℹ️ Help & Information":
+    st.header("ℹ️ Help & Information")
+    st.info("Documentation and RTT rules")
+    
+    st.markdown("""
+    ### 📖 About RTT Rules
+    
+    **RTT (Referral to Treatment) 18-Week Standard:**
+    - Maximum wait from referral to treatment start
+    - Clock starts on referral received or first consultation
+    - Clock stops on treatment start or patient removes themselves
+    
+    **Key Concepts:**
+    - **Active pathway:** Clock running
+    - **Paused pathway:** Clock stopped (valid pause reason)
+    - **Breach:** Over 18 weeks without treatment
+    
+    For detailed guidance, see NHS England RTT rules and regulations.
+    """)
+
+elif tool == "📧 Contact & Support":
+    st.header("📧 Contact & Support")
+    
+    st.info("""
+    **T21 Services Limited**
+    
+    📧 Email: support@t21services.com
+    🌐 Website: www.t21services.com
+    📱 Phone: +44 (0) 123 456 7890
+    
+    **Support Hours:**
+    Monday - Friday: 9:00 AM - 5:00 PM GMT
+    
+    **Company No:** 13091053
+    """)
 
 elif tool == "🗣️ Voice AI Interface":
     if BROWSER_HISTORY_ENABLED:
