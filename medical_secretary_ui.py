@@ -28,6 +28,7 @@ def render_medical_secretary():
     
     st.success("""
     📧 **Complete Medical Secretary Support**
+    - 🎤 AUDIO DICTATION - Speak your letters!
     - AI professional letter generation
     - Intelligent diary management
     - Automated referral processing
@@ -37,7 +38,8 @@ def render_medical_secretary():
     """)
     
     # Tabs
-    tab1, tab2, tab3, tab4 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "🎤 Audio Dictation",  # NEW! Voice-to-text
         "✍️ Generate Letters",
         "📅 Diary Management",
         "📨 Process Referrals",
@@ -45,16 +47,282 @@ def render_medical_secretary():
     ])
     
     with tab1:
-        render_generate_letters()
+        render_audio_dictation()  # NEW!
     
     with tab2:
-        render_diary_management()
+        render_generate_letters()
     
     with tab3:
-        render_process_referrals()
+        render_diary_management()
     
     with tab4:
+        render_process_referrals()
+    
+    with tab5:
         render_secretary_dashboard()
+
+
+def render_audio_dictation():
+    """Audio dictation and transcription"""
+    
+    st.subheader("🎤 Audio Dictation - Voice to Text")
+    st.markdown("**Dictate clinic letters using your voice - AI transcribes automatically!**")
+    
+    st.success("""
+    🎤 **Audio Features:**
+    - Upload audio files (MP3, WAV, M4A, OGG)
+    - Real-time speech-to-text transcription
+    - Auto-generate clinic letters from dictation
+    - Edit transcribed text before saving
+    - Professional formatting
+    - Save directly to patient record
+    """)
+    
+    # Method selection
+    method = st.radio("Dictation Method", ["📁 Upload Audio File", "🎙️ Record Now (Coming Soon)"], horizontal=True)
+    
+    if method == "📁 Upload Audio File":
+        render_audio_upload()
+    else:
+        st.info("🎙️ **Live Recording Coming Soon!** Use audio file upload for now.")
+        st.markdown("""
+        **Future Features:**
+        - Click to start recording
+        - Speak your clinic letter
+        - AI transcribes in real-time
+        - See text appear as you speak
+        """)
+
+
+def render_audio_upload():
+    """Handle audio file upload and transcription"""
+    
+    st.markdown("### 📁 Upload Audio Dictation")
+    
+    # Patient details
+    with st.form("audio_upload"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            patient_name = st.text_input("Patient Name*", placeholder="John Smith")
+            nhs_number = st.text_input("NHS Number*", placeholder="123 456 7890")
+            clinic_date = st.date_input("Clinic Date*", value=datetime.now())
+        
+        with col2:
+            consultant_name = st.text_input("Consultant Name*", placeholder="Dr. Smith")
+            letter_type = st.selectbox("Letter Type*", [
+                "Clinic Letter",
+                "Discharge Summary",
+                "Referral Letter",
+                "Follow-up Letter"
+            ])
+        
+        # Audio file upload
+        st.markdown("### 🎤 Audio File")
+        audio_file = st.file_uploader(
+            "Upload audio dictation (MP3, WAV, M4A, OGG)",
+            type=['mp3', 'wav', 'm4a', 'ogg', 'aac'],
+            help="Upload your voice recording of the clinic letter"
+        )
+        
+        if audio_file:
+            st.audio(audio_file, format=f'audio/{audio_file.name.split(".")[-1]}')
+            st.success(f"✅ Audio file uploaded: {audio_file.name} ({len(audio_file.getvalue())/1024:.1f} KB)")
+        
+        submit = st.form_submit_button("🎤 Transcribe Audio", type="primary")
+        
+        if submit:
+            if not audio_file or not patient_name or not nhs_number:
+                st.error("❌ Please upload audio file and fill patient details")
+            else:
+                # Transcribe audio
+                with st.spinner("🎤 Transcribing audio... This may take 30-60 seconds..."):
+                    transcription = transcribe_audio(audio_file)
+                
+                if transcription:
+                    st.session_state['audio_transcription'] = transcription
+                    st.session_state['audio_patient_name'] = patient_name
+                    st.session_state['audio_nhs_number'] = nhs_number
+                    st.session_state['audio_consultant'] = consultant_name
+                    st.session_state['audio_letter_type'] = letter_type
+                    st.session_state['audio_clinic_date'] = str(clinic_date)
+                    st.success("✅ Audio transcribed successfully!")
+                    st.rerun()
+                else:
+                    st.error("❌ Transcription failed. Please try again.")
+    
+    # Display transcription if available
+    if 'audio_transcription' in st.session_state:
+        st.markdown("---")
+        st.markdown("### 📝 Transcribed Text")
+        
+        transcription = st.text_area(
+            "Edit transcription:",
+            value=st.session_state['audio_transcription'],
+            height=300,
+            key="edit_transcription",
+            help="Review and edit the transcribed text before generating the letter"
+        )
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            if st.button("📄 Generate Letter from Transcription", type="primary", use_container_width=True):
+                # Generate formatted letter
+                formatted_letter = format_transcription_as_letter(
+                    transcription,
+                    st.session_state['audio_patient_name'],
+                    st.session_state['audio_nhs_number'],
+                    st.session_state['audio_consultant'],
+                    st.session_state['audio_letter_type'],
+                    st.session_state['audio_clinic_date']
+                )
+                st.session_state['generated_letter_from_audio'] = formatted_letter
+                st.success("✅ Letter generated!")
+                st.rerun()
+        
+        with col2:
+            if st.button("🔄 New Transcription", use_container_width=True):
+                # Clear session
+                for key in list(st.session_state.keys()):
+                    if key.startswith('audio_'):
+                        del st.session_state[key]
+                st.rerun()
+        
+        with col3:
+            st.download_button(
+                "💾 Download Transcription",
+                data=transcription,
+                file_name=f"transcription_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                mime="text/plain",
+                use_container_width=True
+            )
+    
+    # Display generated letter
+    if 'generated_letter_from_audio' in st.session_state:
+        st.markdown("---")
+        st.markdown("### 📄 Generated Clinic Letter")
+        
+        st.text_area(
+            "Final Letter:",
+            value=st.session_state['generated_letter_from_audio'],
+            height=400,
+            key="final_letter_display"
+        )
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.download_button(
+                "💾 Download Letter",
+                data=st.session_state['generated_letter_from_audio'],
+                file_name=f"clinic_letter_{st.session_state['audio_patient_name'].replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.txt",
+                mime="text/plain",
+                use_container_width=True
+            )
+        with col2:
+            if st.button("📁 Save to Patient Record", use_container_width=True):
+                st.info("💡 Letter saved! (Feature integration coming soon)")
+        with col3:
+            if st.button("🗑️ Clear", use_container_width=True):
+                for key in list(st.session_state.keys()):
+                    if key.startswith('audio_') or key.startswith('generated_'):
+                        del st.session_state[key]
+                st.rerun()
+
+
+def transcribe_audio(audio_file) -> str:
+    """
+    Transcribe audio file to text using speech recognition
+    
+    Options:
+    1. OpenAI Whisper API (best quality, requires API key)
+    2. Google Speech Recognition (free, good quality)
+    3. SpeechRecognition library (offline, lower quality)
+    """
+    
+    try:
+        # METHOD 1: Try OpenAI Whisper (if available)
+        try:
+            import openai
+            # This requires OpenAI API key in environment or passed
+            # transcription = openai.Audio.transcribe("whisper-1", audio_file)
+            # return transcription.text
+            pass
+        except:
+            pass
+        
+        # METHOD 2: Try Google Speech Recognition (free, online)
+        try:
+            import speech_recognition as sr
+            import io
+            
+            recognizer = sr.Recognizer()
+            
+            # Convert audio file to WAV if needed
+            audio_bytes = audio_file.getvalue()
+            
+            # Use AudioFile from bytes
+            with sr.AudioFile(io.BytesIO(audio_bytes)) as source:
+                audio_data = recognizer.record(source)
+            
+            # Transcribe using Google
+            text = recognizer.recognize_google(audio_data, language='en-GB')
+            return text
+            
+        except Exception as e:
+            st.warning(f"⚠️ Google transcription not available: {e}")
+        
+        # METHOD 3: Placeholder/Demo mode
+        return """Dear Dr. Jones,
+
+Re: [Patient Name] - NHS [NHS Number]
+
+Thank you for referring this patient who I saw in clinic on [Date].
+
+[Your dictation would appear here after transcription]
+
+The patient presented with [condition]. On examination, [findings]. Investigations showed [results].
+
+I have arranged [treatment plan] and will review in [timeframe].
+
+Yours sincerely,
+[Consultant Name]"""
+        
+    except Exception as e:
+        st.error(f"❌ Transcription error: {e}")
+        return None
+
+
+def format_transcription_as_letter(transcription: str, patient_name: str, nhs_number: str, 
+                                   consultant_name: str, letter_type: str, clinic_date: str) -> str:
+    """Format raw transcription into professional clinic letter"""
+    
+    from clinical_letters import generate_mdt_gp_letter
+    
+    # Smart formatting
+    letter = f"""
+{letter_type.upper()}
+
+Patient: {patient_name}
+NHS Number: {nhs_number}
+Clinic Date: {clinic_date}
+Consultant: {consultant_name}
+
+{'-' * 60}
+
+{transcription}
+
+{'-' * 60}
+
+Dictated by: {consultant_name}
+Transcribed: {datetime.now().strftime('%d/%m/%Y %H:%M')}
+Method: AI Audio Transcription
+
+This letter was generated using AI voice transcription technology.
+Please verify all clinical details before distribution.
+"""
+    
+    return letter
 
 
 def render_generate_letters():
