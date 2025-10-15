@@ -127,7 +127,22 @@ def send_student_welcome_email(student_email: str, student_name: str, temp_passw
 # NHS WORKFLOW MODULES LIST
 # ============================================
 
+# Updated module list matching current sidebar structure
 NHS_MODULES = [
+    # Core Hubs
+    "🏥 Patient Administration Hub",
+    "🎓 Learning Portal",
+    "👨‍🏫 Teaching & Assessment",
+    
+    # Clinical & Workflow
+    "🏥 Clinical Workflows",
+    "📋 PTL - Patient Tracking List",
+    "🎗️ Cancer Pathways",
+    "👥 MDT Coordination",
+    "📅 Advanced Booking System",
+    "✅ Task Management",
+    
+    # Patient Management (individual modules)
     "Patient Registration",
     "Pathway Management",
     "Episode Management",
@@ -136,10 +151,34 @@ NHS_MODULES = [
     "DNA & Cancellation Tracking",
     "Data Quality Alerts",
     "Appointment Booking",
-    "PTL - Patient Tracking List",
-    "Cancer Pathways",
-    "MDT Coordination",
-    "Task Management"
+    
+    # AI & Tools
+    "🤖 AI & Automation",
+    "🤖 AI Auto-Validator",
+    "📧 Medical Secretary AI",
+    "📄 Clinical Letters",
+    
+    # Reports & Analytics
+    "📊 Reports & Analytics",
+    "📊 Executive Dashboard",
+    "📊 Interactive Reports",
+    "📊 Data Quality",
+    "📊 Data Quality System",
+    
+    # Training & Career
+    "🎓 Training & Certification",
+    "🎓 Training Library",
+    "🎮 Interactive Learning Center",
+    "🤖 AI RTT Tutor",
+    "🎓 Certification Exam",
+    "💼 Career Development",
+    "💼 Job Interview Prep",
+    "📄 CV Builder",
+    
+    # Admin
+    "⚙️ Administration",
+    "⚙️ My Account & Upgrade",
+    "🔧 Admin Panel"
 ]
 
 LEARNING_MODULES = [
@@ -426,12 +465,17 @@ def render_add_student():
 def render_all_students():
     """View all students"""
     
-    st.markdown("### 👥 All Students")
+    st.markdown("### 👥 All Students Overview")
+    
+    # Check if editing a student
+    if 'edit_student_email' in st.session_state:
+        render_edit_student_form()
+        return
     
     students = get_all_students()
     
     if not students:
-        st.info("No students added yet.")
+        st.info("No students found. Add your first student!")
         return
     
     st.write(f"**Total Students: {len(students)}**")
@@ -480,8 +524,75 @@ def render_all_students():
             
             with col1:
                 if st.button(f"🔐 Manage Access", key=f"access_{student.get('email')}"):
-                    st.session_state['manage_access_student'] = student.get('email')
+                    # Toggle access management display
+                    if st.session_state.get(f'show_access_{student.get("email")}'):
+                        st.session_state[f'show_access_{student.get("email")}'] = False
+                    else:
+                        st.session_state[f'show_access_{student.get("email")}'] = True
                     st.rerun()
+            
+            # Show access management if toggled
+            if st.session_state.get(f'show_access_{student.get("email")}'):
+                st.markdown("---")
+                st.markdown("### 🔐 Grant Module Access")
+                
+                col_a, col_b = st.columns([2, 1])
+                
+                with col_a:
+                    if st.button("✅ Grant ALL Module Access", key=f"grant_all_inline_{student.get('email')}", type="primary"):
+                        admin_email = st.session_state.get('user_email', 'admin@example.com')
+                        result = grant_all_access(student.get('email'), admin_email)
+                        if result.get('success'):
+                            st.success(f"✅ {result.get('message')}")
+                            st.balloons()
+                            st.rerun()
+                        else:
+                            st.error(f"❌ {result.get('error')}")
+                
+                with col_b:
+                    if st.button("❌ Close", key=f"close_access_{student.get('email')}"):
+                        st.session_state[f'show_access_{student.get("email")}'] = False
+                        st.rerun()
+                
+                st.markdown("**Or select individual modules:**")
+                
+                # Module selection
+                col_nhs, col_learning = st.columns(2)
+                
+                with col_nhs:
+                    st.markdown("**NHS Workflow Modules:**")
+                    nhs_selected = st.multiselect(
+                        "NHS Modules",
+                        NHS_MODULES,
+                        key=f"nhs_modules_{student.get('email')}",
+                        label_visibility="collapsed"
+                    )
+                
+                with col_learning:
+                    st.markdown("**Learning Portal Modules:**")
+                    learning_selected = st.multiselect(
+                        "Learning Modules",
+                        LEARNING_MODULES,
+                        key=f"learning_modules_{student.get('email')}",
+                        label_visibility="collapsed"
+                    )
+                
+                if st.button("💾 Grant Selected Modules", key=f"grant_selected_inline_{student.get('email')}"):
+                    selected_modules = nhs_selected + learning_selected
+                    if selected_modules:
+                        admin_email = st.session_state.get('user_email', 'admin@example.com')
+                        success_count = 0
+                        for module in selected_modules:
+                            result = grant_module_access(student.get('email'), module, admin_email)
+                            if result.get('success'):
+                                success_count += 1
+                        st.success(f"✅ Granted access to {success_count} modules!")
+                        st.balloons()
+                        st.rerun()
+                    else:
+                        st.warning("⚠️ Please select at least one module")
+                
+                st.markdown("---")
             
             with col2:
                 if st.button(f"📊 View Progress", key=f"progress_{student.get('email')}"):
@@ -527,61 +638,114 @@ def render_all_students():
             
             with col3:
                 if st.button(f"✏️ Edit", key=f"edit_{student.get('email')}"):
-                    # Edit student details
-                    st.markdown("### ✏️ Edit Student")
-                    
-                    with st.form(f"edit_form_{student.get('email')}"):
-                        new_name = st.text_input("Full Name", value=student.get('full_name', ''))
-                        new_role = st.selectbox("Account Type", [
-                            "student_basic",
-                            "student_professional",
-                            "student_ultimate",
-                            "teacher",
-                            "admin"
-                        ], index=["student_basic", "student_professional", "student_ultimate", "teacher", "admin"].index(student.get('role', 'student_basic')))
-                        
-                        new_status = st.selectbox("Status", ["active", "suspended", "expired"], 
-                                                 index=["active", "suspended", "expired"].index(student.get('status', 'active')))
-                        
-                        reset_password = st.checkbox("Reset Password")
-                        new_password = ""
-                        if reset_password:
-                            import secrets
-                            import string
-                            new_password = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(10))
-                            st.info(f"New password will be: `{new_password}`")
-                            send_email_check = st.checkbox("Send password reset email", value=True)
-                        
-                        submitted = st.form_submit_button("💾 Save Changes")
-                        
-                        if submitted:
-                            try:
-                                # Update student in database
-                                update_data = {
-                                    'full_name': new_name,
-                                    'role': new_role,
-                                    'status': new_status
-                                }
-                                
-                                if reset_password and new_password:
-                                    import hashlib
-                                    update_data['password'] = hashlib.sha256(new_password.encode()).hexdigest()
-                                
-                                supabase.table('users').update(update_data).eq('email', student.get('email')).execute()
-                                st.success("✅ Student updated successfully!")
-                                
-                                # Send password reset email if requested
-                                if reset_password and new_password and send_email_check:
-                                    email_result = send_student_welcome_email(student.get('email'), new_name, new_password)
-                                    if email_result.get('success'):
-                                        st.success(f"📧 Password reset email sent!")
-                                    else:
-                                        st.warning(f"Student updated but email not sent")
-                                        st.code(f"New password: {new_password}")
-                                
-                                st.rerun()
-                            except Exception as e:
-                                st.error(f"Error updating student: {e}")
+                    # Set student to edit in session state
+                    st.session_state['edit_student_email'] = student.get('email')
+                    st.rerun()
+
+
+def render_edit_student_form():
+    """Render form to edit student details"""
+    
+    student_email = st.session_state.get('edit_student_email')
+    
+    # Get student details
+    try:
+        result = supabase.table('users').select('*').eq('email', student_email).execute()
+        if not result.data:
+            st.error("Student not found")
+            if st.button("← Back to Students"):
+                del st.session_state['edit_student_email']
+                st.rerun()
+            return
+        
+        student = result.data[0]
+    except Exception as e:
+        st.error(f"Error loading student: {e}")
+        if st.button("← Back to Students"):
+            del st.session_state['edit_student_email']
+            st.rerun()
+        return
+    
+    st.markdown(f"### ✏️ Edit Student: {student.get('full_name')}")
+    
+    if st.button("← Back to All Students"):
+        del st.session_state['edit_student_email']
+        st.rerun()
+    
+    st.markdown("---")
+    
+    with st.form("edit_student_form"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            new_name = st.text_input("Full Name*", value=student.get('full_name', ''))
+            new_role = st.selectbox("Account Type", [
+                "student_basic",
+                "student_professional",
+                "student_ultimate",
+                "teacher",
+                "admin"
+            ], index=["student_basic", "student_professional", "student_ultimate", "teacher", "admin"].index(student.get('role', 'student_basic')))
+        
+        with col2:
+            new_status = st.selectbox("Status", ["active", "suspended", "expired"], 
+                                     index=["active", "suspended", "expired"].index(student.get('status', 'active')))
+            
+            reset_password = st.checkbox("🔐 Reset Password", help="Generate new password and send to student")
+        
+        send_email_check = False
+        new_password = ""
+        
+        if reset_password:
+            import secrets
+            import string
+            new_password = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(10))
+            st.info(f"✅ New password will be: `{new_password}`")
+            send_email_check = st.checkbox("📧 Send password reset email to student", value=True)
+        
+        submitted = st.form_submit_button("💾 Save Changes", type="primary")
+        
+        if submitted:
+            try:
+                # Update student in database
+                update_data = {
+                    'full_name': new_name,
+                    'role': new_role,
+                    'status': new_status
+                }
+                
+                if reset_password and new_password:
+                    import hashlib
+                    update_data['password'] = hashlib.sha256(new_password.encode()).hexdigest()
+                
+                supabase.table('users').update(update_data).eq('email', student_email).execute()
+                st.success("✅ Student updated successfully!")
+                
+                # Send password reset email if requested
+                if reset_password and new_password and send_email_check:
+                    email_result = send_student_welcome_email(student_email, new_name, new_password)
+                    if email_result.get('success'):
+                        st.success(f"📧 Password reset email sent to {student_email}!")
+                    else:
+                        st.warning(f"⚠️ Student updated but email not sent: {email_result.get('error')}")
+                        st.info(f"""
+                        **Please manually share new password:**
+                        - Email: {student_email}
+                        - Password: {new_password}
+                        """)
+                elif reset_password and new_password:
+                    st.info(f"""
+                    **Student updated! Share new password:**
+                    - Email: {student_email}
+                    - Password: {new_password}
+                    """)
+                
+                # Clear edit state
+                del st.session_state['edit_student_email']
+                st.rerun()
+                
+            except Exception as e:
+                st.error(f"❌ Error updating student: {e}")
 
 
 def render_manage_access():
@@ -595,9 +759,26 @@ def render_manage_access():
         st.info("No students added yet.")
         return
     
+    # Check if coming from student list
+    preselected_email = st.session_state.get('manage_access_student')
+    
     # Select student
     student_options = {f"{s.get('full_name')} ({s.get('email')})": s for s in students}
-    selected = st.selectbox("Select Student:", ["-- Select Student --"] + list(student_options.keys()))
+    
+    # Find default index if preselected
+    default_index = 0
+    if preselected_email:
+        for idx, (key, stud) in enumerate(student_options.items(), 1):
+            if stud.get('email') == preselected_email:
+                default_index = idx
+                break
+        # Clear the session state
+        if 'manage_access_student' in st.session_state:
+            del st.session_state['manage_access_student']
+    
+    selected = st.selectbox("Select Student:", 
+                           ["-- Select Student --"] + list(student_options.keys()),
+                           index=default_index)
     
     if selected == "-- Select Student --":
         return

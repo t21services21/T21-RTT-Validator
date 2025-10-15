@@ -1409,44 +1409,40 @@ accessible_modules = list(dict.fromkeys(accessible_modules))
 # Show CORE modules only - CONSOLIDATED STRUCTURE
 if not accessible_modules:
     accessible_modules = [
-        # === 🏥 CORE HUBS (CONSOLIDATED) ===
-        "🏥 Patient Administration Hub",  # 6 modules in tabs
-        "🎓 Learning Portal",  # 5 modules in tabs
-        "👨‍🏫 Teaching & Assessment",  # 4 modules in tabs
+        # === 🏥 FULLY WORKING HUBS ===
+        "🏥 Patient Administration Hub",  # 6 modules in tabs - WORKS FULLY
+        "🎓 Learning Portal",  # 5 modules in tabs - WORKS FULLY
+        "👨‍🏫 Teaching & Assessment",  # 4 modules in tabs - WORKS FULLY
         
-        # === 🏥 CLINICAL & WORKFLOW ===
-        "🏥 Clinical Workflows",  # PTL, Cancer, MDT, Booking
-        "📋 PTL - Patient Tracking List",  # Direct access
-        "🎗️ Cancer Pathways",  # Direct access
-        "👥 MDT Coordination",  # Direct access
-        "📅 Advanced Booking System",  # Direct access
+        # === 🏥 CLINICAL & WORKFLOW (Direct Access) ===
+        "📋 PTL - Patient Tracking List",
+        "🎗️ Cancer Pathways",
+        "👥 MDT Coordination",
+        "📅 Advanced Booking System",
         "✅ Task Management",
         
-        # === 🤖 AI & TOOLS ===
-        "🤖 AI & Automation",  # AI tools, letters, docs
-        "🤖 AI Auto-Validator",  # Direct access
-        "📧 Medical Secretary AI",  # Direct access
-        "📄 Clinical Letters",  # Direct access
-        "📊 Reports & Analytics",  # Dashboard, reports, alerts
-        "📊 Executive Dashboard",  # Direct access
-        "📊 Interactive Reports",  # Direct access
-        "📊 Data Quality",  # Quick overview
-        "📊 Data Quality System",  # Full feature
+        # === 🤖 AI & TOOLS (Direct Access) ===
+        "🤖 AI Auto-Validator",
+        "📧 Medical Secretary AI",
+        "📄 Clinical Letters",
+        "📁 Document Storage",
         
-        # === 🎓 TRAINING & CAREER ===
-        "🎓 Training & Certification",  # Training resources
-        "🎓 Training Library",  # Direct access
-        "🎮 Interactive Learning Center",  # Direct access
-        "🤖 AI RTT Tutor",  # Direct access
-        "🎓 Certification Exam",  # Direct access
-        "💼 Career Development",  # Interview, CV
-        "💼 Job Interview Prep",  # Individual access
-        "📄 CV Builder",  # Individual access
+        # === 📊 REPORTS & ANALYTICS (Direct Access) ===
+        "📊 Executive Dashboard",
+        "📊 Interactive Reports",
+        "📊 Data Quality System",
         
-        # === ⚙️ ADMIN ===
-        "⚙️ Administration",  # Account, admin panel, staff
-        "⚙️ My Account & Upgrade",  # Direct access
-        "🔧 Admin Panel",  # Direct access
+        # === 🎓 TRAINING & CAREER (Direct Access) ===
+        "🎓 Training Library",
+        "🎮 Interactive Learning Center",
+        "🤖 AI RTT Tutor",
+        "🎓 Certification Exam",
+        "💼 Job Interview Prep",
+        "📄 CV Builder",
+        
+        # === ⚙️ ADMIN (Direct Access) ===
+        "⚙️ My Account & Upgrade",
+        "🔧 Admin Panel",
         
         # === ℹ️ INFO & SUPPORT ===
         "ℹ️ Help & Information",
@@ -5076,186 +5072,8 @@ elif tool == "👨‍🏫 Teaching & Assessment":
     with tabs[3]:
         st.info("📊 Progress reports coming soon - integrated with TQUK tracking")
 
-elif tool == "🏥 Clinical Workflows":
-    st.header("🏥 Clinical Workflows")
-    st.info("PTL, Cancer Pathways, MDT, and Advanced Booking")
-    
-    tabs = st.tabs([
-        "📋 PTL",
-        "🎗️ Cancer",
-        "👥 MDT",
-        "📅 Booking"
-    ])
-    
-    with tabs[0]:
-        st.subheader("📋 PTL - Patient Tracking List")
-        st.info("PTL system available - navigate to 'PTL - Patient Tracking List' from sidebar")
-        st.success("✅ Track patient waiting times, breaches, and RTT compliance")
-    
-    with tabs[1]:
-        st.subheader("🎗️ Cancer Pathways")
-        st.info("Cancer pathways available - navigate to 'Cancer Pathways' from sidebar")
-        st.success("✅ Manage 62-day cancer pathways and fast-track referrals")
-    
-    with tabs[2]:
-        st.subheader("👥 MDT Coordination")
-        st.info("MDT system available - navigate to 'MDT Coordination' from sidebar")
-        st.success("✅ Coordinate multi-disciplinary team meetings and outcomes")
-    
-    with tabs[3]:
-        st.subheader("📅 Advanced Booking")
-        st.info("Booking system available - navigate to 'Advanced Booking System' from sidebar")
-        st.success("✅ Create clinics, manage appointments, and track capacity")
-
-elif tool == "🤖 AI & Automation":
-    st.header("🤖 AI & Automation Hub")
-    st.info("AI-powered tools and automation")
-    
-    tabs = st.tabs([
-        "🤖 Auto-Validator",
-        "📧 Secretary AI",
-        "📄 Letters",
-        "📁 Documents",
-        "🔍 Search"
-    ])
-    
-    with tabs[0]:
-        st.info("🤖 **AI Auto-Validator** - Validate RTT pathways automatically")
-        st.success("✅ Feature available - Switch to AI Validator from main menu")
-        if st.button("Go to AI Validator", key="goto_ai_validator"):
-            st.info("Navigate to 'AI Auto-Validator' in the main sidebar")
-    
-    with tabs[1]:
-        st.info("📧 **Medical Secretary AI** - Generate clinical letters and correspondence")
-        st.success("✅ Feature available - Switch to Medical Secretary from main menu")
-        if st.button("Go to Medical Secretary", key="goto_secretary"):
-            st.info("Navigate to 'Medical Secretary AI' in the main sidebar")
-    
-    with tabs[2]:
-        st.info("📄 **Clinical Letters** - Create and manage clinical correspondence")
-        st.success("✅ Feature available - Switch to Clinical Letters from main menu")
-        if st.button("Go to Clinical Letters", key="goto_letters"):
-            st.info("Navigate to 'Clinical Letters' in the main sidebar")
-    
-    with tabs[3]:
-        st.info("📁 **Document Storage** - Upload and manage patient documents")
-        st.success("✅ Feature available - Switch to Document Storage from main menu")
-        if st.button("Go to Documents", key="goto_documents"):
-            st.info("Navigate to 'Document Storage' in the main sidebar")
-    
-    with tabs[4]:
-        st.subheader("🔍 Patient Search")
-        try:
-            from patient_search import render_patient_search
-            render_patient_search()
-        except:
-            st.info("Patient search feature coming soon!")
-
-elif tool == "📊 Reports & Analytics":
-    st.header("📊 Reports & Analytics")
-    st.info("Dashboards, reports, and alerts")
-    
-    tabs = st.tabs([
-        "📊 Dashboard",
-        "📈 Reports",
-        "🚨 Alerts",
-        "📜 History"
-    ])
-    
-    with tabs[0]:
-        st.subheader("📊 Executive Dashboard")
-        st.info("Dashboard available - navigate to 'Executive Dashboard' from sidebar")
-        st.success("✅ View key metrics, statistics, and performance indicators")
-    
-    with tabs[1]:
-        st.subheader("📈 Interactive Reports")
-        st.info("Reports available - navigate to 'Interactive Reports' from sidebar")
-        st.success("✅ Generate custom reports and analytics")
-    
-    with tabs[2]:
-        st.subheader("🚨 Smart Alerts")
-        st.info("Alerts available - navigate to 'Smart Alerts' from sidebar")
-        st.success("✅ Monitor breaches, delays, and quality issues")
-    
-    with tabs[3]:
-        st.subheader("📜 Validation History")
-        st.info("History available - navigate to 'Validation History' from sidebar")
-        st.success("✅ Review past validations and audit trails")
-
-elif tool == "🎓 Training & Certification":
-    st.header("🎓 Training & Certification")
-    st.info("Training resources and certification prep")
-    
-    tabs = st.tabs([
-        "🎓 Library",
-        "🎮 Interactive",
-        "🤖 AI Tutor",
-        "🎓 Exam"
-    ])
-    
-    with tabs[0]:
-        st.subheader("🎓 Training Library")
-        st.info("Training library available - navigate to 'Training Library' from sidebar")
-        st.success("✅ Access RTT training materials, guides, and resources")
-    
-    with tabs[1]:
-        st.subheader("🎮 Interactive Learning")
-        st.info("Interactive learning available - navigate to 'Interactive Learning Center' from sidebar")
-        st.success("✅ Practice with interactive scenarios and case studies")
-    
-    with tabs[2]:
-        st.subheader("🤖 AI RTT Tutor")
-        st.info("AI Tutor available - navigate to 'AI RTT Tutor' from sidebar")
-        st.success("✅ Get personalized tutoring and answer your questions")
-    
-    with tabs[3]:
-        st.subheader("🎓 Certification Exam")
-        st.info("Exam available - navigate to 'Certification Exam' from sidebar")
-        st.success("✅ Take practice exams and test your knowledge")
-
-elif tool == "💼 Career Development":
-    st.header("💼 Career Development")
-    st.info("Interview prep and CV building")
-    
-    tabs = st.tabs([
-        "💼 Interview Prep",
-        "📄 CV Builder"
-    ])
-    
-    with tabs[0]:
-        st.subheader("💼 Job Interview Prep")
-        st.info("Interview prep available - navigate to 'Job Interview Prep' from sidebar")
-        st.success("✅ Practice common interview questions and scenarios")
-    
-    with tabs[1]:
-        st.subheader("📄 CV Builder")
-        st.info("CV builder available - navigate to 'CV Builder' from sidebar")
-        st.success("✅ Create professional CVs for healthcare roles")
-
-elif tool == "⚙️ Administration":
-    st.header("⚙️ Administration")
-    st.info("Account settings and admin tools")
-    
-    tabs = st.tabs([
-        "⚙️ My Account",
-        "🔧 Admin Panel",
-        "👥 Staff Mgmt"
-    ])
-    
-    with tabs[0]:
-        st.subheader("⚙️ My Account & Upgrade")
-        st.info("Account settings available - navigate to 'My Account & Upgrade' from sidebar")
-        st.success("✅ Manage your subscription, profile, and preferences")
-    
-    with tabs[1]:
-        st.subheader("🔧 Admin Panel")
-        st.info("Admin panel available - navigate to 'Admin Panel' from sidebar")
-        st.success("✅ Configure system settings and manage users")
-    
-    with tabs[2]:
-        st.subheader("👥 Staff Management")
-        st.info("Staff management available - navigate to 'Staff Management' from sidebar")
-        st.success("✅ Add, edit, and manage staff accounts")
+# REMOVED: All navigation hubs that just tell users to go to sidebar
+# Users should access features directly from sidebar instead
 
 elif tool == "✅ Task Management":
     st.header("✅ Task Management")
