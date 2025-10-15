@@ -1416,6 +1416,7 @@ if not accessible_modules:
         
         # === PATIENT ADMINISTRATION (NEW!) ===
         "👤 Patient Registration",  # NEW! Complete patient registration
+        "📁 Pathway Management",  # NEW! RTT & Cancer pathways
         "📋 Episode Management",  # NEW! Consultant/Treatment/Diagnostic episodes
         
         # === CLINICAL MODULES ===
@@ -4941,6 +4942,10 @@ elif tool == "📊 Executive Dashboard":
 elif tool == "👤 Patient Registration":
     from patient_registration_ui import render_patient_registration
     render_patient_registration()
+
+elif tool == "📁 Pathway Management":
+    from pathway_management_ui import render_pathway_management
+    render_pathway_management()
 
 elif tool == "📋 Episode Management":
     from episode_management_ui import render_episode_management

@@ -14,6 +14,7 @@ from episode_management_system import (
     close_consultant_episode,
     get_episode_stats
 )
+from patient_selector_component import render_patient_selector, render_pathway_selector
 
 
 SPECIALTIES = [
@@ -85,13 +86,27 @@ def render_add_consultant_episode():
         st.balloons()
         del st.session_state['consultant_episode_added']
     
+    # SMART PATIENT SELECTOR (with search!)
+    st.markdown("---")
+    selected_patient = render_patient_selector(key_prefix="consultant_episode")
+    
+    if not selected_patient:
+        st.warning("⚠️ Please search and select a patient first")
+        return
+    
+    patient_id = selected_patient.get('patient_id')
+    patient_name = selected_patient.get('full_name')
+    
+    st.markdown("---")
+    
+    # OPTIONAL: Link to pathway
+    st.markdown("### 🔗 Link to Pathway (Optional)")
+    selected_pathway = render_pathway_selector(patient_id=patient_id, key_prefix="consultant_pathway")
+    pathway_id = selected_pathway.get('pathway_id') if selected_pathway else None
+    
+    st.markdown("---")
+    
     with st.form("add_consultant_episode"):
-        st.markdown("### Patient Information")
-        col1, col2 = st.columns(2)
-        with col1:
-            patient_id = st.text_input("Patient ID / NHS Number*", placeholder="TEMP_2025... or NHS number")
-        with col2:
-            patient_name = st.text_input("Patient Name*", placeholder="John Smith")
         
         st.markdown("### Episode Details")
         col1, col2 = st.columns(2)
@@ -108,15 +123,12 @@ def render_add_consultant_episode():
         reason = st.text_area("Reason for Referral*", height=100, 
                              placeholder="Why is patient being referred to consultant?")
         
-        pathway_id = st.text_input("Link to Pathway ID (Optional)", 
-                                   placeholder="PATHWAY_... (if part of RTT pathway)")
-        
         notes = st.text_area("Clinical Notes", height=100)
         
         submit = st.form_submit_button("✅ Create Consultant Episode", type="primary")
         
         if submit:
-            if not patient_id or not patient_name or not consultant_name or not reason:
+            if not consultant_name or not reason:
                 st.error("❌ Please fill all required fields")
             else:
                 result = add_consultant_episode(
