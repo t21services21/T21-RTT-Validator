@@ -20,6 +20,110 @@ import hashlib
 
 
 # ============================================
+# EMAIL NOTIFICATION SYSTEM (Using existing SendGrid service!)
+# ============================================
+
+def send_student_welcome_email(student_email: str, student_name: str, temp_password: str) -> Dict:
+    """
+    Send welcome email to new student with login details
+    Uses the existing email_service.py with SendGrid integration
+    """
+    
+    try:
+        # Import existing email service
+        from email_service import send_email
+        
+        subject = "🎉 Welcome to T21 Healthcare Platform - Student Account Created!"
+        
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+                <h1 style="color: #0066cc;">Welcome to T21 Healthcare Platform! 🎉</h1>
+                
+                <p>Dear {student_name},</p>
+                
+                <p>Your student account has been successfully created! Welcome to the T21 Healthcare Intelligence Platform.</p>
+                
+                <div style="background-color: #f0f8ff; padding: 20px; border-left: 4px solid #0066cc; margin: 20px 0;">
+                    <h3 style="margin-top: 0;">🔐 Your Login Details:</h3>
+                    <p><strong>Email:</strong> {student_email}<br>
+                    <strong>Temporary Password:</strong> <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;">{temp_password}</code></p>
+                </div>
+                
+                <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0;">
+                    <p><strong>🔒 IMPORTANT SECURITY STEPS:</strong></p>
+                    <ol>
+                        <li>Login with the credentials above</li>
+                        <li>Go to "My Account" in the sidebar</li>
+                        <li><strong>Change your password immediately</strong></li>
+                    </ol>
+                </div>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://t21-healthcare-platform.streamlit.app" 
+                       style="background-color: #0066cc; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+                        LOGIN NOW →
+                    </a>
+                </div>
+                
+                <p><strong>📚 What's Available to You:</strong></p>
+                <ul>
+                    <li>✅ Learning Portal (Materials, Videos, Quizzes)</li>
+                    <li>✅ NHS Workflow Training</li>
+                    <li>✅ RTT Pathway Management</li>
+                    <li>✅ Interactive Learning Tools</li>
+                    <li>✅ Student Portfolio System</li>
+                    <li>✅ Career Development Resources</li>
+                </ul>
+                
+                <p><strong>💡 Getting Started:</strong></p>
+                <ol>
+                    <li>Login to the platform</li>
+                    <li>Change your password</li>
+                    <li>Complete your profile</li>
+                    <li>Explore the Learning Portal</li>
+                    <li>Start with Week 1 materials</li>
+                </ol>
+                
+                <p>Need help? Contact your instructor or email support@t21services.com</p>
+                
+                <p>Best regards,<br>
+                <strong>T21 Services Team</strong><br>
+                Your Healthcare Training Experts</p>
+                
+                <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
+                <p style="font-size: 12px; color: #666;">
+                    © 2025 T21 Services. All rights reserved.<br>
+                    64 Upper Parliament Street, Liverpool, L8 7LF, United Kingdom
+                </p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        # Send using existing SendGrid service
+        success = send_email(student_email, subject, html_content)
+        
+        if success:
+            return {
+                'success': True,
+                'message': f'Welcome email sent to {student_email}'
+            }
+        else:
+            return {
+                'success': False,
+                'error': 'Email sending failed. Please check SendGrid configuration.'
+            }
+    
+    except Exception as e:
+        return {
+            'success': False,
+            'error': f'Email error: {str(e)}'
+        }
+
+
+# ============================================
 # NHS WORKFLOW MODULES LIST
 # ============================================
 
@@ -217,12 +321,34 @@ def render_add_student():
     
     st.markdown("### ➕ Add New Student")
     
+    # Auto-generate password option
+    st.info("🔐 **Password will be auto-generated** and sent to student via email")
+    
     col1, col2 = st.columns(2)
     
     with col1:
         full_name = st.text_input("Full Name*", placeholder="e.g., John Smith")
         email = st.text_input("Email*", placeholder="e.g., john.smith@example.com")
-        password = st.text_input("Temporary Password*", type="password", placeholder="Student will change this")
+        
+        # Option to manually set password or auto-generate
+        password_option = st.radio(
+            "Password Setup:",
+            ["🔄 Auto-Generate (Recommended)", "🔧 Set Manually"],
+            key="password_option",
+            horizontal=True
+        )
+        
+        if password_option == "🔧 Set Manually":
+            password = st.text_input("Temporary Password*", type="password", placeholder="Student will change this")
+            show_password = st.checkbox("Show password", key="show_temp_pass")
+            if show_password and password:
+                st.code(password)
+        else:
+            # Auto-generate secure password
+            import secrets
+            import string
+            password = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(10))
+            st.success(f"✅ Password will be auto-generated: `{password}`")
     
     with col2:
         role = st.selectbox("Account Type", [
@@ -240,10 +366,15 @@ def render_add_student():
         """)
         
         grant_all = st.checkbox("Grant access to ALL modules", value=True, help="Recommended for most students")
+        send_email = st.checkbox("📧 Send welcome email with login details", value=True, help="Highly recommended!")
     
     if st.button("➕ Add Student", type="primary"):
-        if not full_name or not email or not password:
+        if not full_name or not email:
             st.error("Please fill in all required fields")
+            return
+        
+        if password_option == "🔧 Set Manually" and not password:
+            st.error("Please enter a password")
             return
         
         # Add student
@@ -262,11 +393,28 @@ def render_add_student():
                 else:
                     st.warning(f"Student added but access grant failed: {access_result.get('error')}")
             
+            # Send welcome email if requested
+            if send_email:
+                email_result = send_student_welcome_email(email, full_name, password)
+                if email_result.get('success'):
+                    st.success(f"📧 Welcome email sent to {email}")
+                else:
+                    st.warning(f"⚠️ Student added but email not sent: {email_result.get('error')}")
+                    st.info(f"""
+                    **Please manually share these login details:**
+                    - Email: {email}
+                    - Password: {password}
+                    - Login URL: https://t21-healthcare-platform.streamlit.app
+                    """)
+            
             st.balloons()
-            st.info(f"""
-            **Student Login Details:**
-            - Email: {email}
-            - Password: {password}
+            
+            # Show login details
+            with st.expander("📋 Student Login Details", expanded=not send_email):
+                st.info(f"""
+                **Student Login Details:**
+                - Email: {email}
+                - Password: {password}
             - They can change password after first login
             """)
             
@@ -337,11 +485,103 @@ def render_all_students():
             
             with col2:
                 if st.button(f"📊 View Progress", key=f"progress_{student.get('email')}"):
-                    st.info("Progress tracking coming soon!")
+                    # Show student progress
+                    st.markdown("### 📊 Student Progress")
+                    
+                    # Get materials downloaded
+                    try:
+                        materials_result = supabase.table('material_downloads').select('*').eq('student_email', student.get('email')).execute()
+                        materials_count = len(materials_result.data) if materials_result.data else 0
+                    except:
+                        materials_count = 0
+                    
+                    # Get videos watched
+                    try:
+                        videos_result = supabase.table('video_views').select('*').eq('student_email', student.get('email')).execute()
+                        videos_count = len(videos_result.data) if videos_result.data else 0
+                    except:
+                        videos_count = 0
+                    
+                    # Get quizzes completed
+                    try:
+                        quizzes_result = supabase.table('quiz_attempts').select('*').eq('student_email', student.get('email')).execute()
+                        quizzes_count = len(quizzes_result.data) if quizzes_result.data else 0
+                    except:
+                        quizzes_count = 0
+                    
+                    # Display progress
+                    pcol1, pcol2, pcol3 = st.columns(3)
+                    with pcol1:
+                        st.metric("📄 Materials Downloaded", materials_count)
+                    with pcol2:
+                        st.metric("🎥 Videos Watched", videos_count)
+                    with pcol3:
+                        st.metric("✅ Quizzes Completed", quizzes_count)
+                    
+                    # Show access
+                    st.markdown("**Module Access:**")
+                    if access_modules:
+                        st.success(f"Has access to {len(access_modules)} modules")
+                    else:
+                        st.warning("No module access granted yet")
             
             with col3:
                 if st.button(f"✏️ Edit", key=f"edit_{student.get('email')}"):
-                    st.info("Edit functionality coming soon!")
+                    # Edit student details
+                    st.markdown("### ✏️ Edit Student")
+                    
+                    with st.form(f"edit_form_{student.get('email')}"):
+                        new_name = st.text_input("Full Name", value=student.get('full_name', ''))
+                        new_role = st.selectbox("Account Type", [
+                            "student_basic",
+                            "student_professional",
+                            "student_ultimate",
+                            "teacher",
+                            "admin"
+                        ], index=["student_basic", "student_professional", "student_ultimate", "teacher", "admin"].index(student.get('role', 'student_basic')))
+                        
+                        new_status = st.selectbox("Status", ["active", "suspended", "expired"], 
+                                                 index=["active", "suspended", "expired"].index(student.get('status', 'active')))
+                        
+                        reset_password = st.checkbox("Reset Password")
+                        new_password = ""
+                        if reset_password:
+                            import secrets
+                            import string
+                            new_password = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(10))
+                            st.info(f"New password will be: `{new_password}`")
+                            send_email_check = st.checkbox("Send password reset email", value=True)
+                        
+                        submitted = st.form_submit_button("💾 Save Changes")
+                        
+                        if submitted:
+                            try:
+                                # Update student in database
+                                update_data = {
+                                    'full_name': new_name,
+                                    'role': new_role,
+                                    'status': new_status
+                                }
+                                
+                                if reset_password and new_password:
+                                    import hashlib
+                                    update_data['password'] = hashlib.sha256(new_password.encode()).hexdigest()
+                                
+                                supabase.table('users').update(update_data).eq('email', student.get('email')).execute()
+                                st.success("✅ Student updated successfully!")
+                                
+                                # Send password reset email if requested
+                                if reset_password and new_password and send_email_check:
+                                    email_result = send_student_welcome_email(student.get('email'), new_name, new_password)
+                                    if email_result.get('success'):
+                                        st.success(f"📧 Password reset email sent!")
+                                    else:
+                                        st.warning(f"Student updated but email not sent")
+                                        st.code(f"New password: {new_password}")
+                                
+                                st.rerun()
+                            except Exception as e:
+                                st.error(f"Error updating student: {e}")
 
 
 def render_manage_access():

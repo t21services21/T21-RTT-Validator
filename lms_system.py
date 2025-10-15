@@ -52,6 +52,14 @@ def render_materials_teacher():
     with tab1:
         st.markdown("### ➕ Upload Learning Material")
         
+        # Choose upload method
+        upload_method = st.radio(
+            "How do you want to add the material?",
+            ["📤 Upload File Directly", "🔗 Link to External URL (Google Drive, OneDrive, etc.)"],
+            key="material_upload_method",
+            horizontal=True
+        )
+        
         col1, col2 = st.columns(2)
         
         with col1:
@@ -67,18 +75,76 @@ def render_materials_teacher():
             week = st.number_input("Week Number", min_value=0, max_value=52, value=1, key="material_week_input")
         
         with col2:
-            file_url = st.text_input("File URL*", placeholder="https://drive.google.com/file/d/...", key="material_file_url")
-            file_name = st.text_input("File Name*", placeholder="week1_intro.pdf", key="material_file_name")
+            if upload_method == "📤 Upload File Directly":
+                uploaded_file = st.file_uploader(
+                    "Upload File*",
+                    type=['pdf', 'docx', 'doc', 'xlsx', 'xls', 'pptx', 'ppt', 'txt', 'zip'],
+                    key="material_file_uploader",
+                    help="Supported: PDF, Word, Excel, PowerPoint, Text, ZIP"
+                )
+                file_url = None
+                file_name = uploaded_file.name if uploaded_file else ""
+            else:
+                uploaded_file = None
+                file_url = st.text_input("File URL*", placeholder="https://drive.google.com/file/d/...", key="material_file_url")
+                file_name = st.text_input("File Name*", placeholder="week1_intro.pdf", key="material_file_name")
+            
             required = st.checkbox("Required Material", value=True, key="material_required_check")
         
         description = st.text_area("Description", placeholder="Brief description...", key="material_description_area")
         
         if st.button("📤 Upload Material", type="primary", key="upload_material_btn"):
-            if not title or not file_url:
-                st.error("Please fill in required fields")
+            # Validation
+            if not title:
+                st.error("Please enter a title")
                 return
             
+            if upload_method == "📤 Upload File Directly":
+                if not uploaded_file:
+                    st.error("Please upload a file")
+                    return
+            else:
+                if not file_url:
+                    st.error("Please enter a file URL")
+                    return
+            
             try:
+                # Handle file upload to Supabase Storage
+                if upload_method == "📤 Upload File Directly" and uploaded_file:
+                    try:
+                        # Upload to Supabase Storage
+                        from supabase_database import supabase
+                        
+                        # Create file path: learning_materials/user_email/filename
+                        file_path = f"learning_materials/{user_email}/{uploaded_file.name}"
+                        
+                        # Upload file
+                        supabase.storage.from_('learning_materials').upload(
+                            file_path,
+                            uploaded_file.getvalue(),
+                            file_options={"content-type": uploaded_file.type}
+                        )
+                        
+                        # Get public URL
+                        file_url = supabase.storage.from_('learning_materials').get_public_url(file_path)
+                        
+                        st.success(f"✅ File uploaded to cloud storage!")
+                    
+                    except Exception as upload_error:
+                        # If Supabase Storage not configured, show helpful message
+                        st.warning(f"⚠️ Cloud storage not configured yet. Using temporary URL.")
+                        st.info("""
+                        **To enable file uploads:**
+                        1. Go to your Supabase dashboard
+                        2. Click "Storage" in left sidebar
+                        3. Create a bucket called "learning_materials"
+                        4. Make it public
+                        5. Enable file uploads
+                        
+                        **For now, please use the 'Link to External URL' option.**
+                        """)
+                        return
+                
                 material_data = {
                     'title': title,
                     'description': description,
@@ -99,7 +165,7 @@ def render_materials_teacher():
                 st.rerun()
             
             except Exception as e:
-                st.error(f"Error: {e}")
+                st.error(f"Error uploading material: {e}")
     
     with tab2:
         st.markdown("### 📋 All Materials")
@@ -199,20 +265,48 @@ def render_video_library():
 def render_videos_teacher():
     """Teacher view - add and manage videos"""
     
-    st.info("**Teacher View:** Add Vimeo videos to library")
+    st.info("**Teacher View:** Add videos from multiple sources")
     
     tab1, tab2 = st.tabs(["➕ Add Video", "📋 All Videos"])
     
     with tab1:
-        st.markdown("### ➕ Add Video from Vimeo")
+        st.markdown("### ➕ Add Video")
         
-        st.success("**Vimeo Integration:** Paste your Vimeo video URL - videos will be embedded")
+        # Choose video source
+        video_source = st.radio(
+            "Video Source:",
+            ["🎥 YouTube", "📹 Vimeo", "💼 Zoom Recording", "👔 Teams Recording", "📤 Upload Video File"],
+            key="video_source_select",
+            horizontal=True
+        )
         
         col1, col2 = st.columns(2)
         
         with col1:
             title = st.text_input("Video Title*", placeholder="e.g., Week 1 Lecture", key="video_title_input")
-            vimeo_url = st.text_input("Vimeo URL*", placeholder="https://vimeo.com/123456789", key="vimeo_url_input")
+            
+            if video_source == "🎥 YouTube":
+                video_url = st.text_input("YouTube URL*", placeholder="https://youtube.com/watch?v=...", key="video_url_input")
+                st.info("📺 Paste YouTube link - video will be embedded")
+            elif video_source == "📹 Vimeo":
+                video_url = st.text_input("Vimeo URL*", placeholder="https://vimeo.com/123456789", key="video_url_input")
+                st.info("📹 Paste Vimeo link - video will be embedded")
+            elif video_source == "💼 Zoom Recording":
+                video_url = st.text_input("Zoom Recording URL*", placeholder="https://zoom.us/rec/share/...", key="video_url_input")
+                st.info("💼 Paste Zoom recording link")
+            elif video_source == "👔 Teams Recording":
+                video_url = st.text_input("Teams Recording URL*", placeholder="https://teams.microsoft.com/...", key="video_url_input")
+                st.info("👔 Paste Microsoft Teams recording link")
+            else:  # Upload Video File
+                uploaded_video = st.file_uploader(
+                    "Upload Video File*",
+                    type=['mp4', 'mov', 'avi', 'mkv', 'webm'],
+                    key="video_file_uploader",
+                    help="Supported: MP4, MOV, AVI, MKV, WebM"
+                )
+                video_url = None
+                st.warning("⚠️ Requires Supabase Storage setup. Alternatively, use YouTube/Vimeo.")
+            
             week = st.number_input("Week Number", min_value=0, max_value=52, value=1, key="video_week_input")
         
         with col2:
@@ -223,9 +317,19 @@ def render_videos_teacher():
         description = st.text_area("Description", placeholder="Brief description...", key="video_description_area")
         
         if st.button("🎥 Add Video", type="primary", key="add_video_btn"):
-            if not title or not vimeo_url:
-                st.error("Please fill in required fields")
+            # Validation
+            if not title:
+                st.error("Please enter a video title")
                 return
+            
+            if video_source != "📤 Upload Video File":
+                if not video_url:
+                    st.error("Please enter a video URL")
+                    return
+            else:
+                if 'uploaded_video' not in locals() or uploaded_video is None:
+                    st.error("Please upload a video file")
+                    return
             
             # Extract Vimeo ID
             import re
