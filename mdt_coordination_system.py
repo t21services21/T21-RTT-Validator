@@ -131,22 +131,20 @@ def create_mdt_meeting(
     user_email = get_current_user_email()
     meeting_id = f"MDT_{datetime.now().strftime('%Y%m%d%H%M%S')}"
     
+    # CRITICAL FIX: Only send fields that EXIST in SQL table!
     meeting_data = {
         'meeting_id': meeting_id,
-        'user_email': user_email,
         'meeting_date': meeting_date,
         'meeting_time': meeting_time,
         'specialty': specialty,
         'location': location,
-        'chair': chair,
-        'attendees': attendees,
-        'meeting_type': meeting_type,
-        'status': 'SCHEDULED',
-        'patients': [],
-        'outcomes': [],
-        'notes': notes,
-        'created_date': datetime.now().isoformat(),
-        'last_updated': datetime.now().isoformat()
+        'chair_person': chair,  # FIXED: Was 'chair', SQL expects 'chair_person'
+        'attendees': attendees if isinstance(attendees, list) else [attendees],
+        'patients_discussed': [],  # FIXED: Was 'patients', SQL expects 'patients_discussed'
+        'decisions': [],  # FIXED: Was 'outcomes', SQL expects 'decisions'
+        'action_points': [],
+        'notes': f"Meeting Type: {meeting_type}\n{notes}",  # Store meeting_type in notes
+        'status': 'scheduled'  # FIXED: lowercase to match SQL default
     }
 
     if SUPABASE_ENABLED:
@@ -154,8 +152,12 @@ def create_mdt_meeting(
         if success:
             return meeting_id
         else:
+            # CRITICAL: Show error to user instead of hiding it!
+            import streamlit as st
+            st.error(f"❌ DATABASE ERROR: {result}")
+            st.error("⚠️ Meeting NOT saved to database! Check error above.")
             print(f"Error saving MDT meeting to Supabase: {result}")
-            return meeting_id
+            raise Exception(f"Failed to save MDT meeting: {result}")
     else:
         meetings = load_mdt_meetings()
         meetings['meetings'].append(meeting_data)
@@ -199,13 +201,13 @@ def add_patient_to_mdt(
         'added_date': datetime.now().isoformat()
     }
 
-    # The 'patients' field is a JSONB array. We need to append to it.
-    current_patients = meeting.get('patients', [])
+    # The 'patients_discussed' field is a JSONB array. We need to append to it.
+    current_patients = meeting.get('patients_discussed') or meeting.get('patients', [])
     current_patients.append(patient_data)
 
     updates = {
-        'patients': current_patients,
-        'last_updated': datetime.now().isoformat()
+        'patients_discussed': current_patients,
+        'updated_at': datetime.now().isoformat()
     }
 
     if SUPABASE_ENABLED:
@@ -216,8 +218,8 @@ def add_patient_to_mdt(
         meetings = load_mdt_meetings()
         for m in meetings['meetings']:
             if m['meeting_id'] == meeting_id:
-                m['patients'] = current_patients
-                m['last_updated'] = datetime.now().isoformat()
+                m['patients_discussed'] = current_patients
+                m['updated_at'] = datetime.now().isoformat()
                 save_mdt_meetings(meetings)
                 return True
         return False
@@ -256,8 +258,8 @@ def record_mdt_outcome(
         return False
 
     updates = {
-        'patients': patients,
-        'last_updated': datetime.now().isoformat()
+        'patients_discussed': patients,
+        'updated_at': datetime.now().isoformat()
     }
 
     if SUPABASE_ENABLED:
@@ -268,8 +270,8 @@ def record_mdt_outcome(
         meetings = load_mdt_meetings()
         for m in meetings['meetings']:
             if m['meeting_id'] == meeting_id:
-                m['patients'] = patients
-                m['last_updated'] = datetime.now().isoformat()
+                m['patients_discussed'] = patients
+                m['updated_at'] = datetime.now().isoformat()
                 save_mdt_meetings(meetings)
                 return True
         return False
@@ -284,17 +286,15 @@ def complete_mdt_meeting(meeting_id: str, summary: str = "") -> bool:
     if not meeting:
         return False
 
-    total_patients = len(meeting.get('patients', []))
-    discussed = sum(1 for p in meeting.get('patients', []) if p.get('discussed'))
+    # Get patients list (handle both old and new field names)
+    patients = meeting.get('patients_discussed') or meeting.get('patients', [])
+    total_patients = len(patients)
+    discussed = sum(1 for p in patients if p.get('discussed'))
 
     updates = {
-        'status': 'COMPLETED',
-        'completion_date': datetime.now().isoformat(),
-        'summary': summary,
-        'total_patients': total_patients,
-        'discussed_count': discussed,
-        'not_discussed_count': total_patients - discussed,
-        'last_updated': datetime.now().isoformat()
+        'status': 'completed',  # FIXED: lowercase
+        'notes': f"{meeting.get('notes', '')}\n\nMeeting Summary:\n{summary}\nTotal patients: {total_patients}\nDiscussed: {discussed}",
+        'updated_at': datetime.now().isoformat()
     }
 
     if SUPABASE_ENABLED:
@@ -488,17 +488,18 @@ Date: {meeting['meeting_date']}
 Time: {meeting['meeting_time']}
 Specialty: {meeting['specialty']}
 Location: {meeting['location']}
-Chair: {meeting['chair']}
+Chair: {meeting.get('chair_person') or meeting.get('chair', 'N/A')}
 
 ATTENDEES:
-{chr(10).join(f'- {attendee}' for attendee in meeting['attendees'])}
+{chr(10).join(f'- {attendee}' for attendee in meeting.get('attendees', []))}
 
-PATIENTS DISCUSSED: {len([p for p in meeting['patients'] if p['discussed']])} / {len(meeting['patients'])}
+PATIENTS DISCUSSED: {len([p for p in (meeting.get('patients_discussed') or meeting.get('patients', [])) if p.get('discussed')])} / {len(meeting.get('patients_discussed') or meeting.get('patients', []))}
 
 PATIENT OUTCOMES:
 """
     
-    for i, patient in enumerate(meeting['patients'], 1):
+    patients = meeting.get('patients_discussed') or meeting.get('patients', [])
+    for i, patient in enumerate(patients, 1):
         report += f"""
 {i}. {patient['patient_name']} (NHS: {patient['nhs_number']})
    Diagnosis: {patient['diagnosis']}
