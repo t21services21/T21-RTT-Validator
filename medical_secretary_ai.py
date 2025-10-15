@@ -53,20 +53,28 @@ def get_current_user_email():
 CORRESPONDENCE_DB = "correspondence.json"
 DIARY_DB = "diary.json"
 
+def load_correspondence_local():
+    """Load correspondence from local JSON file"""
+    if os.path.exists(CORRESPONDENCE_DB):
+        with open(CORRESPONDENCE_DB, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {'letters': []}
+
 def load_correspondence():
-    """Load correspondence database - Now uses Supabase"""
+    """Load correspondence database - Now uses Supabase with fallback"""
     user_email = get_current_user_email()
     if SUPABASE_ENABLED:
-        return {'letters': get_correspondence_for_user(user_email)}
+        try:
+            return {'letters': get_correspondence_for_user(user_email)}
+        except:
+            return load_correspondence_local()
     else:
-        if os.path.exists(CORRESPONDENCE_DB):
-            with open(CORRESPONDENCE_DB, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        return {'letters': []}
+        return load_correspondence_local()
 
 def save_correspondence(data):
-    """Save correspondence database - Deprecated"""
-    pass
+    """Save correspondence database to local JSON file"""
+    with open(CORRESPONDENCE_DB, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
 
 
 def ai_draft_clinic_letter(
@@ -244,33 +252,54 @@ def add_diary_event(consultant_name: str, event: Dict) -> Dict:
         'created_date': datetime.now().isoformat()
     }
 
+    # Try Supabase first, fall back to local storage if table doesn't exist
     if SUPABASE_ENABLED:
-        success, _ = create_diary_event(user_email, event_data)
-        if success:
-            return {'success': True, 'event_id': event_id, 'message': 'Event added successfully'}
-        else:
-            return {'success': False, 'message': 'Failed to save event to database'}
+        try:
+            success, error_msg = create_diary_event(user_email, event_data)
+            if success:
+                return {'success': True, 'event_id': event_id, 'message': 'Event added successfully'}
+            else:
+                # Fallback to local storage if Supabase fails
+                print(f"Supabase failed: {error_msg}, using local storage")
+                diary = load_diary_local()
+                diary['events'].append(event_data)
+                save_diary(diary)
+                return {'success': True, 'event_id': event_id, 'message': 'Event added successfully (local storage)'}
+        except Exception as e:
+            print(f"Supabase error: {e}, using local storage")
+            diary = load_diary_local()
+            diary['events'].append(event_data)
+            save_diary(diary)
+            return {'success': True, 'event_id': event_id, 'message': 'Event added successfully (local storage)'}
     else:
-        diary = load_diary()
+        diary = load_diary_local()
         diary['events'].append(event_data)
         save_diary(diary)
         return {'success': True, 'event_id': event_id, 'message': 'Event added successfully'}
 
 
+def load_diary_local():
+    """Load diary from local JSON file"""
+    if os.path.exists(DIARY_DB):
+        with open(DIARY_DB, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {'events': []}
+
 def load_diary():
-    """Load diary database - Now uses Supabase"""
+    """Load diary database - Now uses Supabase with fallback"""
     user_email = get_current_user_email()
     if SUPABASE_ENABLED:
-        return {'events': get_diary_events_for_user(user_email)}
+        try:
+            return {'events': get_diary_events_for_user(user_email)}
+        except:
+            return load_diary_local()
     else:
-        if os.path.exists(DIARY_DB):
-            with open(DIARY_DB, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        return {'events': []}
+        return load_diary_local()
 
 def save_diary(data):
-    """Save diary database - Deprecated"""
-    pass
+    """Save diary database to local JSON file"""
+    with open(DIARY_DB, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
 
 
 def check_diary_conflicts(consultant: str, date: str, start: str, end: str) -> List[Dict]:
