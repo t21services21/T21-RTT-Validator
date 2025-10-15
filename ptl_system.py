@@ -58,22 +58,30 @@ def load_ptl():
         # Use Supabase - PERMANENT STORAGE
         patients = get_ptl_patients_for_user(user_email)
         return {'patients': patients}
-    else:
-        # Fallback to session/file storage
-        try:
-            import streamlit as st
-            if 'ptl_data' not in st.session_state:
-                if os.path.exists(PTL_DATABASE):
-                    with open(PTL_DATABASE, 'r', encoding='utf-8') as f:
-                        st.session_state.ptl_data = json.load(f)
-                else:
-                    st.session_state.ptl_data = {'patients': []}
+    
+    # Fallback: Check session storage first
+    try:
+        import streamlit as st
+        if 'ptl_patients' in st.session_state and st.session_state.ptl_patients:
+            return {'patients': st.session_state.ptl_patients}
+        
+        # Then check old session key
+        if 'ptl_data' in st.session_state:
             return st.session_state.ptl_data
-        except:
-            if os.path.exists(PTL_DATABASE):
-                with open(PTL_DATABASE, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            return {'patients': []}
+        
+        # Then check file storage
+        if os.path.exists(PTL_DATABASE):
+            with open(PTL_DATABASE, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                st.session_state.ptl_data = data
+                return data
+        
+        return {'patients': []}
+    except:
+        if os.path.exists(PTL_DATABASE):
+            with open(PTL_DATABASE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {'patients': []}
 
 
 def save_ptl(data):
@@ -214,15 +222,33 @@ def add_patient_to_ptl(
         # Save to Supabase - PERMANENT!
         success, result = add_ptl_patient(user_email, patient)
         if success:
+            print(f"✅ Patient saved to Supabase: {patient_id}")
             return patient_id
         else:
-            print(f"Error saving patient: {result}")
-            return patient_id
-    else:
-        # Fallback to old method
+            print(f"⚠️ Supabase save failed: {result}")
+            print(f"Falling back to session storage...")
+            # Fall through to session storage
+    
+    # Fallback: Use session storage
+    try:
+        import streamlit as st
+        if 'ptl_patients' not in st.session_state:
+            st.session_state.ptl_patients = []
+        st.session_state.ptl_patients.append(patient)
+        print(f"✅ Patient saved to session storage: {patient_id}")
+        return patient_id
+    except:
+        # Last resort: file storage
         ptl = load_ptl()
+        if 'patients' not in ptl:
+            ptl['patients'] = []
         ptl['patients'].append(patient)
-        save_ptl(ptl)
+        try:
+            with open(PTL_DATABASE, 'w', encoding='utf-8') as f:
+                json.dump(ptl, f, indent=2)
+            print(f"✅ Patient saved to file storage: {patient_id}")
+        except:
+            print(f"⚠️ File save failed")
         return patient_id
 
 

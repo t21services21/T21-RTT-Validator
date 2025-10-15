@@ -399,6 +399,15 @@ def render_add_patient():
     
     st.subheader("➕ Add Patient to PTL")
     
+    # Show success message if patient was just added
+    if 'patient_added' in st.session_state:
+        patient_info = st.session_state['patient_added']
+        st.success(f"✅ Patient added to PTL! ID: {patient_info['patient_id']}")
+        st.balloons()
+        st.info(f"**{patient_info['patient_name']}** is now being tracked. View in 'Full Patient List' tab.")
+        # Clear the flag
+        del st.session_state['patient_added']
+    
     with st.form("add_patient_ptl"):
         col1, col2 = st.columns(2)
         
@@ -463,9 +472,11 @@ def render_add_patient():
                 if 'ptl_data' in st.session_state:
                     del st.session_state['ptl_data']
                 
-                st.success(f"✅ Patient added to PTL! ID: {patient_id}")
-                st.balloons()
-                st.info("Patient is now being tracked. View in 'Full Patient List' tab.")
+                # Set success message in session state so it persists after rerun
+                st.session_state['patient_added'] = {
+                    'patient_id': patient_id,
+                    'patient_name': patient_name
+                }
                 
                 # Force a rerun to refresh the data
                 st.rerun()
