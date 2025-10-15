@@ -164,6 +164,108 @@ def generate_clinic_slots(start_time: str, end_time: str, duration: int, capacit
     return slots
 
 
+def mark_appointment_attended(appointment_id: str) -> bool:
+    """Mark appointment as attended"""
+    user_email = get_current_user_email()
+    
+    updates = {
+        'status': 'Completed',
+        'attended': True,
+        'attendance_recorded_at': datetime.now().isoformat()
+    }
+    
+    if SUPABASE_ENABLED:
+        success, _ = update_appointment(user_email, appointment_id, updates)
+        return success
+    else:
+        appointments = load_appointments()
+        for appt in appointments['appointments']:
+            if appt['appointment_id'] == appointment_id:
+                appt.update(updates)
+                save_appointments(appointments)
+                return True
+        return False
+
+
+def mark_appointment_dna(appointment_id: str, reason: str = "") -> bool:
+    """Mark appointment as Did Not Attend (DNA)"""
+    user_email = get_current_user_email()
+    
+    updates = {
+        'status': 'No-Show',
+        'attended': False,
+        'dna_reason': reason,
+        'dna_recorded_at': datetime.now().isoformat()
+    }
+    
+    if SUPABASE_ENABLED:
+        success, _ = update_appointment(user_email, appointment_id, updates)
+        return success
+    else:
+        appointments = load_appointments()
+        for appt in appointments['appointments']:
+            if appt['appointment_id'] == appointment_id:
+                appt.update(updates)
+                save_appointments(appointments)
+                return True
+        return False
+
+
+def get_appointment_by_id(appointment_id: str) -> Optional[Dict]:
+    """Get specific appointment by ID"""
+    appointments = load_appointments()
+    all_appointments = appointments.get('appointments', [])
+    return next((a for a in all_appointments if a['appointment_id'] == appointment_id), None)
+
+
+def get_dna_rate(clinic_id: str = None, days: int = 30) -> Dict:
+    """Calculate DNA rate for clinic or overall"""
+    appointments = load_appointments()
+    all_appointments = appointments.get('appointments', [])
+    
+    # Filter by clinic if specified
+    if clinic_id:
+        all_appointments = [a for a in all_appointments if a.get('clinic_id') == clinic_id]
+    
+    # Filter by date range
+    cutoff_date = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
+    all_appointments = [a for a in all_appointments if a.get('appointment_date', '') >= cutoff_date]
+    
+    total = len(all_appointments)
+    dna = len([a for a in all_appointments if a.get('status', '').lower() == 'no-show'])
+    attended = len([a for a in all_appointments if a.get('status', '').lower() == 'completed'])
+    cancelled = len([a for a in all_appointments if a.get('status', '').lower() == 'cancelled'])
+    
+    dna_rate = (dna / total * 100) if total > 0 else 0
+    attendance_rate = (attended / total * 100) if total > 0 else 0
+    
+    return {
+        'total_appointments': total,
+        'attended': attended,
+        'dna': dna,
+        'cancelled': cancelled,
+        'dna_rate': round(dna_rate, 1),
+        'attendance_rate': round(attendance_rate, 1)
+    }
+
+
+def get_patient_dna_history(patient_nhs: str) -> List[Dict]:
+    """Get DNA history for a patient"""
+    appointments = load_appointments()
+    all_appointments = appointments.get('appointments', [])
+    
+    from unified_patient_system import normalize_nhs_number
+    patient_nhs_normalized = normalize_nhs_number(patient_nhs)
+    
+    dna_appointments = []
+    for appt in all_appointments:
+        if normalize_nhs_number(appt.get('nhs_number', '')) == patient_nhs_normalized:
+            if appt.get('status', '').lower() == 'no-show':
+                dna_appointments.append(appt)
+    
+    return dna_appointments
+
+
 def book_appointment(
     patient_name: str,
     nhs_number: str,

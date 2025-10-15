@@ -547,6 +547,53 @@ def use_backup_code(email, code):
         return False
 
 
+# ============================================
+# TASK MANAGEMENT - PERMANENT STORAGE
+# ============================================
+
+def create_task(user_email, task_data):
+    """Create a new task for a specific user."""
+    try:
+        task_data['user_email'] = user_email
+        result = supabase.table('tasks').insert(task_data).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+def get_tasks_for_user(user_email):
+    """Get all tasks for a specific user."""
+    try:
+        result = supabase.table('tasks').select('*').eq('user_email', user_email).execute()
+        return result.data if result.data else []
+    except Exception as e:
+        print(f"Error getting tasks: {e}")
+        return []
+
+def update_task(user_email, task_id, updates):
+    """Update a task's details."""
+    try:
+        updates['updated_at'] = datetime.now().isoformat()
+        result = supabase.table('tasks').update(updates).eq('task_id', task_id).eq('user_email', user_email).execute()
+        return True, result.data[0] if result.data else None
+    except Exception as e:
+        return False, str(e)
+
+def delete_task(user_email, task_id):
+    """Delete a task."""
+    try:
+        supabase.table('tasks').delete().eq('task_id', task_id).eq('user_email', user_email).execute()
+        return True
+    except Exception as e:
+        print(f"Error deleting task: {e}")
+        return False
+
+# Aliases for consistency
+supabase_create_task = create_task
+supabase_get_tasks_for_user = get_tasks_for_user
+supabase_update_task = update_task
+supabase_delete_task = delete_task
+
+
 if __name__ == "__main__":
     # Test connection when run directly
     print("Testing Supabase connection...")

@@ -42,12 +42,13 @@ def render_advanced_booking():
     """)
     
     # Tabs
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "📋 Book Appointment",
         "📅 Clinic Management",
         "🔍 Check Availability",
         "📊 Capacity Analysis",
-        "⚙️ Manage Appointments"
+        "⚙️ Manage Appointments",
+        "📉 DNA Analytics"
     ])
     
     with tab1:
@@ -64,6 +65,9 @@ def render_advanced_booking():
     
     with tab5:
         render_manage_appointments()
+    
+    with tab6:
+        render_dna_analytics()
 
 
 def render_book_appointment():
@@ -290,12 +294,158 @@ def render_capacity_analysis():
             st.error("❌ Please enter clinic ID")
 
 
+def render_appointments_list():
+    """View all booked appointments"""
+    from advanced_booking_system import load_appointments
+    
+    st.markdown("### 📋 All Booked Appointments")
+    
+    # Get all appointments
+    appointments_data = load_appointments()
+    appointments = appointments_data.get('appointments', [])
+    
+    if not appointments:
+        st.info("📅 No appointments booked yet")
+        return
+    
+    # Quick Stats Dashboard
+    st.markdown("#### 📊 Appointments Summary")
+    col1, col2, col3, col4 = st.columns(4)
+    
+    total = len(appointments)
+    confirmed = len([a for a in appointments if a.get('status', '').lower() == 'confirmed'])
+    cancelled = len([a for a in appointments if a.get('status', '').lower() == 'cancelled'])
+    completed = len([a for a in appointments if a.get('status', '').lower() == 'completed'])
+    
+    with col1:
+        st.metric("Total Appointments", total)
+    with col2:
+        st.metric("🟢 Confirmed", confirmed)
+    with col3:
+        st.metric("✅ Completed", completed)
+    with col4:
+        st.metric("🔴 Cancelled", cancelled)
+    
+    st.markdown("---")
+    
+    # Filters
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        status_filter = st.selectbox("Filter by Status", ["All", "Confirmed", "Cancelled", "Completed", "No-Show"])
+    with col2:
+        date_filter = st.date_input("Filter from Date", value=datetime.now().date())
+    with col3:
+        search = st.text_input("🔍 Search", placeholder="Patient name or NHS number")
+    
+    # Filter appointments
+    filtered = appointments
+    
+    if status_filter != "All":
+        filtered = [a for a in filtered if a.get('status', '').lower() == status_filter.lower()]
+    
+    if search:
+        filtered = [a for a in filtered if 
+                   search.lower() in a.get('patient_name', '').lower() or 
+                   search.lower() in a.get('nhs_number', '').lower()]
+    
+    # Sort by date
+    filtered.sort(key=lambda x: (x.get('appointment_date', ''), x.get('appointment_time', '')), reverse=True)
+    
+    # Display count
+    st.markdown(f"**Total Appointments:** {len(filtered)} (of {len(appointments)})")
+    
+    # Display appointments
+    for appt in filtered[:50]:  # Show max 50
+        status = appt.get('status', 'Unknown')
+        
+        # Color code by status
+        if status.lower() == 'confirmed':
+            status_color = "🟢"
+        elif status.lower() == 'cancelled':
+            status_color = "🔴"
+        elif status.lower() == 'completed':
+            status_color = "✅"
+        elif status.lower() == 'no-show':
+            status_color = "⚠️"
+        else:
+            status_color = "⚪"
+        
+        with st.expander(f"{status_color} {appt.get('patient_name', 'Unknown')} - {appt.get('appointment_date', 'N/A')} at {appt.get('appointment_time', 'N/A')}"):
+            col_a, col_b = st.columns(2)
+            
+            with col_a:
+                st.markdown(f"**Appointment ID:** {appt.get('appointment_id', 'N/A')}")
+                st.markdown(f"**Patient Name:** {appt.get('patient_name', 'N/A')}")
+                st.markdown(f"**NHS Number:** {appt.get('nhs_number', 'N/A')}")
+                st.markdown(f"**Status:** {status_color} {status}")
+            
+            with col_b:
+                st.markdown(f"**Date:** {appt.get('appointment_date', 'N/A')}")
+                st.markdown(f"**Time:** {appt.get('appointment_time', 'N/A')}")
+                st.markdown(f"**Specialty:** {appt.get('specialty', 'N/A')}")
+                st.markdown(f"**Consultant:** {appt.get('consultant', 'N/A')}")
+            
+            st.markdown(f"**Clinic:** {appt.get('clinic_id', 'N/A')} - {appt.get('clinic_location', 'N/A')}")
+            st.markdown(f"**Type:** {appt.get('appointment_type', 'N/A')}")
+            
+            if appt.get('notes'):
+                st.markdown(f"**Notes:** {appt.get('notes')}")
+            
+            # Quick actions
+            col1, col2, col3, col4 = st.columns(4)
+            
+            # Only show attendance buttons for confirmed appointments
+            if status.lower() == 'confirmed':
+                with col1:
+                    if st.button("✅ Attended", key=f"attended_{appt.get('appointment_id')}", use_container_width=True):
+                        from advanced_booking_system import mark_appointment_attended
+                        if mark_appointment_attended(appt.get('appointment_id')):
+                            st.success("✅ Marked as attended")
+                            st.rerun()
+                        else:
+                            st.error("❌ Failed to update")
+                with col2:
+                    if st.button("⚠️ DNA", key=f"dna_{appt.get('appointment_id')}", use_container_width=True):
+                        st.session_state[f"marking_dna_{appt.get('appointment_id')}"] = True
+            
+            with col3:
+                if st.button("❌ Cancel", key=f"cancel_{appt.get('appointment_id')}", use_container_width=True):
+                    st.session_state[f"cancelling_{appt.get('appointment_id')}"] = True
+            with col4:
+                if st.button("🔄 Reschedule", key=f"reschedule_{appt.get('appointment_id')}", use_container_width=True):
+                    st.session_state[f"rescheduling_{appt.get('appointment_id')}"] = True
+            
+            # DNA reason form
+            if st.session_state.get(f"marking_dna_{appt.get('appointment_id')}"):
+                with st.form(f"dna_form_{appt.get('appointment_id')}"):
+                    st.warning("⚠️ Mark as DNA (Did Not Attend)")
+                    dna_reason = st.text_area("Reason (optional)", placeholder="Patient didn't arrive, no call...")
+                    
+                    col_a, col_b = st.columns(2)
+                    with col_a:
+                        if st.form_submit_button("Confirm DNA", type="primary", use_container_width=True):
+                            from advanced_booking_system import mark_appointment_dna
+                            if mark_appointment_dna(appt.get('appointment_id'), dna_reason):
+                                st.success("⚠️ Marked as DNA")
+                                del st.session_state[f"marking_dna_{appt.get('appointment_id')}"]
+                                st.rerun()
+                            else:
+                                st.error("❌ Failed to update")
+                    with col_b:
+                        if st.form_submit_button("Cancel", use_container_width=True):
+                            del st.session_state[f"marking_dna_{appt.get('appointment_id')}"]
+                            st.rerun()
+
+
 def render_manage_appointments():
     """Manage existing appointments"""
     
     st.subheader("⚙️ Manage Appointments")
     
-    action = st.radio("Action", ["Cancel Appointment", "Reschedule Appointment"])
+    action = st.radio("Action", ["View All Appointments", "Cancel Appointment", "Reschedule Appointment"])
+    
+    if action == "View All Appointments":
+        render_appointments_list()
     
     if action == "Cancel Appointment":
         with st.form("cancel_appt"):
@@ -335,3 +485,111 @@ def render_manage_appointments():
                         st.error(f"❌ {result.get('message', 'Failed to reschedule')}")
                 else:
                     st.error("❌ Please fill all fields")
+
+
+def render_dna_analytics():
+    """DNA (Did Not Attend) Analytics and Tracking"""
+    from advanced_booking_system import get_dna_rate, load_appointments
+    
+    st.subheader("📉 DNA (Did Not Attend) Analytics")
+    
+    # Time period selection
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.markdown("### Overall DNA Statistics")
+    with col2:
+        days = st.selectbox("Time Period", [7, 14, 30, 60, 90, 180, 365], index=2)
+    
+    # Get DNA statistics
+    stats = get_dna_rate(days=days)
+    
+    # Summary cards
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Total Appointments", stats['total_appointments'])
+    with col2:
+        st.metric("✅ Attended", stats['attended'], 
+                 delta=f"{stats['attendance_rate']}% rate", 
+                 delta_color="normal")
+    with col3:
+        st.metric("⚠️ DNA", stats['dna'], 
+                 delta=f"{stats['dna_rate']}% rate",
+                 delta_color="inverse")
+    with col4:
+        st.metric("🔴 Cancelled", stats['cancelled'])
+    
+    # DNA Rate Analysis
+    st.markdown("---")
+    st.markdown("### DNA Rate Analysis")
+    
+    if stats['dna_rate'] < 5:
+        st.success(f"✅ Excellent! DNA rate is {stats['dna_rate']}% (Target: <5%)")
+    elif stats['dna_rate'] < 10:
+        st.info(f"ℹ️ Good. DNA rate is {stats['dna_rate']}% (Target: <5%)")
+    elif stats['dna_rate'] < 15:
+        st.warning(f"⚠️ DNA rate is {stats['dna_rate']}% - Needs improvement (Target: <5%)")
+    else:
+        st.error(f"❌ CRITICAL: DNA rate is {stats['dna_rate']}% - Urgent action required!")
+    
+    # Recent DNA List
+    st.markdown("---")
+    st.markdown("### Recent DNA Appointments")
+    
+    appointments_data = load_appointments()
+    all_appointments = appointments_data.get('appointments', [])
+    
+    # Filter DNAs
+    dna_appointments = [a for a in all_appointments if a.get('status', '').lower() == 'no-show']
+    dna_appointments.sort(key=lambda x: x.get('appointment_date', ''), reverse=True)
+    
+    if dna_appointments:
+        st.markdown(f"**{len(dna_appointments)} DNA appointments found**")
+        
+        for dna in dna_appointments[:20]:  # Show latest 20
+            with st.expander(f"⚠️ {dna.get('patient_name', 'Unknown')} - {dna.get('appointment_date', 'N/A')}"):
+                col_a, col_b = st.columns(2)
+                
+                with col_a:
+                    st.markdown(f"**Patient:** {dna.get('patient_name', 'Unknown')}")
+                    st.markdown(f"**NHS Number:** {dna.get('nhs_number', 'N/A')}")
+                    st.markdown(f"**Date:** {dna.get('appointment_date', 'N/A')}")
+                    st.markdown(f"**Time:** {dna.get('appointment_time', 'N/A')}")
+                
+                with col_b:
+                    st.markdown(f"**Specialty:** {dna.get('specialty', 'N/A')}")
+                    st.markdown(f"**Type:** {dna.get('appointment_type', 'N/A')}")
+                    st.markdown(f"**Consultant:** {dna.get('consultant', 'N/A')}")
+                    st.markdown(f"**Clinic:** {dna.get('clinic_id', 'N/A')}")
+                
+                if dna.get('dna_reason'):
+                    st.markdown(f"**Reason:** {dna.get('dna_reason')}")
+                
+                # DNA recorded info
+                if dna.get('dna_recorded_at'):
+                    st.caption(f"Recorded at: {dna.get('dna_recorded_at')}")
+    else:
+        st.success("✅ No DNA appointments in selected period!")
+    
+    # DNA Prevention Recommendations
+    st.markdown("---")
+    st.markdown("### 💡 DNA Prevention Recommendations")
+    
+    if stats['dna_rate'] > 5:
+        st.info("""
+        **Suggested Actions to Reduce DNA Rate:**
+        - Send SMS reminders 48h and 24h before appointment
+        - Call patients with history of DNAs
+        - Offer more convenient appointment times
+        - Implement patient transport support
+        - Review appointment booking process
+        - Consider telephone consultations as alternative
+        - Analyze DNA patterns by specialty/day/time
+        """)
+    else:
+        st.success("""
+        **Excellent DNA Rate! Keep up the good work:**
+        - Continue current reminder system
+        - Maintain flexible appointment times
+        - Keep monitoring DNA patterns
+        """)
+

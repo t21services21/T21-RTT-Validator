@@ -341,6 +341,26 @@ except:
     def render_advanced_booking(): st.info("Advanced booking unavailable")
 
 try:
+    from unified_patient_ui import render_unified_patient_search
+except:
+    def render_unified_patient_search(): st.info("Patient search unavailable")
+
+try:
+    from task_management_ui import render_task_management
+except:
+    def render_task_management(): st.info("Task management unavailable")
+
+try:
+    from executive_dashboard import render_executive_dashboard
+except:
+    def render_executive_dashboard(): st.info("Executive dashboard unavailable")
+
+try:
+    from clinical_letters_ui import render_clinical_letters
+except:
+    def render_clinical_letters(): st.info("Clinical letters unavailable")
+
+try:
     from medical_secretary_ui import render_medical_secretary
 except:
     def render_medical_secretary(): st.info("Medical secretary unavailable")
@@ -1379,13 +1399,21 @@ accessible_modules = list(dict.fromkeys(accessible_modules))
 # Show CORE modules only
 if not accessible_modules:
     accessible_modules = [
-        # === 🏥 CORE CLINICAL TOOLS (7 TESTED MODULES) ===
+        # === 🏥 CORE CLINICAL TOOLS (ENHANCED) ===
+        "📊 Executive Dashboard",  # NEW! Unified overview
+        "🔍 Patient Search",  # NEW! Unified patient records
+        "✅ Task Management",  # NEW! Track MDT actions
+        
+        # === CLINICAL MODULES ===
         "📋 PTL - Patient Tracking List",
-        "🤖 AI Auto-Validator",
         "🎗️ Cancer Pathways",
         "👥 MDT Coordination",
         "📅 Advanced Booking System",
+        
+        # === AI & AUTOMATION ===
+        "🤖 AI Auto-Validator",
         "📧 Medical Secretary AI",
+        "📄 Clinical Letters",  # NEW! Letter generator
         "📊 Data Quality System",
         
         # === 📊 CORE RTT VALIDATORS (4 TESTED MODULES) ===
@@ -1464,9 +1492,25 @@ st.sidebar.caption("No real patient data used")
 
 
 # ============================================
+# NEW MODULES - ENHANCED FEATURES
+# ============================================
+if tool == "📊 Executive Dashboard":
+    render_executive_dashboard()
+
+elif tool == "🔍 Patient Search":
+    render_unified_patient_search()
+
+elif tool == "✅ Task Management":
+    render_task_management()
+
+elif tool == "📄 Clinical Letters":
+    render_clinical_letters()
+
+
+# ============================================
 # TOOL 0: PTL - PATIENT TRACKING LIST (CRITICAL NHS TOOL!)
 # ============================================
-if tool == "📋 PTL - Patient Tracking List":
+elif tool == "📋 PTL - Patient Tracking List":
     render_ptl()
 
 
