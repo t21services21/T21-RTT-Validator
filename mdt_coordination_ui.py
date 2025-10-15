@@ -101,8 +101,9 @@ def render_mdt_dashboard():
         for meeting in upcoming[:5]:  # Show next 5
             with st.expander(f"📅 {meeting['specialty']} MDT - {meeting['meeting_date']} at {meeting['meeting_time']}"):
                 st.markdown(f"**Location:** {meeting['location']}")
-                st.markdown(f"**Chair:** {meeting['chair']}")
-                st.markdown(f"**Patients:** {len(meeting['patients'])}")
+                st.markdown(f"**Chair:** {meeting.get('chair_person') or meeting.get('chair', 'N/A')}")
+                patients = meeting.get('patients_discussed') or meeting.get('patients', [])
+                st.markdown(f"**Patients:** {len(patients)}")
                 st.markdown(f"**Status:** {meeting['status']}")
                 
                 if st.button("👁️ View Details", key=f"view_{meeting['meeting_id']}"):
@@ -252,10 +253,12 @@ def render_record_outcomes():
         meeting = get_mdt_meeting_by_id(meeting_id)
         
         if meeting:
-            st.markdown(f"### Patients in this MDT: {len(meeting['patients'])}")
+            # Get patients list (handle both old and new field names)
+            patients = meeting.get('patients_discussed') or meeting.get('patients', [])
+            st.markdown(f"### Patients in this MDT: {len(patients)}")
             
             # Show each patient
-            for idx, patient in enumerate(meeting['patients'], 1):
+            for idx, patient in enumerate(patients, 1):
                 with st.expander(f"{idx}. {patient['patient_name']} (NHS: {patient['nhs_number']})"):
                     st.markdown(f"**Diagnosis:** {patient['diagnosis']}")
                     st.markdown(f"**Presenter:** {patient['presenting_clinician']}")

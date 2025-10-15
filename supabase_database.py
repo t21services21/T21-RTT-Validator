@@ -338,7 +338,7 @@ def get_mdt_meetings_for_user(user_email):
 def update_mdt_meeting(user_email, meeting_id, updates):
     """Update an MDT meeting's details."""
     try:
-        updates['last_updated'] = datetime.now().isoformat()
+        updates['updated_at'] = datetime.now().isoformat()  # FIXED: Was 'last_updated'
         result = supabase.table('mdt_meetings').update(updates).eq('meeting_id', meeting_id).eq('user_email', user_email).execute()
         return True, result.data[0] if result.data else None
     except Exception as e:
@@ -396,7 +396,7 @@ def get_appointments_for_user(user_email):
 def update_appointment(user_email, appointment_id, updates):
     """Update an appointment's details."""
     try:
-        updates['last_updated'] = datetime.now().isoformat()
+        updates['updated_at'] = datetime.now().isoformat()  # FIXED: Was 'last_updated'
         result = supabase.table('appointments').update(updates).eq('appointment_id', appointment_id).eq('user_email', user_email).execute()
         return True, result.data[0] if result.data else None
     except Exception as e:
