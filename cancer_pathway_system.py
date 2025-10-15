@@ -200,7 +200,7 @@ def add_cancer_patient(
     patient_id = f"CANCER_{datetime.now().strftime('%Y%m%d%H%M%S')}"
     
     patient_data = {
-        'patient_id': patient_id,
+        'pathway_id': patient_id,  # CRITICAL FIX: Table expects pathway_id, not patient_id
         'patient_name': patient_name,
         'nhs_number': nhs_number,
         'cancer_type': cancer_type,
@@ -256,7 +256,7 @@ def add_cancer_milestone(
     ptl = load_cancer_ptl()
     
     for patient in ptl['patients']:
-        if patient['patient_id'] == patient_id:
+        if patient.get('pathway_id') == patient_id or patient.get('patient_id') == patient_id:
             # Calculate days from pathway start
             start_date = datetime.fromisoformat(patient['pathway_start_date'])
             milestone_dt = datetime.fromisoformat(milestone_date)
@@ -304,7 +304,7 @@ def get_cancer_patient_by_id(patient_id: str) -> Optional[Dict]:
     """Get specific cancer patient"""
     ptl = load_cancer_ptl()
     for patient in ptl['patients']:
-        if patient['patient_id'] == patient_id:
+        if patient.get('pathway_id') == patient_id or patient.get('patient_id') == patient_id:
             return patient
     return None
 

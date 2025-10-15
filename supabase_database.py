@@ -299,7 +299,7 @@ def update_cancer_patient(patient_id, user_email, updates):
     """Update a cancer patient's details."""
     try:
         updates['updated_at'] = datetime.now().isoformat()
-        result = supabase.table('cancer_pathways').update(updates).eq('patient_id', patient_id).eq('user_email', user_email).execute()
+        result = supabase.table('cancer_pathways').update(updates).eq('pathway_id', patient_id).eq('user_email', user_email).execute()
         return True, result.data[0] if result.data else None
     except Exception as e:
         return False, str(e)
@@ -307,7 +307,7 @@ def update_cancer_patient(patient_id, user_email, updates):
 def delete_cancer_patient(patient_id, user_email):
     """Delete a cancer patient."""
     try:
-        supabase.table('cancer_pathways').delete().eq('patient_id', patient_id).eq('user_email', user_email).execute()
+        supabase.table('cancer_pathways').delete().eq('pathway_id', patient_id).eq('user_email', user_email).execute()
         return True
     except Exception as e:
         return False, str(e)

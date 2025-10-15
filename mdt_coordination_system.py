@@ -45,12 +45,51 @@ def get_current_user_email():
 MDT_MEETINGS_DB = "mdt_meetings.json"
 
 
+def is_admin_or_supervisor():
+    """Check if current user is admin, staff, or tutor (can see all data)"""
+    try:
+        import streamlit as st
+        user_email = st.session_state.get('user_email', '')
+        user_type = st.session_state.get('user_type', 'student')
+        
+        # Check user type
+        if user_type in ['admin', 'staff', 'tutor', 'partner']:
+            return True
+        
+        # Check email domain
+        if any(domain in user_email.lower() for domain in ['@t21services', '@admin', '@staff', '@tutor']):
+            return True
+        
+        return False
+    except:
+        return False
+
+
 def load_mdt_meetings():
-    """Load MDT meetings database - Now uses Supabase for permanent per-user storage"""
+    """Load MDT meetings database - ADMINS SEE ALL DATA, students see only their own"""
     user_email = get_current_user_email()
+    is_supervisor = is_admin_or_supervisor()
+    
+    print(f"🔍 DEBUG MDT: Loading for user: {user_email} (Admin: {is_supervisor})")
     
     if SUPABASE_ENABLED:
-        return {'meetings': get_mdt_meetings_for_user(user_email)}
+        if is_supervisor:
+            # ADMINS/STAFF/TUTORS SEE ALL DATA
+            try:
+                from supabase_database import supabase
+                result = supabase.table('mdt_meetings').select('*').execute()
+                meetings = result.data if result.data else []
+                print(f"🔍 DEBUG MDT: ADMIN MODE - Loaded {len(meetings)} meetings (ALL USERS)")
+            except Exception as e:
+                print(f"Error loading all MDT data: {e}")
+                meetings = get_mdt_meetings_for_user(user_email)
+                print(f"🔍 DEBUG MDT: Fallback to user mode - {len(meetings)} meetings")
+        else:
+            # STUDENTS SEE ONLY THEIR OWN DATA
+            meetings = get_mdt_meetings_for_user(user_email)
+            print(f"🔍 DEBUG MDT: STUDENT MODE - {len(meetings)} meetings for {user_email}")
+        
+        return {'meetings': meetings}
     else:
         if os.path.exists(MDT_MEETINGS_DB):
             with open(MDT_MEETINGS_DB, 'r', encoding='utf-8') as f:

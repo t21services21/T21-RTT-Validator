@@ -116,6 +116,15 @@ def render_schedule_mdt():
     
     st.subheader("📅 Schedule MDT Meeting")
     
+    # Show success message if meeting was just scheduled
+    if 'mdt_meeting_scheduled' in st.session_state:
+        meeting_info = st.session_state['mdt_meeting_scheduled']
+        st.success(f"✅ MDT Meeting scheduled! ID: {meeting_info['meeting_id']}")
+        st.balloons()
+        st.info(f"Meeting scheduled for **{meeting_info['meeting_date']}**. View in 'MDT Dashboard' tab.")
+        # Clear the flag
+        del st.session_state['mdt_meeting_scheduled']
+    
     with st.form("schedule_mdt"):
         col1, col2 = st.columns(2)
         
@@ -155,8 +164,14 @@ def render_schedule_mdt():
                     notes=notes
                 )
                 
-                st.success(f"✅ MDT Meeting scheduled! ID: {meeting_id}")
-                st.balloons()
+                # Store success message in session state
+                st.session_state['mdt_meeting_scheduled'] = {
+                    'meeting_id': meeting_id,
+                    'meeting_date': str(meeting_date)
+                }
+                
+                # Force refresh to show new data
+                st.rerun()
 
 
 def render_add_patient_to_mdt():
