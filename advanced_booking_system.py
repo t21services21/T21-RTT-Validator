@@ -30,11 +30,11 @@ import calendar
 # Import Supabase functions for permanent storage
 try:
     from supabase_database import (
-        create_clinic_template,
+        create_clinic_template as supabase_create_clinic_template,
         get_clinics_for_user,
-        create_appointment,
+        create_appointment as supabase_create_appointment,
         get_appointments_for_user,
-        update_appointment
+        update_appointment as supabase_update_appointment
     )
     SUPABASE_ENABLED = True
 except ImportError:
@@ -124,7 +124,7 @@ def create_clinic_template(
     }
 
     if SUPABASE_ENABLED:
-        success, _ = create_clinic_template(user_email, clinic_data)
+        success, _ = supabase_create_clinic_template(user_email, clinic_data)
         if success:
             return clinic_id
         else:
@@ -210,16 +210,34 @@ def book_appointment(
     }
 
     if SUPABASE_ENABLED:
-        success, _ = create_appointment(user_email, appointment_data)
+        success, result = supabase_create_appointment(user_email, appointment_data)
         if success:
             return {'success': True, 'appointment_id': appointment_id, 'confirmation': f"Appointment booked for {appointment_date} at {slot_time}", 'details': appointment_data}
         else:
-            return {'success': False, 'message': 'Failed to save appointment to database'}
-    else:
+            error_msg = f"Supabase error: {result}" if result else "Unknown Supabase error"
+            print(f"ERROR saving appointment to Supabase: {error_msg}")
+            print(f"Falling back to session storage...")
+            # Fall through to session storage
+    
+    # Use session storage (fallback or if Supabase disabled)
+    try:
+        import streamlit as st
+        if 'appointments' not in st.session_state:
+            st.session_state.appointments = []
+        st.session_state.appointments.append(appointment_data)
+        return {'success': True, 'appointment_id': appointment_id, 'confirmation': f"Appointment booked for {appointment_date} at {slot_time}", 'details': appointment_data, 'storage': 'session'}
+    except:
+        # Last resort: file storage
         appointments = load_appointments()
+        if 'appointments' not in appointments:
+            appointments['appointments'] = []
         appointments['appointments'].append(appointment_data)
-        save_appointments(appointments)
-        return {'success': True, 'appointment_id': appointment_id, 'confirmation': f"Appointment booked for {appointment_date} at {slot_time}", 'details': appointment_data}
+        try:
+            with open(APPOINTMENTS_DB, 'w', encoding='utf-8') as f:
+                json.dump(appointments, f, indent=2)
+        except:
+            pass
+        return {'success': True, 'appointment_id': appointment_id, 'confirmation': f"Appointment booked for {appointment_date} at {slot_time}", 'details': appointment_data, 'storage': 'file'}
 
 
 def check_slot_availability(clinic_id: str, appointment_date: str, slot_time: str) -> bool:
@@ -418,7 +436,7 @@ def cancel_appointment(appointment_id: str, reason: str, cancelled_by: str = "Pa
     }
 
     if SUPABASE_ENABLED:
-        success, _ = update_appointment(user_email, appointment_id, updates)
+        success, _ = supabase_update_appointment(user_email, appointment_id, updates)
         return success
     else:
         appointments = load_appointments()

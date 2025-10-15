@@ -459,9 +459,16 @@ def render_add_patient():
                     notes=notes
                 )
                 
+                # Clear any cached data to force refresh
+                if 'ptl_data' in st.session_state:
+                    del st.session_state['ptl_data']
+                
                 st.success(f"✅ Patient added to PTL! ID: {patient_id}")
                 st.balloons()
                 st.info("Patient is now being tracked. View in 'Full Patient List' tab.")
+                
+                # Force a rerun to refresh the data
+                st.rerun()
 
 
 def render_breach_alerts():

@@ -21,10 +21,10 @@ from typing import List, Dict, Optional
 # Import Supabase functions for permanent storage
 try:
     from supabase_database import (
-        create_mdt_meeting,
+        create_mdt_meeting as supabase_create_mdt_meeting,
         get_mdt_meetings_for_user,
-        update_mdt_meeting,
-        delete_mdt_meeting
+        update_mdt_meeting as supabase_update_mdt_meeting,
+        delete_mdt_meeting as supabase_delete_mdt_meeting
     )
     SUPABASE_ENABLED = True
 except ImportError:
@@ -111,7 +111,7 @@ def create_mdt_meeting(
     }
 
     if SUPABASE_ENABLED:
-        success, result = create_mdt_meeting(user_email, meeting_data)
+        success, result = supabase_create_mdt_meeting(user_email, meeting_data)
         if success:
             return meeting_id
         else:
@@ -170,7 +170,7 @@ def add_patient_to_mdt(
     }
 
     if SUPABASE_ENABLED:
-        success, _ = update_mdt_meeting(user_email, meeting_id, updates)
+        success, _ = supabase_update_mdt_meeting(user_email, meeting_id, updates)
         return success
     else:
         # Fallback logic
@@ -222,7 +222,7 @@ def record_mdt_outcome(
     }
 
     if SUPABASE_ENABLED:
-        success, _ = update_mdt_meeting(user_email, meeting_id, updates)
+        success, _ = supabase_update_mdt_meeting(user_email, meeting_id, updates)
         return success
     else:
         # Fallback logic
@@ -259,7 +259,7 @@ def complete_mdt_meeting(meeting_id: str, summary: str = "") -> bool:
     }
 
     if SUPABASE_ENABLED:
-        success, _ = update_mdt_meeting(user_email, meeting_id, updates)
+        success, _ = supabase_update_mdt_meeting(user_email, meeting_id, updates)
         return success
     else:
         # Fallback logic
