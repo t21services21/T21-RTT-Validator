@@ -189,8 +189,9 @@ def render_cancer_patient_list():
 def render_cancer_patient_card(patient: dict):
     """Render individual cancer patient card"""
     
-    # Calculate breach info
-    days = calculate_cancer_days_waiting(patient['pathway_start_date'])
+    # Calculate breach info - use helper function for field compatibility
+    from cancer_pathway_system import get_pathway_start_date
+    days = calculate_cancer_days_waiting(get_pathway_start_date(patient))
     breach_info = get_cancer_breach_status(days, patient['pathway_type'])
     
     # Color based on breach risk
@@ -233,12 +234,14 @@ def render_cancer_patient_card(patient: dict):
                 st.markdown(f"⚠️ BREACHED by {abs(breach_info['days_to_breach'])} days")
         
         with col4:
-            st.markdown(f"**Milestones: {len(patient['milestones'])}**")
-            if st.button("👁️ View", key=f"view_{patient['patient_id']}"):
-                st.session_state[f"viewing_{patient['patient_id']}"] = True
+            # Get patient ID (compatible with both field names)
+            patient_id = patient.get('pathway_id') or patient.get('patient_id')
+            st.markdown(f"**Milestones: {len(patient.get('milestones', []))}**")
+            if st.button("👁️ View", key=f"view_{patient_id}"):
+                st.session_state[f"viewing_{patient_id}"] = True
             
-            if st.button("➕ Add Milestone", key=f"milestone_{patient['patient_id']}"):
-                st.session_state[f"adding_milestone_{patient['patient_id']}"] = True
+            if st.button("➕ Add Milestone", key=f"milestone_{patient_id}"):
+                st.session_state[f"adding_milestone_{patient_id}"] = True
         
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -318,8 +321,9 @@ def render_cancer_breach_alerts():
     st.markdown(f"### 🔴 CRITICAL - {len(critical_patients)} Patients")
     
     if critical_patients:
+        from cancer_pathway_system import get_pathway_start_date
         for patient in critical_patients:
-            days = calculate_cancer_days_waiting(patient['pathway_start_date'])
+            days = calculate_cancer_days_waiting(get_pathway_start_date(patient))
             breach_info = get_cancer_breach_status(days, patient['pathway_type'])
             
             st.error(f"""
@@ -336,8 +340,9 @@ def render_cancer_breach_alerts():
     st.markdown(f"### 🟠 HIGH RISK - {len(high_risk_patients)} Patients")
     
     if high_risk_patients:
+        from cancer_pathway_system import get_pathway_start_date
         for patient in high_risk_patients:
-            days = calculate_cancer_days_waiting(patient['pathway_start_date'])
+            days = calculate_cancer_days_waiting(get_pathway_start_date(patient))
             breach_info = get_cancer_breach_status(days, patient['pathway_type'])
             
             st.warning(f"""
