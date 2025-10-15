@@ -1414,6 +1414,10 @@ if not accessible_modules:
         "🔍 Patient Search",  # NEW! Unified patient records
         "✅ Task Management",  # NEW! Track MDT actions
         
+        # === PATIENT ADMINISTRATION (NEW!) ===
+        "👤 Patient Registration",  # NEW! Complete patient registration
+        "📋 Episode Management",  # NEW! Consultant/Treatment/Diagnostic episodes
+        
         # === CLINICAL MODULES ===
         "📋 PTL - Patient Tracking List",
         "🎗️ Cancer Pathways",
@@ -4930,6 +4934,18 @@ elif tool == "📊 Executive Dashboard":
         navigate_with_history("Executive Dashboard", "/executive_dashboard", "pages/executive_dashboard.py")
     else:
         st.switch_page("pages/executive_dashboard.py")
+
+# ============================================
+# NEW PATIENT ADMINISTRATION MODULES
+# ============================================
+elif tool == "👤 Patient Registration":
+    from patient_registration_ui import render_patient_registration
+    render_patient_registration()
+
+elif tool == "📋 Episode Management":
+    from episode_management_ui import render_episode_management
+    render_episode_management()
+
 elif tool == "🗣️ Voice AI Interface":
     if BROWSER_HISTORY_ENABLED:
         navigate_with_history("Voice AI", "/voice_ai_interface", "pages/voice_ai_interface.py")
