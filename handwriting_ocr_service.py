@@ -36,16 +36,16 @@ class HandwritingOCRService:
             return {"success": False, "error": "File not found"}
         
         try:
-            import openai
+            from openai import OpenAI
             
             # Read and encode image
             with open(image_path, 'rb') as image_file:
                 image_data = base64.b64encode(image_file.read()).decode('utf-8')
             
-            # Use GPT-4 Vision for OCR
-            openai.api_key = self.api_key
+            # Initialize OpenAI client
+            client = OpenAI(api_key=self.api_key)
             
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model="gpt-4-vision-preview",
                 messages=[
                     {

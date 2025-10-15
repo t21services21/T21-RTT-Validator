@@ -13,7 +13,7 @@ Features:
 """
 
 import streamlit as st
-import openai
+from openai import OpenAI
 import os
 from datetime import datetime
 import json
@@ -43,7 +43,8 @@ def ai_validate_pathway(patient_data):
             st.info("ℹ️ Running in Training Mode (No API key found). Using simulated AI analysis.")
             return _mock_pathway_validation(patient_data)
         
-        openai.api_key = api_key
+        # Initialize OpenAI client
+        client = OpenAI(api_key=api_key)
         
         # Construct prompt for AI
         prompt = f"""
@@ -75,8 +76,8 @@ def ai_validate_pathway(patient_data):
         }}
         """
         
-        # Call GPT-4
-        response = openai.ChatCompletion.create(
+        # Call GPT-4 with new API
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are an expert NHS RTT validator."},
@@ -137,7 +138,8 @@ def ai_analyze_clinical_letter(letter_text):
             st.info("ℹ️ Running in Training Mode (No API key found). Using simulated AI analysis.")
             return _mock_clinical_letter_analysis(letter_text)
         
-        openai.api_key = api_key
+        # Initialize OpenAI client
+        client = OpenAI(api_key=api_key)
         
         prompt = f"""
         You are an expert NHS clinical letter analyst specializing in RTT pathways.
@@ -166,7 +168,7 @@ def ai_analyze_clinical_letter(letter_text):
         Respond in JSON format with all extracted information.
         """
         
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are an expert clinical letter analyst."},
@@ -209,7 +211,8 @@ def ai_predict_breach_risk(pathway_data):
         if not api_key:
             return {'success': False, 'error': 'API key not configured'}
         
-        openai.api_key = api_key
+        # Initialize OpenAI client
+        client = OpenAI(api_key=api_key)
         
         prompt = f"""
         You are an NHS RTT breach prediction expert.
@@ -229,7 +232,7 @@ def ai_predict_breach_risk(pathway_data):
         Respond in JSON format.
         """
         
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are an RTT breach prediction expert."},
@@ -269,7 +272,8 @@ def ai_suggest_optimization(workflow_data):
         if not api_key:
             return {'success': False, 'error': 'API key not configured'}
         
-        openai.api_key = api_key
+        # Initialize OpenAI client
+        client = OpenAI(api_key=api_key)
         
         prompt = f"""
         You are a healthcare workflow optimization expert.
@@ -291,7 +295,7 @@ def ai_suggest_optimization(workflow_data):
         Respond in JSON format.
         """
         
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are a workflow optimization expert."},
