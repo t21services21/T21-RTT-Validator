@@ -5176,7 +5176,32 @@ elif tool == "🎓 Training & Certification":
         elif accessible_count < len(scenarios):
             st.info(f"🔒 You have access to {accessible_count} scenarios. Upgrade to unlock all {len(scenarios)} scenarios!")
         
-        for scenario in scenarios[:20]:  # Show first 20 for now
+        # Pagination for scenarios
+        scenarios_per_page = 50
+        total_pages = (len(scenarios) + scenarios_per_page - 1) // scenarios_per_page
+        
+        if 'scenario_page' not in st.session_state:
+            st.session_state['scenario_page'] = 0
+        
+        # Page navigation
+        col_nav1, col_nav2, col_nav3 = st.columns([1, 2, 1])
+        with col_nav1:
+            if st.button("⬅️ Previous", disabled=(st.session_state['scenario_page'] == 0)):
+                st.session_state['scenario_page'] -= 1
+                st.rerun()
+        with col_nav2:
+            st.markdown(f"**Page {st.session_state['scenario_page'] + 1} of {total_pages}** (Showing scenarios {st.session_state['scenario_page'] * scenarios_per_page + 1}-{min((st.session_state['scenario_page'] + 1) * scenarios_per_page, len(scenarios))})")
+        with col_nav3:
+            if st.button("Next ➡️", disabled=(st.session_state['scenario_page'] >= total_pages - 1)):
+                st.session_state['scenario_page'] += 1
+                st.rerun()
+        
+        # Get scenarios for current page
+        start_idx = st.session_state['scenario_page'] * scenarios_per_page
+        end_idx = min(start_idx + scenarios_per_page, len(scenarios))
+        page_scenarios = scenarios[start_idx:end_idx]
+        
+        for scenario in page_scenarios:
             scenario_id = f"scenario_{scenario['id']:02d}"
             has_access = has_full_access or user_has_module_access(user_email, scenario_id)
             
@@ -5237,31 +5262,101 @@ elif tool == "🎓 Training & Certification":
         st.header("🎮 Interactive RTT Learning Center")
         st.markdown("**Gamified AI-Powered Learning System** - Learn faster with interactive quizzes!")
         
-        # Show actual quiz interface
-        st.markdown("### 🎯 Choose Your Learning Mode")
+        # Initialize quiz state
+        if 'quiz_mode' not in st.session_state:
+            st.session_state['quiz_mode'] = None
+        if 'quiz_score' not in st.session_state:
+            st.session_state['quiz_score'] = 0
+        if 'quiz_questions_done' not in st.session_state:
+            st.session_state['quiz_questions_done'] = 0
+        if 'quiz_current_question' not in st.session_state:
+            st.session_state['quiz_current_question'] = 0
         
-        col1, col2 = st.columns(2)
+        # Show mode selection or quiz
+        if st.session_state['quiz_mode'] is None:
+            # Show actual quiz interface
+            st.markdown("### 🎯 Choose Your Learning Mode")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                if st.button("📚 Practice Mode", key="practice_mode", use_container_width=True, type="primary"):
+                    st.session_state['quiz_mode'] = 'practice'
+                    st.session_state['quiz_current_question'] = 0
+                    st.rerun()
+            
+            with col2:
+                if st.button("⚡ Challenge Mode", key="challenge_mode", use_container_width=True, type="primary"):
+                    st.session_state['quiz_mode'] = 'challenge'
+                    st.session_state['quiz_current_question'] = 0
+                    st.rerun()
+            
+            # Show quiz metrics
+            col_a, col_b, col_c, col_d = st.columns(4)
+            with col_a:
+                st.metric("🏆 Total Points", st.session_state.get('quiz_score', 0))
+            with col_b:
+                accuracy = (st.session_state['quiz_score'] / st.session_state['quiz_questions_done'] * 100) if st.session_state['quiz_questions_done'] > 0 else 0
+                st.metric("✅ Accuracy", f"{accuracy:.0f}%")
+            with col_c:
+                st.metric("🔥 Current Streak", "0")
+            with col_d:
+                st.metric("📊 Completed", st.session_state.get('quiz_questions_done', 0))
+            
+            st.info("✨ Select a mode above to start learning!")
         
-        with col1:
-            if st.button("📚 Practice Mode", key="practice_mode", use_container_width=True):
-                st.session_state['quiz_mode'] = 'practice'
-        
-        with col2:
-            if st.button("⚡ Challenge Mode", key="challenge_mode", use_container_width=True):
-                st.session_state['quiz_mode'] = 'challenge'
-        
-        # Show quiz metrics
-        col_a, col_b, col_c, col_d = st.columns(4)
-        with col_a:
-            st.metric("🏆 Total Points", "0")
-        with col_b:
-            st.metric("✅ Accuracy", "0%")
-        with col_c:
-            st.metric("🔥 Current Streak", "0")
-        with col_d:
-            st.metric("📊 Completed", "0")
-        
-        st.info("✨ Select a mode above to start learning!")
+        else:
+            # Quiz is active!
+            st.success(f"🎮 **{st.session_state['quiz_mode'].title()} Mode Active!**")
+            
+            # Get a random scenario
+            scenarios = get_all_scenarios()
+            if scenarios and st.session_state['quiz_current_question'] < len(scenarios):
+                scenario = scenarios[st.session_state['quiz_current_question']]
+                
+                st.markdown(f"### Question {st.session_state['quiz_current_question'] + 1}")
+                st.markdown(f"**Difficulty:** {scenario.get('difficulty', 'Medium')}")
+                
+                st.text_area("Clinical Letter:", scenario.get('letter', ''), height=200, disabled=True, key=f"quiz_letter_{st.session_state['quiz_current_question']}")
+                
+                st.markdown("**What RTT code should be used?**")
+                
+                user_answer = st.radio(
+                    "Select your answer:",
+                    ["10", "11", "12", "20", "21", "30", "31", "32", "33", "34", "35", "36", "90", "91", "92", "98"],
+                    key=f"quiz_answer_{st.session_state['quiz_current_question']}",
+                    horizontal=True
+                )
+                
+                col_submit, col_exit = st.columns([3, 1])
+                
+                with col_submit:
+                    if st.button("✅ Submit Answer", type="primary", use_container_width=True):
+                        result = check_scenario_answer(scenario['id'], user_answer)
+                        if result['correct']:
+                            st.success("✅ CORRECT! +10 points")
+                            st.session_state['quiz_score'] += 10
+                        else:
+                            st.error(f"❌ Incorrect. Correct answer: Code {result['correct_answer']}")
+                        
+                        st.info(f"**Explanation:** {result.get('explanation', '')}")
+                        st.session_state['quiz_questions_done'] += 1
+                        st.session_state['quiz_current_question'] += 1
+                        
+                        if st.button("➡️ Next Question"):
+                            st.rerun()
+                
+                with col_exit:
+                    if st.button("❌ Exit Quiz", use_container_width=True):
+                        st.session_state['quiz_mode'] = None
+                        st.rerun()
+            else:
+                st.success("🎉 Quiz Complete!")
+                st.metric("Final Score", st.session_state['quiz_score'])
+                if st.button("🔄 Start New Quiz"):
+                    st.session_state['quiz_mode'] = None
+                    st.session_state['quiz_current_question'] = 0
+                    st.rerun()
     
     with tabs[2]:
         # ACTUALLY RENDER AI TUTOR
@@ -5299,30 +5394,147 @@ elif tool == "🎓 Training & Certification":
         st.header("🎓 RTT Certification Exam")
         st.markdown("**Become a Certified RTT Professional!**")
         
-        st.warning("⚠️ This is a timed exam. You must complete all questions in one sitting.")
+        # Initialize exam state
+        if 'exam_started' not in st.session_state:
+            st.session_state['exam_started'] = False
+        if 'exam_question_num' not in st.session_state:
+            st.session_state['exam_question_num'] = 0
+        if 'exam_answers' not in st.session_state:
+            st.session_state['exam_answers'] = {}
+        if 'exam_score' not in st.session_state:
+            st.session_state['exam_score'] = 0
         
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("📋 Questions", "50")
-        with col2:
-            st.metric("⏱️ Time Limit", "90 min")
-        with col3:
-            st.metric("✅ Pass Mark", "80%")
+        if not st.session_state['exam_started']:
+            # Exam not started - show info
+            st.warning("⚠️ This is a timed exam. You must complete all questions in one sitting.")
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("📋 Questions", "50")
+            with col2:
+                st.metric("⏱️ Time Limit", "90 min")
+            with col3:
+                st.metric("✅ Pass Mark", "80%")
+            
+            st.markdown("### 📚 Exam Coverage:")
+            st.success("""
+            **Topics Covered:**
+            - All RTT codes (10-98)
+            - Pathway management
+            - Clock rules
+            - Complex scenarios
+            - Real-world cases
+            - Edge cases & exceptions
+            """)
+            
+            if st.button("🚀 Start Certification Exam", type="primary", use_container_width=True):
+                st.session_state['exam_started'] = True
+                st.session_state['exam_question_num'] = 0
+                st.session_state['exam_answers'] = {}
+                st.session_state['exam_score'] = 0
+                st.rerun()
         
-        st.markdown("### 📚 Exam Coverage:")
-        st.success("""
-        **Topics Covered:**
-        - All RTT codes (10-98)
-        - Pathway management
-        - Clock rules
-        - Complex scenarios
-        - Real-world cases
-        - Edge cases & exceptions
-        """)
+        elif st.session_state['exam_question_num'] < 50:
+            # Exam in progress
+            scenarios = get_all_scenarios()
+            if scenarios:
+                # Get current question
+                scenario = scenarios[st.session_state['exam_question_num']]
+                
+                st.success(f"🎯 **Exam in Progress** - Question {st.session_state['exam_question_num'] + 1} of 50")
+                
+                # Progress bar
+                progress = (st.session_state['exam_question_num']) / 50
+                st.progress(progress)
+                
+                st.markdown(f"**Difficulty:** {scenario.get('difficulty', 'Medium')}")
+                st.text_area("Clinical Scenario:", scenario.get('letter', ''), height=250, disabled=True, key=f"exam_q_{st.session_state['exam_question_num']}")
+                
+                st.markdown("### What RTT code should be used?")
+                
+                answer = st.radio(
+                    "Select your answer:",
+                    ["10", "11", "12", "20", "21", "30", "31", "32", "33", "34", "35", "36", "90", "91", "92", "98"],
+                    key=f"exam_answer_{st.session_state['exam_question_num']}",
+                    horizontal=True
+                )
+                
+                col_next, col_cancel = st.columns([3, 1])
+                
+                with col_next:
+                    if st.button("➡️ Next Question", type="primary", use_container_width=True):
+                        # Check answer
+                        result = check_scenario_answer(scenario['id'], answer)
+                        st.session_state['exam_answers'][st.session_state['exam_question_num']] = {
+                            'user_answer': answer,
+                            'correct': result['correct'],
+                            'correct_answer': result['correct_answer']
+                        }
+                        
+                        if result['correct']:
+                            st.session_state['exam_score'] += 2  # 2 points per question = 100 total
+                        
+                        st.session_state['exam_question_num'] += 1
+                        st.rerun()
+                
+                with col_cancel:
+                    if st.button("❌ Cancel Exam", use_container_width=True):
+                        if st.checkbox("Are you sure? Progress will be lost."):
+                            st.session_state['exam_started'] = False
+                            st.session_state['exam_question_num'] = 0
+                            st.session_state['exam_answers'] = {}
+                            st.rerun()
         
-        if st.button("🚀 Start Certification Exam", type="primary", use_container_width=True):
-            st.info("Exam will start. Make sure you have 90 minutes available.")
-            st.warning("Note: Full exam functionality requires completion. Currently showing preview.")
+        else:
+            # Exam complete!
+            st.balloons()
+            st.success("🎉 **EXAM COMPLETE!**")
+            
+            final_score = st.session_state['exam_score']
+            percentage = (final_score / 100) * 100
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("📊 Final Score", f"{final_score}/100")
+            with col2:
+                st.metric("📈 Percentage", f"{percentage:.1f}%")
+            with col3:
+                if percentage >= 80:
+                    st.metric("✅ Result", "PASS", delta="Certified!")
+                else:
+                    st.metric("❌ Result", "FAIL", delta="Try again")
+            
+            if percentage >= 80:
+                st.success("""
+                🎓 **CONGRATULATIONS!**
+                
+                You have successfully passed the RTT Certification Exam!
+                
+                You are now a **Certified RTT Professional**
+                
+                Certificate will be generated and emailed to you.
+                """)
+            else:
+                st.warning(f"""
+                You scored {percentage:.1f}% - Pass mark is 80%.
+                
+                Don't worry! Review the training materials and try again.
+                
+                You can retake the exam after 24 hours.
+                """)
+            
+            # Review answers
+            if st.checkbox("📋 Review Your Answers"):
+                for q_num, ans_data in st.session_state['exam_answers'].items():
+                    icon = "✅" if ans_data['correct'] else "❌"
+                    st.markdown(f"{icon} **Question {q_num + 1}:** Your answer: {ans_data['user_answer']} | Correct: {ans_data['correct_answer']}")
+            
+            if st.button("🔄 Take Another Exam"):
+                st.session_state['exam_started'] = False
+                st.session_state['exam_question_num'] = 0
+                st.session_state['exam_answers'] = {}
+                st.session_state['exam_score'] = 0
+                st.rerun()
 
 elif tool == "💼 Career Development":
     st.header("💼 Career Development")
