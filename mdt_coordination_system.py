@@ -240,13 +240,22 @@ def record_mdt_outcome(
     meeting = get_mdt_meeting_by_id(meeting_id)
 
     if not meeting:
+        print(f"❌ ERROR: Meeting {meeting_id} not found")
+        import streamlit as st
+        st.error(f"❌ ERROR: Meeting {meeting_id} not found")
         return False
 
     # CRITICAL FIX: Use correct field name
     patients = meeting.get('patients_discussed') or meeting.get('patients', [])
+    
+    print(f"🔍 DEBUG: Meeting has {len(patients)} patients")
+    print(f"🔍 DEBUG: Looking for NHS number: {nhs_number}")
+    
     patient_updated = False
     for patient in patients:
-        if patient.get('nhs_number') == nhs_number:
+        patient_nhs = patient.get('nhs_number', '')
+        print(f"🔍 DEBUG: Checking patient NHS: {patient_nhs}")
+        if patient_nhs == nhs_number:
             patient['outcome'] = outcome
             patient['decision'] = decision
             patient['actions'] = actions
@@ -254,9 +263,14 @@ def record_mdt_outcome(
             patient['discussed'] = True
             patient['outcome_recorded_date'] = datetime.now().isoformat()
             patient_updated = True
+            print(f"✅ DEBUG: Updated patient {patient.get('patient_name')}")
             break
 
     if not patient_updated:
+        print(f"❌ ERROR: Patient with NHS {nhs_number} not found in meeting")
+        import streamlit as st
+        st.error(f"❌ ERROR: Patient with NHS {nhs_number} not found in this meeting")
+        st.error(f"Available patients: {', '.join([p.get('patient_name', 'Unknown') for p in patients])}")
         return False
 
     updates = {
@@ -265,7 +279,11 @@ def record_mdt_outcome(
     }
 
     if SUPABASE_ENABLED:
-        success, _ = supabase_update_mdt_meeting(user_email, meeting_id, updates)
+        success, result = supabase_update_mdt_meeting(user_email, meeting_id, updates)
+        if not success:
+            print(f"❌ ERROR: Supabase update failed: {result}")
+            import streamlit as st
+            st.error(f"❌ Database error: {result}")
         return success
     else:
         # Fallback logic

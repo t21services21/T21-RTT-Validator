@@ -295,6 +295,11 @@ def render_record_outcomes():
                                 if success:
                                     st.success("✅ Outcome recorded!")
                                     st.rerun()
+                                else:
+                                    st.error("❌ Failed to record outcome. Please check:")
+                                    st.error(f"- Meeting ID: {meeting_id}")
+                                    st.error(f"- NHS Number: {patient['nhs_number']}")
+                                    st.error("- Make sure patient was added to this meeting first")
             
             # Complete meeting button
             if meeting['status'] != 'COMPLETED':
