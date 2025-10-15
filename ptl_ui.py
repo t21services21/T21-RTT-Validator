@@ -114,6 +114,13 @@ def render_ptl_dashboard():
     
     st.subheader("📊 PTL Dashboard")
     
+    # UNIVERSAL DEBUG PANEL
+    try:
+        from universal_debug_panel import show_universal_debug_info
+        show_universal_debug_info()
+    except:
+        pass
+    
     # DEBUG: Show current user email and session info
     from ptl_system import get_current_user_email
     current_email = get_current_user_email()

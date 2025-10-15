@@ -74,6 +74,13 @@ def render_cancer_dashboard():
     
     st.subheader("📊 Cancer PTL Dashboard")
     
+    # UNIVERSAL DEBUG PANEL
+    try:
+        from universal_debug_panel import show_universal_debug_info
+        show_universal_debug_info()
+    except:
+        pass
+    
     stats = get_cancer_ptl_stats()
     
     # Key metrics
@@ -241,6 +248,15 @@ def render_add_cancer_patient():
     
     st.subheader("➕ Add Cancer Patient to PTL")
     
+    # Show success message if patient was just added
+    if 'cancer_patient_added' in st.session_state:
+        patient_info = st.session_state['cancer_patient_added']
+        st.success(f"✅ Cancer patient added to PTL! ID: {patient_info['patient_id']}")
+        st.balloons()
+        st.info(f"**{patient_info['patient_name']}** is now being tracked. View in 'Cancer Patient List' tab.")
+        # Clear the flag
+        del st.session_state['cancer_patient_added']
+    
     with st.form("add_cancer_patient"):
         col1, col2 = st.columns(2)
         
@@ -280,8 +296,14 @@ def render_add_cancer_patient():
                     notes=notes
                 )
                 
-                st.success(f"✅ Cancer patient added to PTL! ID: {patient_id}")
-                st.balloons()
+                # Store success message in session state
+                st.session_state['cancer_patient_added'] = {
+                    'patient_id': patient_id,
+                    'patient_name': patient_name
+                }
+                
+                # Force refresh to show new data
+                st.rerun()
 
 
 def render_cancer_breach_alerts():

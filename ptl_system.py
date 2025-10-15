@@ -50,38 +50,77 @@ def get_current_user_email():
         return 'demo@t21services.co.uk'
 
 
-def load_ptl():
-    """Load PTL database - Now uses Supabase for permanent per-user storage"""
-    user_email = get_current_user_email()
-    
-    if SUPABASE_ENABLED:
-        # Use Supabase - PERMANENT STORAGE
-        patients = get_ptl_patients_for_user(user_email)
-        return {'patients': patients}
-    
-    # Fallback: Check session storage first
+def is_admin_or_supervisor():
+    """Check if current user is admin, staff, or tutor (can see all data)"""
     try:
         import streamlit as st
-        if 'ptl_patients' in st.session_state and st.session_state.ptl_patients:
-            return {'patients': st.session_state.ptl_patients}
+        user_email = st.session_state.get('user_email', '')
+        user_type = st.session_state.get('user_type', 'student')
         
-        # Then check old session key
-        if 'ptl_data' in st.session_state:
-            return st.session_state.ptl_data
+        # Check user type
+        if user_type in ['admin', 'staff', 'tutor', 'partner']:
+            return True
         
-        # Then check file storage
-        if os.path.exists(PTL_DATABASE):
-            with open(PTL_DATABASE, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                st.session_state.ptl_data = data
-                return data
+        # Check email domain
+        if any(domain in user_email.lower() for domain in ['@t21services', '@admin', '@staff', '@tutor']):
+            return True
         
-        return {'patients': []}
+        return False
     except:
-        if os.path.exists(PTL_DATABASE):
-            with open(PTL_DATABASE, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        return {'patients': []}
+        return False
+
+
+def load_ptl():
+    """
+    Load PTL database - ADMINS SEE ALL DATA, students see only their own
+    Data persists across all sessions and devices
+    """
+    user_email = get_current_user_email()
+    is_supervisor = is_admin_or_supervisor()
+    
+    print(f"🔍 DEBUG PTL: Loading for user: {user_email} (Admin: {is_supervisor})")
+    
+    if SUPABASE_ENABLED:
+        if is_supervisor:
+            # ADMINS/STAFF/TUTORS SEE ALL DATA FROM ALL STUDENTS
+            try:
+                result = supabase.table('ptl_patients').select('*').execute()
+                patients = result.data if result.data else []
+                print(f"🔍 DEBUG PTL: ADMIN MODE - Loaded {len(patients)} patients (ALL USERS)")
+            except Exception as e:
+                print(f"Error loading all PTL data: {e}")
+                patients = get_ptl_patients_for_user(user_email)
+                print(f"🔍 DEBUG PTL: Fallback to user mode - {len(patients)} patients")
+        else:
+            # STUDENTS SEE ONLY THEIR OWN DATA
+            patients = get_ptl_patients_for_user(user_email)
+            print(f"🔍 DEBUG PTL: STUDENT MODE - {len(patients)} patients for {user_email}")
+        
+        return {'patients': patients}
+    else:
+        # Fallback to old method if Supabase not available
+        try:
+            import streamlit as st
+            if 'ptl_patients' in st.session_state and st.session_state.ptl_patients:
+                return {'patients': st.session_state.ptl_patients}
+            
+            # Then check old session key
+            if 'ptl_data' in st.session_state:
+                return st.session_state.ptl_data
+            
+            # Then check file storage
+            if os.path.exists(PTL_DATABASE):
+                with open(PTL_DATABASE, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    st.session_state.ptl_data = data
+                    return data
+            
+            return {'patients': []}
+        except:
+            if os.path.exists(PTL_DATABASE):
+                with open(PTL_DATABASE, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            return {'patients': []}
 
 
 def save_ptl(data):

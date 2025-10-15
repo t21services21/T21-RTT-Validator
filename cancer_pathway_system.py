@@ -52,15 +52,55 @@ except:
     def save_cancer_patients(data): pass
 
 
+def is_admin_or_supervisor():
+    """Check if current user is admin, staff, or tutor (can see all data)"""
+    try:
+        import streamlit as st
+        user_email = st.session_state.get('user_email', '')
+        user_type = st.session_state.get('user_type', 'student')
+        
+        # Check user type
+        if user_type in ['admin', 'staff', 'tutor', 'partner']:
+            return True
+        
+        # Check email domain
+        if any(domain in user_email.lower() for domain in ['@t21services', '@admin', '@staff', '@tutor']):
+            return True
+        
+        return False
+    except:
+        return False
+
+
 def load_cancer_ptl():
-    """Load cancer PTL database - Now uses per-user permanent storage"""
+    """Load cancer PTL database - ADMINS SEE ALL DATA, students see only their own"""
     user_email = get_current_user_email()
+    is_supervisor = is_admin_or_supervisor()
+    
+    print(f"🔍 DEBUG Cancer PTL: Loading for user: {user_email} (Admin: {is_supervisor})")
     
     if SUPABASE_ENABLED:
-        return {'patients': get_cancer_patients_for_user(user_email)}
+        if is_supervisor:
+            # ADMINS/STAFF/TUTORS SEE ALL DATA
+            try:
+                from supabase_database import supabase
+                result = supabase.table('cancer_pathways').select('*').execute()
+                patients = result.data if result.data else []
+                print(f"🔍 DEBUG Cancer PTL: ADMIN MODE - Loaded {len(patients)} patients (ALL USERS)")
+            except:
+                patients = get_cancer_patients_for_user(user_email)
+                print(f"🔍 DEBUG Cancer PTL: Fallback to user mode - {len(patients)} patients")
+        else:
+            # STUDENTS SEE ONLY THEIR OWN DATA
+            patients = get_cancer_patients_for_user(user_email)
+            print(f"🔍 DEBUG Cancer PTL: STUDENT MODE - {len(patients)} patients for {user_email}")
+        
+        return {'patients': patients}
     else:
         # Use universal data persistence (per-user files)
-        return {'patients': load_cancer_patients()}
+        patients = load_cancer_patients()
+        print(f"🔍 DEBUG Cancer PTL: Fallback mode - {len(patients)} patients")
+        return {'patients': patients}
 
 
 def save_cancer_ptl(data):
