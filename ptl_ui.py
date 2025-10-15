@@ -26,7 +26,8 @@ from ptl_system import (
     get_breach_risk_patients,
     calculate_days_waiting,
     calculate_weeks_waiting,
-    get_breach_status
+    get_breach_status,
+    load_ptl
 )
 from datetime import datetime, timedelta
 import pandas as pd
@@ -210,10 +211,21 @@ def render_patient_list():
         breach_risk=None if risk_filter == "All" else risk_filter
     )
     
+    # Debug info
     st.markdown(f"**Showing {len(patients)} patients**")
     
+    # Show debug info if no patients
     if not patients:
         st.info("No patients on PTL. Add patients using the 'Add Patient' tab.")
+        
+        # Debug: Check if data exists
+        with st.expander("🔧 Debug Info"):
+            ptl_data = load_ptl()
+            st.write(f"Total patients in database: {len(ptl_data.get('patients', []))}")
+            st.write(f"User email: {st.session_state.get('user_email', 'Not logged in')}")
+            if ptl_data.get('patients'):
+                st.write("Sample patient data:")
+                st.json(ptl_data['patients'][0] if ptl_data['patients'] else {})
         return
     
     # Display patients
