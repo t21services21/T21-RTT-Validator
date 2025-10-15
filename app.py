@@ -1426,6 +1426,11 @@ if not accessible_modules:
         "📊 DNA & Cancellations",  # NEW! Track non-attendance
         "⚠️ Data Alerts",  # NEW! Quality monitoring
         
+        # === LEARNING PORTAL ===
+        "📚 Learning Materials",  # NEW! Upload documents
+        "🎥 Video Library",  # NEW! Vimeo integration
+        "📢 Announcements",  # NEW! News & updates
+        
         # === CLINICAL MODULES ===
         "📋 PTL - Patient Tracking List",
         "🎗️ Cancer Pathways",
@@ -4977,6 +4982,36 @@ elif tool == "📊 DNA & Cancellations":
 elif tool == "⚠️ Data Alerts":
     from data_validation_alerts import render_alerts_dashboard
     render_alerts_dashboard()
+
+elif tool == "📚 Learning Materials":
+    # Check user role
+    user_email = st.session_state.get('user_email', '')
+    if 'admin' in user_email or 'teacher' in user_email:
+        from learning_materials import render_learning_materials_manager
+        render_learning_materials_manager()
+    else:
+        from learning_materials import render_student_materials_view
+        render_student_materials_view()
+
+elif tool == "🎥 Video Library":
+    # Check user role
+    user_email = st.session_state.get('user_email', '')
+    if 'admin' in user_email or 'teacher' in user_email:
+        from video_library import render_video_library_manager
+        render_video_library_manager()
+    else:
+        from video_library import render_student_video_library
+        render_student_video_library()
+
+elif tool == "📢 Announcements":
+    # Check user role
+    user_email = st.session_state.get('user_email', '')
+    if 'admin' in user_email or 'teacher' in user_email:
+        from announcements_system import render_announcements_manager
+        render_announcements_manager()
+    else:
+        from announcements_system import render_student_announcements
+        render_student_announcements()
 
 elif tool == "🗣️ Voice AI Interface":
     if BROWSER_HISTORY_ENABLED:

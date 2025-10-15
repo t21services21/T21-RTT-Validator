@@ -175,9 +175,10 @@ def render_student_portfolio():
     st.markdown("---")
     
     # Tabs
-    tab1, tab2, tab3, tab4 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "✅ Competency Checklist",
         "📊 My Work Summary",
+        "📚 Learning Resources",
         "📄 Export Portfolio",
         "🎯 Learning Tips"
     ])
@@ -189,9 +190,12 @@ def render_student_portfolio():
         render_work_summary(my_work)
     
     with tab3:
-        render_export_portfolio(user_email, my_work, my_comp)
+        render_learning_resources()
     
     with tab4:
+        render_export_portfolio(user_email, my_work, my_comp)
+    
+    with tab5:
         render_learning_tips(my_comp)
 
 
@@ -441,3 +445,60 @@ def generate_competency_report(user_email: str, comp_data: Dict) -> str:
             report += f"  {status} {task}\n"
     
     return report
+
+
+def render_learning_resources():
+    """Show quick access to learning resources"""
+    
+    st.subheader("📚 Learning Resources")
+    
+    st.info("Quick access to all your learning materials")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("### 📄 Materials")
+        st.write("Access lecture notes, handouts, and documents")
+        if st.button("📚 Go to Learning Materials", key="goto_materials"):
+            st.info("Navigate to '📚 Learning Materials' in the sidebar")
+    
+    with col2:
+        st.markdown("### 🎥 Videos")
+        st.write("Watch recorded lectures and tutorials")
+        if st.button("🎥 Go to Video Library", key="goto_videos"):
+            st.info("Navigate to '🎥 Video Library' in the sidebar")
+    
+    with col3:
+        st.markdown("### 📢 News")
+        st.write("View announcements and updates")
+        if st.button("📢 Go to Announcements", key="goto_announcements"):
+            st.info("Navigate to '📢 Announcements' in the sidebar")
+    
+    st.markdown("---")
+    
+    # Show recent materials preview
+    st.markdown("### 📋 Recent Materials")
+    
+    from learning_materials import get_all_materials
+    materials = get_all_materials()
+    
+    if materials:
+        for material in materials[:3]:
+            st.write(f"📄 **{material['title']}** - {material.get('category')} (Week {material.get('week', 0)})")
+    else:
+        st.info("No materials available yet.")
+    
+    st.markdown("---")
+    
+    # Show recent videos preview
+    st.markdown("### 🎬 Recent Videos")
+    
+    from video_library import get_all_videos
+    videos = get_all_videos()
+    
+    if videos:
+        for video in videos[:3]:
+            duration = video.get('duration_minutes', 0)
+            st.write(f"🎥 **{video['title']}** - {duration} min (Week {video.get('week', 0)})")
+    else:
+        st.info("No videos available yet.")
