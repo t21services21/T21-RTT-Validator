@@ -479,26 +479,34 @@ def render_learning_resources():
     # Show recent materials preview
     st.markdown("### 📋 Recent Materials")
     
-    from learning_materials import get_all_materials
-    materials = get_all_materials()
-    
-    if materials:
-        for material in materials[:3]:
-            st.write(f"📄 **{material['title']}** - {material.get('category')} (Week {material.get('week', 0)})")
-    else:
-        st.info("No materials available yet.")
+    try:
+        from supabase_database import supabase
+        result = supabase.table('learning_materials').select('*').eq('status', 'active').limit(3).execute()
+        materials = result.data if result.data else []
+        
+        if materials:
+            for material in materials:
+                st.write(f"📄 **{material['title']}** - {material.get('category')} (Week {material.get('week', 0)})")
+        else:
+            st.info("No materials available yet.")
+    except:
+        st.info("Materials will appear here once uploaded.")
     
     st.markdown("---")
     
     # Show recent videos preview
     st.markdown("### 🎬 Recent Videos")
     
-    from video_library import get_all_videos
-    videos = get_all_videos()
-    
-    if videos:
-        for video in videos[:3]:
-            duration = video.get('duration_minutes', 0)
-            st.write(f"🎥 **{video['title']}** - {duration} min (Week {video.get('week', 0)})")
-    else:
-        st.info("No videos available yet.")
+    try:
+        from supabase_database import supabase
+        result = supabase.table('video_library').select('*').eq('status', 'active').limit(3).execute()
+        videos = result.data if result.data else []
+        
+        if videos:
+            for video in videos:
+                duration = video.get('duration_minutes', 0)
+                st.write(f"🎥 **{video['title']}** - {duration} min (Week {video.get('week', 0)})")
+        else:
+            st.info("No videos available yet.")
+    except:
+        st.info("Videos will appear here once uploaded.")

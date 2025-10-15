@@ -1422,6 +1422,7 @@ if not accessible_modules:
         # === TEACHING & ASSESSMENT ===
         "👨‍🏫 Teacher Dashboard",  # NEW! For TQUK assessors
         "📚 My Portfolio",  # NEW! Student self-view
+        "👥 Student Management",  # NEW! Add students & manage access
         "📋 Waiting List",  # NEW! Queue management
         "📊 DNA & Cancellations",  # NEW! Track non-attendance
         "⚠️ Data Alerts",  # NEW! Quality monitoring
@@ -1430,6 +1431,8 @@ if not accessible_modules:
         "📚 Learning Materials",  # NEW! Upload documents
         "🎥 Video Library",  # NEW! Vimeo integration
         "📢 Announcements",  # NEW! News & updates
+        "📝 Assignments",  # NEW! Create & grade assignments
+        "🎯 Quizzes",  # NEW! Auto-graded quizzes
         
         # === CLINICAL MODULES ===
         "📋 PTL - Patient Tracking List",
@@ -4971,6 +4974,10 @@ elif tool == "📚 My Portfolio":
     from student_portfolio_ui import render_student_portfolio
     render_student_portfolio()
 
+elif tool == "👥 Student Management":
+    from student_access_management import render_student_access_management
+    render_student_access_management()
+
 elif tool == "📋 Waiting List":
     from waiting_list_management import render_waiting_list_ui
     render_waiting_list_ui()
@@ -4984,34 +4991,24 @@ elif tool == "⚠️ Data Alerts":
     render_alerts_dashboard()
 
 elif tool == "📚 Learning Materials":
-    # Check user role
-    user_email = st.session_state.get('user_email', '')
-    if 'admin' in user_email or 'teacher' in user_email:
-        from learning_materials import render_learning_materials_manager
-        render_learning_materials_manager()
-    else:
-        from learning_materials import render_student_materials_view
-        render_student_materials_view()
+    from lms_system import render_lms_feature
+    render_lms_feature("learning_materials")
 
 elif tool == "🎥 Video Library":
-    # Check user role
-    user_email = st.session_state.get('user_email', '')
-    if 'admin' in user_email or 'teacher' in user_email:
-        from video_library import render_video_library_manager
-        render_video_library_manager()
-    else:
-        from video_library import render_student_video_library
-        render_student_video_library()
+    from lms_system import render_lms_feature
+    render_lms_feature("video_library")
 
 elif tool == "📢 Announcements":
-    # Check user role
-    user_email = st.session_state.get('user_email', '')
-    if 'admin' in user_email or 'teacher' in user_email:
-        from announcements_system import render_announcements_manager
-        render_announcements_manager()
-    else:
-        from announcements_system import render_student_announcements
-        render_student_announcements()
+    from lms_system import render_lms_feature
+    render_lms_feature("announcements")
+
+elif tool == "📝 Assignments":
+    from lms_system import render_lms_feature
+    render_lms_feature("assignments")
+
+elif tool == "🎯 Quizzes":
+    from lms_system import render_lms_feature
+    render_lms_feature("quizzes")
 
 elif tool == "🗣️ Voice AI Interface":
     if BROWSER_HISTORY_ENABLED:
