@@ -322,12 +322,37 @@ def get_upcoming_mdt_meetings() -> List[Dict]:
     meetings = get_all_mdt_meetings()
     today = datetime.now().date()
     
+    print(f"🔍 DEBUG: Total meetings loaded: {len(meetings)}")
+    
     upcoming = []
     for meeting in meetings:
-        if meeting['status'] != 'COMPLETED':
-            meeting_date = datetime.fromisoformat(meeting['meeting_date']).date()
-            if meeting_date >= today:
-                upcoming.append(meeting)
+        try:
+            # Check status (handle both upper and lowercase)
+            status = meeting.get('status', '').lower()
+            if status not in ['completed', 'cancelled']:
+                # Handle different date formats
+                meeting_date_str = str(meeting.get('meeting_date', ''))
+                
+                # Try to parse date
+                try:
+                    if 'T' in meeting_date_str:  # ISO format with time
+                        meeting_date = datetime.fromisoformat(meeting_date_str).date()
+                    else:  # Just date
+                        meeting_date = datetime.fromisoformat(meeting_date_str).date()
+                except:
+                    # Try alternative parsing
+                    meeting_date = datetime.strptime(meeting_date_str, '%Y-%m-%d').date()
+                
+                print(f"🔍 DEBUG: Meeting {meeting['meeting_id']} - Date: {meeting_date}, Today: {today}, Status: {status}")
+                
+                if meeting_date >= today:
+                    upcoming.append(meeting)
+                    print(f"✅ DEBUG: Meeting {meeting['meeting_id']} is upcoming!")
+        except Exception as e:
+            print(f"❌ ERROR processing meeting {meeting.get('meeting_id', 'unknown')}: {e}")
+            continue
+    
+    print(f"🔍 DEBUG: Found {len(upcoming)} upcoming meetings")
     
     # Sort by date
     upcoming.sort(key=lambda x: x['meeting_date'])
@@ -403,27 +428,43 @@ def get_mdt_stats() -> Dict:
     month_from_now = today + timedelta(days=30)
     
     for meeting in meetings:
-        # Count by status
-        stats[meeting['status'].lower()] = stats.get(meeting['status'].lower(), 0) + 1
-        
-        # Count by specialty
-        specialty = meeting['specialty']
-        stats['specialties'][specialty] = stats['specialties'].get(specialty, 0) + 1
-        
-        # Count patients discussed
-        if meeting['status'] == 'COMPLETED':
-            stats['total_patients_discussed'] += meeting.get('discussed_count', 0)
-        
-        # Upcoming meetings
-        meeting_date = datetime.fromisoformat(meeting['meeting_date']).date()
-        if meeting_date >= today and meeting['status'] != 'COMPLETED':
-            stats['upcoming_count'] += 1
+        try:
+            # Count by status (handle both cases)
+            status = meeting.get('status', 'unknown').lower()
+            stats[status] = stats.get(status, 0) + 1
             
-            if meeting_date <= week_from_now:
-                stats['this_week'] += 1
+            # Count by specialty
+            specialty = meeting.get('specialty', 'Unknown')
+            stats['specialties'][specialty] = stats['specialties'].get(specialty, 0) + 1
             
-            if meeting_date <= month_from_now:
-                stats['this_month'] += 1
+            # Count patients discussed (handle both cases)
+            if status == 'completed':
+                patients = meeting.get('patients_discussed') or meeting.get('patients', [])
+                discussed = sum(1 for p in patients if p.get('discussed'))
+                stats['total_patients_discussed'] += discussed
+            
+            # Upcoming meetings - handle date parsing
+            try:
+                meeting_date_str = str(meeting.get('meeting_date', ''))
+                if 'T' in meeting_date_str:
+                    meeting_date = datetime.fromisoformat(meeting_date_str).date()
+                else:
+                    meeting_date = datetime.strptime(meeting_date_str, '%Y-%m-%d').date()
+                
+                # Check if upcoming (not completed/cancelled)
+                if meeting_date >= today and status not in ['completed', 'cancelled']:
+                    stats['upcoming_count'] += 1
+                    
+                    if meeting_date <= week_from_now:
+                        stats['this_week'] += 1
+                    
+                    if meeting_date <= month_from_now:
+                        stats['this_month'] += 1
+            except Exception as date_err:
+                print(f"⚠️ ERROR parsing date for meeting {meeting.get('meeting_id')}: {date_err}")
+        except Exception as e:
+            print(f"⚠️ ERROR processing meeting stats: {e}")
+            continue
     
     return stats
 
