@@ -199,9 +199,14 @@ def get_query_analytics(
             'total_queries': 0,
             'avg_response_time': 0,
             'satisfaction_rate': 0,
+            'helpful_count': 0,
+            'feedback_count': 0,
             'top_tags': [],
             'queries_by_day': [],
-            'top_users': []
+            'top_users': [],
+            'common_queries': [],
+            'avg_query_length': 0,
+            'avg_response_length': 0
         }
     
     # Average response time

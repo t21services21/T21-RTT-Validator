@@ -5272,7 +5272,15 @@ elif tool == "🤖 AI & Automation":
     st.header("🤖 AI & Automation")
     st.info("AI-powered tools and automation")
     
-    tabs = st.tabs(["🤖 Auto-Validator", "📧 Secretary AI", "📄 Letters", "📝 Letter Interpreter", "📁 Documents", "📋 Policy/SOP Generator"])
+    tabs = st.tabs([
+        "🤖 Auto-Validator", 
+        "📧 Secretary AI", 
+        "📄 Letters", 
+        "📝 Letter Interpreter", 
+        "📁 Documents", 
+        "📋 Policy/SOP Generator",
+        "🔮 Predictive AI"
+    ])
     
     with tabs[0]:
         from ai_validator_ui import render_ai_validator
@@ -5306,6 +5314,11 @@ elif tool == "🤖 AI & Automation":
         # NEW: Policy/SOP Generator (Sigma-beating feature!)
         from policy_sop_generator import render_policy_sop_generator
         render_policy_sop_generator()
+    
+    with tabs[6]:
+        # NEW: Predictive AI - MASSIVE COMPETITIVE ADVANTAGE!
+        from predictive_ai_system import render_predictive_ai_system
+        render_predictive_ai_system()
 
 elif tool == "📊 Reports & Analytics":
     st.header("📊 Reports & Analytics")
