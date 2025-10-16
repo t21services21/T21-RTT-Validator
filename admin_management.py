@@ -447,61 +447,111 @@ def get_all_users(filter_by=None):
         supabase_users = get_supabase_users()
         
         for user_data in supabase_users:
-            email = user_data.get('email')
-            if not email:
+            try:
+                email = user_data.get('email')
+                if not email:
+                    continue
+                
+                loaded_emails.add(email)
+                
+                # Get role and user_type
+                role = user_data.get('role', 'trial')
+                user_type = user_data.get('user_type', None)
+                
+                # If user_type not set, derive from role
+                if not user_type:
+                    if role in ['admin', 'super_admin']:
+                        user_type = 'admin'
+                    elif role in ['staff', 'staff_trainer', 'staff_support']:
+                        user_type = 'staff'
+                    elif role.startswith('student_'):
+                        user_type = 'student'
+                    else:
+                        user_type = 'student'  # Default
+                
+                # Get role name from USER_TYPES if available
+                from advanced_access_control import USER_TYPES
+                if role in USER_TYPES:
+                    role_name = USER_TYPES[role]["name"]
+                else:
+                    role_name = role.replace('_', ' ').title()
+                
+                # Get expiry date (could be 'expiry_date' or 'trial_end_date')
+                expiry = user_data.get('expiry_date') or user_data.get('trial_end_date', 'Unknown')
+                if expiry and expiry != 'Unknown':
+                    try:
+                        expiry_str = expiry[:10]  # Get just the date part
+                    except:
+                        expiry_str = 'Unknown'
+                else:
+                    expiry_str = 'Unknown'
+                
+                # Convert Supabase format to summary format
+                summary = {
+                    "email": email,
+                    "full_name": user_data.get('full_name', 'Unknown'),
+                    "role": role,
+                    "role_name": role_name,
+                    "user_type": user_type,
+                    "status": user_data.get('status', 'active'),
+                    "status_display": user_data.get('status', 'active').title(),
+                    "created_at": user_data.get('created_at', 'Unknown')[:10] if user_data.get('created_at') else 'Unknown',
+                    "expiry_date": expiry_str,
+                    "days_remaining": 0  # Calculate if needed
+                }
+                
+                # Apply filters
+                if filter_by:
+                    if filter_by.get("type") and summary["user_type"] != filter_by["type"]:
+                        continue
+                    if filter_by.get("status") and summary["status"] != filter_by["status"]:
+                        continue
+                    if filter_by.get("role") and summary["role"] != filter_by["role"]:
+                        continue
+                
+                user_list.append(summary)
+            
+            except Exception as inner_e:
+                # Log individual user conversion errors but continue
+                print(f"Error converting user {user_data.get('email', 'unknown')}: {inner_e}")
                 continue
-            
-            loaded_emails.add(email)
-            
-            # Convert Supabase format to summary format
-            summary = {
-                "email": email,
-                "full_name": user_data.get('full_name', 'Unknown'),
-                "role": user_data.get('role', 'trial'),
-                "role_name": user_data.get('role', 'trial').replace('_', ' ').title(),
-                "user_type": user_data.get('user_type', 'student'),
-                "status": user_data.get('status', 'active'),
-                "status_display": user_data.get('status', 'active').title(),
-                "created_at": user_data.get('created_at', 'Unknown')[:10] if user_data.get('created_at') else 'Unknown',
-                "expiry_date": user_data.get('expiry_date', 'Unknown')[:10] if user_data.get('expiry_date') else 'Unknown',
-                "days_remaining": 0  # Calculate if needed
-            }
-            
-            # Apply filters
-            if filter_by:
-                if filter_by.get("type") and summary["user_type"] != filter_by["type"]:
-                    continue
-                if filter_by.get("status") and summary["status"] != filter_by["status"]:
-                    continue
-                if filter_by.get("role") and summary["role"] != filter_by["role"]:
-                    continue
-            
-            user_list.append(summary)
+    
     except Exception as e:
         print(f"Supabase load failed: {e}, falling back to JSON")
+        import traceback
+        traceback.print_exc()
     
     # PRIORITY 2: Get users from NEW database (users_advanced.json) - only if not in Supabase
-    users = load_users_db()
-    for email, user in users.items():
-        if email in loaded_emails:
-            continue  # Skip duplicates
-        
-        loaded_emails.add(email)
-        summary = user.get_summary()
-        
-        # Apply filters
-        if filter_by:
-            if filter_by.get("type"):
-                if summary["user_type"] != filter_by["type"]:
-                    continue
-            if filter_by.get("status"):
-                if summary["status"] != filter_by["status"]:
-                    continue
-            if filter_by.get("role"):
-                if summary["role"] != filter_by["role"]:
-                    continue
-        
-        user_list.append(summary)
+    try:
+        users = load_users_db()
+        for email, user in users.items():
+            try:
+                if email in loaded_emails:
+                    continue  # Skip duplicates
+                
+                loaded_emails.add(email)
+                summary = user.get_summary()
+                
+                # Apply filters
+                if filter_by:
+                    if filter_by.get("type"):
+                        if summary["user_type"] != filter_by["type"]:
+                            continue
+                    if filter_by.get("status"):
+                        if summary["status"] != filter_by["status"]:
+                            continue
+                    if filter_by.get("role"):
+                        if summary["role"] != filter_by["role"]:
+                            continue
+                
+                user_list.append(summary)
+            
+            except Exception as user_error:
+                print(f"Error processing user {email} from JSON: {user_error}")
+                continue
+    
+    except Exception as json_error:
+        print(f"Error loading users_advanced.json: {json_error}")
     
     # PRIORITY 3: Get users from OLD database (users_database.json) - only if not already loaded
     if os.path.exists("users_database.json"):

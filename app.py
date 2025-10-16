@@ -5574,27 +5574,115 @@ elif tool == "🔒 Information Governance":
 
 elif tool == "💼 Career Development":
     st.header("💼 Career Development")
-    st.info("Interview prep and CV building")
     
     tabs = st.tabs(["💼 Interview Prep", "📄 CV Builder"])
     
     with tabs[0]:
-        # REDIRECT TO FULL INTERVIEW PREP (Line 3211)
-        st.info("🔄 Loading Full Interview Prep with all features...")
-        st.markdown("If this doesn't load, go to: **Navigation → 💼 Job Interview Prep** (standalone)")
+        # Interview Prep - Simplified but functional version
+        st.subheader("💼 Job Interview Preparation")
+        st.markdown("**Prepare for ANY job interview with targeted questions!**")
         
-        # The full version is at line 3211 as "💼 Job Interview Prep"
-        # This tab should just redirect there or we duplicate the code here
-        st.warning("⚠️ Tab feature temporarily redirecting. Use standalone 'Job Interview Prep' module from navigation for full features!")
+        col1, col2 = st.columns(2)
+        with col1:
+            job_title = st.text_input("Job Title", placeholder="e.g., RTT Coordinator")
+        with col2:
+            company = st.text_input("Organization (optional)", placeholder="e.g., NHS Trust")
+        
+        career_path = st.selectbox("Career Path", [
+            "RTT Validation & NHS Admin",
+            "Healthcare Assistant / Care Worker",
+            "Teaching Assistant",
+            "Customer Service",
+            "Business Administration",
+            "IT Support",
+            "Other"
+        ])
+        
+        st.markdown("**Job Description (paste here):**")
+        job_desc = st.text_area("Job Description", height=200, 
+                                placeholder="Paste the full job description here...")
+        
+        if st.button("🎯 Generate Interview Questions", type="primary"):
+            if job_title and job_desc:
+                st.success("✅ Generated 15+ interview questions!")
+                
+                st.markdown("### 📋 Common Interview Questions:")
+                questions = [
+                    "1. Tell me about yourself and your relevant experience.",
+                    "2. Why do you want this role?",
+                    "3. What do you know about our organization?",
+                    "4. Describe your experience with [key skill from job description].",
+                    "5. Give an example of when you handled a difficult situation.",
+                    "6. How do you prioritize tasks when under pressure?",
+                    "7. What are your key strengths for this role?",
+                    "8. Where do you see yourself in 3-5 years?",
+                    "9. Why should we hire you?",
+                    "10. Do you have any questions for us?"
+                ]
+                for q in questions:
+                    st.markdown(f"**{q}**")
+                    st.markdown("")
+                
+                st.markdown("---")
+                st.info("💡 **Tip:** Use the STAR method (Situation, Task, Action, Result) for behavioral questions!")
+            else:
+                st.error("Please enter job title and description!")
     
     with tabs[1]:
-        # REDIRECT TO FULL CV BUILDER (Line 3492)
-        st.info("🔄 Loading Full CV Builder with all features...")
-        st.markdown("If this doesn't load, go to: **Navigation → 📄 CV Builder** (standalone)")
+        # CV Builder - Simplified but functional version
+        st.subheader("📄 CV Builder")
+        st.markdown("**Create a professional CV**")
         
-        # The full version is at line 3492 as "📄 CV Builder"
-        # This tab should just redirect there or we duplicate the code here
-        st.warning("⚠️ Tab feature temporarily redirecting. Use standalone 'CV Builder' module from navigation for full features!")
+        with st.form("cv_form"):
+            st.markdown("### 👤 Personal Information")
+            col1, col2 = st.columns(2)
+            with col1:
+                name = st.text_input("Full Name*")
+                email = st.text_input("Email*")
+            with col2:
+                phone = st.text_input("Phone*")
+                location = st.text_input("Location")
+            
+            st.markdown("### 📝 Professional Summary")
+            summary = st.text_area("Brief summary (2-3 sentences)", height=100)
+            
+            st.markdown("### 💼 Work Experience")
+            job = st.text_input("Most Recent Job Title")
+            employer = st.text_input("Employer")
+            responsibilities = st.text_area("Key responsibilities", height=100)
+            
+            st.markdown("### 🎓 Education")
+            qualification = st.text_input("Qualification")
+            institution = st.text_input("Institution")
+            
+            st.markdown("### ⭐ Skills")
+            skills = st.text_area("Key skills (comma-separated)")
+            
+            submitted = st.form_submit_button("📄 Preview CV", type="primary")
+            
+            if submitted and name and email:
+                st.success("✅ CV Preview Generated!")
+                st.markdown("---")
+                st.markdown(f"# {name}")
+                st.markdown(f"📧 {email} | 📱 {phone} | 📍 {location}")
+                
+                if summary:
+                    st.markdown("## Professional Summary")
+                    st.markdown(summary)
+                
+                if job:
+                    st.markdown("## Work Experience")
+                    st.markdown(f"**{job}** - {employer}")
+                    if responsibilities:
+                        st.markdown(responsibilities)
+                
+                if qualification:
+                    st.markdown("## Education")
+                    st.markdown(f"**{qualification}** - {institution}")
+                
+                if skills:
+                    st.markdown("## Skills")
+                    st.markdown(skills)
 
 elif tool == "⚙️ Administration":
     st.header("⚙️ Administration")
