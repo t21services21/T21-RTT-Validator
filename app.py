@@ -1431,6 +1431,7 @@ if not accessible_modules:
         
         # === 🎓 TRAINING & CAREER ===
         "🎓 Training & Certification",  # 4 tabs: Training Library, Interactive Learning, AI Tutor, Certification Exam
+        "🔒 Information Governance",  # MANDATORY NHS Training: GDPR, Caldicott, Data Protection, Confidentiality
         "💼 Career Development",  # 2 tabs: Job Interview Prep, CV Builder
         
         # === ⚙️ ADMIN ===
@@ -5535,6 +5536,26 @@ elif tool == "🎓 Training & Certification":
                 st.session_state['exam_answers'] = {}
                 st.session_state['exam_score'] = 0
                 st.rerun()
+
+elif tool == "🔒 Information Governance":
+    # MANDATORY NHS TRAINING - GDPR, Caldicott, Data Protection
+    try:
+        from information_governance_ui import render_information_governance
+        render_information_governance()
+    except Exception as e:
+        st.error(f"Error loading Information Governance module: {e}")
+        st.info("""
+        **Information Governance Training**
+        
+        Mandatory NHS training covering:
+        - GDPR & Data Protection Act 2018
+        - NHS Caldicott Principles
+        - Patient Confidentiality
+        - Cyber Security
+        - Data Breach Reporting
+        
+        Module temporarily unavailable. Please contact support.
+        """)
 
 elif tool == "💼 Career Development":
     st.header("💼 Career Development")

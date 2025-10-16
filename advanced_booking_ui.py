@@ -42,8 +42,9 @@ def render_advanced_booking():
     """)
     
     # Tabs
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
         "📋 Book Appointment",
+        "📋 Partial Booking List",
         "📅 Clinic Management",
         "🔍 Check Availability",
         "📊 Capacity Analysis",
@@ -55,18 +56,40 @@ def render_advanced_booking():
         render_book_appointment()
     
     with tab2:
-        render_clinic_management()
+        # PARTIAL BOOKING LIST - NHS-Critical Workflow
+        try:
+            from partial_booking_list_ui import render_partial_booking_list
+            render_partial_booking_list()
+        except Exception as e:
+            st.error(f"Error loading Partial Booking List: {e}")
+            st.info("""
+            **Partial Booking List (PBL)**
+            
+            NHS workflow for patients whose referral is accepted but no appointment slot available.
+            
+            Features:
+            - Track patients awaiting first appointment
+            - Send acknowledgment emails
+            - Monitor RTT breach risks
+            - Automatically remove when appointment booked
+            - Data cleansing tools for NHS experts
+            
+            Module temporarily unavailable.
+            """)
     
     with tab3:
-        render_check_availability()
+        render_clinic_management()
     
     with tab4:
-        render_capacity_analysis()
+        render_check_availability()
     
     with tab5:
-        render_manage_appointments()
+        render_capacity_analysis()
     
     with tab6:
+        render_manage_appointments()
+    
+    with tab7:
         render_dna_analytics()
 
 
