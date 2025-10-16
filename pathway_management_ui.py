@@ -231,14 +231,28 @@ def render_create_pathway():
                 final_pathway_type = custom_pathway_type if pathway_type == "custom" and custom_pathway_type else pathway_type
                 final_specialty = custom_specialty if specialty == "Other (Please Specify)" and custom_specialty else specialty
                 
-                with st.spinner("📁 Creating pathway..."):
-                    result = create_pathway(
-                        patient_id=selected_patient.get('patient_id'),
-                        patient_name=selected_patient.get('full_name'),
-                        pathway_type=final_pathway_type,
-                        start_date=str(clock_start_date),
-                        specialty=final_specialty,
-                        consultant=consultant,
+                # CRITICAL: Check patient has NHS number
+                patient_nhs = selected_patient.get('nhs_number', 'Pending')
+                if not patient_nhs or patient_nhs == 'Pending' or patient_nhs == 'N/A':
+                    st.error("❌ **CANNOT CREATE PATHWAY: Patient has no NHS Number!**")
+                    st.warning("⚠️ **NHS Workflow Requirement:** Every patient MUST have an NHS number before a pathway can be created.")
+                    st.info("""
+                    **To fix this:**
+                    1. Go to Patient Registration
+                    2. Update this patient's record with their NHS number
+                    3. Or register them again - system will auto-generate valid NHS number
+                    4. Then return here to create the pathway
+                    """)
+                else:
+                    with st.spinner("📁 Creating pathway..."):
+                        result = create_pathway(
+                            patient_id=selected_patient.get('patient_id'),
+                            patient_name=selected_patient.get('full_name'),
+                            pathway_type=final_pathway_type,
+                            start_date=str(clock_start_date),
+                            specialty=final_specialty,
+                            consultant=consultant,
+                            nhs_number=patient_nhs,  # Pass NHS number for validation
                         referral_source=referral_source,
                         priority=priority,
                         reason=reason,

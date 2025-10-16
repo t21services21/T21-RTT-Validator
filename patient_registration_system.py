@@ -173,21 +173,24 @@ def register_patient(
     
     user_email = get_current_user_email()
     
-    # Validate or generate patient ID
+    # Validate or generate patient ID AND NHS number
     if nhs_number:
         validation = validate_nhs_number(nhs_number)
         if validation['valid']:
             patient_id = validation['raw']
             nhs_status = 'verified'
         else:
-            # Use temporary ID if NHS number invalid
-            patient_id = generate_temporary_id()
-            nhs_status = 'invalid'
-            nhs_number = None
+            # NHS number provided but invalid - auto-generate valid one
+            from nhs_number_generator import generate_nhs_number
+            nhs_number = generate_nhs_number()
+            patient_id = nhs_number.replace(' ', '')
+            nhs_status = 'auto_generated'
     else:
-        # Generate temporary ID
-        patient_id = generate_temporary_id()
-        nhs_status = 'pending'
+        # No NHS number provided - auto-generate valid one
+        from nhs_number_generator import generate_nhs_number
+        nhs_number = generate_nhs_number()
+        patient_id = nhs_number.replace(' ', '')
+        nhs_status = 'auto_generated'
     
     # Create patient record
     patient_data = {

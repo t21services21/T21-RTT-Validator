@@ -153,9 +153,17 @@ def create_pathway(
     patient_informed: bool = True,
     interpreter_required: bool = False,
     language_needed: str = "",
-    additional_needs: str = ""
+    additional_needs: str = "",
+    nhs_number: str = ""  # NHS number is REQUIRED for pathway creation
 ) -> Dict:
-    """Create new pathway for patient"""
+    """Create new pathway for patient - NHS NUMBER REQUIRED"""
+    
+    # CRITICAL: Validate NHS number exists
+    if not nhs_number or nhs_number == "Pending" or nhs_number == "N/A":
+        return {
+            'success': False,
+            'error': 'NHS Number is required to create a pathway. Patient must be registered with valid NHS number first.'
+        }
     
     user_email = get_current_user_email()
     pathway_id = generate_pathway_id(pathway_type)
