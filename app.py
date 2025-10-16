@@ -5567,24 +5567,19 @@ elif tool == "💼 Career Development":
     tabs = st.tabs(["💼 Interview Prep", "📄 CV Builder"])
     
     with tabs[0]:
-        # Render Job Interview Prep (full feature from line 3211)
-        from app import render_job_interview_prep
-        try:
-            # Try to find and import the actual interview prep code
-            st.header("💼 Job Interview Preparation Assistant")
-            st.markdown("**Career support for ALL T21 students!** Prepare for ANY job interview with AI-powered question generator!")
-            st.info("""📋 **Supports ALL career paths:**
-            ✅ Healthcare Assistant / Care Worker
-            ✅ Adult Social Care
-            ✅ Teaching Assistant
-            ✅ Customer Service
-            ✅ Business Administration
-            ✅ IT Support
-            ✅ RTT Validation & NHS Admin
-            ✅ And ANY other role!
-            """)
-        except:
-            st.info("Interview prep feature available - full implementation coming soon")
+        # Render Job Interview Prep
+        st.header("💼 Job Interview Preparation Assistant")
+        st.markdown("**Career support for ALL T21 students!** Prepare for ANY job interview with AI-powered question generator!")
+        st.info("""📋 **Supports ALL career paths:**
+        ✅ Healthcare Assistant / Care Worker
+        ✅ Adult Social Care
+        ✅ Teaching Assistant
+        ✅ Customer Service
+        ✅ Business Administration
+        ✅ IT Support
+        ✅ RTT Validation & NHS Admin
+        ✅ And ANY other role!
+        """)
     
     with tabs[1]:
         # Render CV Builder (full feature from line 3490)

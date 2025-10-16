@@ -280,6 +280,55 @@ def validate_patient_data(patient_data: dict) -> Tuple[bool, list]:
     return (len(errors) == 0, errors)
 
 
+def generate_fake_nhs_number() -> str:
+    """
+    Generate realistic fake NHS number for training purposes only
+    Uses Modulus 11 algorithm to ensure valid checksum
+    
+    IMPORTANT: For training/simulation ONLY! 
+    Real NHS systems MUST use NHS Spine/PDS for real NHS numbers.
+    
+    Returns: Formatted NHS number (e.g., "123 456 7890")
+    """
+    import random
+    
+    # Generate first 9 digits
+    first_nine = ''.join([str(random.randint(0, 9)) for _ in range(9)])
+    
+    # Calculate check digit using Modulus 11 algorithm
+    total = 0
+    for i, digit in enumerate(first_nine):
+        multiplier = 10 - i
+        total += int(digit) * multiplier
+    
+    remainder = total % 11
+    check_digit = 11 - remainder
+    
+    # Handle special cases
+    if check_digit == 11:
+        check_digit = 0
+    elif check_digit == 10:
+        # Invalid - regenerate
+        return generate_fake_nhs_number()
+    
+    # Create full NHS number
+    nhs_number = first_nine + str(check_digit)
+    
+    # Format as "123 456 7890"
+    return format_nhs_number(nhs_number)
+
+
+def is_training_mode(user_role: str) -> bool:
+    """
+    Determine if user is in training mode
+    
+    Training roles: student, learner, trial
+    Real roles: nhs_staff, nhs_coordinator, admin
+    """
+    training_roles = ['student', 'learner', 'trial', 'teacher']
+    return user_role.lower() in training_roles
+
+
 # Export all validation functions
 __all__ = [
     'validate_nhs_number',
@@ -291,5 +340,7 @@ __all__ = [
     'format_nhs_number',
     'format_uk_phone',
     'format_uk_postcode',
-    'validate_patient_data'
+    'validate_patient_data',
+    'generate_fake_nhs_number',  # NEW!
+    'is_training_mode'  # NEW!
 ]
