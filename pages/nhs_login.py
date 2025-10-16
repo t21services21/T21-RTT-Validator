@@ -187,6 +187,85 @@ else:
                 else:
                     st.error("❌ Please enter both email and password")
         
+        # Forgot Password Button
+        st.markdown("---")
+        if st.button("🔒 Forgot Password? Click Here to Reset", use_container_width=True, key="nhs_forgot_btn"):
+            st.session_state.show_nhs_password_reset = True
+            st.rerun()
+        
+        # Password Reset Form
+        if st.session_state.get('show_nhs_password_reset'):
+            st.markdown("---")
+            st.markdown("### 🔒 Reset Your Password")
+            
+            reset_email = st.text_input("Enter your organization email:", key="nhs_reset_email")
+            
+            if 'nhs_reset_step' not in st.session_state:
+                st.session_state.nhs_reset_step = 1
+            
+            if st.session_state.nhs_reset_step == 1:
+                col1, col2 = st.columns(2)
+                with col1:
+                    if st.button("📧 Send Reset Code", type="primary", use_container_width=True, key="nhs_send_code"):
+                        if reset_email:
+                            try:
+                                from student_auth import request_password_reset
+                                success, message = request_password_reset(reset_email)
+                                if success:
+                                    st.success(message)
+                                    st.session_state.nhs_reset_step = 2
+                                    st.rerun()
+                                else:
+                                    st.error(message)
+                            except:
+                                st.error("Password reset not available. Contact admin@t21services.co.uk")
+                        else:
+                            st.warning("Please enter your email")
+                with col2:
+                    if st.button("← Cancel", use_container_width=True, key="nhs_cancel_reset"):
+                        st.session_state.show_nhs_password_reset = False
+                        st.session_state.nhs_reset_step = 1
+                        st.rerun()
+            
+            elif st.session_state.nhs_reset_step == 2:
+                st.info(f"✅ Reset code sent to {reset_email}")
+                reset_code = st.text_input("6-digit code:", max_chars=6, key="nhs_reset_code")
+                new_password = st.text_input("New Password (min 8 chars):", type="password", key="nhs_new_pass")
+                confirm_password = st.text_input("Confirm Password:", type="password", key="nhs_confirm_pass")
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    if st.button("✅ Reset Password", type="primary", key="nhs_do_reset"):
+                        if not (reset_code and new_password and confirm_password):
+                            st.warning("Fill all fields")
+                        elif new_password != confirm_password:
+                            st.error("Passwords don't match")
+                        elif len(new_password) < 8:
+                            st.error("Password must be 8+ characters")
+                        else:
+                            try:
+                                from student_auth import reset_password
+                                success, message = reset_password(reset_email, reset_code, new_password)
+                                if success:
+                                    st.success(message)
+                                    st.balloons()
+                                    st.session_state.nhs_reset_step = 1
+                                    st.session_state.show_nhs_password_reset = False
+                                    st.rerun()
+                                else:
+                                    st.error(message)
+                            except:
+                                st.error("Reset failed. Contact admin@t21services.co.uk")
+                with col2:
+                    if st.button("← Start Over", key="nhs_reset_restart"):
+                        st.session_state.nhs_reset_step = 1
+                        st.rerun()
+                with col3:
+                    if st.button("Cancel", key="nhs_reset_cancel"):
+                        st.session_state.show_nhs_password_reset = False
+                        st.session_state.nhs_reset_step = 1
+                        st.rerun()
+        
         # 2FA Verification Prompt
         if st.session_state.get('show_2fa_prompt'):
             st.markdown("---")
