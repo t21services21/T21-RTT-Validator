@@ -1434,6 +1434,13 @@ if not accessible_modules:
         "🔒 Information Governance",  # MANDATORY NHS Training: GDPR, Caldicott, Data Protection, Confidentiality
         "💼 Career Development",  # 2 tabs: Job Interview Prep, CV Builder
         
+        # === 💼 CAREER TOOLS (FULL VERSIONS) ===
+        "💼 Job Interview Prep",  # FULL: PDF upload, 40-50 questions, STAR answers, prep pack
+        "📄 CV Builder",  # FULL: Career paths, templates, ATS optimization, download
+        
+        # === 📝 LETTER INTERPRETER ===
+        "📝 Clinic Letter Interpreter",  # RTT Code Interpretation from Clinic Letters
+        
         # === ⚙️ ADMIN ===
         "⚙️ Administration",  # 2 tabs: My Account, Admin Panel
         
@@ -5567,114 +5574,37 @@ elif tool == "💼 Career Development":
     tabs = st.tabs(["💼 Interview Prep", "📄 CV Builder"])
     
     with tabs[0]:
-        # Render Job Interview Prep - WORKING VERSION
-        st.header("💼 Job Interview Preparation Assistant")
-        st.markdown("**Career support for ALL T21 students!** Prepare for ANY job interview with AI-powered question generator!")
+        # REDIRECT TO FULL INTERVIEW PREP (Line 3211)
+        st.info("🔄 Loading Full Interview Prep with all features...")
+        st.markdown("If this doesn't load, go to: **Navigation → 💼 Job Interview Prep** (standalone)")
         
-        # ACTUAL INTERACTIVE FORM
-        role = st.selectbox(
-            "🎯 Select your target role:",
-            ["Healthcare Assistant / Care Worker", "RTT Coordinator", "RTT Validator",
-             "Adult Social Care", "Teaching Assistant", "Customer Service", 
-             "Business Administration", "IT Support", "Nurse", "Other"],
-            key="interview_role_select"
-        )
-        
-        company = st.text_input("🏢 Company/Organization (optional)", key="interview_company")
-        
-        if st.button("🎯 Generate Interview Questions", type="primary", key="generate_interview_q"):
-            st.success("✅ Generated 10 common interview questions for your role!")
-            
-            st.markdown("### 📝 Interview Questions:")
-            questions = [
-                "1. Tell me about yourself and why you're interested in this role.",
-                "2. What do you know about our organization?",
-                "3. Why do you want to work in healthcare/this sector?",
-                "4. What are your key strengths?",
-                "5. Describe a challenging situation and how you handled it.",
-                "6. How do you handle stress and pressure?",
-                "7. Where do you see yourself in 5 years?",
-                "8. What would you do if you disagreed with a colleague?",
-                "9. How do you prioritize tasks?",
-                "10. Do you have any questions for us?"
-            ]
-            for q in questions:
-                st.markdown(q)
-            
-            st.markdown("---")
-            st.markdown("### 💡 Quick Tips:")
-            st.info("""
-            - Research the company beforehand
-            - Prepare examples from your experience
-            - Use the STAR method (Situation, Task, Action, Result)
-            - Ask thoughtful questions
-            - Follow up with a thank you email
-            """)
+        # The full version is at line 3211 as "💼 Job Interview Prep"
+        # This tab should just redirect there or we duplicate the code here
+        st.warning("⚠️ Tab feature temporarily redirecting. Use standalone 'Job Interview Prep' module from navigation for full features!")
     
     with tabs[1]:
-        # Render CV Builder - WORKING VERSION
-        st.header("📄 Professional CV Builder")
-        st.markdown("**Create an ATS-optimized, professional CV in minutes!**")
+        # REDIRECT TO FULL CV BUILDER (Line 3492)
+        st.info("🔄 Loading Full CV Builder with all features...")
+        st.markdown("If this doesn't load, go to: **Navigation → 📄 CV Builder** (standalone)")
         
-        # ACTUAL INTERACTIVE FORM
-        with st.form("cv_builder_form", clear_on_submit=False):
-            st.markdown("### 👤 Personal Information")
-            col1, col2 = st.columns(2)
-            with col1:
-                name = st.text_input("Full Name*", key="cv_name")
-                email = st.text_input("Email*", key="cv_email")
-            with col2:
-                phone = st.text_input("Phone*", key="cv_phone")
-                location = st.text_input("Location (City, Country)", key="cv_location")
-            
-            st.markdown("### 📝 Professional Summary")
-            summary = st.text_area("Brief professional summary (2-3 sentences)", 
-                                  placeholder="Experienced healthcare professional with...",
-                                  key="cv_summary")
-            
-            st.markdown("### 💼 Work Experience")
-            job_title = st.text_input("Job Title", placeholder="e.g., Healthcare Assistant", key="cv_job_title")
-            company_name = st.text_input("Company/Organization", key="cv_company_name")
-            job_description = st.text_area("Key responsibilities and achievements", key="cv_job_desc")
-            
-            st.markdown("### 🎓 Education")
-            qualification = st.text_input("Qualification", placeholder="e.g., NVQ Level 3", key="cv_qual")
-            institution = st.text_input("Institution", key="cv_institution")
-            
-            st.markdown("### ⭐ Key Skills")
-            skills = st.text_area("List your key skills (comma-separated)", 
-                                placeholder="Patient care, Communication, Team work...",
-                                key="cv_skills")
-            
-            submitted = st.form_submit_button("📄 Generate CV Preview", type="primary")
-            
-            if submitted and name and email:
-                st.success("✅ CV Preview Generated!")
-                
-                st.markdown("---")
-                st.markdown(f"# {name}")
-                st.markdown(f"📧 {email} | 📱 {phone} | 📍 {location}")
-                
-                if summary:
-                    st.markdown("## Professional Summary")
-                    st.markdown(summary)
-                
-                if job_title:
-                    st.markdown("## Work Experience")
-                    st.markdown(f"**{job_title}** - {company_name}")
-                    if job_description:
-                        st.markdown(job_description)
-                
-                if qualification:
-                    st.markdown("## Education")
-                    st.markdown(f"**{qualification}** - {institution}")
-                
-                if skills:
-                    st.markdown("## Skills")
-                    st.markdown(skills)
-                
-                st.markdown("---")
-                st.info("💡 **Next:** Download as PDF or Word document (Premium feature)")
+        # The full version is at line 3492 as "📄 CV Builder"
+        # This tab should just redirect there or we duplicate the code here
+        st.warning("⚠️ Tab feature temporarily redirecting. Use standalone 'CV Builder' module from navigation for full features!")
+
+elif tool == "📝 Clinic Letter Interpreter":
+    # CLINIC LETTER INTERPRETER - Interprets clinic letters for RTT codes
+    st.header("📝 Clinic Letter Interpreter")
+    
+    try:
+        from pages.clinic_letter_interpreter import render_clinic_letter_interpreter
+        render_clinic_letter_interpreter()
+    except ImportError:
+        # Fallback if page doesn't exist yet
+        try:
+            from clinic_letter_interpreter_pro import render_letter_interpreter_pro
+            render_letter_interpreter_pro()
+        except ImportError:
+            st.warning("Letter Interpreter module not found. Contact admin@t21services.co.uk")
 
 elif tool == "⚙️ Administration":
     st.header("⚙️ Administration")

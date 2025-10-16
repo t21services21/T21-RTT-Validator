@@ -96,6 +96,81 @@ def create_staff_via_supabase():
                 print(f"   👤 Role: {staff['role']}")
                 print(f"   🔑 Password: {staff['password']}")
                 
+                # SEND WELCOME EMAIL
+                try:
+                    from email_service import send_email
+                    
+                    email_content = f"""
+                    <html>
+                    <body style="font-family: Arial, sans-serif; line-height: 1.6;">
+                        <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 2px solid #0066cc;">
+                            <h1 style="color: #0066cc;">🎉 Account Created!</h1>
+                            <p>Hi {staff['full_name']},</p>
+                            <p>Your {staff['role']} account for the T21 RTT Platform has been created!</p>
+                            
+                            <div style="background: #f0f8ff; padding: 20px; margin: 20px 0; border-left: 4px solid #0066cc;">
+                                <h3 style="margin-top: 0;">🔑 Login Credentials:</h3>
+                                <p><strong>Email:</strong> {staff['email']}<br>
+                                <strong>Password:</strong> {staff['password']}<br>
+                                <strong>Role:</strong> {staff['role'].title()}</p>
+                            </div>
+                            
+                            <h3>✅ You Have Access To:</h3>
+                            <ul>
+                                <li>All 55+ modules</li>
+                                <li>Clinical workflows (PTL, Cancer, MDT, Booking)</li>
+                                <li>Information Governance</li>
+                                <li>Partial Booking List</li>
+                                <li>All training content</li>
+                                {'<li><strong>Admin Panel</strong></li>' if staff['role'] == 'admin' else ''}
+                            </ul>
+                            
+                            <div style="text-align: center; margin: 30px 0;">
+                                <a href="https://t21-healthcare-platform.streamlit.app" 
+                                   style="background: #0066cc; color: white; padding: 15px 30px; 
+                                          text-decoration: none; border-radius: 5px; display: inline-block; 
+                                          font-weight: bold;">
+                                    🚀 LOGIN NOW
+                                </a>
+                            </div>
+                            
+                            <p>Best regards,<br><strong>T21 Services Team</strong></p>
+                        </div>
+                    </body>
+                    </html>
+                    """
+                    
+                    send_email(
+                        to_email=staff['email'],
+                        subject=f"🎉 Account Created - T21 Platform ({staff['role'].title()})",
+                        html_content=email_content
+                    )
+                    
+                    print(f"   ✅ Welcome email sent to {staff['email']}")
+                
+                except Exception as email_error:
+                    print(f"   ⚠️  Email not sent: {email_error}")
+                
+                # CREATE NOTIFICATION
+                try:
+                    from notification_system import create_notification, NotificationType, NotificationPriority
+                    
+                    create_notification(
+                        user_email=staff['email'],
+                        title=f"👤 {staff['role'].title()} Account Ready!",
+                        message=f"Your account is ready. You have access to all modules for testing. Happy testing!",
+                        notification_type=NotificationType.SUCCESS,
+                        priority=NotificationPriority.HIGH,
+                        send_email=False,  # Already sent above
+                        action_url="/",
+                        action_label="Start Testing"
+                    )
+                    
+                    print(f"   ✅ Notification created")
+                
+                except Exception as notif_error:
+                    print(f"   ⚠️  Notification not created: {notif_error}")
+                
             except Exception as e:
                 print(f"   ❌ Error: {str(e)}")
         
