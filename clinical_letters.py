@@ -28,7 +28,8 @@ def generate_mdt_gp_letter(
     mdt_decision: str,
     actions: list,
     next_steps: str,
-    consultant_name: str = "Consultant"
+    consultant_name: str = "Consultant",
+    dob: str = None
 ) -> str:
     """Generate letter to GP from MDT outcome"""
     
@@ -47,6 +48,7 @@ I am writing to inform you of the outcome of the Multi-Disciplinary Team (MDT) m
 PATIENT DETAILS:
 Name: {patient_name}
 NHS Number: {nhs_number}
+Date of Birth: {dob if dob else 'Not provided'}
 Date of MDT: {meeting_date}
 Specialty: {specialty}
 
@@ -94,7 +96,8 @@ def generate_mdt_patient_letter(
     treatment_plan: str,
     next_appointment: str,
     contact_number: str,
-    consultant_name: str = "Consultant"
+    consultant_name: str = "Consultant",
+    dob: str = None
 ) -> str:
     """Generate letter to patient from MDT outcome"""
     
@@ -109,6 +112,9 @@ Dear {patient_name},
 RE: Your recent hospital appointment and treatment plan
 
 Thank you for allowing us to discuss your care at our Multi-Disciplinary Team (MDT) meeting on {meeting_date}.
+
+YOUR DETAILS:
+Date of Birth: {dob if dob else 'Not provided'}
 
 WHAT WE DISCUSSED:
 Your case was discussed by a team of specialist doctors and healthcare professionals from different areas. This helps us ensure you receive the best possible care.
@@ -157,7 +163,8 @@ def generate_appointment_confirmation_letter(
     consultant_name: str,
     specialty: str,
     special_instructions: str = "",
-    contact_number: str = "01234 567890"
+    contact_number: str = "01234 567890",
+    dob: str = None
 ) -> str:
     """Generate appointment confirmation letter"""
     
@@ -170,6 +177,9 @@ Date: {datetime.now().strftime('%d %B %Y')}
 Dear {patient_name},
 
 RE: Appointment Confirmation (NHS: {nhs_number})
+
+PATIENT DETAILS:
+Date of Birth: {dob if dob else 'Not provided'}
 
 APPOINTMENT DETAILS:
 Date: {appointment_date}

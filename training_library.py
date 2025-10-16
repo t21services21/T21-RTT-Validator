@@ -20,6 +20,19 @@ TRAINING_SCENARIOS = [
         "title": "GP Referral - Cardiology",
         "difficulty": "Easy",
         "letter": """
+FROM: Green Street Medical Practice (GP Surgery)
+      123 High Street, London, SW1A 1AA
+      Dr. James Smith - General Practitioner
+
+TO:   Cardiology Department
+      Royal Hospital NHS Trust
+      Hospital Road, London, SW1A 2BB
+
+Date: 15 October 2025
+Ref: GP/REF/2025/1234
+
+=====================================
+
 Dear Consultant,
 
 I am writing to refer Mr. John Doe for cardiology assessment.
@@ -37,7 +50,9 @@ Please arrange:
 - Cardiology consultation
 
 Thank you,
-Dr. Smith
+Dr. James Smith
+General Practitioner
+Green Street Medical Practice
         """,
         "correct_code": "10",
         "explanation": "This is a GP referral letter. Code 10 is correct as it's the FIRST activity in a new RTT pathway.",
@@ -60,6 +75,21 @@ Dr. Smith
         "title": "Results Letter - Discharge",
         "difficulty": "Medium",
         "letter": """
+FROM: Cardiology Department
+      Royal Hospital NHS Trust
+      Hospital Road, London, SW1A 2BB
+      Dr. Sarah Turner - Consultant Cardiologist
+
+TO:   Mr. John Doe
+      Patient Address
+
+CC:   Dr. James Smith, Green Street Medical Practice
+
+Date: 28 October 2025
+Ref: CARDIO/RESULTS/2025/5678
+
+=====================================
+
 Dear Mr. Doe,
 
 Re: Results from Your Recent Investigations
@@ -72,7 +102,9 @@ Based on these findings, no medical intervention is needed at this point.
 I recommend regular exercise and maintaining a healthy lifestyle.
 
 Yours sincerely,
-Dr. Turner
+Dr. Sarah Turner
+Consultant Cardiologist
+Royal Hospital NHS Trust
         """,
         "correct_code": "34",
         "explanation": "This is a discharge letter (Code 34). Tests were already done (PAST), results are normal, and no treatment is needed.",
@@ -94,6 +126,20 @@ Dr. Turner
         "title": "Decision to Treat - Waiting List",
         "difficulty": "Medium",
         "letter": """
+FROM: Orthopedic Department
+      City Hospital NHS Trust
+      Mr. John Anderson - Consultant Orthopedic Surgeon
+
+TO:   Mr. Robert Smith (Patient)
+      Patient Address
+
+CC:   Dr. Sarah Williams, Oakwood Medical Centre (GP)
+
+Date: 18 October 2025
+Ref: ORTHO/DTT/2025/3456
+
+=====================================
+
 Dear Mr. Smith,
 
 Thank you for attending clinic.
@@ -129,15 +175,27 @@ Dr. Jones
         "title": "Treatment Completed",
         "difficulty": "Easy",
         "letter": """
-Dear Patient,
+FROM: Orthopedic Department
+      City Hospital NHS Trust
+      Mr. John Anderson - Consultant Orthopedic Surgeon
 
-I am writing to confirm that your knee arthroscopy was performed 
-on 15/09/2025 and was successful.
+TO:   Dr. Sarah Williams, Oakwood Medical Centre (GP)
 
-You will need a follow-up appointment in 6 weeks to check progress.
+Date: 16 October 2025
+Ref: ORTHO/DISCHARGE/2025/3456
 
-Yours sincerely,
-Mr. Consultant
+=====================================
+
+Patient completed treatment course.
+
+Surgery: Right knee arthroscopy completed 15/10/2025
+Outcome: Successful
+Follow-up: GP to manage ongoing care
+
+Discharge to GP.
+
+Mr. John Anderson
+Consultant Orthopedic Surgeon
         """,
         "correct_code": "30",
         "explanation": "Surgery performed = First Definitive Treatment. Code 30 STOPS the RTT clock.",
@@ -159,16 +217,32 @@ Mr. Consultant
         "title": "Active Monitoring - Clinician Initiated",
         "difficulty": "Hard",
         "letter": """
-Dear Patient,
+FROM: Urology Department
+      Regional Hospital NHS Trust
+      Dr. Michael Chen - Consultant Urologist
 
-Following review of your condition, I believe a period of 
-watchful waiting would be appropriate at this stage.
+TO:   Patient & GP
 
-We will monitor the situation for 6 months with regular reviews.
+Date: 17 October 2025
+Ref: URO/ACTIVE-MON/2025/789
 
-I will see you again in 3 months for reassessment.
+=====================================
 
-Dr. Clinical
+Clinical Decision:
+
+Patient has small kidney stone (4mm).
+
+Decision: Active surveillance rather than intervention.
+
+Plan:
+- Review in 3 months
+- Repeat imaging
+- Conservative management (fluids, analgesia)
+
+No active treatment required at this stage.
+
+Dr. Michael Chen
+Consultant Urologist
         """,
         "correct_code": "32",
         "explanation": "Clinician-initiated active monitoring. Code 32 PAUSES the RTT clock.",
@@ -191,6 +265,21 @@ Dr. Clinical
         "title": "DNA - Did Not Attend",
         "difficulty": "Medium",
         "letter": """
+FROM: Outpatient Booking Office
+      Regional Hospital NHS Trust
+      Appointments Team
+
+TO:   RTT Coordinator / Waiting List Manager
+
+CC:   GP Surgery
+
+Date: 16 September 2025
+Ref: OPD/DNA/2025/456
+
+⚠️ PATIENT DNA - FIRST APPOINTMENT ⚠️
+
+=====================================
+
 Internal Note:
 
 Patient did not attend first outpatient appointment on 15/09/2025.
@@ -226,9 +315,24 @@ Admin Team
         "difficulty": "Medium",
         "specialty": "Oncology",
         "letter": """
+FROM: Riverside Medical Centre (GP Surgery)
+      45 Park Lane, Manchester, M1 2AB
+      Dr. Emily Wilson - General Practitioner
+
+TO:   Breast Surgery Department
+      Manchester Royal Infirmary NHS Trust
+      Oxford Road, Manchester, M13 9WL
+
+Date: 14 October 2025
+Ref: GP/2WW/BREAST/2025/987
+
+⚠️ URGENT 2-WEEK WAIT CANCER REFERRAL ⚠️
+
+=====================================
+
 Dear Consultant,
 
-URGENT 2-WEEK WAIT REFERRAL
+I am referring this patient urgently under the 2-week wait cancer pathway.
 
 Patient: Mrs. Sarah Jones
 NHS: 987654321
@@ -271,6 +375,17 @@ Dr. Williams, GP
         "difficulty": "Medium",
         "specialty": "Orthopedics",
         "letter": """
+FROM: Orthopedic Department
+      Metropolitan Hospital NHS Trust
+      Mr. James Surgeon - Consultant Orthopedic Surgeon
+
+TO:   Dr. Peter Brown, Hillside Medical Practice (GP)
+
+Date: 12 October 2025
+Ref: ORTHO/DECLINED/2025/567
+
+=====================================
+
 Clinic Letter
 
 Patient attended and treatment options were discussed.
@@ -284,7 +399,8 @@ weight management, pain relief).
 Will discharge from waiting list. Patient advised to re-contact 
 if symptoms worsen.
 
-Mr. Surgeon
+Mr. James Surgeon
+Consultant Orthopedic Surgeon
         """,
         "correct_code": "31",
         "explanation": "Patient declined treatment = Code 31. This STOPS the RTT clock as patient decided not to proceed.",
@@ -310,6 +426,21 @@ Mr. Surgeon
         "difficulty": "Hard",
         "specialty": "Neurology",
         "letter": """
+FROM: Neurology Department
+      District General Hospital NHS Trust
+      Dr. Lisa Neuro - Consultant Neurologist
+
+TO:   Regional Neurosurgery Unit
+      Specialist Tertiary Center NHS Foundation Trust
+      (DIFFERENT PROVIDER)
+
+Date: 10 October 2025
+Ref: NEURO/TERTIARY/2025/234
+
+⚠️ TERTIARY REFERRAL - RTT CLOCK CONTINUES ⚠️
+
+=====================================
+
 Dear Colleague,
 
 Re: Mr. David Brown - Complex Headache
@@ -322,7 +453,8 @@ care. Patient unlikely to return to our service.
 
 Current RTT pathway to continue at tertiary center.
 
-Dr. Neuro
+Dr. Lisa Neuro
+Consultant Neurologist
         """,
         "correct_code": "21",
         "explanation": "Tertiary referral to another provider = Code 21. RTT clock CONTINUES (still ticking, doesn't stop or restart).",
@@ -720,6 +852,140 @@ Patient to be referred to tertiary neurosurgery center for specialist assessment
             "Refer to neurosurgery",
             "Clock keeps running",
             "Track referral"
+        ]
+    },
+    {
+        "id": 21,
+        "title": "CODE 11 - Active Monitoring Restart (Patient Now Ready)",
+        "difficulty": "Hard",
+        "specialty": "Orthopedics",
+        "letter": """
+FROM: Orthopedic Department
+      Royal Hospital NHS Trust
+      Mr. David Surgeon - Consultant Orthopedic Surgeon
+
+TO:   Waiting List Team / RTT Coordinator
+
+Date: 16 October 2025
+Ref: ORTHO/RESTART/2025/456
+
+⚠️ CLOCK RESTART - PATIENT NOW READY FOR TREATMENT ⚠️
+
+=====================================
+
+Patient: Mr. David Brown
+NHS: 5555666677
+DOB: 22/08/1962
+
+PREVIOUS RTT PATHWAY:
+- Seen in clinic: 15 March 2025
+- Diagnosis: Severe osteoarthritis right hip
+- Treatment offered: Total hip replacement
+- PATIENT DECLINED at that time (wanted to try conservative management first)
+- Clock stopped with Code 31 (Patient Declined Treatment)
+- Discharge date: 15 March 2025
+
+CURRENT STATUS:
+Patient contacted clinic today. Conservative management has failed. 
+Patient now READY and REQUESTING to proceed with hip replacement surgery.
+
+Clinical decision: Patient suitable for surgery, no change in clinical condition.
+
+ACTION REQUIRED:
+- RESTART RTT clock using Code 11 (Active Monitoring Starter)
+- Add to waiting list for total hip replacement
+- New clock starts from TODAY
+
+Consultant Decision: Proceed with hip replacement
+
+Mr. David Surgeon
+Consultant Orthopedic Surgeon
+        """,
+        "correct_code": "11",
+        "explanation": "Code 11 - Active Monitoring Starter! Used to RESTART a clock that previously ended with Code 31 (patient declined). Patient now ready, so clock restarts with Code 11.",
+        "key_points": [
+            "⚠️ Code 11 = RESTART a stopped clock (31/32/91)",
+            "Previous clock ended with Code 31 (patient declined)",
+            "Patient NOW ready for treatment",
+            "Code 11 RESTARTS the RTT clock",
+            "NEW 18-week clock starts from Code 11 date"
+        ],
+        "expected_actions": [
+            "Record Code 11 (Clock Restart)",
+            "Check previous pathway ended with 31/32/91",
+            "NEW 18-week clock starts today",
+            "Add to surgical waiting list",
+            "Book pre-op assessment"
+        ]
+    },
+    {
+        "id": 22,
+        "title": "CODE 12 - Consultant Referral for NEW Condition",
+        "difficulty": "Hard",
+        "specialty": "Cardiology",
+        "letter": """
+FROM: ENT Department
+      Northern General Hospital NHS Trust
+      Mr. Peter Collins - Consultant ENT Surgeon
+
+TO:   Cardiology Department
+      Northern General Hospital NHS Trust (SAME TRUST)
+      Consultant Cardiologist
+
+Date: 16 October 2025
+Ref: ENT/NEW-REF/CARDIO/2025/789
+
+⚠️ CONSULTANT REFERRAL - NEW/DIFFERENT CONDITION ⚠️
+
+=====================================
+
+Dear Cardiology Colleague,
+
+Patient: Mrs. Linda White
+NHS: 7777888899
+DOB: 10/03/1970
+
+CURRENT ENT TREATMENT:
+Patient currently under my care for chronic rhinosinusitis. This is ongoing and managed.
+
+NEW/SEPARATE ISSUE IDENTIFIED:
+During routine pre-operative assessment for sinus surgery, patient mentioned experiencing:
+- Palpitations for past 6 weeks
+- Occasional chest tightness
+- Episodes of dizziness
+
+ECG performed shows atrial fibrillation (new diagnosis).
+
+This is a SEPARATE condition unrelated to her ENT problem.
+
+Request:
+- Cardiology assessment for newly diagnosed AF
+- Anticoagulation consideration
+- Rate/rhythm control
+- Separate RTT pathway for cardiology issue
+
+Patient's ENT treatment continues in parallel.
+
+Many thanks,
+Mr. Peter Collins
+Consultant ENT Surgeon
+        """,
+        "correct_code": "12",
+        "explanation": "Code 12 - Consultant-to-Consultant referral for a NEW/DIFFERENT condition! Patient is with ENT for sinus problem, but NEW cardiac issue discovered, so ENT refers to Cardiology. This is NOT Code 10 (not from GP) and NOT Code 11 (not restarting a stopped clock).",
+        "key_points": [
+            "⚠️ Code 12 = Consultant refers to another consultant for NEW condition",
+            "Patient already under consultant care (ENT)",
+            "NEW separate problem identified (AF)",
+            "Referral to DIFFERENT specialty (Cardiology)",
+            "Creates NEW RTT pathway",
+            "NOT from GP (so not Code 10)"
+        ],
+        "expected_actions": [
+            "Record Code 12 (Consultant referral - new condition)",
+            "Create NEW RTT pathway for cardiology",
+            "NEW 18-week clock starts",
+            "Book cardiology appointment",
+            "ENT pathway continues separately"
         ]
     }
 ]

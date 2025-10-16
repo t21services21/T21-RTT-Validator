@@ -4,7 +4,7 @@ Interface for creating and managing clinical letters
 """
 
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, timedelta
 from clinical_letters import (
     LETTER_TEMPLATES,
     generate_mdt_gp_letter,
@@ -78,6 +78,7 @@ def render_mdt_gp_letter_form():
         with col1:
             patient_name = st.text_input("Patient Name*", placeholder="John Smith")
             nhs_number = st.text_input("NHS Number*", placeholder="123 456 7890")
+            dob = st.date_input("Patient Date of Birth*", value=datetime.now() - timedelta(days=365*50))
             meeting_date = st.date_input("MDT Date*", value=datetime.now())
             specialty = st.text_input("Specialty*", placeholder="Oncology")
             diagnosis = st.text_area("Diagnosis*", placeholder="Clinical diagnosis...")
@@ -120,7 +121,8 @@ def render_mdt_gp_letter_form():
                     mdt_decision=mdt_decision,
                     actions=actions_list,
                     next_steps=next_steps,
-                    consultant_name=consultant_name
+                    consultant_name=consultant_name,
+                    dob=str(dob)
                 )
                 
                 st.session_state['generated_letter'] = letter
@@ -164,6 +166,7 @@ def render_mdt_patient_letter_form():
         
         with col1:
             patient_name = st.text_input("Patient Name*", placeholder="John Smith")
+            dob = st.date_input("Patient Date of Birth*", value=datetime.now() - timedelta(days=365*50))
             patient_address = st.text_area("Patient Address*", height=80, 
                                           placeholder="123 Main Street\nCity\nPostcode")
             meeting_date = st.date_input("MDT Date*", value=datetime.now())
@@ -193,7 +196,8 @@ def render_mdt_patient_letter_form():
                     treatment_plan=treatment_plan,
                     next_appointment=next_appointment,
                     contact_number=contact_number,
-                    consultant_name=consultant_name
+                    consultant_name=consultant_name,
+                    dob=str(dob)
                 )
                 
                 st.session_state['generated_letter'] = letter
@@ -239,6 +243,7 @@ def render_appointment_letters():
             patient_name = st.text_input("Patient Name*")
             patient_address = st.text_area("Patient Address*", height=80)
             nhs_number = st.text_input("NHS Number*")
+            dob = st.date_input("Patient Date of Birth*", value=datetime.now() - timedelta(days=365*50))
             appointment_date = st.date_input("Appointment Date*")
             appointment_time = st.time_input("Appointment Time*")
         
@@ -265,7 +270,8 @@ def render_appointment_letters():
                     consultant_name=consultant_name,
                     specialty=specialty,
                     special_instructions=special_instructions,
-                    contact_number=contact_number
+                    contact_number=contact_number,
+                    dob=str(dob)
                 )
                 
                 st.session_state['generated_letter'] = letter
@@ -345,8 +351,60 @@ def render_discharge_letters():
     
     st.info("Generate comprehensive discharge summaries for GPs")
     
-    # Implementation similar to above
-    st.markdown("**Coming soon:** Full discharge summary generator")
+    with st.form("discharge_summary"):
+        st.markdown("#### Patient Details")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            patient_name = st.text_input("Patient Name*", placeholder="John Smith")
+            nhs_number = st.text_input("NHS Number*", placeholder="123 456 7890")
+            dob = st.date_input("Date of Birth*", value=datetime.now() - timedelta(days=365*50))
+            admission_date = st.date_input("Admission Date*", value=datetime.now() - timedelta(days=7))
+            discharge_date = st.date_input("Discharge Date*", value=datetime.now())
+        
+        with col2:
+            gp_name = st.text_input("GP Name*", placeholder="Dr Jones")
+            consultant_name = st.text_input("Consultant Name*", placeholder="Dr Smith")
+            specialty = st.text_input("Specialty*", placeholder="General Surgery")
+        
+        st.markdown("#### Clinical Information")
+        diagnosis = st.text_area("Diagnosis*", height=100, 
+                                 placeholder="Primary diagnosis and any secondary diagnoses...")
+        
+        treatment_given = st.text_area("Treatment Provided*", height=120,
+                                       placeholder="Summary of treatment, procedures, and interventions...")
+        
+        discharge_medications = st.text_area("Discharge Medications*", height=120,
+                                            placeholder="List all medications with doses and frequencies...\ne.g.:\n- Amoxicillin 500mg TDS for 7 days\n- Paracetamol 1g QDS PRN")
+        
+        follow_up_plan = st.text_area("Follow-Up Arrangements*", height=100,
+                                      placeholder="Outpatient appointments, investigations, or GP follow-up required...")
+        
+        if st.form_submit_button("📄 Generate Discharge Summary", type="primary"):
+            if all([patient_name, nhs_number, gp_name, diagnosis, treatment_given, discharge_medications, follow_up_plan]):
+                letter = generate_discharge_summary(
+                    patient_name=patient_name,
+                    nhs_number=nhs_number,
+                    date_of_birth=str(dob),
+                    admission_date=str(admission_date),
+                    discharge_date=str(discharge_date),
+                    diagnosis=diagnosis,
+                    treatment_given=treatment_given,
+                    discharge_medications=discharge_medications,
+                    follow_up_plan=follow_up_plan,
+                    gp_name=gp_name,
+                    consultant_name=consultant_name,
+                    specialty=specialty
+                )
+                
+                st.session_state['generated_letter'] = letter
+                st.success("✅ Discharge summary generated!")
+                st.rerun()
+            else:
+                st.error("❌ Please fill all required fields")
+    
+    if st.session_state.get('generated_letter'):
+        display_generated_letter()
 
 
 def render_letter_templates():

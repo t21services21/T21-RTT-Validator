@@ -5125,7 +5125,7 @@ elif tool == "📊 Reports & Analytics":
     tabs = st.tabs(["📊 Dashboard", "📈 Interactive Reports", "📊 Data Quality"])
     
     with tabs[0]:
-        from executive_dashboard_ui import render_executive_dashboard
+        from executive_dashboard import render_executive_dashboard
         render_executive_dashboard()
     
     with tabs[1]:
