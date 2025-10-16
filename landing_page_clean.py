@@ -107,6 +107,88 @@ def render_clean_landing_page():
         if st.button("🏥 NHS LOGIN / REGISTER", use_container_width=True, type="primary"):
             st.switch_page("pages/nhs_login.py")
     
+    # Forgot Password Button
+    st.markdown("<br>", unsafe_allow_html=True)
+    col_center = st.columns([1, 2, 1])[1]
+    with col_center:
+        if st.button("🔒 Forgot Password? Click Here to Reset", use_container_width=True):
+            st.session_state.show_password_reset = True
+            st.rerun()
+    
+    # Password Reset Form
+    if st.session_state.get('show_password_reset'):
+        st.markdown("---")
+        st.markdown("### 🔒 Password Reset")
+        st.caption("Enter your email address to receive a password reset code")
+        
+        reset_email = st.text_input("Email Address", key="landing_reset_email")
+        
+        if 'reset_step' not in st.session_state:
+            st.session_state.reset_step = 1
+        
+        if st.session_state.reset_step == 1:
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("📧 Send Reset Code", type="primary", use_container_width=True):
+                    if reset_email:
+                        try:
+                            from student_auth import request_password_reset
+                            success, message = request_password_reset(reset_email)
+                            if success:
+                                st.success(message)
+                                st.session_state.reset_step = 2
+                                st.rerun()
+                            else:
+                                st.error(message)
+                        except:
+                            st.error("Password reset functionality not available. Please contact admin@t21services.co.uk")
+                    else:
+                        st.warning("Please enter your email address")
+            with col2:
+                if st.button("← Cancel", use_container_width=True):
+                    st.session_state.show_password_reset = False
+                    st.session_state.reset_step = 1
+                    st.rerun()
+        
+        elif st.session_state.reset_step == 2:
+            st.info(f"✅ Reset code sent to {reset_email}")
+            reset_code = st.text_input("Enter 6-digit code:", max_chars=6, key="landing_reset_code")
+            new_password = st.text_input("New Password (min 8 characters):", type="password", key="landing_new_pass")
+            confirm_password = st.text_input("Confirm New Password:", type="password", key="landing_confirm_pass")
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                if st.button("✅ Reset Password", type="primary"):
+                    if not (reset_code and new_password and confirm_password):
+                        st.warning("Please fill all fields")
+                    elif new_password != confirm_password:
+                        st.error("Passwords don't match")
+                    elif len(new_password) < 8:
+                        st.error("Password must be at least 8 characters")
+                    else:
+                        try:
+                            from student_auth import reset_password
+                            success, message = reset_password(reset_email, reset_code, new_password)
+                            if success:
+                                st.success(message)
+                                st.balloons()
+                                st.session_state.reset_step = 1
+                                st.session_state.show_password_reset = False
+                                st.rerun()
+                            else:
+                                st.error(message)
+                        except:
+                            st.error("Password reset failed. Please contact admin@t21services.co.uk")
+            with col2:
+                if st.button("← Start Over"):
+                    st.session_state.reset_step = 1
+                    st.rerun()
+            with col3:
+                if st.button("Cancel"):
+                    st.session_state.show_password_reset = False
+                    st.session_state.reset_step = 1
+                    st.rerun()
+    
     st.markdown("<br>", unsafe_allow_html=True)
     
     # Revolutionary capabilities
