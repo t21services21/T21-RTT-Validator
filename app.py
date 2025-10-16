@@ -5299,12 +5299,12 @@ elif tool == "🤖 AI & Automation":
         try:
             from pages.clinic_letter_interpreter import render_clinic_letter_interpreter
             render_clinic_letter_interpreter()
-        except ImportError:
+        except Exception as e:
             try:
                 from clinic_letter_interpreter_pro import render_letter_interpreter_pro
                 render_letter_interpreter_pro()
-            except ImportError:
-                st.warning("Letter Interpreter module not found")
+            except Exception:
+                st.warning("⚠️ Clinic Letter Interpreter temporarily unavailable. Use main RTT Validator instead.")
     
     with tabs[4]:
         from document_management_ui import render_document_management
