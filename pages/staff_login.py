@@ -92,84 +92,145 @@ else:
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        st.markdown("### 🔐 Staff/Partner Login")
-        st.warning("⚠️ This portal is restricted to authorized T21 Services staff, training providers, and approved partners only.")
+        # CHECK IF 2FA PROMPT SHOULD SHOW (ONLY AFTER PASSWORD VERIFIED)
+        if st.session_state.get('show_2fa_prompt'):
+            # SHOW 2FA VERIFICATION INSTEAD OF LOGIN FORM
+            st.markdown("### 🔐 Two-Factor Authentication Required")
+            
+            pending_user = st.session_state.get('pending_2fa_user')
+            
+            if pending_user:
+                st.info(f"Please enter the 6-digit code from your authenticator app for **{pending_user.get('email')}**")
+                
+                two_fa_code = st.text_input("Enter 6-digit code:", max_chars=6, key="staff_2fa_code")
+                
+                col_a, col_b = st.columns(2)
+                
+                with col_a:
+                    if st.button("✅ Verify & Login", type="primary", key="staff_verify_2fa", use_container_width=True):
+                        if two_fa_code and len(two_fa_code) == 6:
+                            from two_factor_auth import verify_2fa_code
+                            
+                            secret = pending_user.get('two_factor_secret')
+                            
+                            if verify_2fa_code(secret, two_fa_code):
+                                # 2FA verified! Complete login
+                                from supabase_database import update_user_last_login
+                                
+                                email = pending_user.get('email')
+                                update_user_last_login(email)
+                                
+                                class SimpleUser:
+                                    def __init__(self, data):
+                                        self.email = data.get('email')
+                                        self.full_name = data.get('full_name')
+                                        self.role = data.get('role', 'staff')
+                                        self.user_type = data.get('user_type', 'staff')
+                                
+                                user_obj = SimpleUser(pending_user)
+                                
+                                st.session_state.logged_in = True
+                                st.session_state.user_license = user_obj
+                                st.session_state.user_email = email
+                                st.session_state.session_email = email
+                                
+                                # Clear 2FA prompt
+                                st.session_state.show_2fa_prompt = False
+                                st.session_state.pending_2fa_user = None
+                                
+                                st.success(f"✅ 2FA Verified! Welcome, {user_obj.full_name}!")
+                                st.switch_page("app.py")
+                            else:
+                                st.error("❌ Invalid 2FA code. Please try again.")
+                        else:
+                            st.error("Please enter a 6-digit code")
+                
+                with col_b:
+                    if st.button("🔙 Cancel", key="staff_cancel_2fa", use_container_width=True):
+                        st.session_state.show_2fa_prompt = False
+                        st.session_state.pending_2fa_user = None
+                        st.rerun()
         
-        with st.form("staff_login"):
-            email = st.text_input("Staff/Partner Email", placeholder="your.name@t21services.co.uk")
-            password = st.text_input("Password", type="password")
+        else:
+            # SHOW NORMAL LOGIN FORM (ONLY IF NOT IN 2FA MODE)
+            st.markdown("### 🔐 Staff/Partner Login")
+            st.warning("⚠️ This portal is restricted to authorized T21 Services staff, training providers, and approved partners only.")
             
-            col_a, col_b = st.columns(2)
-            
-            with col_a:
-                login_btn = st.form_submit_button("👥 Staff/Partner Login", type="primary", use_container_width=True)
-            
-            with col_b:
-                if st.form_submit_button("← Back to Main Page", use_container_width=True):
-                    st.switch_page("app.py")
-            
-            if login_btn:
-                if email and password:
-                    password_hash = hashlib.sha256(password.encode()).hexdigest()
-                    require_supabase = str(st.secrets.get("REQUIRE_SUPABASE_LOGIN", "false")).lower() == "true"
-                    login_source = None
-                    
-                    # Try Supabase first, but gracefully fall back if not available
-                    supabase_user = None
-                    try:
-                        from supabase_database import get_user_by_email, update_user_last_login
+            with st.form("staff_login"):
+                email = st.text_input("Staff/Partner Email", placeholder="your.name@t21services.co.uk")
+                password = st.text_input("Password", type="password")
+                
+                col_a, col_b = st.columns(2)
+                
+                with col_a:
+                    login_btn = st.form_submit_button("👥 Staff/Partner Login", type="primary", use_container_width=True)
+                
+                with col_b:
+                    if st.form_submit_button("← Back to Main Page", use_container_width=True):
+                        st.switch_page("app.py")
+                
+                if login_btn:
+                    if email and password:
+                        password_hash = hashlib.sha256(password.encode()).hexdigest()
+                        require_supabase = str(st.secrets.get("REQUIRE_SUPABASE_LOGIN", "false")).lower() == "true"
+                        login_source = None
+                        
+                        # Try Supabase first, but gracefully fall back if not available
+                        supabase_user = None
                         try:
-                            supabase_user = get_user_by_email(email)
+                            from supabase_database import get_user_by_email, update_user_last_login
+                            try:
+                                supabase_user = get_user_by_email(email)
+                            except Exception:
+                                supabase_user = None
+                            
+                            if supabase_user and supabase_user.get('password_hash') == password_hash:
+                                user_type = supabase_user.get('user_type', 'student')
+                                
+                                if user_type in ['admin', 'staff', 'partner']:
+                                    # Check if 2FA is enabled
+                                    if supabase_user.get('two_factor_enabled'):
+                                        # Store for 2FA verification
+                                        st.session_state.pending_2fa_user = supabase_user
+                                        st.session_state.show_2fa_prompt = True
+                                        st.rerun()
+                                    else:
+                                        # No 2FA, proceed with login
+                                        try:
+                                            update_user_last_login(email)
+                                        except Exception:
+                                            pass
+                                        
+                                        class SimpleUser:
+                                            def __init__(self, data):
+                                                self.email = data.get('email')
+                                                self.full_name = data.get('full_name')
+                                                self.role = data.get('role', 'staff')
+                                                self.user_type = data.get('user_type', 'staff')
+                                        
+                                        user_account = SimpleUser(supabase_user)
+                                        
+                                        st.session_state.logged_in = True
+                                        st.session_state.user_license = user_account
+                                        st.session_state.user_email = email
+                                        st.session_state.session_email = email
+                                        st.session_state.auth_source = "supabase"
+                                        
+                                        st.switch_page("app.py")
+                                else:
+                                    st.error("❌ This portal is for staff/partners only")
+                            elif supabase_user:
+                                st.error("❌ Incorrect password")
                         except Exception:
                             supabase_user = None
                         
-                        if supabase_user and supabase_user.get('password_hash') == password_hash:
-                            user_type = supabase_user.get('user_type', 'student')
-                            
-                            if user_type in ['admin', 'staff', 'partner']:
-                                # Check if 2FA is enabled
-                                if supabase_user.get('two_factor_enabled'):
-                                    # Store for 2FA verification
-                                    st.session_state.pending_2fa_user = supabase_user
-                                    st.session_state.show_2fa_prompt = True
-                                    st.rerun()
-                                else:
-                                    # No 2FA, proceed with login
-                                    try:
-                                        update_user_last_login(email)
-                                    except Exception:
-                                        pass
-                                    
-                                    class SimpleUser:
-                                        def __init__(self, data):
-                                            self.email = data.get('email')
-                                            self.full_name = data.get('full_name')
-                                            self.role = data.get('role', 'staff')
-                                            self.user_type = data.get('user_type', 'staff')
-                                    
-                                    user_account = SimpleUser(supabase_user)
-                                    
-                                    st.session_state.logged_in = True
-                                    st.session_state.user_license = user_account
-                                    st.session_state.user_email = email
-                                    st.session_state.session_email = email
-                                    st.session_state.auth_source = "supabase"
-                                    
-                                    st.switch_page("app.py")
+                        if not supabase_user:
+                            if require_supabase:
+                                st.error("❌ Supabase login is required. Please check Supabase credentials and user record.")
                             else:
-                                st.error("❌ This portal is for staff/partners only")
-                        elif supabase_user:
-                            st.error("❌ Incorrect password")
-                    except Exception:
-                        supabase_user = None
-                    
-                    if not supabase_user:
-                        if require_supabase:
-                            st.error("❌ Supabase login is required. Please check Supabase credentials and user record.")
-                        else:
-                            users_db = load_users_db()
-                            
-                            if email in users_db:
+                                users_db = load_users_db()
+                                
+                                if email in users_db:
                                 user_data = users_db[email]
                                 # Handle UserAccount object vs dict
                                 if hasattr(user_data, 'password_hash'):
@@ -300,108 +361,8 @@ else:
                         st.session_state.show_staff_password_reset = False
                         st.session_state.staff_reset_step = 1
                         st.rerun()
-        
-        # 2FA Verification Prompt (same as main app)
-        if st.session_state.get('show_2fa_prompt'):
-        
-            st.markdown("### 🔐 Two-Factor Authentication Required")
             
-            pending_user = st.session_state.get('pending_2fa_user')
-            
-            if pending_user:
-                st.info(f"Please enter the 6-digit code from your authenticator app for **{pending_user.get('email')}**")
-                
-                two_fa_code = st.text_input("Enter 6-digit code:", max_chars=6, key="staff_2fa_code")
-                
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    if st.button("✅ Verify & Login", type="primary", key="staff_verify_2fa"):
-                        if two_fa_code and len(two_fa_code) == 6:
-                            from two_factor_auth import verify_2fa_code
-                            
-                            secret = pending_user.get('two_factor_secret')
-                            
-                            if verify_2fa_code(secret, two_fa_code):
-                                # 2FA verified! Complete login
-                                from supabase_database import update_user_last_login
-                                
-                                email = pending_user.get('email')
-                                update_user_last_login(email)
-                                
-                                class SimpleUser:
-                                    def __init__(self, data):
-                                        self.email = data.get('email')
-                                        self.full_name = data.get('full_name')
-                                        self.role = data.get('role', 'staff')
-                                        self.user_type = data.get('user_type', 'staff')
-                                
-                                user_obj = SimpleUser(pending_user)
-                                
-                                st.session_state.logged_in = True
-                                st.session_state.user_license = user_obj
-                                st.session_state.user_email = email
-                                st.session_state.session_email = email
-                                
-                                # Clear 2FA prompt
-                                st.session_state.show_2fa_prompt = False
-                                st.session_state.pending_2fa_user = None
-                                
-                                st.success(f"✅ 2FA Verified! Welcome, {user_obj.full_name}!")
-                                st.switch_page("app.py")
-                            else:
-                                st.error("❌ Invalid 2FA code. Please try again.")
-                        else:
-                            st.error("Please enter a 6-digit code")
-                
-                with col2:
-                    if st.button("🔙 Use Backup Code", key="staff_use_backup"):
-                        st.session_state.show_backup_code_input = True
-                        st.rerun()
-                
-                # Backup code option
-                if st.session_state.get('show_backup_code_input'):
-                    st.markdown("---")
-                    st.warning("⚠️ Each backup code can only be used once")
-                    backup_code = st.text_input("Enter backup code (XXXX-XXXX):", key="staff_backup_code")
-                    
-                    if st.button("✅ Verify Backup Code", key="staff_verify_backup"):
-                        if backup_code:
-                            from supabase_database import use_backup_code
-                            
-                            if use_backup_code(pending_user.get('email'), backup_code):
-                                email = pending_user.get('email')
-                                
-                                from supabase_database import update_user_last_login
-                                update_user_last_login(email)
-                                
-                                class SimpleUser:
-                                    def __init__(self, data):
-                                        self.email = data.get('email')
-                                        self.full_name = data.get('full_name')
-                                        self.role = data.get('role', 'staff')
-                                        self.user_type = data.get('user_type', 'staff')
-                                
-                                user_obj = SimpleUser(pending_user)
-                                
-                                st.session_state.logged_in = True
-                                st.session_state.user_license = user_obj
-                                st.session_state.user_email = email
-                                st.session_state.session_email = email
-                                
-                                st.session_state.show_2fa_prompt = False
-                                st.session_state.pending_2fa_user = None
-                                st.session_state.show_backup_code_input = False
-                                
-                                st.success(f"✅ Backup code verified! Welcome, {user_obj.full_name}!")
-                                st.warning("⚠️ Consider regenerating backup codes in your account settings")
-                                st.switch_page("app.py")
-                            else:
-                                st.error("❌ Invalid backup code")
-                        else:
-                            st.error("Please enter a backup code")
-        
-        st.markdown("---")
+            st.markdown("---")
         
         # Information section
         st.markdown("### 👥 Staff & Partner Access Includes:")

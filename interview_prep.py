@@ -35,8 +35,30 @@ def analyze_job_description(job_title, job_description, company_name=""):
         try:
             api_key = st.secrets.get("OPENAI_API_KEY")
             if api_key:
+                st.info("🤖 Using GPT-4 AI to analyze your job description...")
                 return analyze_with_gpt4(job_title, job_description, company_name, api_key)
+            else:
+                st.warning("""
+                ⚠️ **OpenAI API Key Not Configured**
+                
+                The system is using a basic keyword-matching fallback method instead of AI.
+                
+                **To enable GPT-4 AI (MUCH better results):**
+                1. Go to Streamlit Cloud Dashboard
+                2. Click your app → Settings → Secrets
+                3. Add this line:
+                   ```
+                   OPENAI_API_KEY = "sk-your-key-here"
+                   ```
+                4. Save and restart app
+                
+                **Get your API key:** https://platform.openai.com/api-keys
+                
+                **Without GPT-4:** You'll get basic questions (like you're seeing now)  
+                **With GPT-4:** 30-40 expert questions tailored to the job description
+                """)
         except Exception as e:
+            st.error(f"❌ GPT-4 analysis error: {e}")
             print(f"GPT-4 analysis failed: {e}, falling back to keyword matching")
     
     # Fallback to keyword matching if GPT-4 unavailable
@@ -94,8 +116,14 @@ def analyze_with_gpt4(job_title, job_description, company_name, api_key):
     Use GPT-4 to INTELLIGENTLY analyze job description and generate questions + answers
     This is what we SHOULD be using!
     """
+    st.info("🔄 Connecting to GPT-4...")
     from openai import OpenAI
-    client = OpenAI(api_key=api_key)
+    
+    try:
+        client = OpenAI(api_key=api_key)
+    except Exception as e:
+        st.error(f"❌ Failed to initialize OpenAI client: {e}")
+        raise
     
     # EXPERT-LEVEL PROMPT: Better than generic ChatGPT!
     prompt = f"""You are a SENIOR NHS HR SPECIALIST and INTERVIEW PANEL EXPERT with 15+ years experience.
@@ -335,6 +363,7 @@ STUDENTS MUST BE 100% READY - NOTHING LEFT TO CHANCE!
 From walking in the door to walking out, they should know EXACTLY what to do."""
 
     try:
+        st.info("📤 Sending request to GPT-4...")
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
@@ -345,8 +374,17 @@ From walking in the door to walking out, they should know EXACTLY what to do."""
             max_tokens=16000  # Increased for 30-40 detailed questions with full answers
         )
         
+        st.success("✅ Got response from GPT-4!")
+        st.info("🔄 Parsing response...")
+        
         import json
-        result = json.loads(response.choices[0].message.content)
+        raw_content = response.choices[0].message.content
+        
+        # Show first 500 chars for debugging
+        st.text(f"Response preview: {raw_content[:500]}...")
+        
+        result = json.loads(raw_content)
+        st.success("✅ Successfully parsed response!")
         
         # Format for our system
         questions = []
@@ -439,7 +477,25 @@ From walking in the door to walking out, they should know EXACTLY what to do."""
         }
         
     except Exception as e:
-        print(f"GPT-4 analysis error: {e}")
+        st.error(f"""
+        ❌ **GPT-4 Error Detected!**
+        
+        **Error Type:** {type(e).__name__}
+        **Error Message:** {str(e)}
+        
+        **Falling back to basic keyword matching...**
+        
+        **Possible causes:**
+        1. API key invalid or expired
+        2. OpenAI rate limit exceeded
+        3. Network/connection issue
+        4. JSON parsing error
+        
+        **Check your OpenAI account:** https://platform.openai.com/usage
+        """)
+        import traceback
+        print(f"GPT-4 FULL ERROR:")
+        print(traceback.format_exc())
         raise  # Re-raise to fallback to keyword matching
 
 
