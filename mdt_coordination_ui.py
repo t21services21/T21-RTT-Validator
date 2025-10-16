@@ -97,6 +97,59 @@ def render_mdt_dashboard():
     
     upcoming = get_upcoming_mdt_meetings()
     
+    # Check if viewing specific MDT
+    if 'viewing_mdt' in st.session_state:
+        meeting_id = st.session_state['viewing_mdt']
+        meeting = get_mdt_meeting_by_id(meeting_id)
+        
+        if meeting:
+            st.markdown("---")
+            st.markdown(f"## 📋 MDT Meeting Details - {meeting_id}")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(f"**Specialty:** {meeting['specialty']}")
+                st.markdown(f"**Date:** {meeting['meeting_date']}")
+                st.markdown(f"**Time:** {meeting['meeting_time']}")
+                st.markdown(f"**Location:** {meeting['location']}")
+            
+            with col2:
+                st.markdown(f"**Chair:** {meeting.get('chair_person') or meeting.get('chair', 'N/A')}")
+                st.markdown(f"**Status:** {meeting['status']}")
+                st.markdown(f"**Type:** {meeting.get('meeting_type', 'Regular')}")
+            
+            # Attendees
+            if meeting.get('attendees'):
+                st.markdown("### 👥 Attendees")
+                for attendee in meeting['attendees']:
+                    st.markdown(f"- {attendee}")
+            
+            # Patients
+            patients = meeting.get('patients_discussed') or meeting.get('patients', [])
+            if patients:
+                st.markdown(f"### 🏥 Patients ({len(patients)})")
+                for i, patient in enumerate(patients, 1):
+                    with st.expander(f"Patient {i}: {patient.get('patient_name', 'Unknown')} - NHS: {patient.get('nhs_number', 'N/A')}"):
+                        st.markdown(f"**Referral Reason:** {patient.get('referral_reason', 'N/A')}")
+                        st.markdown(f"**Clinical Summary:** {patient.get('clinical_summary', 'N/A')}")
+                        if patient.get('outcome'):
+                            st.success(f"**Outcome:** {patient['outcome']}")
+                        if patient.get('actions'):
+                            st.markdown(f"**Actions:** {patient['actions']}")
+            else:
+                st.info("No patients added to this MDT yet")
+            
+            # Notes
+            if meeting.get('notes'):
+                st.markdown("### 📝 Meeting Notes")
+                st.text_area("Notes", value=meeting['notes'], height=100, disabled=True, key=f"notes_{meeting_id}")
+            
+            if st.button("⬅️ Back to Dashboard", key="back_to_dash"):
+                del st.session_state['viewing_mdt']
+                st.rerun()
+            
+            return  # Don't show the list below
+    
     if upcoming:
         for meeting in upcoming[:5]:  # Show next 5
             with st.expander(f"📅 {meeting['specialty']} MDT - {meeting['meeting_date']} at {meeting['meeting_time']}"):
@@ -108,6 +161,7 @@ def render_mdt_dashboard():
                 
                 if st.button("👁️ View Details", key=f"view_{meeting['meeting_id']}"):
                     st.session_state['viewing_mdt'] = meeting['meeting_id']
+                    st.rerun()
     else:
         st.info("No upcoming MDT meetings scheduled")
 

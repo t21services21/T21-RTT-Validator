@@ -305,7 +305,8 @@ def render_clinic_letter_interpreter():
     input_method = st.radio(
         "Choose input method:",
         ["📎 Upload File (PDF/DOCX/TXT)", "📝 Paste Text"],
-        horizontal=True
+        horizontal=True,
+        key="letter_interpreter_input_method"
     )
     
     letter_text = None
@@ -314,7 +315,8 @@ def render_clinic_letter_interpreter():
         uploaded_file = st.file_uploader(
             "Upload clinical letter",
             type=['pdf', 'docx', 'doc', 'txt'],
-            help="Supported formats: PDF, Word (DOCX/DOC), Text (TXT)"
+            help="Supported formats: PDF, Word (DOCX/DOC), Text (TXT)",
+            key="letter_interpreter_file_upload"
         )
         
         if uploaded_file:
@@ -328,7 +330,7 @@ def render_clinic_letter_interpreter():
                     
                     # Show preview
                     with st.expander("📄 Preview extracted text"):
-                        st.text_area("Extracted text", letter_text, height=200, disabled=True)
+                        st.text_area("Extracted text", letter_text, height=200, disabled=True, key="letter_preview_extracted")
                 else:
                     st.error(f"❌ {result}")
     
@@ -336,6 +338,7 @@ def render_clinic_letter_interpreter():
         letter_text = st.text_area(
             "Paste clinical letter here:",
             height=300,
+            key="letter_interpreter_text_input",
             placeholder="""Example:
 
 ENT Review - Ms Smith, NHS: 123 456 7890
@@ -359,7 +362,7 @@ Dr. Jones, Consultant ENT Surgeon
         st.markdown("---")
         
         # ONE-CLICK AUTOMATED ANALYSIS
-        if st.button("🤖 AUTO-ANALYZE WITH AI (One Click!)", type="primary", use_container_width=True):
+        if st.button("🤖 AUTO-ANALYZE WITH AI (One Click!)", type="primary", use_container_width=True, key="letter_interpreter_analyze_btn"):
             
             with st.spinner("🤖 AI is analyzing letter... This takes < 5 seconds..."):
                 
