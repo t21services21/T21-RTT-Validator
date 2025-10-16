@@ -6,7 +6,16 @@ Create quizzes, take tests, automatic grading
 import streamlit as st
 from datetime import datetime
 from typing import Dict, List
-from supabase_client import get_supabase_client
+try:
+    from supabase_client import get_supabase_client
+except ImportError:
+    # Fallback if supabase_client.py doesn't exist
+    def get_supabase_client():
+        try:
+            from supabase_database import supabase
+            return supabase
+        except:
+            return None
 import json
 import os
 
