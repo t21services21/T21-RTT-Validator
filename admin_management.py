@@ -386,20 +386,37 @@ def change_role(target_email, new_role, changed_by_email):
     changer = users.get(changed_by_email)
     
     if not changer:
-        return False, "Changer account not found"
-    
-    # Check permissions
-    target_type = USER_TYPES[new_role]["type"]
-    
-    if target_type == "student":
-        if not changer.has_permission("student_management"):
-            return False, "No permission to change student roles"
-    elif target_type == "staff":
-        if changer.has_permission("staff_management") != "full":
-            return False, "No permission to change staff roles"
-    elif target_type in ["admin", "super_admin"]:
-        if not changer.has_permission("admin_management"):
-            return False, "No permission to change admin roles"
+        # Check if changer is in Supabase
+        try:
+            from supabase_database import supabase
+            result = supabase.table('users').select('*').eq('email', changed_by_email).execute()
+            if result.data:
+                changer_role = result.data[0].get('role', 'trial')
+                # If admin in Supabase, allow the change
+                if changer_role in ["admin", "super_admin"]:
+                    pass  # Admin has permission
+                else:
+                    return False, "Insufficient permissions"
+            else:
+                return False, "Changer account not found"
+        except:
+            return False, "Changer account not found"
+    elif changer.role in ["admin", "super_admin"]:
+        # Admins have full permission
+        pass
+    else:
+        target_type = USER_TYPES[new_role]["type"]
+        
+        if target_type == "student":
+            if not changer.has_permission("student_management"):
+                return False, "No permission to change student roles"
+        elif target_type == "staff":
+            perm = changer.has_permission("staff_management")
+            if not perm or (perm != "full" and perm != True):
+                return False, "No permission to change staff roles"
+        elif target_type in ["admin", "super_admin"]:
+            if not changer.has_permission("admin_management"):
+                return False, "No permission to change admin roles"
     
     # Change role
     old_role = target_user.role

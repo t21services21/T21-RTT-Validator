@@ -520,6 +520,19 @@ class UserAccount:
     
     def get_summary(self):
         """Get account summary"""
+        # Safety check for expiry_date (might be method or datetime)
+        try:
+            if hasattr(self.expiry_date, '__call__'):
+                expiry = self.expiry_date()
+            else:
+                expiry = self.expiry_date
+            
+            expiry_str = expiry.strftime("%d/%m/%Y")
+            days_remaining = (expiry - datetime.now()).days if self.is_active() else 0
+        except:
+            expiry_str = "Unknown"
+            days_remaining = 0
+        
         return {
             "user_id": self.user_id,
             "email": self.email,
@@ -530,8 +543,8 @@ class UserAccount:
             "status": self.status,
             "status_text": ACCOUNT_STATUS[self.status],
             "created_at": self.created_at.strftime("%d/%m/%Y"),
-            "expiry_date": self.expiry_date.strftime("%d/%m/%Y"),
-            "days_remaining": (self.expiry_date - datetime.now()).days if self.is_active() else 0,
+            "expiry_date": expiry_str,
+            "days_remaining": days_remaining,
             "total_logins": self.usage["total_logins"],
             "last_login": self.usage.get("last_login", "Never"),
             "suspended_reason": self.suspended_reason,

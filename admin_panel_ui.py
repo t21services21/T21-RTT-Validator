@@ -266,11 +266,33 @@ def render_user_management(admin_email, admin_user):
         # User actions
         st.subheader("User Actions")
         
-        selected_email = st.selectbox(
-            "Select User",
-            [u["email"] for u in users],
-            key="user_mgmt_user_select"
-        )
+        # Add search box
+        search_query = st.text_input("🔍 Search by name or email", "", key="user_search")
+        
+        # Filter users based on search
+        if search_query:
+            filtered_users = [
+                u for u in users 
+                if search_query.lower() in u["email"].lower() 
+                or search_query.lower() in u["full_name"].lower()
+            ]
+        else:
+            filtered_users = users
+        
+        if not filtered_users:
+            st.warning(f"No users found matching '{search_query}'")
+            selected_email = None
+        else:
+            # Create display options with name and email
+            user_options = {f"{u['full_name']} ({u['email']})": u['email'] for u in filtered_users}
+            
+            selected_display = st.selectbox(
+                f"Select User ({len(filtered_users)} found)",
+                list(user_options.keys()),
+                key="user_mgmt_user_select"
+            )
+            
+            selected_email = user_options[selected_display]
         
         if selected_email:
             user_details = get_user_details(selected_email)
