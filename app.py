@@ -5081,11 +5081,11 @@ elif tool == "🏥 Clinical Workflows":
     tabs = st.tabs(["📋 PTL", "🎗️ Cancer", "👥 MDT", "📅 Booking"])
     
     with tabs[0]:
-        from ptl_system import render_ptl
+        from ptl_ui import render_ptl
         render_ptl()
     
     with tabs[1]:
-        from cancer_pathways import render_cancer_pathways
+        from cancer_pathway_ui import render_cancer_pathways
         render_cancer_pathways()
     
     with tabs[2]:
