@@ -6289,7 +6289,13 @@ elif tool == "⚙️ Administration":
     st.header("⚙️ Administration")
     st.info("Account settings and admin tools")
     
-    tabs = st.tabs(["⚙️ My Account", "🔧 Admin Panel", "🏥 Trust AI Settings"])
+    tabs = st.tabs([
+        "⚙️ My Account", 
+        "🔧 Admin Panel", 
+        "🏥 Trust AI Settings",
+        "📋 Exam Management",
+        "🤖 AI Document Training"
+    ])
     
     with tabs[0]:
         # Redirect to My Account handler (exists around line 4098)
@@ -6410,6 +6416,32 @@ elif tool == "⚙️ Administration":
         st.subheader("🏥 Trust AI Customization")
         from trust_customization_ui import render_trust_customization
         render_trust_customization()
+    
+    with tabs[3]:
+        # NEW: Exam Management for Tutors/Admin
+        st.subheader("📋 Exam Management")
+        
+        # Check if user has admin/tutor privileges
+        user_role = getattr(st.session_state.get('user_license'), 'role', 'student')
+        if user_role in ['admin', 'staff', 'tutor', 'tier2', 'tier3']:
+            from exam_management_admin import render_exam_management_admin
+            render_exam_management_admin()
+        else:
+            st.warning("⚠️ Exam Management is only available to tutors and administrators")
+            st.info("Contact your administrator if you need access to exam management features")
+    
+    with tabs[4]:
+        # NEW: AI Document Training System
+        st.subheader("🤖 AI Document Training")
+        
+        # Check if user has admin/staff privileges
+        user_role = getattr(st.session_state.get('user_license'), 'role', 'student')
+        if user_role in ['admin', 'staff', 'tutor', 'tier2', 'tier3']:
+            from ai_document_trainer import render_ai_document_trainer
+            render_ai_document_trainer()
+        else:
+            st.warning("⚠️ AI Document Training is only available to staff and administrators")
+            st.info("Upload RTT policies and procedures to train the AI on your Trust's specific content")
 
 elif tool == "✅ Task Management":
     st.header("✅ Task Management")

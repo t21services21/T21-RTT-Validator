@@ -27,44 +27,24 @@ except ImportError:
 def analyze_job_description(job_title, job_description, company_name=""):
     """
     Analyze job description and generate likely interview questions
+    NOW PROPERLY USES THE ACTUAL JOB DESCRIPTION CONTENT!
     """
     
-    # Extract key skills and requirements from job description
+    # NEW: Use intelligent job description analyzer
+    from job_description_analyzer import create_comprehensive_question_list
+    
+    # Generate questions that ACTUALLY come from the job description
+    questions = create_comprehensive_question_list(job_description, job_title)
+    
+    # Extract key skills for prep tips (still useful)
     keywords = {
-        # RTT & NHS Admin
         'rtt': ['RTT', 'referral to treatment', '18 weeks', 'pathway', 'clock'],
         'pas': ['PAS', 'patient administration', 'booking', 'appointment'],
-        'nhs': ['NHS', 'trust', 'hospital', 'clinic'],
-        'validation': ['validation', 'data quality', 'accuracy', 'audit'],
-        'coding': ['coding', 'ICD', 'OPCS', 'HRG'],
-        
-        # Healthcare & Care Work
-        'healthcare_assistant': ['healthcare assistant', 'HCA', 'care assistant', 'support worker'],
-        'care_work': ['care', 'caring', 'personal care', 'patient care', 'service user'],
-        'adult_social_care': ['adult social care', 'social care', 'care home', 'domiciliary'],
-        'clinical_tasks': ['observations', 'vital signs', 'blood pressure', 'temperature'],
-        'safeguarding': ['safeguarding', 'safeguard', 'vulnerable', 'abuse', 'dignity'],
-        
-        # Teaching & Education
-        'teaching_assistant': ['teaching assistant', 'TA', 'classroom', 'pupils', 'students'],
-        'education': ['education', 'learning', 'SEND', 'SEN', 'special needs'],
-        'child_development': ['child development', 'early years', 'behaviour management'],
-        
-        # Customer Service
-        'customer_service': ['customer service', 'customer', 'client', 'complaint', 'query'],
-        'reception': ['reception', 'front desk', 'telephone', 'booking'],
-        
-        # Business Administration
-        'admin': ['administration', 'admin', 'office', 'filing', 'record keeping'],
-        'business_admin': ['business administration', 'processes', 'procedures', 'compliance'],
-        
-        # IT & Technical
-        'it_skills': ['Excel', 'Microsoft', 'IT', 'systems', 'software', 'computer'],
-        'it_support': ['IT support', 'helpdesk', 'technical', 'troubleshooting'],
-        
-        # Universal Skills
-        'communication': ['communication', 'team', 'stakeholder', 'interpersonal'],
-        'confidentiality': ['confidentiality', 'GDPR', 'data protection', 'sensitive']
+        'healthcare_assistant': ['healthcare assistant', 'HCA', 'care assistant'],
+        'teaching_assistant': ['teaching assistant', 'TA', 'classroom'],
+        'customer_service': ['customer service', 'customer', 'client'],
+        'admin': ['administration', 'admin', 'office'],
+        'validation': ['validation', 'data quality', 'audit']
     }
     
     found_skills = []
@@ -74,14 +54,20 @@ def analyze_job_description(job_title, job_description, company_name=""):
                 found_skills.append(skill_category)
                 break
     
-    # Generate interview questions based on job requirements
-    questions = generate_questions(job_title, found_skills, job_description)
-    
     # Generate preparation tips
     prep_tips = generate_prep_tips(job_title, found_skills)
     
-    # Generate example answers (fast pre-written answers - GPT-4 disabled for speed)
-    example_answers = generate_example_answers(questions[:5])
+    # Generate COMPLETE answers for ALL questions
+    from interview_answers_complete import get_complete_answer
+    example_answers = []
+    for q in questions:
+        answer_data = get_complete_answer(q['question'], q['category'])
+        example_answers.append({
+            'question': q['question'],
+            'example_answer': answer_data['answer'],
+            'tips': answer_data['tips'],
+            'source': q.get('source', 'Generated question')  # Show where question came from!
+        })
     
     return {
         'job_title': job_title,
