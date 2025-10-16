@@ -368,13 +368,35 @@ def render_multi_language_translation():
     """)
     
     st.warning("""
-    🌐 **Supported Languages (Common in UK NHS):**
-    - 🇵🇱 Polish - 🇺🇦 Ukrainian - 🇷🇴 Romanian
-    - 🇵🇰 Urdu/Punjabi - 🇮🇳 Hindi/Bengali/Gujarati
-    - 🇸🇦 Arabic - 🇹🇷 Turkish - 🇸🇴 Somali
-    - 🇨🇳 Mandarin/Cantonese - 🇪🇸 Spanish - 🇵🇹 Portuguese
-    - 🇫🇷 French - 🇩🇪 German - 🇮🇹 Italian
-    - Plus 80+ more languages!
+    🌐 **Supported Languages - Comprehensive NHS Coverage (100+ Languages):**
+    
+    **🇬🇧 UK's Most Common (by NHS usage):**
+    - 🇵🇱 Polish - 🇺🇦 Ukrainian - 🇷🇴 Romanian - 🇱🇹 Lithuanian - 🇱🇻 Latvian
+    - 🇵🇰 Urdu - 🇵🇰 Punjabi - 🇮🇳 Hindi - 🇮🇳 Bengali - 🇮🇳 Gujarati - 🇮🇳 Tamil
+    - 🇸🇦 Arabic - 🇹🇷 Turkish - 🇸🇴 Somali - 🇮🇶 Kurdish - 🇮🇷 Farsi/Persian
+    - 🇳🇬 Yoruba/Hausa/Igbo - 🇬🇭 Akan/Twi - 🇿🇼 Shona - 🇰🇪 Swahili
+    
+    **🌏 Asian Languages:**
+    - 🇨🇳 Mandarin - 🇨🇳 Cantonese - 🇯🇵 Japanese - 🇰🇷 Korean
+    - 🇵🇭 Filipino/Tagalog - 🇻🇳 Vietnamese - 🇹🇭 Thai - 🇲🇾 Malay
+    - 🇳🇵 Nepali - 🇱🇰 Sinhala - 🇲🇲 Burmese - 🇰🇭 Khmer
+    - 🇦🇫 Pashto - 🇦🇫 Dari - 🇮🇳 Malayalam - 🇮🇳 Marathi
+    
+    **🇪🇺 European Languages:**
+    - 🇪🇸 Spanish - 🇵🇹 Portuguese - 🇫🇷 French - 🇩🇪 German - 🇮🇹 Italian
+    - 🇬🇷 Greek - 🇧🇬 Bulgarian - 🇸🇰 Slovak - 🇨🇿 Czech - 🇭🇺 Hungarian
+    - 🇷🇸 Serbian - 🇭🇷 Croatian - 🇸🇮 Slovenian - 🇦🇱 Albanian
+    - 🇸🇪 Swedish - 🇳🇴 Norwegian - 🇩🇰 Danish - 🇫🇮 Finnish
+    
+    **🌍 African Languages:**
+    - 🇪🇹 Amharic - 🇪🇹 Tigrinya - 🇰🇪 Swahili - 🇿🇦 Zulu - 🇿🇦 Xhosa
+    - 🇸🇳 Wolof - 🇲🇬 Malagasy - 🇿🇼 Shona - 🇰🇪 Kikuyu
+    
+    **🌎 Americas & Others:**
+    - 🇧🇷 Portuguese (Brazil) - 🇲🇽 Spanish (Latin America)
+    - 🇭🇹 Haitian Creole - 🇯🇲 Jamaican Patois
+    
+    **✅ Total: 100+ Languages with Real-Time Translation!**
     """)
     
     # Translation mode selection
@@ -417,9 +439,24 @@ def render_live_translation():
     with col1:
         patient_name = st.text_input("Patient Name", placeholder="John Smith", key="live_patient")
         patient_language = st.selectbox("Patient's Language", [
-            "Polish", "Urdu", "Arabic", "Hindi", "Bengali", "Punjabi",
-            "Spanish", "French", "German", "Mandarin", "Cantonese",
-            "Romanian", "Turkish", "Somali", "Gujarati", "Tamil"
+            # Most common in UK NHS
+            "Polish", "Romanian", "Lithuanian", "Latvian", "Bulgarian",
+            "Urdu", "Punjabi", "Hindi", "Bengali", "Gujarati", "Tamil", "Marathi",
+            "Arabic", "Turkish", "Kurdish", "Farsi/Persian",
+            "Yoruba", "Hausa", "Igbo", "Somali", "Swahili", "Amharic", "Tigrinya",
+            # East Asian
+            "Mandarin Chinese", "Cantonese", "Japanese", "Korean",
+            "Vietnamese", "Thai", "Tagalog/Filipino", "Malay",
+            # South Asian
+            "Nepali", "Sinhala", "Pashto", "Dari", "Malayalam", "Burmese",
+            # European
+            "Spanish", "Portuguese", "French", "German", "Italian",
+            "Greek", "Albanian", "Serbian", "Croatian", "Hungarian",
+            "Czech", "Slovak", "Ukrainian", "Russian",
+            # African
+            "Akan/Twi", "Shona", "Zulu", "Wolof",
+            # Other
+            "Hebrew", "Yiddish", "Dutch", "Swedish", "Danish"
         ], key="live_lang")
     
     with col2:
@@ -743,20 +780,34 @@ def render_audio_translation():
         with col2:
             source_language = st.selectbox("Patient's Language*", [
                 "Auto-Detect (Recommended)",
-                "Polish", "Ukrainian", "Romanian",
-                "Urdu", "Punjabi", "Hindi", "Bengali", "Gujarati",
-                "Arabic", "Turkish", "Somali",
-                "Mandarin Chinese", "Cantonese", "Spanish", "Portuguese",
-                "French", "German", "Italian", "Russian",
-                "Albanian", "Kurdish", "Farsi/Persian", "Pashto",
-                "Tamil", "Malayalam", "Sinhala", "Tigrinya",
-                "Vietnamese", "Thai", "Korean", "Japanese"
+                # Eastern European
+                "Polish", "Romanian", "Lithuanian", "Latvian", "Bulgarian", "Ukrainian",
+                "Czech", "Slovak", "Hungarian", "Serbian", "Croatian", "Albanian", "Russian",
+                # South Asian
+                "Urdu", "Punjabi", "Hindi", "Bengali", "Gujarati", "Tamil", "Marathi",
+                "Nepali", "Sinhala", "Malayalam", "Pashto", "Dari",
+                # Middle Eastern
+                "Arabic", "Turkish", "Kurdish", "Farsi/Persian", "Hebrew",
+                # African
+                "Yoruba", "Hausa", "Igbo", "Somali", "Swahili", "Amharic", "Tigrinya",
+                "Akan/Twi", "Shona", "Zulu", "Xhosa", "Wolof",
+                # East Asian
+                "Mandarin Chinese", "Cantonese", "Japanese", "Korean",
+                "Vietnamese", "Thai", "Tagalog/Filipino", "Malay", "Burmese",
+                # European
+                "Spanish", "Portuguese", "French", "German", "Italian",
+                "Greek", "Dutch", "Swedish", "Norwegian", "Danish", "Finnish",
+                # Other
+                "Haitian Creole", "Yiddish"
             ])
             
             target_language = st.selectbox("Translate To*", [
                 "English (UK)",
                 "English (US)",
-                "Polish", "Urdu", "Arabic", "Spanish", "French",
+                # Most requested
+                "Polish", "Romanian", "Urdu", "Arabic", "Spanish", "French",
+                "Yoruba", "Hausa", "Igbo", "Punjabi", "Hindi", "Bengali",
+                "Mandarin Chinese", "Portuguese", "Turkish", "Somali",
                 "Other (will use patient's language)"
             ])
         
@@ -891,14 +942,31 @@ def render_text_translation():
     with col2:
         source_language = st.selectbox("From Language*", [
             "Auto-Detect",
-            "Polish", "Urdu", "Arabic", "Spanish", "French", "German",
-            "Hindi", "Bengali", "Punjabi", "Gujarati", "Tamil",
+            # Eastern European (most common)
+            "Polish", "Romanian", "Lithuanian", "Bulgarian", "Ukrainian", "Russian",
+            # South Asian
+            "Urdu", "Punjabi", "Hindi", "Bengali", "Gujarati", "Tamil", "Marathi", "Nepali",
+            # Middle Eastern
+            "Arabic", "Turkish", "Kurdish", "Farsi/Persian",
+            # African
+            "Yoruba", "Hausa", "Igbo", "Somali", "Swahili", "Amharic",
+            # East Asian
+            "Mandarin Chinese", "Cantonese", "Vietnamese", "Thai", "Tagalog/Filipino",
+            # European
+            "Spanish", "Portuguese", "French", "German", "Italian", "Greek",
+            "Czech", "Slovak", "Hungarian", "Albanian", "Serbian",
             "Other (will auto-detect)"
         ], key="text_source_lang")
         
         target_language = st.selectbox("To Language*", [
             "English",
-            "Polish", "Urdu", "Arabic", "Spanish", "French"
+            # Most requested translations
+            "Polish", "Romanian", "Lithuanian", "Bulgarian",
+            "Urdu", "Punjabi", "Hindi", "Bengali", "Gujarati", "Tamil",
+            "Arabic", "Turkish", "Farsi/Persian",
+            "Yoruba", "Hausa", "Igbo", "Somali", "Swahili",
+            "Mandarin Chinese", "Spanish", "Portuguese", "French",
+            "German", "Italian", "Russian", "Ukrainian"
         ], key="text_target_lang")
     
     text_to_translate = st.text_area(
