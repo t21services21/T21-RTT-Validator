@@ -373,14 +373,57 @@ def extend_license(target_email, days, extended_by_email):
 
 
 def change_role(target_email, new_role, changed_by_email):
-    """Change user role"""
+    """Change user role - supports both Supabase and local JSON users"""
+    
+    if new_role not in USER_TYPES:
+        return False, f"Invalid role: {new_role}"
+    
+    # Try Supabase first
+    try:
+        from supabase_database import supabase, get_user_by_email
+        target_supabase = get_user_by_email(target_email)
+        changer_supabase = get_user_by_email(changed_by_email)
+        
+        if target_supabase:
+            # Target user is in Supabase
+            # Check changer permissions
+            if changer_supabase:
+                changer_role = changer_supabase.get('role')
+                if changer_role not in ['admin', 'super_admin']:
+                    return False, "No permission to change roles"
+            else:
+                # Check local JSON for changer
+                users = load_users_db()
+                if changed_by_email not in users or users[changed_by_email].role not in ['admin', 'super_admin']:
+                    return False, "No permission to change roles"
+            
+            # Update role in Supabase
+            old_role = target_supabase.get('role')
+            
+            # Derive new user_type from role
+            new_user_type = 'student'
+            if new_role in ['admin', 'super_admin']:
+                new_user_type = 'admin'
+            elif new_role in ['staff', 'staff_trainer', 'staff_support']:
+                new_user_type = 'staff'
+            
+            supabase.table('users').update({
+                'role': new_role,
+                'user_type': new_user_type
+            }).eq('email', target_email).execute()
+            
+            log_audit("CHANGE_ROLE", changed_by_email, target_email, f"From {old_role} to {new_role}")
+            
+            return True, f"Role changed: {target_email} from {old_role} to {new_role}"
+    
+    except Exception as e:
+        print(f"Supabase role change failed: {e}")
+    
+    # Fall back to local JSON
     users = load_users_db()
     
     if target_email not in users:
         return False, "User not found"
-    
-    if new_role not in USER_TYPES:
-        return False, f"Invalid role: {new_role}"
     
     target_user = users[target_email]
     changer = users.get(changed_by_email)
@@ -602,7 +645,68 @@ def get_all_users(filter_by=None):
 
 
 def get_user_details(email):
-    """Get detailed user information"""
+    """Get detailed user information - checks Supabase first, then JSON"""
+    
+    # PRIORITY 1: Try Supabase first
+    try:
+        from supabase_database import get_user_by_email
+        supabase_user = get_user_by_email(email)
+        
+        if supabase_user:
+            # User found in Supabase - convert to details format
+            role = supabase_user.get('role', 'trial')
+            user_type = supabase_user.get('user_type')
+            
+            # Derive user_type if not set
+            if not user_type:
+                if role in ['admin', 'super_admin']:
+                    user_type = 'admin'
+                elif role in ['staff', 'staff_trainer', 'staff_support']:
+                    user_type = 'staff'
+                else:
+                    user_type = 'student'
+            
+            # Get role name
+            from advanced_access_control import USER_TYPES
+            if role in USER_TYPES:
+                role_name = USER_TYPES[role]["name"]
+                features = USER_TYPES[role]["features"]
+            else:
+                role_name = role.replace('_', ' ').title()
+                features = {}
+            
+            details = {
+                "email": email,
+                "full_name": supabase_user.get('full_name', 'Unknown'),
+                "role": role,
+                "role_name": role_name,
+                "user_type": user_type,
+                "status": supabase_user.get('status', 'active'),
+                "status_text": supabase_user.get('status', 'active').title(),
+                "created_at": supabase_user.get('created_at', 'Unknown')[:10] if supabase_user.get('created_at') else 'Unknown',
+                "expiry_date": "2035-01-01",  # Long expiry for staff/admin
+                "days_remaining": 9999,
+                "total_logins": 0,
+                "last_login": supabase_user.get('last_login', 'Never'),
+                "suspended_reason": None,
+                "custom_permissions": {},
+                "features": features,
+                "notes": [],
+                "usage": {
+                    "total_logins": 0,
+                    "logins_today": 0,
+                    "ai_questions_today": 0,
+                    "quizzes_today": 0,
+                    "validations_today": 0
+                }
+            }
+            
+            return details
+    
+    except Exception as e:
+        print(f"Supabase lookup failed for {email}: {e}")
+    
+    # PRIORITY 2: Fall back to local JSON
     users = load_users_db()
     
     if email not in users:
