@@ -219,19 +219,19 @@ def render_patient_list():
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        search_query = st.text_input("🔍 Search", placeholder="Name or NHS number")
+        search_query = st.text_input("🔍 Search", placeholder="Name or NHS number", key="ptl_search_query")
     
     with col2:
         specialty_filter = st.selectbox("Specialty", ["All"] + [
             "Orthopaedics", "Cardiology", "General Surgery", "ENT",
             "Ophthalmology", "Urology", "Gastroenterology", "Neurology"
-        ])
+        ], key="ptl_specialty_filter")
     
     with col3:
-        priority_filter = st.selectbox("Priority", ["All", "Routine", "Urgent", "2WW", "Cancer 62-day"])
+        priority_filter = st.selectbox("Priority", ["All", "Routine", "Urgent", "2WW", "Cancer 62-day"], key="ptl_priority_filter")
     
     with col4:
-        risk_filter = st.selectbox("Breach Risk", ["All", "CRITICAL", "HIGH", "MEDIUM", "LOW"])
+        risk_filter = st.selectbox("Breach Risk", ["All", "CRITICAL", "HIGH", "MEDIUM", "LOW"], key="ptl_risk_filter")
     
     # Get filtered patients
     patients = search_patients(

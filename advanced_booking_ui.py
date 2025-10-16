@@ -211,10 +211,10 @@ def render_check_availability():
     col1, col2 = st.columns(2)
     
     with col1:
-        clinic_id = st.text_input("Clinic ID", placeholder="CLINIC_20250109")
+        clinic_id = st.text_input("Clinic ID", placeholder="CLINIC_20250109", key="check_clinic_id")
     
     with col2:
-        check_date = st.date_input("Date", value=datetime.now() + timedelta(days=7))
+        check_date = st.date_input("Date", value=datetime.now() + timedelta(days=7), key="check_clinic_date")
     
     if st.button("🔍 Check Availability", type="primary"):
         if clinic_id:
@@ -248,7 +248,7 @@ def render_capacity_analysis():
     
     st.subheader("📊 AI Capacity Analysis & Optimization")
     
-    clinic_id = st.text_input("Clinic ID for Analysis", placeholder="CLINIC_20250109")
+    clinic_id = st.text_input("Clinic ID for Analysis", placeholder="CLINIC_20250109", key="ai_analysis_clinic_id")
     weeks_ahead = st.slider("Analyze Next X Weeks", 1, 12, 4)
     
     if st.button("🤖 Run AI Capacity Analysis", type="primary"):
@@ -373,11 +373,11 @@ def render_appointments_list():
     # Filters
     col1, col2, col3 = st.columns(3)
     with col1:
-        status_filter = st.selectbox("Filter by Status", ["All", "Confirmed", "Cancelled", "Completed", "No-Show"])
+        status_filter = st.selectbox("Filter by Status", ["All", "Confirmed", "Cancelled", "Completed", "No-Show"], key="booking_status_filter")
     with col2:
-        date_filter = st.date_input("Filter from Date", value=datetime.now().date())
+        date_filter = st.date_input("Filter from Date", value=datetime.now().date(), key="booking_date_filter")
     with col3:
-        search = st.text_input("🔍 Search", placeholder="Patient name or NHS number")
+        search = st.text_input("🔍 Search", placeholder="Patient name or NHS number", key="booking_search_filter")
     
     # Filter appointments
     filtered = appointments
