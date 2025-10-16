@@ -708,15 +708,92 @@ if not st.session_state.logged_in:
     st.stop()  # Stop here - landing page is complete
     
     with tab1:
-        st.subheader("Login")
-        st.caption("For Students, Staff, and Administrators")
-        email = st.text_input("Email Address", key="login_email")
-        password = st.text_input("Password", type="password", key="login_password")
+        # Check if password reset form should be shown
+        if 'show_reset_form' in st.session_state and st.session_state.show_reset_form:
+            st.subheader("🔒 Reset Password")
+            st.caption("Enter your email to receive a reset code")
+            
+            reset_email = st.text_input("Email Address:", key="reset_email_input")
+            
+            if 'reset_step' not in st.session_state:
+                st.session_state.reset_step = 1
+            
+            if st.session_state.reset_step == 1:
+                col1, col2 = st.columns([1, 1])
+                with col1:
+                    if st.button("📧 Send Reset Code", type="primary", use_container_width=True):
+                        if reset_email:
+                            success, message = request_password_reset(reset_email)
+                            if success:
+                                st.success(message)
+                                st.session_state.reset_step = 2
+                                st.rerun()
+                            else:
+                                st.error(message)
+                        else:
+                            st.warning("Please enter your email")
+                with col2:
+                    if st.button("← Back to Login", use_container_width=True):
+                        st.session_state.show_reset_form = False
+                        st.session_state.reset_step = 1
+                        st.rerun()
+            
+            elif st.session_state.reset_step == 2:
+                st.info(f"✅ Reset code sent to {reset_email}")
+                reset_code = st.text_input("Enter 6-digit code from email:", max_chars=6, key="reset_code")
+                new_password = st.text_input("New Password (min 8 characters):", type="password", key="reset_new_password")
+                confirm_password = st.text_input("Confirm New Password:", type="password", key="reset_confirm_password")
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    if st.button("✅ Reset Password", type="primary"):
+                        if not (reset_code and new_password and confirm_password):
+                            st.warning("Please fill all fields")
+                        elif new_password != confirm_password:
+                            st.error("Passwords don't match")
+                        elif len(new_password) < 8:
+                            st.error("Password must be at least 8 characters")
+                        else:
+                            success, message = reset_password(reset_email, reset_code, new_password)
+                            if success:
+                                st.success(message)
+                                st.balloons()
+                                st.session_state.reset_step = 1
+                                st.session_state.show_reset_form = False
+                                st.rerun()
+                            else:
+                                st.error(message)
+                
+                with col2:
+                    if st.button("← Start Over"):
+                        st.session_state.reset_step = 1
+                        st.rerun()
+                
+                with col3:
+                    if st.button("Cancel"):
+                        st.session_state.show_reset_form = False
+                        st.session_state.reset_step = 1
+                        st.rerun()
         
-        if st.button("Login", type="primary"):
-            if email and password:
-                import json
-                import os
+        else:
+            # Normal login form
+            st.subheader("Login")
+            st.caption("For Students, Staff, and Administrators")
+            email = st.text_input("Email Address", key="login_email")
+            password = st.text_input("Password", type="password", key="login_password")
+            
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                login_btn = st.button("Login", type="primary", use_container_width=True)
+            with col2:
+                if st.button("🔒 Forgot Password?", use_container_width=True):
+                    st.session_state.show_reset_form = True
+                    st.rerun()
+            
+            if login_btn:
+                if email and password:
+                    import json
+                    import os
                 
                 # Try Supabase first (all users)
                 try:
