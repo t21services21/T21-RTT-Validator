@@ -331,6 +331,204 @@ I can be **too detail-focused** sometimes. For example, I once spent too long pe
 
 **Key:** Turn weakness into positive - show self-awareness and how you're improving.""",
             'tips': ["Give real strengths with examples", "Weakness should be genuine but not critical", "Show how you're improving"]
+        },
+        
+        # MEDICAL SECRETARY QUESTIONS
+        'audio_typing': {
+            'answer': """**My Audio Typing Experience:**
+
+I have [X years] experience with audio typing and medical correspondence:
+
+**Audio Typing Skills:**
+- Typing speed: [X] words per minute with 98%+ accuracy
+- Experience with digital dictation systems (e.g., Winscribe, BigHand, Olympus)
+- Familiar with foot pedal controls for efficient typing
+- Can handle difficult accents and poor audio quality
+
+**Medical Correspondence:**
+- Clinic letters to GPs
+- Discharge summaries
+- Outpatient appointment letters
+- Referral letters to other consultants
+- Patient information letters
+
+**Medical Terminology:**
+- Familiar with medical terminology across specialties
+- Can spell complex medical terms correctly
+- Understand abbreviations (e.g., Hx, Dx, Rx, O/E)
+- Use medical dictionaries when needed
+
+**Quality Standards:**
+- Always proofread before sending
+- Check patient details are correct
+- Ensure letters sent within 24-48 hours
+- Follow NHS correspondence guidelines
+
+**Example:** In my previous role, I typed an average of 15-20 clinic letters per day with a 24-hour turnaround, maintaining high accuracy even with complex cardiology terminology.""",
+            'tips': ["Give your actual typing speed if known", "Mention specific systems you've used", "Emphasize accuracy and speed"]
+        },
+        
+        'diary_management': {
+            'answer': """**Managing Consultant's Diary and Clinic Coordination:**
+
+**Diary Management:**
+1. **Prioritization:** Urgent appointments, MDTs, admin time, leave
+2. **Forward Planning:** Book meetings 2-3 months in advance where possible
+3. **Buffer Time:** Leave gaps between appointments for overruns
+4. **Clash Management:** Check for double-bookings daily
+5. **Reminders:** Send consultant reminders day before
+
+**Clinic Coordination:**
+1. **Booking Clinics:**
+   - Book clinic slots in PAS system
+   - Ensure room availability
+   - Coordinate with nursing staff
+   - Arrange equipment if needed
+
+2. **Patient Lists:**
+   - Prepare clinic lists 2-3 days in advance
+   - Print patient notes/test results
+   - Flag urgent cases
+   - Check DNAs and cancellations
+
+3. **Follow-up:**
+   - Chase missing patients
+   - Rebook DNAs
+   - Send outcome letters after clinic
+
+**Communication:**
+- Liaise with other consultants' secretaries
+- Coordinate cross-specialty appointments
+- Inform patients of changes promptly
+
+**Example:** I managed a busy cardiology consultant's diary with 3 clinics per week, 2 theatre sessions, and weekly MDTs. I used Outlook calendar and set up color-coding: Red=Urgent, Blue=Clinic, Green=Admin. This prevented double-bookings and kept consultant on schedule.""",
+            'tips': ["Show systematic approach", "Mention specific tools used (Outlook, etc.)", "Demonstrate organization skills"]
+        },
+        
+        'medical_terminology': {
+            'answer': """**My Medical Terminology Experience:**
+
+**How I Developed Knowledge:**
+- [Previous role] exposed me to [specialty] terminology
+- Completed medical terminology course/training
+- Use medical dictionaries and online resources
+- Ask clinicians when unsure
+
+**Specialties I'm Familiar With:**
+- [List relevant specialties, e.g., Cardiology, Respiratory, etc.]
+
+**Common Terms I Know:**
+- **Procedures:** Angioplasty, colonoscopy, arthroscopy, etc.
+- **Conditions:** Hypertension, COPD, diabetes, etc.
+- **Abbreviations:** Hx (history), Dx (diagnosis), Rx (treatment), O/E (on examination)
+- **Body Systems:** Cardiovascular, respiratory, gastrointestinal, etc.
+
+**Anatomical Terms:**
+- Understanding of body parts and systems
+- Medical prefixes/suffixes (e.g., cardio = heart, -itis = inflammation)
+
+**How I Handle Unknown Terms:**
+1. Look it up in medical dictionary
+2. Ask consultant or clinical staff
+3. Make a personal glossary for future reference
+4. Never guess - always verify
+
+**Example:** When I started in cardiology, I created a glossary of terms like "myocardial infarction," "arrhythmia," "echocardiogram." Within 3 months, I could type clinic letters without constantly checking terminology.
+
+**Key Point:** Medical terminology knowledge grows with experience - I'm committed to continuous learning and always verify if unsure.""",
+            'tips': ["Be honest about your level", "Show willingness to learn", "Mention any training", "Never guess medical terms!"]
+        },
+        
+        'conflicting_priorities': {
+            'answer': """**STAR Method:**
+
+**Situation:** In my previous role, I supported 3 consultants. One day, all three needed urgent tasks completed: Consultant A needed clinic list prepared for afternoon clinic, Consultant B needed urgent referral letter typed, Consultant C needed theatre list finalized.
+
+**Task:** Complete all three tasks before their deadlines while maintaining quality.
+
+**Action:** I:
+1. **Assessed Urgency:** Ranked by deadline and patient impact
+   - Theatre list (highest - patients arriving next morning)
+   - Urgent referral (2-week wait patient)
+   - Clinic list (clinic at 2pm, currently 10am)
+
+2. **Communicated:** Told each consultant my plan and expected completion times
+
+3. **Worked Efficiently:**
+   - Theatre list: 30 minutes (highest priority)
+   - Urgent referral: 20 minutes (time-sensitive)
+   - Clinic list: 40 minutes (had time before clinic)
+
+4. **Managed Interruptions:** Put phone on divert during critical tasks
+
+5. **Quality Checked:** Still proofread each document despite time pressure
+
+**Result:** 
+- All three tasks completed before deadlines
+- No errors in any document
+- All three consultants thanked me for managing well under pressure
+- This became my standard approach for conflicting priorities
+
+**Key Principles:**
+- Assess urgency and patient impact first
+- Communicate with stakeholders
+- Stay calm and focused
+- Never sacrifice quality for speed""",
+            'tips': ["Use STAR method", "Show diplomatic communication", "Demonstrate prioritization skills", "Stay calm"]
+        },
+        
+        'patient_correspondence': {
+            'answer': """**Patient Correspondence Experience:**
+
+**Types of Letters I've Produced:**
+
+1. **Outpatient Clinic Letters:**
+   - Sent to GPs after appointments
+   - Include diagnosis, treatment plan, follow-up
+   - Typed from consultant's dictation
+   - 24-48 hour turnaround
+
+2. **Discharge Summaries:**
+   - Sent when patient discharged from hospital
+   - Include admission reason, treatment given, medications, follow-up
+   - Must be accurate - GP relies on this information
+
+3. **Appointment Letters:**
+   - First appointment letters (with directions, what to bring)
+   - Follow-up appointment letters
+   - Cancellation/rearrangement letters
+
+4. **Follow-up Letters:**
+   - Test results letters
+   - Treatment outcome letters
+   - Referral confirmation letters
+
+**Quality Standards I Follow:**
+
+1. **Accuracy:**
+   - Check patient demographics (name, DOB, NHS number, address)
+   - Verify GP details
+   - Spell medical terms correctly
+
+2. **Tone:**
+   - Professional but empathetic
+   - Clear and easy to understand
+   - Avoid jargon when writing to patients
+
+3. **Timeliness:**
+   - Clinic letters within 24-48 hours
+   - Urgent letters same day
+   - Test results within deadline
+
+4. **Confidentiality:**
+   - Use NHS Mail for patient information
+   - Never discuss patient info inappropriately
+   - Secure all correspondence
+
+**Example:** In my previous role, I produced average 15-20 letters daily. I implemented a tracking system to ensure no letters were missed. My consultant received compliments from GPs about timely, accurate correspondence.
+
+**Key Point:** Patient correspondence is critical - delays or errors can impact patient care, so I take it very seriously.""",
+            'tips': ["Emphasize accuracy", "Mention volume handled", "Show understanding of importance", "Highlight timelines"]
         }
     }
     

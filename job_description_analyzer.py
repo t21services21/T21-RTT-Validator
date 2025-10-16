@@ -12,6 +12,7 @@ def analyze_job_description_deeply(job_desc: str, job_title: str) -> Dict:
     """
     DEEPLY analyze job description to extract SPECIFIC requirements
     Generate questions DIRECTLY from what the employer wrote
+    FIXED: No more random word extraction!
     """
     
     job_desc_lower = job_desc.lower()
@@ -27,36 +28,40 @@ def analyze_job_description_deeply(job_desc: str, job_title: str) -> Dict:
         'specific_questions': []
     }
     
-    # 1. EXTRACT SPECIFIC SYSTEMS/SOFTWARE MENTIONED
-    systems_patterns = [
-        r'(oracle|cerner|meditech|epic|allscripts|e-Care|RiO|SystmOne|EMIS|TPP)\s+(PAS|EPR|system)',
-        r'(Lorenzo|Careflow|Evolve|Trak|eCare|iCare|Vision|DXC)',
-        r'Microsoft\s+(Excel|Word|Outlook|Office|365)',
-        r'using\s+([A-Z][a-z]+\s+[A-Z][a-z]+)',  # "using Cerner Millennium"
+    # 1. EXTRACT SPECIFIC SYSTEMS/SOFTWARE - ONLY REAL ONES!
+    # Define exact systems to look for (not random words)
+    known_systems = [
+        'Oracle PAS', 'Cerner', 'Meditech', 'Epic', 'Lorenzo', 'Trak',
+        'SystmOne', 'EMIS', 'TPP', 'Microsoft Excel', 'Microsoft Word',
+        'Microsoft Office', 'Outlook', 'MS Office', 'Excel', 'Word',
+        'PowerPoint', 'NHS Mail', 'NHSmail'
     ]
     
-    for pattern in systems_patterns:
-        matches = re.findall(pattern, job_desc, re.IGNORECASE)
-        for match in matches:
-            system = match if isinstance(match, str) else ' '.join(filter(None, match))
-            if system and len(system) > 3:
-                analysis['specific_systems'].append(system)
+    for system in known_systems:
+        if system.lower() in job_desc_lower:
+            analysis['specific_systems'].append(system)
     
-    # 2. EXTRACT SPECIFIC RESPONSIBILITIES (lines starting with action verbs)
+    # 2. EXTRACT SPECIFIC RESPONSIBILITIES - ONLY COMPLETE MEANINGFUL ONES!
     responsibility_verbs = [
         'manage', 'coordinate', 'ensure', 'provide', 'maintain', 'develop',
         'support', 'deliver', 'monitor', 'validate', 'review', 'update',
         'process', 'handle', 'arrange', 'liaise', 'communicate', 'prepare',
-        'investigate', 'resolve', 'implement', 'oversee', 'conduct', 'assist'
+        'investigate', 'resolve', 'implement', 'oversee', 'conduct', 'assist',
+        'organise', 'organize', 'book', 'schedule', 'respond', 'answer'
     ]
     
-    sentences = job_desc.split('.')
-    for sentence in sentences:
-        sentence = sentence.strip()
+    # Split by bullet points and newlines
+    lines = job_desc.replace('•', '\n').replace('-', '\n').split('\n')
+    for line in lines:
+        line = line.strip()
+        if len(line) < 20 or len(line) > 150:  # Skip too short or too long
+            continue
+        
         for verb in responsibility_verbs:
-            if sentence.lower().startswith(verb):
-                if len(sentence) < 200:  # Not too long
-                    analysis['specific_responsibilities'].append(sentence)
+            if line.lower().startswith(verb):
+                # Make sure it's a complete responsibility, not random words
+                if ' ' in line and any(word in line.lower() for word in ['patient', 'appointment', 'call', 'email', 'meeting', 'clinic', 'record', 'data', 'system', 'report', 'document', 'correspondence', 'diary', 'schedule']):
+                    analysis['specific_responsibilities'].append(line)
                 break
     
     # 3. EXTRACT MANDATORY vs DESIRABLE

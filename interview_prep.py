@@ -27,24 +27,35 @@ except ImportError:
 def analyze_job_description(job_title, job_description, company_name=""):
     """
     Analyze job description and generate likely interview questions
-    NOW PROPERLY USES THE ACTUAL JOB DESCRIPTION CONTENT!
+    NOW USES GPT-4 TO ACTUALLY READ AND ANALYZE THE JOB DESCRIPTION!
     """
     
-    # NEW: Use intelligent job description analyzer
-    from job_description_analyzer import create_comprehensive_question_list
+    # Try GPT-4 analysis first (intelligent, reads actual job description)
+    if OPENAI_AVAILABLE:
+        try:
+            api_key = st.secrets.get("OPENAI_API_KEY")
+            if api_key:
+                return analyze_with_gpt4(job_title, job_description, company_name, api_key)
+        except Exception as e:
+            print(f"GPT-4 analysis failed: {e}, falling back to keyword matching")
     
-    # Generate questions that ACTUALLY come from the job description
-    questions = create_comprehensive_question_list(job_description, job_title)
-    
-    # Extract key skills for prep tips (still useful)
+    # Fallback to keyword matching if GPT-4 unavailable
     keywords = {
         'rtt': ['RTT', 'referral to treatment', '18 weeks', 'pathway', 'clock'],
         'pas': ['PAS', 'patient administration', 'booking', 'appointment'],
-        'healthcare_assistant': ['healthcare assistant', 'HCA', 'care assistant'],
-        'teaching_assistant': ['teaching assistant', 'TA', 'classroom'],
-        'customer_service': ['customer service', 'customer', 'client'],
-        'admin': ['administration', 'admin', 'office'],
-        'validation': ['validation', 'data quality', 'audit']
+        'nhs': ['NHS', 'trust', 'hospital', 'clinic'],
+        'validation': ['validation', 'data quality', 'accuracy', 'audit'],
+        'healthcare_assistant': ['healthcare assistant', 'HCA', 'care assistant', 'support worker'],
+        'care_work': ['care', 'caring', 'personal care', 'patient care', 'service user'],
+        'teaching_assistant': ['teaching assistant', 'TA', 'classroom', 'pupils', 'students'],
+        'customer_service': ['customer service', 'customer', 'client', 'complaint', 'query'],
+        'admin': ['administration', 'admin', 'office', 'filing', 'record keeping'],
+        'it_skills': ['Excel', 'Microsoft', 'IT', 'systems', 'software', 'computer'],
+        'medical_secretary': ['medical secretary', 'secretary', 'audio typing', 'correspondence'],
+        'typing': ['typing', 'audio typing', 'transcription', 'minutes'],
+        'diary_management': ['diary', 'calendar', 'scheduling', 'appointments'],
+        'communication': ['communication', 'team', 'stakeholder', 'interpersonal'],
+        'confidentiality': ['confidentiality', 'GDPR', 'data protection', 'sensitive']
     }
     
     found_skills = []
@@ -54,10 +65,9 @@ def analyze_job_description(job_title, job_description, company_name=""):
                 found_skills.append(skill_category)
                 break
     
-    # Generate preparation tips
+    questions = generate_questions(job_title, found_skills, job_description)
     prep_tips = generate_prep_tips(job_title, found_skills)
     
-    # Generate COMPLETE answers for ALL questions
     from interview_answers_complete import get_complete_answer
     example_answers = []
     for q in questions:
@@ -65,8 +75,7 @@ def analyze_job_description(job_title, job_description, company_name=""):
         example_answers.append({
             'question': q['question'],
             'example_answer': answer_data['answer'],
-            'tips': answer_data['tips'],
-            'source': q.get('source', 'Generated question')  # Show where question came from!
+            'tips': answer_data['tips']
         })
     
     return {
@@ -78,6 +87,360 @@ def analyze_job_description(job_title, job_description, company_name=""):
         'example_answers': example_answers,
         'research_areas': generate_research_areas(company_name, job_title)
     }
+
+
+def analyze_with_gpt4(job_title, job_description, company_name, api_key):
+    """
+    Use GPT-4 to INTELLIGENTLY analyze job description and generate questions + answers
+    This is what we SHOULD be using!
+    """
+    from openai import OpenAI
+    client = OpenAI(api_key=api_key)
+    
+    # EXPERT-LEVEL PROMPT: Better than generic ChatGPT!
+    prompt = f"""You are a SENIOR NHS HR SPECIALIST and INTERVIEW PANEL EXPERT with 15+ years experience.
+You've conducted 1000+ interviews and know EXACTLY what questions employers ask.
+
+Your expertise:
+- NHS interview procedures and what panels look for
+- Industry-specific questions that generic AI misses
+- Red flags employers watch for
+- Insider knowledge of what separates good from great candidates
+
+JOB TITLE: {job_title}
+COMPANY: {company_name}
+
+JOB DESCRIPTION:
+{job_description}
+
+CRITICAL TASK:
+Generate the MOST ACCURATE, REALISTIC interview prep possible - better than generic ChatGPT!
+
+ANALYZE DEEPLY:
+1. READ every word of the job description
+2. IDENTIFY what the employer prioritizes (not just lists)
+3. PREDICT the EXACT questions they'll ask based on:
+   - Specific systems/software mentioned
+   - Responsibilities listed
+   - Essential vs desirable requirements
+   - Industry standards for this role
+   - Common pain points employers have with this position
+
+GENERATE 30-40 QUESTIONS including:
+
+**TECHNICAL QUESTIONS (10-15):**
+- About SPECIFIC systems mentioned (Oracle PAS, Cerner, etc.)
+- About SPECIFIC responsibilities listed
+- About required qualifications/certifications
+- Role-specific skills (audio typing, RTT, clinical tasks, etc.)
+- Industry standards they expect you to know
+
+**COMPETENCY QUESTIONS (8-10):**
+- Based on required competencies in job description
+- STAR method answers showing:
+  * REAL scenarios (not generic examples)
+  * SPECIFIC metrics and outcomes
+  * How you handle THIS role's challenges
+  * Evidence you can do what they need
+
+**SCENARIO QUESTIONS (5-7):**
+- Based on challenges mentioned in job description
+- "What would you do if..." situations
+- Realistic problems they face in this role
+- Tests judgment, priorities, problem-solving
+
+**MOTIVATION QUESTIONS (3-5):**
+- Why this specific role?
+- Why this organization?
+- What do you know about us?
+- Career goals alignment
+
+**OPENING & CLOSING (3-5):**
+- Tell me about yourself
+- Strengths/weaknesses
+- Questions for us
+- Availability, notice period
+
+For EACH question provide:
+1. **The EXACT question** (word-for-word as interviewer would ask)
+2. **Why they ask** (the REAL reason - what they're assessing)
+3. **Likelihood** (realistic %)
+4. **EXPERT ANSWER** (300-500 words):
+   - Specific to THIS job (not generic!)
+   - Uses terminology from the job description
+   - Includes REAL examples with metrics
+   - Shows you understand the role's challenges
+   - Demonstrates you've researched the organization
+   - STAR method for competency questions
+   - Better than what ChatGPT would give!
+5. **INSIDER TIPS** (3-5 tips):
+   - What interviewers want to hear
+   - Red flags to avoid
+   - How to stand out
+   - Specific details to mention
+
+Return as JSON with this COMPLETE structure:
+{{
+  "questions": [
+    {{
+      "category": "Technical - [Specific Area]",
+      "question": "Exact question as interviewer would ask it",
+      "why_asked": "Real reason they're asking (what competency/skill they're testing)",
+      "likelihood": "95%",
+      "answer": "EXPERT 300-500 word answer with specifics, examples, metrics",
+      "tips": ["Insider tip 1", "What they want to hear", "Red flag to avoid", "How to stand out", "Specific detail to mention"],
+      "red_flags": ["What NOT to say", "Common mistake candidates make"]
+    }}
+  ],
+  "organization_research": {{
+    "mission": "Their mission statement and what it means",
+    "vision": "Their vision and how to align with it",
+    "values": ["Value 1: How to demonstrate it", "Value 2: Example of living it"],
+    "recent_news": ["Recent achievement 1", "Recent news 2"],
+    "services": "What they're known for",
+    "cqc_rating": "CQC rating and what to say about it (if NHS)",
+    "challenges": "Challenges they face and how you can help",
+    "culture": "What they value in employees"
+  }},
+  "interview_etiquette": {{
+    "what_to_wear": "Specific advice for this role/industry",
+    "arrival_time": "When to arrive and what to do",
+    "panel_composition": "Who you'll likely meet",
+    "interview_format": "Competency-based, values-based, etc.",
+    "duration": "How long it typically lasts",
+    "opening": ["How to introduce yourself", "Small talk tips", "First impression"],
+    "during": ["Active listening", "How to think before answering", "Body language"],
+    "closing": ["How to ask questions", "Express interest", "Thank panel", "Exit strategy"]
+  }},
+  "questions_to_ask": [
+    {{"question": "Smart question 1", "why_good": "Shows X"}},
+    {{"question": "Smart question 2", "why_good": "Demonstrates Y"}},
+    {{"question": "Smart question 3", "why_good": "Proves Z"}}
+  ],
+  "post_interview": {{
+    "thank_you_email": "Template for same-day thank you",
+    "when_to_follow_up": "Timeline guidance",
+    "how_to_follow_up": "Professional follow-up template",
+    "handling_rejection": "How to request feedback and stay professional"
+  }},
+  "salary_discussion": {{
+    "when_to_discuss": "When to bring up salary",
+    "how_to_answer": "Template for 'What are your expectations?'",
+    "nhs_pay_bands": "Explanation of NHS bands (if applicable)",
+    "negotiation_tips": "How to negotiate if private sector"
+  }},
+  "prep_tips": {{
+    "before_interview": ["Tip 1", "Tip 2"],
+    "on_the_day": ["Tip 1", "Tip 2"],
+    "technical_prep": ["Tip 1", "Tip 2"],
+    "key_documents": ["Doc 1", "Doc 2"]
+  }}
+}}
+
+QUALITY STANDARDS (Better than ChatGPT!):
+✅ Questions come from ACTUAL job description (not generic database)
+✅ Answers reference SPECIFIC systems/responsibilities from the job
+✅ Include industry-specific knowledge (NHS procedures, care standards, etc.)
+✅ STAR examples are REALISTIC for this role (not made-up scenarios)
+✅ Tips include INSIDER knowledge (what panels look for)
+✅ Answers are 300-500 words (comprehensive, not superficial)
+✅ Every answer includes METRICS/SPECIFICS (not vague generalities)
+✅ Show understanding of role's CHALLENGES (not just tasks)
+✅ Demonstrate RESEARCH about organization (if company name provided)
+
+ADDITIONAL COMPREHENSIVE SECTIONS TO INCLUDE:
+
+**ABOUT THE ORGANIZATION (If company name provided):**
+1. Mission Statement - What it means and how to reference it
+2. Vision Statement - How to align your answers with it
+3. Core Values - Specific examples of demonstrating each value
+4. Recent News/Achievements - What to mention to show research
+5. Services/Specialties - What they're known for
+6. CQC Rating (if NHS) - What it means, how to discuss
+7. Key Challenges - What problems they face, how you can help
+8. Culture/Team - What they value in employees
+
+**INTERVIEW ETIQUETTE & PROCESS:**
+1. What to wear (specific to NHS/care/education/corporate)
+2. What time to arrive (10-15 mins early)
+3. Who you'll meet (typical panel composition)
+4. Interview format (competency-based, values-based, etc.)
+5. How long interview typically lasts
+6. What to bring (documents, certificates, portfolio)
+7. Body language tips (eye contact, posture, handshake)
+8. How to greet the panel professionally
+9. How to handle nerves
+10. How to close the interview positively
+
+**OPENING THE INTERVIEW:**
+1. How to introduce yourself when you walk in
+2. Small talk tips (weather, finding the building, etc.)
+3. First impression strategies
+4. How to sit (posture, where to put hands)
+5. Initial rapport building
+
+**DURING THE INTERVIEW:**
+1. Active listening techniques
+2. How to take a moment to think before answering
+3. How to ask for clarification if needed
+4. How to handle questions you don't know
+5. How to redirect if you go off-topic
+6. How to read panel body language
+7. When to give examples vs concise answers
+8. How to manage time (not talking too long)
+
+**CLOSING THE INTERVIEW:**
+1. How to ask your prepared questions
+2. What questions to ask (5-7 smart questions provided)
+3. How to express continued interest
+4. How to ask about next steps
+5. How to thank the panel
+6. Exit strategy (shake hands, smile, leave confidently)
+
+**POST-INTERVIEW:**
+1. When to send thank-you email (same day)
+2. Template for thank-you email
+3. When to expect to hear back
+4. How to follow up if you don't hear
+5. How to handle rejection professionally
+6. How to request feedback
+
+**QUESTIONS TO ASK THEM (10-12 smart questions):**
+Categorized by:
+- About the role (day-to-day, challenges, success measures)
+- About the team (size, culture, support)
+- About development (training, progression, growth)
+- About the organization (future plans, priorities)
+- Practical (next steps, timeline, start date)
+
+**SALARY & NEGOTIATION:**
+1. When to discuss salary (not first interview!)
+2. How to answer "What are your salary expectations?"
+3. NHS pay bands explained (if applicable)
+4. How to negotiate (if private sector)
+5. Benefits to ask about
+
+**RED FLAGS YOU SHOULD WATCH FOR:**
+Not just what they ask about YOU, but warning signs about THEM:
+- High turnover mentions
+- Vague job description
+- Unprofessional panel behavior
+- Unrealistic expectations
+- Poor communication
+
+MAKE THIS BETTER THAN WHAT STUDENTS CAN GET FROM CHATGPT THEMSELVES!
+They're paying for EXPERT-LEVEL prep, not generic AI responses.
+
+STUDENTS MUST BE 100% READY - NOTHING LEFT TO CHANCE!
+From walking in the door to walking out, they should know EXACTLY what to do."""
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "You are a SENIOR NHS HR SPECIALIST with 15+ years experience conducting interviews. You provide EXPERT-LEVEL interview preparation that exceeds what generic AI can provide."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=16000  # Increased for 30-40 detailed questions with full answers
+        )
+        
+        import json
+        result = json.loads(response.choices[0].message.content)
+        
+        # Format for our system
+        questions = []
+        example_answers = []
+        
+        for q in result.get('questions', []):
+            questions.append({
+                'category': q.get('category', 'General'),
+                'question': q.get('question', ''),
+                'why_asked': q.get('why_asked', ''),
+                'likelihood': q.get('likelihood', '80%')
+            })
+            
+            # Build comprehensive answer with tips AND red flags
+            answer_text = q.get('answer', '')
+            
+            # Add red flags section if provided
+            red_flags = q.get('red_flags', [])
+            if red_flags:
+                answer_text += "\n\n**❌ RED FLAGS TO AVOID:**\n"
+                for flag in red_flags:
+                    answer_text += f"- {flag}\n"
+            
+            example_answers.append({
+                'question': q.get('question', ''),
+                'example_answer': answer_text,
+                'tips': q.get('tips', [])
+            })
+        
+        # Extract comprehensive prep tips from GPT-4 response
+        prep_tips = result.get('prep_tips', {
+            'before_interview': [
+                f"Research {company_name} thoroughly - mission, values, recent news, CQC rating",
+                "Review the job description and match your experience to each requirement",
+                "Prepare STAR method examples for competency questions",
+                "Practice answering questions out loud",
+                "Prepare 10-12 thoughtful questions to ask them",
+                "Plan your route and arrival time (10-15 mins early)",
+                "Choose professional attire appropriate for the role"
+            ],
+            'on_the_day': [
+                "Arrive 10-15 minutes early (not too early!)",
+                "Bring: CV copies, notebook, pen, certificates, portfolio",
+                "Dress professionally (smart business attire)",
+                "Turn off mobile phone completely",
+                "Greet everyone professionally with a smile",
+                "Make eye contact and use confident body language",
+                "Listen carefully to questions, take a moment to think before answering"
+            ],
+            'technical_prep': [
+                "Review all key skills mentioned in job description",
+                "Prepare examples demonstrating each required skill",
+                "Know the terminology for this role",
+                "Research organization's mission, vision, and values",
+                "Understand what makes this organization unique",
+                "Know their recent achievements and challenges"
+            ],
+            'key_documents': [
+                "Up-to-date CV/resume (multiple copies)",
+                "Copies of relevant certificates",
+                "Portfolio of work (if applicable)",
+                "References contact details",
+                "Right to work documents",
+                "Notepad and professional pen"
+            ]
+        })
+        
+        # Extract organization research from GPT-4
+        organization_research = result.get('organization_research', {})
+        
+        # Extract interview etiquette from GPT-4
+        interview_etiquette = result.get('interview_etiquette', {})
+        
+        # Extract questions to ask them from GPT-4
+        questions_to_ask = result.get('questions_to_ask', [])
+        
+        return {
+            'job_title': job_title,
+            'company_name': company_name,
+            'identified_skills': [],  # GPT-4 handles this
+            'interview_questions': questions,
+            'preparation_tips': prep_tips,
+            'example_answers': example_answers,
+            'research_areas': generate_research_areas(company_name, job_title),
+            'organization_research': organization_research,  # Mission, vision, values, etc.
+            'interview_etiquette': interview_etiquette,  # Opening, during, closing interview
+            'questions_to_ask': questions_to_ask,  # Smart questions for them
+            'post_interview': result.get('post_interview', {}),  # Thank-you email, follow-up
+            'salary_discussion': result.get('salary_discussion', {})  # How to handle salary talk
+        }
+        
+    except Exception as e:
+        print(f"GPT-4 analysis error: {e}")
+        raise  # Re-raise to fallback to keyword matching
 
 
 def generate_questions(job_title, skills, job_desc):
@@ -383,8 +746,43 @@ def generate_questions(job_title, skills, job_desc):
             }
         ])
     
+    # Medical Secretary specific questions
+    if 'medical_secretary' in skills or 'typing' in skills or 'diary_management' in skills:
+        questions.extend([
+            {
+                'category': 'Technical - Medical Secretary',
+                'question': 'What experience do you have with audio typing and medical correspondence?',
+                'why_asked': 'Core skill for medical secretary role',
+                'likelihood': '95%'
+            },
+            {
+                'category': 'Technical - Medical Secretary',
+                'question': 'How would you manage a consultant\'s diary and coordinate clinic schedules?',
+                'why_asked': 'Tests organizational and coordination skills',
+                'likelihood': '90%'
+            },
+            {
+                'category': 'Technical - Medical Secretary',
+                'question': 'What experience do you have with medical terminology?',
+                'why_asked': 'Essential for medical secretary work',
+                'likelihood': '90%'
+            },
+            {
+                'category': 'Scenario - Medical Secretary',
+                'question': 'How would you handle conflicting priorities from multiple consultants?',
+                'why_asked': 'Tests prioritization and diplomacy',
+                'likelihood': '85%'
+            },
+            {
+                'category': 'Technical - Medical Secretary',
+                'question': 'Describe your experience with patient correspondence and follow-up letters',
+                'why_asked': 'Key responsibility in medical secretary roles',
+                'likelihood': '85%'
+            }
+        ])
+    
     # Confidentiality / GDPR (important for all roles)
-    if 'confidentiality' in skills or 'nhs' in skills or 'care_work' in skills:
+    if 'confidentiality' in skills or 'nhs' in skills or 'care_work' in skills or 'medical_secretary' in skills:
         questions.extend([
             {
                 'category': 'Confidentiality',
