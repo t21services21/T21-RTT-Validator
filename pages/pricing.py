@@ -49,13 +49,15 @@ with col2:
         <p style='font-size: 42px; font-weight: 800; color: #1a1a1a; margin: 15px 0;'>£499</p>
         <p style='color: #666;'>6 Months</p>
         <ul style='text-align: left; color: #555; line-height: 1.8; font-size: 14px;'>
-            <li>✅ Full platform access (50+ modules)</li>
+            <li>✅ Full platform access (55+ modules)</li>
             <li>✅ AI Auto-Validator</li>
             <li>✅ DNA Management</li>
             <li>✅ Cancellation Management</li>
             <li>✅ All 12 RTT core modules</li>
+            <li>✅ 🔒 Information Governance (GDPR/Caldicott)</li>
+            <li>✅ 📋 Partial Booking List (PBL)</li>
+            <li>✅ 522 training scenarios</li>
             <li>✅ Unlimited AI tutor</li>
-            <li>✅ All training scenarios</li>
             <li>✅ CV & interview prep</li>
             <li>❌ No certification</li>
         </ul>
@@ -71,6 +73,8 @@ with col3:
         <ul style='text-align: left; color: #1a1a1a; line-height: 1.8; font-size: 14px;'>
             <li>✅ Everything in Tier 1</li>
             <li>✅ Certified qualification (TQUK-endorsed)</li>
+            <li>✅ 🏆 Multi-tier certification (Foundation/Practitioner/Expert)</li>
+            <li>✅ 1000+ exam questions (unique per student)</li>
             <li>✅ Job application support</li>
             <li>✅ Alumni network (lifetime)</li>
             <li>✅ 10 months post-cert access</li>
@@ -109,10 +113,12 @@ with col1:
         <p style='color: #666; text-align: center;'>Tailored to your trust</p>
         <ul style='color: #555; line-height: 2;'>
             <li>✅ Trust-wide deployment (unlimited users)</li>
-            <li>✅ <strong>50+ Advanced Modules including:</strong></li>
+            <li>✅ <strong>55+ Advanced Modules including:</strong></li>
             <li style='margin-left: 20px;'>• AI Auto-Validator (120x faster)</li>
             <li style='margin-left: 20px;'>• DNA Management</li>
             <li style='margin-left: 20px;'>• Cancellation Management</li>
+            <li style='margin-left: 20px;'>• 📋 Partial Booking List (PBL) with data cleansing</li>
+            <li style='margin-left: 20px;'>• 🔒 Information Governance (GDPR/Caldicott mandatory training)</li>
             <li style='margin-left: 20px;'>• Patient Choice & Deferrals</li>
             <li style='margin-left: 20px;'>• Waiting List Validator</li>
             <li style='margin-left: 20px;'>• Transfer of Care</li>
@@ -230,9 +236,12 @@ with col_feat3:
     - 📆 Appointment & Booking Checker
     - 💬 Comment Line Generator
     - ✍️ Clinic Letter Creator
-    - 🎓 Training Library
+    - 🎓 Training Library (522 scenarios)
     - 🎮 Interactive Learning Center
-    - 🎓 Certification Exam
+    - 🎓 Certification Exam (1000+ questions)
+    - 🏆 Multi-Tier Certification (Foundation/Practitioner/Expert)
+    - 🔒 Information Governance (GDPR, Caldicott, mandatory NHS training)
+    - 📋 Partial Booking List (PBL workflow)
     - 🤖 AI RTT Tutor
     - 📚 LMS - My Courses
     """)
