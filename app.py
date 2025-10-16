@@ -32,6 +32,11 @@ EXISTING MODULES (42+):
 
 TOTAL: 65+ MODULES | 200+ FEATURES | £24.76B NHS-WIDE SAVINGS POTENTIAL
 
+TQUK-ENDORSED PROFESSIONAL DEVELOPMENT:
+- TQUK Approved Centre #36257481088
+- TQUK-Endorsed Course: Understanding RTT and Hospital Administration (PDLC-01-039)
+- Students receive TQUK-recognized professional development certificates
+
 COMPETITIVE ADVANTAGE:
 - 2-3 YEARS ahead of US billion-pound competitors
 - 100-200x CHEAPER than Palantir/Microsoft
@@ -2821,10 +2826,15 @@ elif tool == "🎮 Interactive Learning Center":
 # TOOL 10: CERTIFICATION EXAM (NEW!) 🎓
 # ============================================
 elif tool == "🎓 Certification Exam":
-    st.header("🎓 RTT Certification Exam")
-    st.markdown("**Become a Certified RTT Professional!**")
+    st.header("🎓 Professional Development Assessment")
+    st.markdown("**Complete the TQUK-Endorsed RTT & Hospital Administration Course!**")
     
-    st.info("""📜 **Official T21 RTT Certification:**
+    st.info("""📜 **TQUK-Recognized Professional Development:**
+    
+TQUK Approved Centre #36257481088
+Course: Understanding RTT and Hospital Administration (PDLC-01-039)
+    
+    **Assessment Details:**
     - 50 comprehensive questions
     - 90-minute time limit
     - 80% pass mark required
@@ -4359,7 +4369,7 @@ elif tool == "⚙️ My Account & Upgrade":
             st.markdown("**£1,299** / 12 months")
             st.markdown("*£1,199 if paid in full*")
             st.markdown("✅ Everything in Tier 1")
-            st.markdown("✅ **TQUK Certification**")
+            st.markdown("✅ **TQUK-Endorsed Course (PDLC-01-039)**")
             st.markdown("✅ **8-week program**")
             st.markdown("✅ Live tutor sessions")
             st.markdown("✅ Alumni network")
@@ -5578,8 +5588,8 @@ elif tool == "🎓 Training & Certification":
     
     with tabs[3]:
         # ACTUALLY RENDER CERTIFICATION EXAM
-        st.header("🎓 RTT Certification Exam")
-        st.markdown("**Become a Certified RTT Professional!**")
+        st.header("🎓 Professional Development Assessment")
+        st.markdown("**Complete TQUK-Endorsed Course: Understanding RTT and Hospital Administration**")
         
         # Initialize exam state
         if 'exam_started' not in st.session_state:
@@ -5697,9 +5707,12 @@ elif tool == "🎓 Training & Certification":
                 
                 You have successfully passed the RTT Certification Exam!
                 
-                You are now a **Certified RTT Professional**
+                You have completed the **TQUK-Endorsed Professional Development Course**
                 
-                Certificate will be generated and emailed to you.
+                Course: Understanding RTT and Hospital Administration (PDLC-01-039)
+                TQUK Approved Centre #36257481088
+                
+                Your TQUK-recognized certificate will be generated and emailed to you.
                 """)
             else:
                 st.warning(f"""

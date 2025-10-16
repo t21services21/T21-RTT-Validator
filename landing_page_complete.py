@@ -254,7 +254,7 @@ def render_complete_landing_page():
             </div>
             <div style='flex: 1; min-width: 250px;'>
                 <h3 style='color: #d4af37;'>✅ Certifications</h3>
-                <p><strong>TQUK Approved</strong><br>
+                <p><strong>TQUK Approved Centre #36257481088</strong><br>
                 <strong>NHS Compliant</strong><br>
                 <strong>GDPR Certified</strong><br>
                 <strong>ISO Standards</strong></p>
@@ -277,7 +277,7 @@ def render_complete_landing_page():
         st.markdown("""
         <div style='background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-left: 5px solid #d4af37; height: 100%;'>
             <h3 style='color: #1a1a1a; font-size: 24px; margin-bottom: 15px;'>🎓 Professional Training</h3>
-            <p style='color: #555; font-size: 16px; line-height: 1.8;'>Comprehensive NHS healthcare administration training covering 15+ roles. TQUK certified programs designed to empower your workforce with the skills needed for modern healthcare delivery.</p>
+            <p style='color: #555; font-size: 16px; line-height: 1.8;'>Comprehensive NHS healthcare administration training covering 15+ roles. TQUK-endorsed professional development course (Understanding RTT & Hospital Administration - PDLC-01-039) designed to empower your workforce with the skills needed for modern healthcare delivery.</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -315,7 +315,7 @@ def render_complete_landing_page():
             <p style='color: #666;'>per course</p>
             <ul style='text-align: left; color: #555; line-height: 2;'>
                 <li>✅ Full course access</li>
-                <li>✅ TQUK certification</li>
+                <li>✅ TQUK-recognized certificate</li>
                 <li>✅ 6 months support</li>
                 <li>✅ Digital resources</li>
             </ul>

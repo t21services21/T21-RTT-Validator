@@ -192,7 +192,7 @@ def render_final_landing_page():
         <h1>Your NHS Career & Workforce Partner</h1>
         <h2>Training • Talent • Technology</h2>
         <p>UK Certified Centre serving individuals seeking NHS careers, NHS staff advancing their skills, and NHS trusts 
-        transforming operations. Certified courses (TQUK-endorsed RTT & Hospital Administration), qualified talent supply, 
+        transforming operations. TQUK-endorsed course (Understanding RTT & Hospital Administration - PDLC-01-039), qualified talent supply, 
         and AI automation saving £2M+ annually. From student to system—we empower everyone.</p>
     </div>
     """, unsafe_allow_html=True)
@@ -230,13 +230,13 @@ def render_final_landing_page():
     **T21 Services Limited** is a UK Certified Centre and leading healthcare training, talent supply, and technology company serving the NHS and healthcare sector.
     
     **What We Do:**
-    - 🎓 **Train Individuals** - Certified NHS administration courses (TQUK-endorsed RTT & Hospital Administration)
+    - 🎓 **Train Individuals** - TQUK-endorsed professional development course (Understanding RTT & Hospital Administration - PDLC-01-039)
     - 👥 **Upskill NHS Staff** - Professional development for existing healthcare professionals
     - 💼 **Supply Qualified Talent** - Place our trained graduates into NHS roles
     - 🤖 **Provide AI Automation** - 7 intelligent systems with 188 scenarios to transform NHS operations
     - 🏥 **Support NHS Trusts** - End-to-end workforce and technology solutions
     
-    Established in 2020 and registered with Companies House (No: 13091053), we're a UK Certified Centre committed to transforming healthcare workforce development through certified training programs (with TQUK endorsement for RTT and Hospital Administration) and cutting-edge technology solutions.
+    Established in 2020 and registered with Companies House (No: 13091053), we're a TQUK Approved Centre (#36257481088) committed to transforming healthcare workforce development through our TQUK-endorsed professional development course (Understanding RTT and Hospital Administration - PDLC-01-039) and cutting-edge technology solutions.
     """)
     
     col1, col2, col3 = st.columns(3)
@@ -253,7 +253,7 @@ def render_final_landing_page():
     with col2:
         st.markdown("""
         ### ✅ Certifications
-        - **TQUK Approved Center**
+        - **TQUK Approved Centre #36257481088**
         - **NHS Compliant**
         - **GDPR Certified**
         - **ISO 9001 Standards**
@@ -342,7 +342,7 @@ def render_final_landing_page():
     # Pricing Section - ORIGINAL AGREED TIERS
     st.markdown("<div id='pricing'></div>", unsafe_allow_html=True)
     st.markdown("## Student Pricing Plans")
-    st.markdown("*Certified NHS Training Courses - UK Certified Centre with TQUK Endorsement*")
+    st.markdown("*TQUK-Endorsed Professional Development Course - TQUK Approved Centre #36257481088*")
     
     col1, col2, col3, col4 = st.columns(4)
     
@@ -385,7 +385,7 @@ def render_final_landing_page():
             <p style='color: #1a1a1a;'>12 Months</p>
             <ul style='text-align: left; color: #1a1a1a; line-height: 1.8; font-size: 14px;'>
                 <li>✅ Everything in Tier 1</li>
-                <li>✅ Certified qualification (TQUK-endorsed)</li>
+                <li>✅ TQUK-recognized professional development certificate</li>
                 <li>✅ Job application support</li>
                 <li>✅ Alumni network (lifetime)</li>
                 <li>✅ 10 months post-cert access</li>

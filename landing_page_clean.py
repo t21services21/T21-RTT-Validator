@@ -88,7 +88,7 @@ def render_clean_landing_page():
     <div class="hero-section">
         <h1>Your NHS Career & Workforce Partner</h1>
         <h2>Training • Talent • Technology</h2>
-        <p><strong>COMPLETE NHS SOLUTION:</strong> Train individuals seeking NHS careers + Upskill existing NHS staff with TQUK certification • Supply qualified talent to NHS trusts • AI automation saving £2M+ per trust. 120x faster validation • 99.9% accuracy • Zero breaches. Training, talent supply, and technology transformation - your one-stop NHS workforce solution.</p>
+        <p><strong>COMPLETE NHS SOLUTION:</strong> Train individuals seeking NHS careers + Upskill existing NHS staff with TQUK-endorsed professional development • Supply qualified talent to NHS trusts • AI automation saving £2M+ per trust. 120x faster validation • 99.9% accuracy • Zero breaches. Training, talent supply, and technology transformation - your one-stop NHS workforce solution.</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -116,7 +116,126 @@ def render_clean_landing_page():
         <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; font-weight: 700; font-size: 0.9rem; color: white;">⚡ 120x FASTER<br>THAN MANUAL</div>
         <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; font-weight: 700; font-size: 0.9rem; color: white;">💰 £2M+ SAVINGS<br>PER TRUST</div>
         <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; font-weight: 700; font-size: 0.9rem; color: white;">✅ 99.9%<br>ACCURACY</div>
-        <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; font-weight: 700; font-size: 0.9rem; color: white;">🏆 TQUK APPROVED<br>CENTRE #36257481088</div>
+        <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; font-weight: 700; font-size: 0.9rem; color: white;">🏆 TQUK-ENDORSED<br>COURSE (PDLC-01-039)</div>
         <div style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; font-weight: 700; font-size: 0.9rem; color: white;">🚀 FUTURE-PROOF<br>100 YEARS</div>
     </div>
     """, unsafe_allow_html=True)
+    
+    # COMPREHENSIVE FEATURES SECTION
+    st.markdown("---")
+    st.markdown("## 🚀 Complete NHS Platform - 35+ Integrated Modules")
+    st.markdown("*Everything you need for NHS operations, training, and workforce management*")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        ### 🎓 Training & Professional Development
+        - **TQUK-Endorsed Course** (PDLC-01-039)
+        - 500+ RTT Training Scenarios
+        - Interactive Learning Center
+        - AI RTT Tutor with Trust-specific context ⭐ NEW!
+        - Information Governance Training
+        - Career Development Tools
+        - CV Builder & Interview Prep
+        - TQUK-Recognized Certificates
+        
+        ### 🏥 Patient Management
+        - Patient Registration System
+        - NHS Number Auto-Generation
+        - Pathway Management (RTT, Cancer, Custom)
+        - Episode Management & Tracking
+        - DNA (Did Not Attend) Management
+        - Transfer of Care System
+        - Patient Choice Module
+        """)
+    
+    with col2:
+        st.markdown("""
+        ### 📊 Operational Systems
+        - Patient Tracking List (PTL)
+        - Partial Booking List (PBL) with Data Cleansing
+        - Advanced Booking System
+        - Waiting List Management
+        - Cancer Pathway Tracker (62-day, 31-day, 2WW)
+        - MDT Coordination & Meeting Management
+        - Breach Risk Monitoring
+        - Consent Manager
+        - Funding/IFR Management
+        
+        ### 🤖 AI & Automation
+        - AI Auto-Validator (500,000x faster)
+        - Medical Secretary AI
+        - Clinical Letter Generation
+        - Clinic Letter Interpreter
+        - Policy/SOP Generator ⭐ NEW!
+        - Handwriting OCR
+        - Document Management
+        """)
+    
+    with col3:
+        st.markdown("""
+        ### 📈 Analytics & Reporting
+        - Executive Dashboard
+        - Pathway Statistics
+        - AI Query Analytics Dashboard ⭐ NEW!
+        - Data Quality System
+        - Interactive Reports
+        - Breach Analytics
+        - Performance Metrics
+        
+        ### ⚙️ Administration & Settings
+        - Trust AI Customization ⭐ NEW!
+        - Multi-User Management
+        - Role-Based Access Control
+        - 2FA Security
+        - Trial Management
+        - Module Access Control
+        - Admin Panel
+        
+        ### 🔒 Compliance & Security
+        - Information Governance Module
+        - GDPR Compliance
+        - NHS Caldicott Principles
+        - Data Breach Reporting
+        - Audit Trail Logging
+        """)
+    
+    st.markdown("---")
+    st.markdown("### ⭐ NEW COMPETITIVE FEATURES (Added October 2025)")
+    
+    feature_cols = st.columns(3)
+    with feature_cols[0]:
+        st.success("""
+        **🏥 Trust AI Customization**
+        
+        Upload your Trust's policies and train AI on your specific workflows - just like Sigma!
+        
+        ✅ Trust-specific responses
+        ✅ Policy document upload
+        ✅ Custom AI training
+        """)
+    
+    with feature_cols[1]:
+        st.success("""
+        **📊 AI Analytics Dashboard**
+        
+        Track AI performance, user satisfaction, and system improvements.
+        
+        ✅ Query tracking
+        ✅ Response metrics
+        ✅ User feedback analysis
+        """)
+    
+    with feature_cols[2]:
+        st.success("""
+        **📋 Policy/SOP Generator**
+        
+        Automatically generate RTT policies, SOPs, and procedures.
+        
+        ✅ NHS-compliant templates
+        ✅ Trust-customizable
+        ✅ Downloadable documents
+        """)
+    
+    st.markdown("---")

@@ -91,7 +91,7 @@ def render_clean_landing_page():
     <div class='hero'>
         <h1>Your NHS Career & Workforce Partner</h1>
         <h2>Training • Talent • Technology</h2>
-        <p>UK Certified Centre serving individuals seeking NHS careers, NHS staff advancing their skills, and NHS trusts transforming operations. TQUK-endorsed training, job application support with proven success, and AI automation saving £2M+ annually. From student to system—we empower everyone.</p>
+        <p>TQUK Approved Centre (#36257481088) serving individuals seeking NHS careers, NHS staff advancing their skills, and NHS trusts transforming operations. TQUK-endorsed professional development course (Understanding RTT & Hospital Administration - PDLC-01-039), job application support with proven success, and AI automation saving £2M+ annually. From student to system—we empower everyone.</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -112,7 +112,7 @@ def render_clean_landing_page():
     # Trust badges
     st.markdown("""
     <div style='display: flex; gap: 20px; justify-content: center; padding: 60px; background: #f8f9fa; flex-wrap: wrap;'>
-        <div style='background: white; padding: 25px 35px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700;'>✅ TQUK APPROVED<br>CENTRE</div>
+        <div style='background: white; padding: 25px 35px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700;'>✅ TQUK APPROVED<br>CENTRE #36257481088</div>
         <div style='background: white; padding: 25px 35px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700;'>🔒 CYBER ESSENTIALS<br>CERTIFIED</div>
         <div style='background: white; padding: 25px 35px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700;'>🏥 NHS<br>COMPLIANT</div>
         <div style='background: white; padding: 25px 35px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-weight: 700;'>✅ COMPANIES HOUSE<br>REGISTERED</div>
