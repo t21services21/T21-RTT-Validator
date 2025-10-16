@@ -5202,12 +5202,15 @@ elif tool == "🎓 Training & Certification":
         end_idx = min(start_idx + scenarios_per_page, len(scenarios))
         page_scenarios = scenarios[start_idx:end_idx]
         
-        for scenario in page_scenarios:
+        for idx, scenario in enumerate(page_scenarios):
             scenario_id = f"scenario_{scenario['id']:02d}"
             has_access = has_full_access or user_has_module_access(user_email, scenario_id)
             
             # Icon based on access
             icon = "✅" if has_access else "🔒"
+            
+            # Create unique key using page + index to prevent duplicates
+            unique_key = f"pg{st.session_state['scenario_page']}_idx{idx}_sc{scenario['id']}"
             
             with st.expander(f"{icon} Scenario {scenario['id']}: {scenario['title']} - {scenario['difficulty']}", expanded=False):
                 st.markdown(f"**Difficulty:** {scenario['difficulty']}")
@@ -5215,7 +5218,7 @@ elif tool == "🎓 Training & Certification":
                 if has_access:
                     # User has access - show full content
                     st.markdown("**Letter:**")
-                    st.text_area("Clinic Letter", scenario['letter'], height=200, key=f"letter_train_{scenario['id']}", disabled=True)
+                    st.text_area("Clinic Letter", scenario['letter'], height=200, key=f"letter_train_{unique_key}", disabled=True)
                     
                     st.markdown("---")
                     st.markdown("**Your Answer:**")
@@ -5226,11 +5229,11 @@ elif tool == "🎓 Training & Certification":
                         user_answer = st.selectbox(
                             "What RTT code should this letter get?",
                             ["Select...", "10", "11", "12", "20", "21", "30", "31", "32", "33", "34", "35", "36", "90", "91", "92", "98"],
-                            key=f"answer_train_{scenario['id']}"
+                            key=f"answer_train_{unique_key}"
                         )
                     
                     with col2:
-                        check_btn = st.button("Check Answer", key=f"check_train_{scenario['id']}")
+                        check_btn = st.button("Check Answer", key=f"check_train_{unique_key}")
                     
                     if check_btn and user_answer != "Select...":
                         result = check_scenario_answer(scenario['id'], user_answer)
