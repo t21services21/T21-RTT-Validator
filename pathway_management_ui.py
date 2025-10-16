@@ -20,13 +20,7 @@ from pathway_management_system import (
 )
 from patient_selector_component import render_patient_selector, render_patient_quick_select
 from episode_management_system import get_patient_episodes
-
-
-SPECIALTIES = [
-    "Cardiology", "Dermatology", "ENT", "Gastroenterology",
-    "General Surgery", "Neurology", "Ophthalmology", "Orthopaedics",
-    "Respiratory", "Rheumatology", "Urology", "Oncology", "Other"
-]
+from nhs_specialties import NHS_SPECIALTIES, COMMON_SPECIALTIES
 
 
 def render_pathway_management():
@@ -118,17 +112,38 @@ def render_create_pathway():
                 "cancer_2ww",
                 "cancer_62day",
                 "cancer_31day",
-                "other"
+                "other",
+                "custom"
             ], format_func=lambda x: {
                 'rtt': '📋 RTT 18-Week Pathway',
                 'cancer_2ww': '🎗️ Cancer 2-Week Wait',
                 'cancer_62day': '🎗️ Cancer 62-Day Pathway',
                 'cancer_31day': '🎗️ Cancer 31-Day Pathway',
-                'other': '📁 Other Pathway'
+                'other': '📁 Other Pathway',
+                'custom': '✏️ Custom Pathway (Type Your Own)'
             }[x])
             
-            specialty = st.selectbox("Specialty*", SPECIALTIES,
+            # Show custom pathway type input if "custom" selected
+            custom_pathway_type = None
+            if pathway_type == "custom":
+                custom_pathway_type = st.text_input(
+                    "Custom Pathway Type*",
+                    placeholder="Enter custom pathway name (e.g., Diagnostic, Screening, Follow-up)",
+                    help="Type your own pathway type name"
+                )
+                st.info("💡 Custom pathways use 126-day (18 week) breach target by default")
+            
+            specialty = st.selectbox("Specialty*", NHS_SPECIALTIES,
                                     help="Which specialty is treating this patient?")
+            
+            # Show custom specialty input if "Other (Please Specify)" selected
+            custom_specialty = None
+            if specialty == "Other (Please Specify)":
+                custom_specialty = st.text_input(
+                    "Custom Specialty*",
+                    placeholder="Enter specialty name",
+                    help="Type the specialty name"
+                )
             
             consultant = st.text_input("Consultant*", placeholder="Dr. Smith",
                                        help="Lead consultant for this pathway")
@@ -197,16 +212,32 @@ def render_create_pathway():
         submit = st.form_submit_button("✅ Create Pathway & Start Clock", type="primary")
         
         if submit:
+            # Validation
+            validation_errors = []
             if not reason or not presenting_complaint or not consultant:
-                st.error("❌ Please fill all required fields (marked with *)")
+                validation_errors.append("❌ Please fill all required fields (marked with *)")
+            
+            if pathway_type == "custom" and not custom_pathway_type:
+                validation_errors.append("❌ Please enter a custom pathway type")
+            
+            if specialty == "Other (Please Specify)" and not custom_specialty:
+                validation_errors.append("❌ Please enter a custom specialty name")
+            
+            if validation_errors:
+                for error in validation_errors:
+                    st.error(error)
             else:
+                # Use custom values if provided
+                final_pathway_type = custom_pathway_type if pathway_type == "custom" and custom_pathway_type else pathway_type
+                final_specialty = custom_specialty if specialty == "Other (Please Specify)" and custom_specialty else specialty
+                
                 with st.spinner("📁 Creating pathway..."):
                     result = create_pathway(
                         patient_id=selected_patient.get('patient_id'),
                         patient_name=selected_patient.get('full_name'),
-                        pathway_type=pathway_type,
+                        pathway_type=final_pathway_type,
                         start_date=str(clock_start_date),
-                        specialty=specialty,
+                        specialty=final_specialty,
                         consultant=consultant,
                         referral_source=referral_source,
                         priority=priority,
