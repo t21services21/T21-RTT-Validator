@@ -5103,11 +5103,11 @@ elif tool == "🤖 AI & Automation":
     tabs = st.tabs(["🤖 Auto-Validator", "📧 Secretary AI", "📄 Letters", "📁 Documents"])
     
     with tabs[0]:
-        from ai_validator_module import render_ai_validator
+        from ai_validator_ui import render_ai_validator
         render_ai_validator()
     
     with tabs[1]:
-        from medical_secretary_ai import render_medical_secretary
+        from medical_secretary_ui import render_medical_secretary
         render_medical_secretary()
     
     with tabs[2]:
@@ -5115,7 +5115,7 @@ elif tool == "🤖 AI & Automation":
         render_clinical_letters()
     
     with tabs[3]:
-        from document_storage_ui import render_document_management
+        from document_management_ui import render_document_management
         render_document_management()
 
 elif tool == "📊 Reports & Analytics":
