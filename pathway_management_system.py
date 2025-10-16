@@ -55,13 +55,25 @@ def get_current_user_email():
 def generate_pathway_id(pathway_type: str) -> str:
     """Generate unique pathway ID"""
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-    prefix = {
+    
+    # Standard pathway prefixes
+    standard_prefixes = {
         'rtt': 'RTT',
         'cancer_2ww': 'C2W',
         'cancer_62day': 'C62',
         'cancer_31day': 'C31',
         'other': 'PTH'
-    }.get(pathway_type.lower(), 'PTH')
+    }
+    
+    # Check if it's a standard pathway type
+    if pathway_type.lower() in standard_prefixes:
+        prefix = standard_prefixes[pathway_type.lower()]
+    else:
+        # For custom pathway types, create prefix from first 3 letters (uppercase)
+        # e.g., "Diagnostic" -> "DIA_", "Screening" -> "SCR_"
+        prefix = pathway_type[:3].upper().replace(' ', '')
+        if len(prefix) < 3:
+            prefix = 'PTH'  # Fallback if name too short
     
     return f"{prefix}_{timestamp}"
 
