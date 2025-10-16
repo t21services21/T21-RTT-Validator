@@ -1434,13 +1434,6 @@ if not accessible_modules:
         "🔒 Information Governance",  # MANDATORY NHS Training: GDPR, Caldicott, Data Protection, Confidentiality
         "💼 Career Development",  # 2 tabs: Job Interview Prep, CV Builder
         
-        # === 💼 CAREER TOOLS (FULL VERSIONS) ===
-        "💼 Job Interview Prep",  # FULL: PDF upload, 40-50 questions, STAR answers, prep pack
-        "📄 CV Builder",  # FULL: Career paths, templates, ATS optimization, download
-        
-        # === 📝 LETTER INTERPRETER ===
-        "📝 Clinic Letter Interpreter",  # RTT Code Interpretation from Clinic Letters
-        
         # === ⚙️ ADMIN ===
         "⚙️ Administration",  # 2 tabs: My Account, Admin Panel
         
@@ -5108,7 +5101,7 @@ elif tool == "🤖 AI & Automation":
     st.header("🤖 AI & Automation")
     st.info("AI-powered tools and automation")
     
-    tabs = st.tabs(["🤖 Auto-Validator", "📧 Secretary AI", "📄 Letters", "📁 Documents"])
+    tabs = st.tabs(["🤖 Auto-Validator", "📧 Secretary AI", "📄 Letters", "📝 Letter Interpreter", "📁 Documents"])
     
     with tabs[0]:
         from ai_validator_ui import render_ai_validator
@@ -5123,6 +5116,18 @@ elif tool == "🤖 AI & Automation":
         render_clinical_letters()
     
     with tabs[3]:
+        # CLINIC LETTER INTERPRETER TAB
+        try:
+            from pages.clinic_letter_interpreter import render_clinic_letter_interpreter
+            render_clinic_letter_interpreter()
+        except ImportError:
+            try:
+                from clinic_letter_interpreter_pro import render_letter_interpreter_pro
+                render_letter_interpreter_pro()
+            except ImportError:
+                st.warning("Letter Interpreter module not found")
+    
+    with tabs[4]:
         from document_management_ui import render_document_management
         render_document_management()
 
@@ -5590,21 +5595,6 @@ elif tool == "💼 Career Development":
         # The full version is at line 3492 as "📄 CV Builder"
         # This tab should just redirect there or we duplicate the code here
         st.warning("⚠️ Tab feature temporarily redirecting. Use standalone 'CV Builder' module from navigation for full features!")
-
-elif tool == "📝 Clinic Letter Interpreter":
-    # CLINIC LETTER INTERPRETER - Interprets clinic letters for RTT codes
-    st.header("📝 Clinic Letter Interpreter")
-    
-    try:
-        from pages.clinic_letter_interpreter import render_clinic_letter_interpreter
-        render_clinic_letter_interpreter()
-    except ImportError:
-        # Fallback if page doesn't exist yet
-        try:
-            from clinic_letter_interpreter_pro import render_letter_interpreter_pro
-            render_letter_interpreter_pro()
-        except ImportError:
-            st.warning("Letter Interpreter module not found. Contact admin@t21services.co.uk")
 
 elif tool == "⚙️ Administration":
     st.header("⚙️ Administration")
