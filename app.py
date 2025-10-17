@@ -5340,8 +5340,12 @@ elif tool == "📊 Reports & Analytics":
     
     with tabs[3]:
         # NEW: AI Analytics Dashboard (Track AI performance like Sigma!)
-        from ai_analytics_dashboard_ui import render_ai_analytics_dashboard
-        render_ai_analytics_dashboard()
+        try:
+            from ai_analytics_dashboard_ui import render_ai_analytics_dashboard
+            render_ai_analytics_dashboard()
+        except Exception as e:
+            st.warning("⚠️ AI Analytics Dashboard temporarily unavailable")
+            st.info("Check back soon or contact support if this persists")
 
 elif tool == "🎓 Training & Certification":
     st.header("🎓 Training & Certification")
