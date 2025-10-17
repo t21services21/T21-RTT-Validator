@@ -239,11 +239,80 @@ def render_cancer_patient_card(patient: dict):
             st.markdown(f"**Milestones: {len(patient.get('milestones', []))}**")
             if st.button("👁️ View", key=f"view_{patient_id}"):
                 st.session_state[f"viewing_{patient_id}"] = True
+                st.rerun()
             
             if st.button("➕ Add Milestone", key=f"milestone_{patient_id}"):
                 st.session_state[f"adding_milestone_{patient_id}"] = True
+                st.rerun()
         
         st.markdown("</div>", unsafe_allow_html=True)
+        
+        # Show patient details if "View" was clicked
+        if st.session_state.get(f"viewing_{patient_id}", False):
+            with st.expander("📋 Patient Details", expanded=True):
+                col_a, col_b = st.columns(2)
+                
+                with col_a:
+                    st.markdown("### Patient Information")
+                    st.write(f"**Name:** {patient['patient_name']}")
+                    st.write(f"**NHS Number:** {patient['nhs_number']}")
+                    st.write(f"**Cancer Type:** {patient['cancer_type']}")
+                    st.write(f"**Pathway:** {patient['pathway_type'].upper()}")
+                    st.write(f"**Referral Date:** {patient['referral_date']}")
+                    st.write(f"**Status:** {patient['current_status']}")
+                    
+                with col_b:
+                    st.markdown("### Timeline")
+                    st.write(f"**Days Waiting:** {days}")
+                    st.write(f"**Breach Risk:** {breach_info['status']}")
+                    if breach_info['days_to_breach'] > 0:
+                        st.write(f"**Days to Breach:** {breach_info['days_to_breach']}")
+                    else:
+                        st.error(f"⚠️ BREACHED by {abs(breach_info['days_to_breach'])} days")
+                
+                st.markdown("### 📍 Milestones")
+                if patient.get('milestones'):
+                    for milestone in patient['milestones']:
+                        st.info(f"✅ **{milestone.get('milestone_type')}** - {milestone.get('date')} - {milestone.get('description', 'No description')}")
+                else:
+                    st.write("No milestones recorded yet")
+                
+                if st.button("✖️ Close", key=f"close_view_{patient_id}"):
+                    st.session_state[f"viewing_{patient_id}"] = False
+                    st.rerun()
+        
+        # Show add milestone form if "Add Milestone" was clicked
+        if st.session_state.get(f"adding_milestone_{patient_id}", False):
+            with st.expander("➕ Add Milestone", expanded=True):
+                milestone_type = st.selectbox(
+                    "Milestone Type",
+                    ["First Appointment", "Diagnostic Tests", "MDT Discussion", "Treatment Start", "Treatment End", "Follow-up"],
+                    key=f"milestone_type_{patient_id}"
+                )
+                milestone_date = st.date_input("Date", key=f"milestone_date_{patient_id}")
+                milestone_desc = st.text_area("Description", key=f"milestone_desc_{patient_id}")
+                
+                col_x, col_y = st.columns(2)
+                with col_x:
+                    if st.button("✅ Save Milestone", key=f"save_milestone_{patient_id}", type="primary"):
+                        from cancer_pathway_system import add_milestone_to_pathway
+                        success = add_milestone_to_pathway(
+                            patient_id,
+                            milestone_type,
+                            str(milestone_date),
+                            milestone_desc
+                        )
+                        if success:
+                            st.success("✅ Milestone added!")
+                            st.session_state[f"adding_milestone_{patient_id}"] = False
+                            st.rerun()
+                        else:
+                            st.error("❌ Failed to add milestone")
+                
+                with col_y:
+                    if st.button("✖️ Cancel", key=f"cancel_milestone_{patient_id}"):
+                        st.session_state[f"adding_milestone_{patient_id}"] = False
+                        st.rerun()
 
 
 def render_add_cancer_patient():

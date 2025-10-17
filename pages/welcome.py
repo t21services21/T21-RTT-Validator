@@ -76,18 +76,19 @@ if not is_logged_in:
     # Pricing Teasers
     st.markdown("## 💰 Choose Your Plan")
     
-    pricing_col1, pricing_col2, pricing_col3 = st.columns(3)
+    pricing_col1, pricing_col2, pricing_col3, pricing_col4 = st.columns(4)
     
     with pricing_col1:
         st.info("""
         ### 💰 Taster
         **£99 / 1 Month**
         
-        ✅ Try the platform
-        ✅ AI tutor (limited)
+        ✅ Try platform
+        ✅ AI tutor (10/day)
         ✅ Sample scenarios
+        ❌ No certification
         
-        Perfect for testing!
+        **Perfect for testing!**
         """)
     
     with pricing_col2:
@@ -98,8 +99,9 @@ if not is_logged_in:
         ✅ Unlimited AI tutor
         ✅ All hands-on tools
         ✅ Full scenarios
+        ❌ No certification
         
-        Best for practice!
+        **Best for practice!**
         """)
     
     with pricing_col3:
@@ -109,9 +111,23 @@ if not is_logged_in:
         
         ✅ TQUK Certification
         ✅ Live tutors
-        ✅ Job support
+        ✅ Alumni network
+        ✅ Basic job support
         
-        Get qualified!
+        **Get qualified!**
+        """)
+    
+    with pricing_col4:
+        st.error("""
+        ### 💎 Premium
+        **£1,799 / 12 Months**
+        
+        ✅ Everything in Tier 3
+        ✅ **Staff applies for jobs FOR you**
+        ✅ **We get you interviews**
+        ✅ Job application support
+        
+        **Get hired faster!**
         """)
     
     st.markdown("---")
