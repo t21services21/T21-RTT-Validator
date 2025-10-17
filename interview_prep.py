@@ -387,11 +387,12 @@ Please provide comprehensive, detailed preparation that helps the candidate be w
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are an experienced HR professional helping candidates prepare for job interviews. Provide comprehensive, professional interview preparation based on job descriptions."},
+                {"role": "system", "content": "You are an experienced HR professional helping candidates prepare for job interviews. Provide comprehensive, professional interview preparation based on job descriptions. Return ONLY valid JSON, no markdown formatting."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7,
-            max_tokens=16000  # Increased for 30-40 detailed questions with full answers
+            max_tokens=16000,  # For 30-40 detailed questions
+            response_format={"type": "json_object"}  # Force JSON output (no markdown)
         )
         
         st.success("✅ Got response from GPT-4!")
@@ -404,19 +405,24 @@ Please provide comprehensive, detailed preparation that helps the candidate be w
         st.text(f"Response preview: {raw_content[:500]}...")
         
         # Strip markdown code blocks if present
-        if raw_content.strip().startswith('```'):
-            # Remove opening ```json or ```
-            raw_content = raw_content.strip()
-            if raw_content.startswith('```json'):
-                raw_content = raw_content[7:]
-            elif raw_content.startswith('```'):
-                raw_content = raw_content[3:]
-            
-            # Remove closing ```
-            if raw_content.endswith('```'):
-                raw_content = raw_content[:-3]
-            
-            raw_content = raw_content.strip()
+        raw_content = raw_content.strip()
+        
+        # Remove markdown code fence
+        if raw_content.startswith('```json'):
+            raw_content = raw_content[7:].lstrip()
+        elif raw_content.startswith('```'):
+            raw_content = raw_content[3:].lstrip()
+        
+        # Remove closing fence
+        if raw_content.endswith('```'):
+            raw_content = raw_content[:-3].rstrip()
+        
+        # Final cleanup
+        raw_content = raw_content.strip()
+        
+        # Debug: Show what we're actually trying to parse
+        st.text(f"After cleanup (first 200 chars): {raw_content[:200]}...")
+        st.text(f"After cleanup (last 200 chars): ...{raw_content[-200:]}")
         
         try:
             result = json.loads(raw_content)
@@ -425,15 +431,32 @@ Please provide comprehensive, detailed preparation that helps the candidate be w
             st.error(f"""
             ❌ **JSON Parsing Error**
             
-            GPT-4 returned a response but it couldn't be parsed as JSON.
-            
             **Error:** {str(e)}
+            **Error Position:** Line {e.lineno}, Column {e.colno}
             
-            **Raw response (first 1000 chars):**
+            **Content around error (chars {max(0, e.pos-100)}-{min(len(raw_content), e.pos+100)}):**
             ```
-            {raw_content[:1000]}
+            {raw_content[max(0, e.pos-100):min(len(raw_content), e.pos+100)]}
+            ```
+            
+            **First 500 chars of cleaned content:**
+            ```
+            {raw_content[:500]}
+            ```
+            
+            **Last 500 chars of cleaned content:**
+            ```
+            {raw_content[-500:]}
             ```
             """)
+            
+            # Try to fix common issues
+            st.warning("Attempting to fix JSON...")
+            
+            # Check if response was truncated (no closing brace)
+            if not raw_content.rstrip().endswith('}'):
+                st.error("❌ Response appears truncated (no closing brace). GPT-4 hit token limit.")
+            
             raise
         
         # Format for our system
