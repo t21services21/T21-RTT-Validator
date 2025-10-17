@@ -19,9 +19,9 @@ st.set_page_config(
     layout="wide"
 )
 
-# Try to import and render
+# Try to import and render EDUCATIONAL version
 try:
-    from clinic_letter_interpreter_pro import render_clinic_letter_interpreter
+    from clinic_letter_interpreter_EDUCATIONAL import render_clinic_letter_interpreter
     render_clinic_letter_interpreter()
 except Exception as e:
     st.error(f"""
