@@ -125,83 +125,71 @@ def analyze_with_gpt4(job_title, job_description, company_name, api_key):
         st.error(f"❌ Failed to initialize OpenAI client: {e}")
         raise
     
-    # EXPERT-LEVEL PROMPT: Better than generic ChatGPT!
-    prompt = f"""You are a SENIOR NHS HR SPECIALIST and INTERVIEW PANEL EXPERT with 15+ years experience.
-You've conducted 1000+ interviews and know EXACTLY what questions employers ask.
-
-Your expertise:
-- NHS interview procedures and what panels look for
-- Industry-specific questions that generic AI misses
-- Red flags employers watch for
-- Insider knowledge of what separates good from great candidates
+    # Create comprehensive interview preparation
+    prompt = f"""Please analyze this job description and provide comprehensive interview preparation.
 
 JOB TITLE: {job_title}
-COMPANY: {company_name}
+ORGANIZATION: {company_name}
 
 JOB DESCRIPTION:
 {job_description}
 
-CRITICAL TASK:
-Generate the MOST ACCURATE, REALISTIC interview prep possible - better than generic ChatGPT!
+Please help prepare for this interview by generating 30-40 relevant questions based on the specific job description provided.
 
-ANALYZE DEEPLY:
-1. READ every word of the job description
-2. IDENTIFY what the employer prioritizes (not just lists)
-3. PREDICT the EXACT questions they'll ask based on:
+Please analyze:
+1. The key requirements and responsibilities
+2. What the employer prioritizes
+3. Likely questions based on:
    - Specific systems/software mentioned
    - Responsibilities listed
-   - Essential vs desirable requirements
+   - Essential and desirable requirements
    - Industry standards for this role
-   - Common pain points employers have with this position
 
-GENERATE 30-40 QUESTIONS including:
+Generate 30-40 questions including:
 
-**TECHNICAL QUESTIONS (10-15):**
-- About SPECIFIC systems mentioned (Oracle PAS, Cerner, etc.)
-- About SPECIFIC responsibilities listed
-- About required qualifications/certifications
+Technical questions (10-15):
+- About specific systems mentioned (Oracle PAS, Cerner, etc.)
+- About specific responsibilities
+- About required qualifications
 - Role-specific skills (audio typing, RTT, clinical tasks, etc.)
-- Industry standards they expect you to know
+- Industry standards
 
-**COMPETENCY QUESTIONS (8-10):**
-- Based on required competencies in job description
-- STAR method answers showing:
-  * REAL scenarios (not generic examples)
-  * SPECIFIC metrics and outcomes
-  * How you handle THIS role's challenges
-  * Evidence you can do what they need
+Competency questions (8-10):
+- Based on required competencies
+- STAR method answers with realistic scenarios
+- Specific metrics and outcomes
+- How to handle role challenges
 
-**SCENARIO QUESTIONS (5-7):**
-- Based on challenges mentioned in job description
+Scenario questions (5-7):
+- Based on challenges mentioned
 - "What would you do if..." situations
-- Realistic problems they face in this role
-- Tests judgment, priorities, problem-solving
+- Realistic problems for this role
+- Tests judgment and priorities
 
-**MOTIVATION QUESTIONS (3-5):**
+Motivation questions (3-5):
 - Why this specific role?
 - Why this organization?
 - What do you know about us?
 - Career goals alignment
 
-**OPENING & CLOSING (3-5):**
+Opening and closing (3-5):
 - Tell me about yourself
 - Strengths/weaknesses
 - Questions for us
 - Availability, notice period
 
-For EACH question provide:
-1. **The EXACT question** (word-for-word as interviewer would ask)
-2. **Why they ask** (the REAL reason - what they're assessing)
-3. **Likelihood** (realistic %)
-4. **EXPERT ANSWER** (300-500 words):
-   - Specific to THIS job (not generic!)
-   - Uses terminology from the job description
-   - Includes REAL examples with metrics
-   - Shows you understand the role's challenges
-   - Demonstrates you've researched the organization
+For each question provide:
+1. The exact question (as interviewer would ask)
+2. Why they ask (what they're assessing)
+3. Likelihood percentage
+4. Detailed answer (300-500 words):
+   - Specific to this job
+   - Uses terminology from job description
+   - Includes examples with metrics
+   - Shows understanding of role challenges
+   - Demonstrates research about organization
    - STAR method for competency questions
-   - Better than what ChatGPT would give!
-5. **INSIDER TIPS** (3-5 tips):
+5. Tips (3-5):
    - What interviewers want to hear
    - Red flags to avoid
    - How to stand out
@@ -265,20 +253,20 @@ Return as JSON with this COMPLETE structure:
   }}
 }}
 
-QUALITY STANDARDS (Better than ChatGPT!):
-✅ Questions come from ACTUAL job description (not generic database)
-✅ Answers reference SPECIFIC systems/responsibilities from the job
-✅ Include industry-specific knowledge (NHS procedures, care standards, etc.)
-✅ STAR examples are REALISTIC for this role (not made-up scenarios)
-✅ Tips include INSIDER knowledge (what panels look for)
-✅ Answers are 300-500 words (comprehensive, not superficial)
-✅ Every answer includes METRICS/SPECIFICS (not vague generalities)
-✅ Show understanding of role's CHALLENGES (not just tasks)
-✅ Demonstrate RESEARCH about organization (if company name provided)
+Quality guidelines:
+- Questions come from actual job description
+- Answers reference specific systems/responsibilities from the job
+- Include industry-specific knowledge
+- STAR examples are realistic for this role
+- Tips include insider knowledge
+- Answers are 300-500 words comprehensive
+- Every answer includes metrics/specifics
+- Show understanding of role challenges
+- Demonstrate research about organization
 
-ADDITIONAL COMPREHENSIVE SECTIONS TO INCLUDE:
+Additional comprehensive sections to include:
 
-**ABOUT THE ORGANIZATION (If company name provided):**
+About the organization (if company name provided):
 1. Mission Statement - What it means and how to reference it
 2. Vision Statement - How to align your answers with it
 3. Core Values - Specific examples of demonstrating each value
@@ -288,26 +276,26 @@ ADDITIONAL COMPREHENSIVE SECTIONS TO INCLUDE:
 7. Key Challenges - What problems they face, how you can help
 8. Culture/Team - What they value in employees
 
-**INTERVIEW ETIQUETTE & PROCESS:**
-1. What to wear (specific to NHS/care/education/corporate)
+Interview etiquette and process:
+1. What to wear (specific to role/industry)
 2. What time to arrive (10-15 mins early)
 3. Who you'll meet (typical panel composition)
 4. Interview format (competency-based, values-based, etc.)
 5. How long interview typically lasts
 6. What to bring (documents, certificates, portfolio)
-7. Body language tips (eye contact, posture, handshake)
+7. Body language tips
 8. How to greet the panel professionally
 9. How to handle nerves
 10. How to close the interview positively
 
-**OPENING THE INTERVIEW:**
+Opening the interview:
 1. How to introduce yourself when you walk in
-2. Small talk tips (weather, finding the building, etc.)
+2. Small talk tips
 3. First impression strategies
 4. How to sit (posture, where to put hands)
 5. Initial rapport building
 
-**DURING THE INTERVIEW:**
+During the interview:
 1. Active listening techniques
 2. How to take a moment to think before answering
 3. How to ask for clarification if needed
@@ -315,17 +303,17 @@ ADDITIONAL COMPREHENSIVE SECTIONS TO INCLUDE:
 5. How to redirect if you go off-topic
 6. How to read panel body language
 7. When to give examples vs concise answers
-8. How to manage time (not talking too long)
+8. How to manage time
 
-**CLOSING THE INTERVIEW:**
+Closing the interview:
 1. How to ask your prepared questions
 2. What questions to ask (5-7 smart questions provided)
 3. How to express continued interest
 4. How to ask about next steps
 5. How to thank the panel
-6. Exit strategy (shake hands, smile, leave confidently)
+6. Exit strategy
 
-**POST-INTERVIEW:**
+Post-interview:
 1. When to send thank-you email (same day)
 2. Template for thank-you email
 3. When to expect to hear back
@@ -333,7 +321,7 @@ ADDITIONAL COMPREHENSIVE SECTIONS TO INCLUDE:
 5. How to handle rejection professionally
 6. How to request feedback
 
-**QUESTIONS TO ASK THEM (10-12 smart questions):**
+Questions to ask them (10-12 smart questions):
 Categorized by:
 - About the role (day-to-day, challenges, success measures)
 - About the team (size, culture, support)
@@ -341,33 +329,29 @@ Categorized by:
 - About the organization (future plans, priorities)
 - Practical (next steps, timeline, start date)
 
-**SALARY & NEGOTIATION:**
-1. When to discuss salary (not first interview!)
+Salary and negotiation:
+1. When to discuss salary
 2. How to answer "What are your salary expectations?"
 3. NHS pay bands explained (if applicable)
 4. How to negotiate (if private sector)
 5. Benefits to ask about
 
-**RED FLAGS YOU SHOULD WATCH FOR:**
-Not just what they ask about YOU, but warning signs about THEM:
+Red flags to watch for:
+Not just what they ask about you, but warning signs about them:
 - High turnover mentions
 - Vague job description
 - Unprofessional panel behavior
 - Unrealistic expectations
 - Poor communication
 
-MAKE THIS BETTER THAN WHAT STUDENTS CAN GET FROM CHATGPT THEMSELVES!
-They're paying for EXPERT-LEVEL prep, not generic AI responses.
-
-STUDENTS MUST BE 100% READY - NOTHING LEFT TO CHANCE!
-From walking in the door to walking out, they should know EXACTLY what to do."""
+Please provide comprehensive, detailed preparation that helps the candidate be well-prepared for their interview."""
 
     try:
         st.info("📤 Sending request to GPT-4...")
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are a SENIOR NHS HR SPECIALIST with 15+ years experience conducting interviews. You provide EXPERT-LEVEL interview preparation that exceeds what generic AI can provide."},
+                {"role": "system", "content": "You are an experienced HR professional helping candidates prepare for job interviews. Provide comprehensive, professional interview preparation based on job descriptions."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7,
