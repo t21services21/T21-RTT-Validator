@@ -156,231 +156,57 @@ def analyze_with_gpt4(job_title, job_description, company_name, api_key):
     from openai import OpenAI
     
     try:
-        client = OpenAI(api_key=api_key)
+        client = OpenAI(
+            api_key=api_key,
+            timeout=45.0  # 45 second timeout to prevent hanging
+        )
     except Exception as e:
         st.error(f"❌ Failed to initialize OpenAI client: {e}")
         raise
     
-    # Create comprehensive interview preparation
-    prompt = f"""Please analyze this job description and provide comprehensive interview preparation.
+    # FAST PROMPT - Generate job-specific questions quickly!
+    prompt = f"""You are preparing a candidate for a job interview. Analyze the job description and generate EXACTLY 15-20 likely interview questions.
 
 JOB TITLE: {job_title}
 ORGANIZATION: {company_name}
 
 JOB DESCRIPTION:
-{job_description}
+{job_description[:2000]}
 
-Please help prepare for this interview by generating 30-40 relevant questions based on the specific job description provided.
+REQUIREMENTS:
+1. Generate EXACTLY 15-20 questions (not less!)
+2. All questions must be SPECIFIC to this job description
+3. Include a mix of:
+   - Technical questions (about systems/skills mentioned in the job)
+   - Competency-based questions (STAR method scenarios)
+   - Scenario questions (realistic situations for this role)
+   - Motivation questions (why this role/organization)
+   - Closing questions (strengths, weaknesses, questions for them)
 
-Please analyze:
-1. The key requirements and responsibilities
-2. What the employer prioritizes
-3. Likely questions based on:
-   - Specific systems/software mentioned
-   - Responsibilities listed
-   - Essential and desirable requirements
-   - Industry standards for this role
+4. For EACH question provide:
+   - Exact question text
+   - Why they ask it
+   - Likelihood percentage
+   - Professional 100-150 word answer
+   - 3-5 practical tips
 
-Generate 30-40 questions including:
+Return ONLY valid JSON (no markdown):
 
-Technical questions (10-15):
-- About specific systems mentioned (Oracle PAS, Cerner, etc.)
-- About specific responsibilities
-- About required qualifications
-- Role-specific skills (audio typing, RTT, clinical tasks, etc.)
-- Industry standards
-
-Competency questions (8-10):
-- Based on required competencies
-- STAR method answers with realistic scenarios
-- Specific metrics and outcomes
-- How to handle role challenges
-
-Scenario questions (5-7):
-- Based on challenges mentioned
-- "What would you do if..." situations
-- Realistic problems for this role
-- Tests judgment and priorities
-
-Motivation questions (3-5):
-- Why this specific role?
-- Why this organization?
-- What do you know about us?
-- Career goals alignment
-
-Opening and closing (3-5):
-- Tell me about yourself
-- Strengths/weaknesses
-- Questions for us
-- Availability, notice period
-
-For each question provide:
-1. The exact question (as interviewer would ask)
-2. Why they ask (what they're assessing)
-3. Likelihood percentage
-4. Detailed answer (300-500 words):
-   - Specific to this job
-   - Uses terminology from job description
-   - Includes examples with metrics
-   - Shows understanding of role challenges
-   - Demonstrates research about organization
-   - STAR method for competency questions
-5. Tips (3-5):
-   - What interviewers want to hear
-   - Red flags to avoid
-   - How to stand out
-   - Specific details to mention
-
-Return as JSON with this COMPLETE structure:
 {{
   "questions": [
     {{
       "category": "Technical - [Specific Area]",
-      "question": "Exact question as interviewer would ask it",
-      "why_asked": "Real reason they're asking (what competency/skill they're testing)",
+      "question": "Full question text",
+      "why_asked": "What competency they're testing",
       "likelihood": "95%",
-      "answer": "EXPERT 300-500 word answer with specifics, examples, metrics",
-      "tips": ["Insider tip 1", "What they want to hear", "Red flag to avoid", "How to stand out", "Specific detail to mention"],
-      "red_flags": ["What NOT to say", "Common mistake candidates make"]
-    }}
-  ],
-  "organization_research": {{
-    "mission": "Their mission statement and what it means",
-    "vision": "Their vision and how to align with it",
-    "values": ["Value 1: How to demonstrate it", "Value 2: Example of living it"],
-    "recent_news": ["Recent achievement 1", "Recent news 2"],
-    "services": "What they're known for",
-    "cqc_rating": "CQC rating and what to say about it (if NHS)",
-    "challenges": "Challenges they face and how you can help",
-    "culture": "What they value in employees"
-  }},
-  "interview_etiquette": {{
-    "what_to_wear": "Specific advice for this role/industry",
-    "arrival_time": "When to arrive and what to do",
-    "panel_composition": "Who you'll likely meet",
-    "interview_format": "Competency-based, values-based, etc.",
-    "duration": "How long it typically lasts",
-    "opening": ["How to introduce yourself", "Small talk tips", "First impression"],
-    "during": ["Active listening", "How to think before answering", "Body language"],
-    "closing": ["How to ask questions", "Express interest", "Thank panel", "Exit strategy"]
-  }},
-  "questions_to_ask": [
-    {{"question": "Smart question 1", "why_good": "Shows X"}},
-    {{"question": "Smart question 2", "why_good": "Demonstrates Y"}},
-    {{"question": "Smart question 3", "why_good": "Proves Z"}}
-  ],
-  "post_interview": {{
-    "thank_you_email": "Template for same-day thank you",
-    "when_to_follow_up": "Timeline guidance",
-    "how_to_follow_up": "Professional follow-up template",
-    "handling_rejection": "How to request feedback and stay professional"
-  }},
-  "salary_discussion": {{
-    "when_to_discuss": "When to bring up salary",
-    "how_to_answer": "Template for 'What are your expectations?'",
-    "nhs_pay_bands": "Explanation of NHS bands (if applicable)",
-    "negotiation_tips": "How to negotiate if private sector"
-  }},
-  "prep_tips": {{
-    "before_interview": ["Tip 1", "Tip 2"],
-    "on_the_day": ["Tip 1", "Tip 2"],
-    "technical_prep": ["Tip 1", "Tip 2"],
-    "key_documents": ["Doc 1", "Doc 2"]
-  }}
+      "answer": "Professional 100-150 word answer with specifics",
+      "tips": ["Specific tip 1", "Specific tip 2", "Specific tip 3"]
+    }},
+    ... (continue for 15-20 total questions)
+  ]
 }}
 
-Quality guidelines:
-- Questions come from actual job description
-- Answers reference specific systems/responsibilities from the job
-- Include industry-specific knowledge
-- STAR examples are realistic for this role
-- Tips include insider knowledge
-- Answers are 300-500 words comprehensive
-- Every answer includes metrics/specifics
-- Show understanding of role challenges
-- Demonstrate research about organization
-
-Additional comprehensive sections to include:
-
-About the organization (if company name provided):
-1. Mission Statement - What it means and how to reference it
-2. Vision Statement - How to align your answers with it
-3. Core Values - Specific examples of demonstrating each value
-4. Recent News/Achievements - What to mention to show research
-5. Services/Specialties - What they're known for
-6. CQC Rating (if NHS) - What it means, how to discuss
-7. Key Challenges - What problems they face, how you can help
-8. Culture/Team - What they value in employees
-
-Interview etiquette and process:
-1. What to wear (specific to role/industry)
-2. What time to arrive (10-15 mins early)
-3. Who you'll meet (typical panel composition)
-4. Interview format (competency-based, values-based, etc.)
-5. How long interview typically lasts
-6. What to bring (documents, certificates, portfolio)
-7. Body language tips
-8. How to greet the panel professionally
-9. How to handle nerves
-10. How to close the interview positively
-
-Opening the interview:
-1. How to introduce yourself when you walk in
-2. Small talk tips
-3. First impression strategies
-4. How to sit (posture, where to put hands)
-5. Initial rapport building
-
-During the interview:
-1. Active listening techniques
-2. How to take a moment to think before answering
-3. How to ask for clarification if needed
-4. How to handle questions you don't know
-5. How to redirect if you go off-topic
-6. How to read panel body language
-7. When to give examples vs concise answers
-8. How to manage time
-
-Closing the interview:
-1. How to ask your prepared questions
-2. What questions to ask (5-7 smart questions provided)
-3. How to express continued interest
-4. How to ask about next steps
-5. How to thank the panel
-6. Exit strategy
-
-Post-interview:
-1. When to send thank-you email (same day)
-2. Template for thank-you email
-3. When to expect to hear back
-4. How to follow up if you don't hear
-5. How to handle rejection professionally
-6. How to request feedback
-
-Questions to ask them (10-12 smart questions):
-Categorized by:
-- About the role (day-to-day, challenges, success measures)
-- About the team (size, culture, support)
-- About development (training, progression, growth)
-- About the organization (future plans, priorities)
-- Practical (next steps, timeline, start date)
-
-Salary and negotiation:
-1. When to discuss salary
-2. How to answer "What are your salary expectations?"
-3. NHS pay bands explained (if applicable)
-4. How to negotiate (if private sector)
-5. Benefits to ask about
-
-Red flags to watch for:
-Not just what they ask about you, but warning signs about them:
-- High turnover mentions
-- Vague job description
-- Unprofessional panel behavior
-- Unrealistic expectations
-- Poor communication
-
-Please provide comprehensive, detailed preparation that helps the candidate be well-prepared for their interview."""
+CRITICAL: You MUST generate at least 15 questions. More is better (up to 20)."""
 
     try:
         st.info("📤 Sending request to GPT-4...")
@@ -391,7 +217,7 @@ Please provide comprehensive, detailed preparation that helps the candidate be w
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7,
-            max_tokens=16000,  # For 30-40 detailed questions
+            max_tokens=8000,  # For 15-20 questions with concise answers
             response_format={"type": "json_object"}  # Force JSON output (no markdown)
         )
         
