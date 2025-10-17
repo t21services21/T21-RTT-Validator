@@ -62,30 +62,66 @@ def analyze_job_description(job_title, job_description, company_name=""):
             print(f"GPT-4 analysis failed: {e}, falling back to keyword matching")
     
     # Fallback to keyword matching if GPT-4 unavailable
-    keywords = {
-        'rtt': ['RTT', 'referral to treatment', '18 weeks', 'pathway', 'clock'],
-        'pas': ['PAS', 'patient administration', 'booking', 'appointment'],
-        'nhs': ['NHS', 'trust', 'hospital', 'clinic'],
-        'validation': ['validation', 'data quality', 'accuracy', 'audit'],
-        'healthcare_assistant': ['healthcare assistant', 'HCA', 'care assistant', 'support worker'],
-        'care_work': ['care', 'caring', 'personal care', 'patient care', 'service user'],
-        'teaching_assistant': ['teaching assistant', 'TA', 'classroom', 'pupils', 'students'],
-        'customer_service': ['customer service', 'customer', 'client', 'complaint', 'query'],
-        'admin': ['administration', 'admin', 'office', 'filing', 'record keeping'],
-        'it_skills': ['Excel', 'Microsoft', 'IT', 'systems', 'software', 'computer'],
-        'medical_secretary': ['medical secretary', 'secretary', 'audio typing', 'correspondence'],
-        'typing': ['typing', 'audio typing', 'transcription', 'minutes'],
-        'diary_management': ['diary', 'calendar', 'scheduling', 'appointments'],
-        'communication': ['communication', 'team', 'stakeholder', 'interpersonal'],
-        'confidentiality': ['confidentiality', 'GDPR', 'data protection', 'sensitive']
+    st.warning("""
+    ⚠️ **Falling back to basic keyword matching**
+    
+    GPT-4 analysis failed. Using basic detection (less accurate).
+    Questions will be based on keywords found in the job description.
+    """)
+    
+    # PRIORITY KEYWORDS - Only match if they're STRONG indicators
+    priority_keywords = {
+        'rtt': ['referral to treatment', 'RTT pathway', 'RTT code', 'RTT clock', '18-week', '18 week'],
+        'medical_secretary': ['medical secretary', 'secretary to consultant', 'audio typing', 'clinic correspondence'],
+        'healthcare_assistant': ['healthcare assistant', 'HCA', 'care assistant role', 'nursing duties'],
+        'teaching_assistant': ['teaching assistant', 'classroom support', 'supporting pupils'],
+        'validation': ['validation officer', 'data validation', 'RTT validation', 'quality assurance'],
     }
     
+    # SECONDARY KEYWORDS - Only include if primary role identified
+    secondary_keywords = {
+        'pas': ['PAS system', 'patient administration system', 'PAS experience'],
+        'typing': ['audio typing', 'typing speed', 'transcription'],
+        'diary': ['diary management', 'calendar management', 'booking clinics'],
+        'admin': ['administrative', 'clerical', 'office duties'],
+    }
+    
+    # Find PRIMARY role first
     found_skills = []
-    for skill_category, terms in keywords.items():
+    primary_role = None
+    
+    job_lower = job_description.lower()
+    
+    # Check for primary role
+    for role, terms in priority_keywords.items():
         for term in terms:
-            if term.lower() in job_description.lower():
-                found_skills.append(skill_category)
+            if term.lower() in job_lower:
+                found_skills.append(role)
+                primary_role = role
                 break
+        if primary_role:
+            break
+    
+    # Only add secondary skills if they're relevant to primary role
+    if primary_role:
+        for skill, terms in secondary_keywords.items():
+            for term in terms:
+                if term.lower() in job_lower:
+                    found_skills.append(skill)
+                    break
+    
+    # If NO clear role found, show generic message
+    if not found_skills:
+        st.error("""
+        ❌ **Could not identify specific role from job description**
+        
+        GPT-4 failed and basic keyword matching found no clear job role.
+        
+        **To get accurate interview questions:**
+        1. Configure OpenAI API key in Streamlit secrets
+        2. OR provide a clearer job description with role title
+        """)
+        return None
     
     questions = generate_questions(job_title, found_skills, job_description)
     prep_tips = generate_prep_tips(job_title, found_skills)
@@ -367,8 +403,38 @@ Please provide comprehensive, detailed preparation that helps the candidate be w
         # Show first 500 chars for debugging
         st.text(f"Response preview: {raw_content[:500]}...")
         
-        result = json.loads(raw_content)
-        st.success("✅ Successfully parsed response!")
+        # Strip markdown code blocks if present
+        if raw_content.strip().startswith('```'):
+            # Remove opening ```json or ```
+            raw_content = raw_content.strip()
+            if raw_content.startswith('```json'):
+                raw_content = raw_content[7:]
+            elif raw_content.startswith('```'):
+                raw_content = raw_content[3:]
+            
+            # Remove closing ```
+            if raw_content.endswith('```'):
+                raw_content = raw_content[:-3]
+            
+            raw_content = raw_content.strip()
+        
+        try:
+            result = json.loads(raw_content)
+            st.success("✅ Successfully parsed response!")
+        except json.JSONDecodeError as e:
+            st.error(f"""
+            ❌ **JSON Parsing Error**
+            
+            GPT-4 returned a response but it couldn't be parsed as JSON.
+            
+            **Error:** {str(e)}
+            
+            **Raw response (first 1000 chars):**
+            ```
+            {raw_content[:1000]}
+            ```
+            """)
+            raise
         
         # Format for our system
         questions = []
