@@ -21,11 +21,18 @@ def send_security_email(
     Returns True if successful
     """
     
-    # Email configuration (update with your SMTP details)
-    SMTP_SERVER = "smtp.gmail.com"  # Or your email provider
-    SMTP_PORT = 587
-    SENDER_EMAIL = "security@t21services.co.uk"
-    SENDER_PASSWORD = "your-app-password-here"  # Use app password, not regular password
+    # Email configuration from Streamlit secrets (NEVER hardcode passwords!)
+    import streamlit as st
+    
+    SMTP_SERVER = st.secrets.get("SMTP_SERVER", "smtp.gmail.com")
+    SMTP_PORT = st.secrets.get("SMTP_PORT", 587)
+    SENDER_EMAIL = st.secrets.get("SENDER_EMAIL", "security@t21services.co.uk")
+    SENDER_PASSWORD = st.secrets.get("SENDER_PASSWORD", "")
+    
+    # Don't send emails if password not configured
+    if not SENDER_PASSWORD:
+        print("Warning: SENDER_PASSWORD not configured in Streamlit secrets")
+        return False
     
     try:
         # Create message
