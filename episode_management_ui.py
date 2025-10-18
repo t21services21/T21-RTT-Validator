@@ -504,21 +504,41 @@ def render_manage_episodes():
     
     st.write(f"**Total Active Episodes:** {len(active_episodes)}")
     
+    # Check if episode was pre-selected from Pathway Management
+    if 'edit_episode' in st.session_state:
+        preselected_ep = st.session_state['edit_episode']
+        st.success(f"✅ Episode pre-selected: **{preselected_ep.get('episode_id')}** from Pathway Management")
+        st.info("💡 This episode was selected from Pathway view. Change selection below if needed.")
+    
     # Select episode to manage
     episode_options = {
         f"{e.get('episode_id')} - {e.get('patient_name')} ({e.get('episode_type').title()})": e
         for e in active_episodes
     }
     
+    # Determine default selection
+    default_index = 0
+    if 'edit_episode' in st.session_state:
+        preselected_id = st.session_state['edit_episode'].get('episode_id')
+        for idx, (option_text, episode) in enumerate(episode_options.items(), start=1):
+            if episode.get('episode_id') == preselected_id:
+                default_index = idx
+                break
+    
     selected_option = st.selectbox(
         "Select Episode to Manage:",
-        options=["-- Select Episode --"] + list(episode_options.keys())
+        options=["-- Select Episode --"] + list(episode_options.keys()),
+        index=default_index
     )
     
     if selected_option == "-- Select Episode --":
         return
     
     selected_episode = episode_options[selected_option]
+    
+    # Clear the pre-selection after first load
+    if 'edit_episode' in st.session_state:
+        del st.session_state['edit_episode']
     
     st.markdown("---")
     st.markdown(f"### Managing: {selected_episode.get('episode_id')}")
@@ -536,6 +556,12 @@ def render_manage_episodes():
             st.write(f"**Status:** {selected_episode.get('status')}")
             if selected_episode.get('episode_code'):
                 st.write(f"**Episode Code:** {selected_episode.get('episode_code')}")
+            # SHOW RTT CODE
+            rtt_code = selected_episode.get('rtt_code', 'N/A')
+            if rtt_code and rtt_code != 'N/A':
+                st.write(f"**🎯 RTT Code:** {rtt_code}")
+            else:
+                st.write(f"**🎯 RTT Code:** Not set")
             if selected_episode.get('pathway_id'):
                 st.write(f"**Pathway:** {selected_episode.get('pathway_id')}")
         
@@ -558,13 +584,56 @@ def render_manage_episodes():
         st.markdown("### ✏️ Edit Episode Details")
         
         with st.form("edit_episode_form"):
-            st.info("Update episode code or other details. Leave fields blank to keep current values.")
+            st.info("Update episode code, dates, or other details. Fix any mistakes here!")
             
-            new_episode_code = st.text_input(
-                "Episode Code",
-                value=selected_episode.get('episode_code', ''),
-                placeholder="e.g., 10, AA10, 20C"
-            )
+            col_edit1, col_edit2 = st.columns(2)
+            
+            with col_edit1:
+                new_episode_code = st.text_input(
+                    "Episode Code",
+                    value=selected_episode.get('episode_code', ''),
+                    placeholder="e.g., 10, AA10, 20C"
+                )
+                
+                # RTT CODE EDIT
+                rtt_codes = ['', '10', '11', '12', '20', '21', '30', '31', '32', '34', '91', '92', '93', '94', '95', '96']
+                current_rtt = selected_episode.get('rtt_code', '')
+                rtt_index = rtt_codes.index(current_rtt) if current_rtt in rtt_codes else 0
+                
+                new_rtt_code = st.selectbox(
+                    "🎯 RTT Code (Critical!)",
+                    options=rtt_codes,
+                    index=rtt_index,
+                    help="Change RTT code if wrong code was entered"
+                )
+            
+            with col_edit2:
+                # DATE EDIT
+                from datetime import datetime
+                try:
+                    current_date = datetime.strptime(selected_episode.get('start_date'), '%Y-%m-%d').date()
+                except:
+                    current_date = datetime.now().date()
+                
+                new_date = st.date_input(
+                    "Episode Date",
+                    value=current_date,
+                    help="Fix date if incorrect"
+                )
+                
+                # END DATE EDIT (if applicable)
+                if selected_episode.get('end_date'):
+                    try:
+                        current_end_date = datetime.strptime(selected_episode.get('end_date'), '%Y-%m-%d').date()
+                        new_end_date = st.date_input(
+                            "End Date",
+                            value=current_end_date,
+                            help="Update end date if needed"
+                        )
+                    except:
+                        new_end_date = None
+                else:
+                    new_end_date = None
             
             new_notes = st.text_area(
                 "Clinical Notes",
@@ -588,8 +657,13 @@ def render_manage_episodes():
             if submit_edit:
                 update_data = {
                     'episode_code': new_episode_code,
-                    'notes': new_notes
+                    'notes': new_notes,
+                    'rtt_code': new_rtt_code if new_rtt_code else None,  # ADD RTT CODE
+                    'start_date': str(new_date)  # ADD DATE
                 }
+                
+                if new_end_date:
+                    update_data['end_date'] = str(new_end_date)
                 
                 if selected_episode.get('episode_type') == 'consultant':
                     update_data['consultant_name'] = new_consultant

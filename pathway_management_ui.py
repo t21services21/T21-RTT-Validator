@@ -429,6 +429,12 @@ def render_pathway_card(pathway: dict):
                         st.write(f"**Specialty:** {episode.get('specialty', 'N/A')}")
                         st.write(f"**Consultant:** {episode.get('consultant_name', 'N/A')}")
                         st.write(f"**Status:** {episode.get('status', 'N/A').title()}")
+                        # SHOW RTT CODE
+                        rtt_code = episode.get('rtt_code', 'N/A')
+                        if rtt_code and rtt_code != 'N/A':
+                            st.write(f"**🎯 RTT Code:** {rtt_code}")
+                        else:
+                            st.write(f"**🎯 RTT Code:** Not set")
                     
                     with col3:
                         if episode.get('treatment_type'):
@@ -441,6 +447,19 @@ def render_pathway_card(pathway: dict):
                     if episode.get('notes'):
                         st.markdown("**📝 Notes:**")
                         st.write(episode.get('notes'))
+                    
+                    # EDIT BUTTON
+                    st.markdown("---")
+                    col_edit1, col_edit2 = st.columns(2)
+                    with col_edit1:
+                        if st.button("✏️ Edit Episode", key=f"edit_ep_{episode.get('episode_id')}"):
+                            st.session_state['edit_episode'] = episode
+                            st.session_state['edit_from_pathway'] = pathway.get('pathway_id')
+                            st.success("✅ Episode loaded for editing! Go to **Episode Management** → **Manage Episodes** tab")
+                            st.info("💡 Select 'Manage Episodes' from Episode Management to edit this episode.")
+                    with col_edit2:
+                        if st.button("🗑️ Delete Episode", key=f"del_ep_{episode.get('episode_id')}"):
+                            st.warning("⚠️ Delete functionality: Go to Episode Management → Manage Episodes")
             
             # Add episode button
             if st.button("➕ Add New Episode to This Pathway", key=f"add_ep_{pathway.get('pathway_id')}"):
@@ -555,6 +574,12 @@ def render_manage_pathway():
                     st.write(f"**Specialty:** {episode.get('specialty', 'N/A')}")
                     st.write(f"**Consultant:** {episode.get('consultant_name', 'N/A')}")
                     st.write(f"**Status:** {episode.get('status', 'N/A').title()}")
+                    # SHOW RTT CODE
+                    rtt_code = episode.get('rtt_code', 'N/A')
+                    if rtt_code and rtt_code != 'N/A':
+                        st.write(f"**🎯 RTT Code:** {rtt_code}")
+                    else:
+                        st.write(f"**🎯 RTT Code:** Not set")
                 
                 with col3:
                     if episode.get('treatment_type'):
@@ -567,6 +592,19 @@ def render_manage_pathway():
                 if episode.get('notes'):
                     st.markdown("**📝 Notes:**")
                     st.write(episode.get('notes'))
+                
+                # EDIT BUTTON
+                st.markdown("---")
+                col_edit1, col_edit2 = st.columns(2)
+                with col_edit1:
+                    if st.button("✏️ Edit Episode", key=f"edit_ep_manage_{episode.get('episode_id')}"):
+                        st.session_state['edit_episode'] = episode
+                        st.session_state['edit_from_pathway'] = selected_pathway.get('pathway_id')
+                        st.success("✅ Episode loaded for editing! Go to **Episode Management** → **Manage Episodes** tab")
+                        st.info("💡 Select 'Manage Episodes' from Episode Management to edit this episode.")
+                with col_edit2:
+                    if st.button("🗑️ Delete Episode", key=f"del_ep_manage_{episode.get('episode_id')}"):
+                        st.warning("⚠️ Delete functionality: Go to Episode Management → Manage Episodes")
         
         # Add episode button
         if st.button("➕ Add New Episode to This Pathway", key=f"add_ep_manage_{selected_pathway.get('pathway_id')}"):

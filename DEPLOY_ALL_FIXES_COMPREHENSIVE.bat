@@ -9,8 +9,9 @@ echo.
 echo 1. Interview Prep: 40-50+ Questions + Professional UX
 echo 2. PBL Booking Integration: Add to PBL when booking fails
 echo 3. Pathway/Episode Fixes: Add Episode button + Date clarity
-echo 4. Letter Interpreter: Teaching/Validation modes + Speed
-echo 5. Automatic Pathway Status: Episode-driven workflow
+echo 4. Episode RTT Code: Display + Full Edit functionality
+echo 5. Letter Interpreter: Teaching/Validation modes + Speed
+echo 6. Automatic Pathway Status: Episode-driven workflow
 echo.
 echo ========================================
 echo DETAILED CHANGES:
@@ -32,7 +33,10 @@ echo 📁 PATHWAY/EPISODE:
 echo  ✅ Add Episode button now works
 echo  ✅ Pathway pre-selected in Episode Management
 echo  ✅ Episode "Date" instead of "Start Date"
-echo  ✅ Clear labeling
+echo  ✅ RTT Code now shows in episode display
+echo  ✅ Edit Episode button (fix mistakes!)
+echo  ✅ Full edit form (RTT code, dates, notes, consultant)
+echo  ✅ Episode pre-selection in edit workflow
 echo.
 echo 🎯 PATHWAY STATUS:
 echo  ✅ Automatic status from episode RTT codes
@@ -60,6 +64,7 @@ git add pathway_management_ui.py
 git add patient_selector_component.py
 git add pathway_status_automation.py
 git add episode_management_system.py
+git add episode_management_ui.py
 git add pathway_management_system.py
 git add clinic_letter_interpreter_EDUCATIONAL.py
 
