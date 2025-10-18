@@ -6018,9 +6018,27 @@ Just paste ANY job description here!"""
                 st.error("Please enter job title and job description!")
             else:
                 with st.spinner("⚡ Analyzing job description and generating interview prep pack..."):
-                    result = analyze_job_description(job_title, job_description, company_name)
+                    # Use enhanced version if available, otherwise fallback
+                    if INTERVIEW_ENHANCED:
+                        result = analyze_job_with_complete_answers(job_title, job_description, company_name)
+                    else:
+                        result = analyze_job_description(job_title, job_description, company_name)
+                    
+                    if not result:
+                        st.error("Failed to generate interview prep. Please check API configuration.")
+                        st.stop()
                     
                     st.success("✅ Interview Prep Pack Generated!")
+                    
+                    # VIEW MODE SELECTION
+                    st.markdown("---")
+                    view_mode = st.radio(
+                        "📖 Choose how to view questions & answers:",
+                        ["🎯 Practice Mode (Test yourself first)", "📄 Study Mode (See all answers)"],
+                        horizontal=True,
+                        key="career_dev_view_mode",
+                        help="Practice Mode: Try answering before revealing | Study Mode: Print-friendly format with all answers visible"
+                    )
                     
                     # ===== LIKELY INTERVIEW QUESTIONS =====
                     st.markdown("---")
@@ -6048,19 +6066,60 @@ Just paste ANY job description here!"""
                     # ===== EXAMPLE ANSWERS =====
                     st.markdown("---")
                     st.subheader("💡 Example Answers (STAR Method)")
-                    st.info("📝 **Professional example answers** - Use these as templates for your responses!")
+                    
+                    if "Practice Mode" in view_mode:
+                        st.info("🎯 **Practice Mode:** Try answering each question yourself, then click to reveal the example answer!")
+                    else:
+                        st.info("📄 **Study Mode:** All answers visible - perfect for printing or quick review!")
                     
                     if result.get('example_answers'):
-                        for i, answer in enumerate(result['example_answers'], 1):
-                            with st.expander(f"📝 Answer #{i}: {answer['question']}", expanded=(i==1)):
-                                answer_text = answer.get('answer', answer.get('example_answer', ''))
-                                st.markdown(answer_text)
+                        if "Practice Mode" in view_mode:
+                            # PRACTICE MODE - Expandable answers
+                            for i, answer in enumerate(result['example_answers'], 1):
+                                with st.expander(f"📝 Answer #{i}: {answer['question']}", expanded=False):
+                                    # STAR format if available
+                                    star = answer.get('star_answer', {})
+                                    if star and all(k in star for k in ['situation', 'task', 'action', 'result']):
+                                        st.markdown(f"**Situation:** {star['situation']}")
+                                        st.markdown(f"**Task:** {star['task']}")
+                                        st.markdown(f"**Action:** {star['action']}")
+                                        st.markdown(f"**Result:** {star['result']}")
+                                    else:
+                                        # Fallback to plain answer
+                                        answer_text = answer.get('answer', answer.get('example_answer', 'Answer not available'))
+                                        st.markdown(answer_text)
+                                    
+                                    if answer.get('tips'):
+                                        st.markdown("---")
+                                        st.markdown("**Additional Tips:**")
+                                        for tip in answer['tips']:
+                                            st.markdown(f"- ✅ {tip}")
+                        else:
+                            # STUDY MODE - All visible
+                            for i, answer in enumerate(result['example_answers'], 1):
+                                st.markdown(f"### 📝 Answer #{i}: {answer['question']}")
+                                
+                                # STAR format if available
+                                star = answer.get('star_answer', {})
+                                if star and all(k in star for k in ['situation', 'task', 'action', 'result']):
+                                    st.markdown(f"**Situation:** {star['situation']}")
+                                    st.markdown(f"**Task:** {star['task']}")
+                                    st.markdown(f"**Action:** {star['action']}")
+                                    st.markdown(f"**Result:** {star['result']}")
+                                else:
+                                    # Fallback to plain answer
+                                    answer_text = answer.get('answer', answer.get('example_answer', 'Answer not available'))
+                                    st.markdown(answer_text)
                                 
                                 if answer.get('tips'):
-                                    st.markdown("---")
                                     st.markdown("**Additional Tips:**")
                                     for tip in answer['tips']:
                                         st.markdown(f"- ✅ {tip}")
+                                
+                                if i < len(result['example_answers']):
+                                    st.markdown("---")
+                    else:
+                        st.warning("⚠️ No example answers generated. Please try regenerating the prep pack.")
                     
                     # ===== PREPARATION TIPS =====
                     st.markdown("---")
@@ -6103,6 +6162,44 @@ Just paste ANY job description here!"""
                             st.markdown(f"**{i}. {q['question']}**")
                             st.markdown(f"   *Why this is good:* {q['why_good']}")
                             st.markdown("")
+                    
+                    # ===== EXPORT OPTIONS =====
+                    if INTERVIEW_ENHANCED and result.get('example_answers'):
+                        st.markdown("---")
+                        st.subheader("📥 Export Your Interview Pack")
+                        st.info("💡 Download your prep pack to review offline, print, or share with a career coach!")
+                        
+                        col1, col2 = st.columns(2)
+                        
+                        with col1:
+                            # PDF Export
+                            pdf_buffer = export_to_pdf(result, job_title, company_name, interview_date)
+                            if pdf_buffer:
+                                st.download_button(
+                                    label="📄 Download as PDF",
+                                    data=pdf_buffer,
+                                    file_name=f"Interview_Prep_{job_title.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.pdf",
+                                    mime="application/pdf",
+                                    use_container_width=True,
+                                    key="career_dev_pdf"
+                                )
+                        
+                        with col2:
+                            # Word Export
+                            docx_buffer = export_to_word(result, job_title, company_name, interview_date)
+                            if docx_buffer:
+                                st.download_button(
+                                    label="📝 Download as Word",
+                                    data=docx_buffer,
+                                    file_name=f"Interview_Prep_{job_title.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.docx",
+                                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                    use_container_width=True,
+                                    key="career_dev_word"
+                                )
+                    
+                    # ===== FEEDBACK COLLECTION =====
+                    if INTERVIEW_ENHANCED:
+                        collect_interview_feedback(result, job_title, job_description)
                     
                     st.success("💪 **You've got this! Good luck with your interview!**")
     
