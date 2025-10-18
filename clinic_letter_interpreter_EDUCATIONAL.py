@@ -434,27 +434,29 @@ def render_clinic_letter_interpreter():
     is_teaching_mode = "Teaching" in mode
     
     if is_teaching_mode:
-        st.caption("Learn HOW to interpret clinic letters step-by-step")
+        st.caption("Learn HOW to interpret clinic letters - Shows ONLY scenarios relevant to YOUR letter")
         st.info("""
-        **🎓 This Tool TEACHES You:**
-        1. How to READ and understand clinic letters
-        2. Which RTT code to use and WHY
-        3. NHS commenting format (exact text to write)
-        4. Next actions required
-        5. Common mistakes to avoid
+        **🎓 Teaching Mode - For Students:**
+        1. Shows step-by-step interpretation guide
+        2. Explains which RTT code to use and WHY
+        3. Shows ONLY the scenarios that apply to THIS letter
+        4. Provides examples for the specific situation
+        5. Teaches you to recognize similar letters
         
-        Perfect for training and learning!
+        Perfect for training new validators!
         """)
     else:
-        st.caption("Fast validation for working NHS staff - Get the comment in seconds!")
+        st.caption("Fast validation for EXPERIENCED NHS validators - Real work, real speed!")
         st.success("""
-        **⚡ Validation Mode:**
-        1. Upload letter → Get instant analysis
-        2. Shows what to CHECK in systems (PBL, appointments, etc.)
-        3. Gives you ONE specific comment to use
-        4. Flags discrepancies automatically
+        **⚡ Validation Mode - For Working Validators:**
+        1. Upload letter → Instant analysis (2-3 seconds)
+        2. Shows ONLY the systems YOU need to check
+        3. You confirm what you FIND in systems
+        4. Get ONE specific comment based on verified reality
+        5. Flags discrepancies automatically
         
         **30X faster than manual validation!**
+        **Used by experienced staff doing real validation work.**
         """)
     
     # Step 1: Upload letter
