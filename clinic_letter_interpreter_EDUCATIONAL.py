@@ -71,14 +71,33 @@ def ai_educational_interpretation(letter_text):
         client = OpenAI(api_key=api_key)
         
         prompt = f"""
-        You are an NHS RTT validation trainer. Analyze this clinical letter and provide EDUCATIONAL interpretation.
+        You are a T21 Services NHS RTT validation trainer. Analyze this clinical letter and provide EDUCATIONAL interpretation.
         
-        TEACH the user HOW to interpret this letter step-by-step.
+        TEACH the user HOW to interpret this letter step-by-step using OFFICIAL T21 COMMENTING STYLES.
+        
+        T21 OFFICIAL COMMENT FORMATS:
+        
+        CLOCK CONTINUES: [DATE] T21 - [ACTION]
+        Examples:
+        - AWAITING 1ST OPA (referral, no appointment yet)
+        - 1ST OPA [DATE] (first appointment booked)
+        - AWAITING DSG [TEST NAME] (diagnostic test to be booked)
+        - DSG [TEST NAME] [DATE] (diagnostic booked)
+        - DXG [TEST NAME] [DATE] (diagnostic done)
+        - AWAITING 1CL (waiting for surgery TCI date)
+        - 1CL [DATE] (surgery date set)
+        - AWAITING F/U APPT (follow-up needed)
+        - F/U APPT [DATE] (follow-up booked)
+        
+        CLOCK STOPS: CS ([STOP_DATE])([CODE]) [INITIALS] REASON
+        Examples:
+        - CS (23/04/2025)(30) JDS PATIENT RCVD MEDICATION/TREATMENT. F/U APPT BOOKED
+        - CS (15/09/2025)(34) MOD PATIENT DISCHARGED - NO TREATMENT REQUIRED
         
         CLINICAL LETTER:
         {letter_text}
         
-        Provide JSON with TEACHING explanations:
+        Provide JSON with TEACHING explanations using T21 official formats:
         
         {{
             "step1_identify_letter_type": {{
@@ -110,16 +129,48 @@ def ai_educational_interpretation(letter_text):
                 "teaching": "How to recognize this scenario in future letters"
             }},
             "step5_nhs_comment_format": {{
-                "comment_line": "EXACT NHS comment to write in PAS",
-                "comment_breakdown": "Explain each part of the comment",
-                "format_rules": "Rules for this comment type",
-                "teaching": "Why we format comments this way"
+                "comment_format": "Use T21 OFFICIAL format based on clock action",
+                "format_if_clock_continues": "[DATE] T21 - [ACTION]",
+                "format_if_clock_stops": "CS ([STOP_DATE])([CODE]) [INITIALS] REASON",
+                "comment_line": "T21 format based on letter content",
+                "comment_breakdown": "Choose correct T21 format: Clock continues OR Clock stops",
+                "critical_point": "MUST CHECK systems (PBL, appointments, diagnostics) and use correct T21 format based on what you FIND",
+                
+                "referral_scenarios": {{
+                    "if_no_appointment": "{{today_date}} T21 - AWAITING 1ST OPA",
+                    "if_appointment_booked": "{{today_date}} T21 - 1ST OPA {{appointment_date}}"
+                }},
+                
+                "treatment_scenarios": {{
+                    "treatment_no_followup": "CS ({{treatment_date}})(30) {{initials}} PATIENT RCVD MEDICATION/TREATMENT",
+                    "treatment_with_followup_not_booked": "CS ({{treatment_date}})(30) {{initials}} PATIENT RCVD MEDICATION/TREATMENT. F/U APPT REQUIRED",
+                    "treatment_with_followup_booked": "CS ({{treatment_date}})(30) {{initials}} PATIENT RCVD MEDICATION/TREATMENT. F/U APPT BOOKED"
+                }},
+                
+                "discharge_scenarios": {{
+                    "discharge": "CS ({{discharge_date}})(34) {{initials}} PATIENT DISCHARGED - NO TREATMENT REQUIRED"
+                }},
+                
+                "teaching": "Use OFFICIAL T21 format. Check systems first, then choose correct format based on what you FIND!"
             }},
             "step6_next_actions": {{
-                "actions_required": ["List all actions needed"],
-                "priority_order": "Which to do first and why",
-                "pas_updates_needed": ["Specific PAS updates"],
-                "teaching": "How to prioritize validation actions"
+                "actions_required": [
+                    "1. CHECK relevant systems based on letter content",
+                    "2. For REFERRALS: Check PBL/appointment system - is 1st OPA booked?",
+                    "3. For TREATMENT: Check if follow-up appointment booked (if letter mentions review)",
+                    "4. For DIAGNOSTICS: Check if test booked/done",
+                    "5. For SURGERY: Check if TCI date set",
+                    "6. Update RTT code in PAS",
+                    "7. Add T21 format comment based on what you FOUND"
+                ],
+                "check_workflow": {{
+                    "referral": "Check PBL → If no appointment: 'AWAITING 1ST OPA' | If booked: '1ST OPA {{date}}'",
+                    "treatment": "Check appointments → If follow-up booked: 'F/U APPT BOOKED' | If not: 'F/U APPT REQUIRED'",
+                    "diagnostic": "Check diagnostic system → If booked: 'DSG [TEST] {{date}}' | If not: 'AWAITING DSG [TEST]'",
+                    "surgery": "Check waiting list → If TCI set: '1CL {{date}}' | If not: 'AWAITING 1CL'"
+                }},
+                "critical_point": "ALWAYS CHECK systems BEFORE commenting. Use T21 official format showing what you FOUND!",
+                "teaching": "T21 comment must reflect REALITY (what you found) not assumptions. Check first, comment second!"
             }},
             "step7_common_mistakes": {{
                 "mistakes_to_avoid": ["Common errors for this letter type"],
@@ -161,18 +212,26 @@ def basic_educational_interpretation(letter_text):
         letter_type = "Referral Letter"
         suggested_code = "10"
         code_name = "Referral (Clock Start)"
+        clock_action = "START"
+        t21_format = "[DATE] T21 - AWAITING 1ST OPA"
     elif any(word in letter_lower for word in ['discharg', 'no further', 'no treatment required']):
         letter_type = "Discharge Letter"
         suggested_code = "34"
         code_name = "Discharge (Clock Stop)"
+        clock_action = "STOP"
+        t21_format = "CS ([DISCHARGE_DATE])(34) [INITIALS] PATIENT DISCHARGED - NO TREATMENT REQUIRED"
     elif any(word in letter_lower for word in ['treatment', 'medication prescribed', 'procedure completed']):
         letter_type = "Treatment Letter"
         suggested_code = "30"
         code_name = "First Definitive Treatment (Clock Stop)"
+        clock_action = "STOP"
+        t21_format = "CS ([TREATMENT_DATE])(30) [INITIALS] PATIENT RCVD MEDICATION/TREATMENT"
     else:
         letter_type = "Clinic Outcome Letter"
         suggested_code = "20"
         code_name = "Decision to Treat (Clock Continues)"
+        clock_action = "CONTINUE"
+        t21_format = "[DATE] T21 - [ACTION BASED ON LETTER]"
     
     return {
         "step1_identify_letter_type": {
@@ -197,12 +256,33 @@ def basic_educational_interpretation(letter_text):
             "teaching": "Match letter content to RTT code definitions"
         },
         "step5_nhs_comment_format": {
-            "comment_line": f"[DATE] [INITIALS] - {letter_type.upper()} PROCESSED",
-            "teaching": "Follow NHS standard comment format"
+            "comment_format": "T21 OFFICIAL FORMAT",
+            "format_clock_continues": "[DATE] T21 - [ACTION]",
+            "format_clock_stops": "CS ([DATE])([CODE]) [INITIALS] REASON",
+            "comment_line": t21_format,
+            "comment_breakdown": f"Use T21 official format. Clock {clock_action}s → Use appropriate format",
+            "referral_examples": {
+                "if_no_appointment": f"{datetime.now().strftime('%d/%m/%Y')} T21 - AWAITING 1ST OPA",
+                "if_appointment_booked": f"{datetime.now().strftime('%d/%m/%Y')} T21 - 1ST OPA [DATE]"
+            },
+            "treatment_examples": {
+                "no_followup": f"CS ([TREATMENT_DATE])(30) [INIT] PATIENT RCVD MEDICATION/TREATMENT",
+                "followup_booked": f"CS ([TREATMENT_DATE])(30) [INIT] PATIENT RCVD MEDICATION/TREATMENT. F/U APPT BOOKED",
+                "followup_not_booked": f"CS ([TREATMENT_DATE])(30) [INIT] PATIENT RCVD MEDICATION/TREATMENT. F/U APPT REQUIRED"
+            },
+            "critical_point": "CHECK systems FIRST (PBL, appointments, etc.) then use correct T21 format based on what you FIND!",
+            "teaching": "T21 official formats must be used. Choose format based on clock action and what you discovered when checking!"
         },
         "step6_next_actions": {
-            "actions_required": ["Update RTT code in PAS", "Add comment line", "Check follow-up requirements"],
-            "teaching": "Always verify PAS matches letter content"
+            "actions_required": [
+                "Check if patient is on Partial Booking List (PBL)",
+                "If letter says 'patient to be added to waiting list' - verify they ARE on PBL",
+                "If NOT on PBL - escalate to booking team",
+                "Update RTT code in PAS",
+                "Add validation comment with today's date"
+            ],
+            "pbl_check_critical": "ALWAYS check PBL when letter mentions waiting list",
+            "teaching": "PBL verification is FIRST priority - prevents patients being lost!"
         },
         "interpretation_confidence": "Medium"
     }
@@ -405,6 +485,24 @@ def render_clinic_letter_interpreter():
         st.markdown("**Comment Breakdown:**")
         st.write(step5.get('comment_breakdown', 'Explanation of comment structure'))
         
+        # Show critical point
+        if step5.get('critical_point'):
+            st.error(f"🚨 **CRITICAL:** {step5.get('critical_point')}")
+        
+        # Show PBL examples
+        if step5.get('example_if_on_pbl') or step5.get('example_if_not_on_pbl'):
+            st.markdown("**📋 PBL Check Workflow:**")
+            st.info("**Step 1:** Go to PBL/Outpatient Waiting List system\n**Step 2:** Search for this patient\n**Step 3:** Is patient on the list?\n**Step 4:** Comment what you FOUND (see examples below)")
+            st.markdown("**Comment Examples Based on What You FIND:**")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("**If patient IS on PBL:**")
+                st.code(step5.get('example_if_on_pbl', 'Check example'), language=None)
+            with col2:
+                st.markdown("**If patient NOT on PBL:**")
+                st.code(step5.get('example_if_not_on_pbl', 'Check example'), language=None)
+        
         if step5.get('format_rules'):
             st.markdown("**Format Rules:**")
             st.write(step5.get('format_rules'))
@@ -417,11 +515,19 @@ def render_clinic_letter_interpreter():
         
         step6 = interpretation.get('step6_next_actions', {})
         
+        # Show PBL check as CRITICAL
+        if step6.get('pbl_check_critical'):
+            st.error(f"🚨 **CRITICAL:** {step6.get('pbl_check_critical')}")
+        
         st.markdown("**Actions to Complete:**")
         
         actions = step6.get('actions_required', [])
         for idx, action in enumerate(actions, 1):
-            st.checkbox(f"**{idx}.** {action}", key=f"action_{idx}")
+            # Highlight PBL-related actions
+            if 'PBL' in action or 'Partial Booking' in action or 'waiting list' in action:
+                st.checkbox(f"**{idx}. 🔴 {action}**", key=f"action_{idx}")
+            else:
+                st.checkbox(f"**{idx}.** {action}", key=f"action_{idx}")
         
         if step6.get('priority_order'):
             st.markdown("**Priority Order:**")

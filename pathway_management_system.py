@@ -204,9 +204,9 @@ def create_pathway(
         'user_email': user_email,
         # NEW NHS Workflow fields
         'referral_method': referral_method,
-        'referral_received_date': referral_received_date,
+        'referral_received_date': referral_received_date or None,
         'clock_start_date': clock_start_date or start_date,
-        'earliest_reasonable_offer_date': earliest_reasonable_offer_date,
+        'earliest_reasonable_offer_date': earliest_reasonable_offer_date or None,  # Fix: empty string -> None
         'presenting_complaint': presenting_complaint,
         'suspected_diagnosis': suspected_diagnosis,
         'gp_name': gp_name,
