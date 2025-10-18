@@ -106,19 +106,49 @@ def add_consultant_episode(
     if SUPABASE_ENABLED:
         try:
             result = supabase.table('episodes').insert(episode_data).execute()
+            
+            # AUTOMATIC PATHWAY STATUS UPDATE (NHS Workflow)
+            if pathway_id:
+                try:
+                    from pathway_status_automation import update_pathway_status_from_episodes
+                    status_result = update_pathway_status_from_episodes(pathway_id)
+                    if status_result.get('success'):
+                        message = f"Consultant episode created: {episode_id}. Pathway status: {status_result.get('status', 'active').upper()}"
+                    else:
+                        message = f'Consultant episode created: {episode_id} (pathway status unchanged)'
+                except Exception as e:
+                    message = f'Consultant episode created: {episode_id} (pathway status update failed: {e})'
+            else:
+                message = f'Consultant episode created: {episode_id}'
+            
             return {
                 'success': True,
                 'episode_id': episode_id,
-                'message': f'Consultant episode created: {episode_id}'
+                'message': message
             }
         except Exception as e:
             return {'success': False, 'error': str(e)}
     else:
         save_episode_local(episode_data)
+        
+        # AUTOMATIC PATHWAY STATUS UPDATE (NHS Workflow)
+        if pathway_id:
+            try:
+                from pathway_status_automation import update_pathway_status_from_episodes
+                status_result = update_pathway_status_from_episodes(pathway_id)
+                if status_result.get('success'):
+                    message = f"Consultant episode created: {episode_id}. Pathway status: {status_result.get('status', 'active').upper()}"
+                else:
+                    message = f'Consultant episode created: {episode_id} (pathway status unchanged)'
+            except Exception as e:
+                message = f'Consultant episode created: {episode_id} (pathway status update failed: {e})'
+        else:
+            message = f'Consultant episode created: {episode_id}'
+        
         return {
             'success': True,
             'episode_id': episode_id,
-            'message': f'Consultant episode created: {episode_id}'
+            'message': message
         }
 
 
@@ -167,19 +197,49 @@ def add_treatment_episode(
     if SUPABASE_ENABLED:
         try:
             result = supabase.table('episodes').insert(episode_data).execute()
+            
+            # AUTOMATIC PATHWAY STATUS UPDATE (NHS Workflow)
+            if pathway_id:
+                try:
+                    from pathway_status_automation import update_pathway_status_from_episodes
+                    status_result = update_pathway_status_from_episodes(pathway_id)
+                    if status_result.get('success'):
+                        message = f"Treatment episode created: {episode_id}. Pathway status: {status_result.get('status', 'active').upper()}"
+                    else:
+                        message = f'Treatment episode created: {episode_id} (pathway status unchanged)'
+                except Exception as e:
+                    message = f'Treatment episode created: {episode_id}'
+            else:
+                message = f'Treatment episode created: {episode_id}'
+            
             return {
                 'success': True,
                 'episode_id': episode_id,
-                'message': f'Treatment episode created: {episode_id}'
+                'message': message
             }
         except Exception as e:
             return {'success': False, 'error': str(e)}
     else:
         save_episode_local(episode_data)
+        
+        # AUTOMATIC PATHWAY STATUS UPDATE (NHS Workflow)
+        if pathway_id:
+            try:
+                from pathway_status_automation import update_pathway_status_from_episodes
+                status_result = update_pathway_status_from_episodes(pathway_id)
+                if status_result.get('success'):
+                    message = f"Treatment episode created: {episode_id}. Pathway status: {status_result.get('status', 'active').upper()}"
+                else:
+                    message = f'Treatment episode created: {episode_id} (pathway status unchanged)'
+            except Exception as e:
+                message = f'Treatment episode created: {episode_id}'
+        else:
+            message = f'Treatment episode created: {episode_id}'
+        
         return {
             'success': True,
             'episode_id': episode_id,
-            'message': f'Treatment episode created: {episode_id}'
+            'message': message
         }
 
 
@@ -232,19 +292,49 @@ def add_diagnostic_episode(
     if SUPABASE_ENABLED:
         try:
             result = supabase.table('episodes').insert(episode_data).execute()
+            
+            # AUTOMATIC PATHWAY STATUS UPDATE (NHS Workflow)
+            if pathway_id:
+                try:
+                    from pathway_status_automation import update_pathway_status_from_episodes
+                    status_result = update_pathway_status_from_episodes(pathway_id)
+                    if status_result.get('success'):
+                        message = f"Diagnostic episode created: {episode_id}. Pathway status: {status_result.get('status', 'active').upper()}"
+                    else:
+                        message = f'Diagnostic episode created: {episode_id} (pathway status unchanged)'
+                except Exception as e:
+                    message = f'Diagnostic episode created: {episode_id}'
+            else:
+                message = f'Diagnostic episode created: {episode_id}'
+            
             return {
                 'success': True,
                 'episode_id': episode_id,
-                'message': f'Diagnostic episode created: {episode_id}'
+                'message': message
             }
         except Exception as e:
             return {'success': False, 'error': str(e)}
     else:
         save_episode_local(episode_data)
+        
+        # AUTOMATIC PATHWAY STATUS UPDATE (NHS Workflow)
+        if pathway_id:
+            try:
+                from pathway_status_automation import update_pathway_status_from_episodes
+                status_result = update_pathway_status_from_episodes(pathway_id)
+                if status_result.get('success'):
+                    message = f"Diagnostic episode created: {episode_id}. Pathway status: {status_result.get('status', 'active').upper()}"
+                else:
+                    message = f'Diagnostic episode created: {episode_id} (pathway status unchanged)'
+            except Exception as e:
+                message = f'Diagnostic episode created: {episode_id}'
+        else:
+            message = f'Diagnostic episode created: {episode_id}'
+        
         return {
             'success': True,
             'episode_id': episode_id,
-            'message': f'Diagnostic episode created: {episode_id}'
+            'message': message
         }
 
 

@@ -722,3 +722,46 @@ def update_rtt_status(pathway_id: str, new_status: str) -> Dict:
             return {'success': False, 'error': str(e)}
     else:
         return update_pathway_local(pathway_id, update_data)
+
+
+def update_pathway_status_auto(pathway_id: str, new_status: str) -> Dict:
+    """
+    AUTOMATIC pathway status update from episode RTT codes
+    
+    This is called automatically when episodes are added.
+    NHS Rule: Last episode's RTT code determines pathway status.
+    
+    Args:
+        pathway_id: Pathway to update
+        new_status: 'active' or 'closed' based on episode RTT code
+    
+    Returns:
+        Result dict
+    """
+    user_email = get_current_user_email()
+    
+    update_data = {
+        'status': new_status
+    }
+    
+    # Also update RTT status and clock status accordingly
+    if new_status == 'closed':
+        update_data['rtt_status'] = 'completed'
+        update_data['clock_status'] = 'stopped'
+    else:  # active
+        update_data['rtt_status'] = 'active'
+        update_data['clock_status'] = 'running'
+    
+    if SUPABASE_ENABLED:
+        try:
+            result = supabase.table('pathways')\
+                .update(update_data)\
+                .eq('pathway_id', pathway_id)\
+                .eq('user_email', user_email)\
+                .execute()
+            
+            return {'success': True, 'message': f'Pathway status auto-updated to: {new_status}'}
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+    else:
+        return update_pathway_local(pathway_id, update_data)
