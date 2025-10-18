@@ -35,7 +35,7 @@ def analyze_job_description(job_title, job_description, company_name=""):
         try:
             api_key = st.secrets.get("OPENAI_API_KEY")
             if api_key:
-                st.info("🤖 Using GPT-4 AI to analyze your job description...")
+                st.info("📋 Analyzing your job description and generating interview questions...")
                 return analyze_with_gpt4(job_title, job_description, company_name, api_key)
             else:
                 st.warning("""
@@ -58,14 +58,14 @@ def analyze_job_description(job_title, job_description, company_name=""):
                 **With GPT-4:** 30-40 expert questions tailored to the job description
                 """)
         except Exception as e:
-            st.error(f"❌ GPT-4 analysis error: {e}")
-            print(f"GPT-4 analysis failed: {e}, falling back to keyword matching")
+            st.error("❌ Unable to analyze job description. Using basic keyword matching.")
+            print(f"AI analysis failed: {e}, falling back to keyword matching")
     
-    # Fallback to keyword matching if GPT-4 unavailable
+    # Fallback to keyword matching if AI unavailable
     st.warning("""
-    ⚠️ **Falling back to basic keyword matching**
+    ⚠️ **Using basic keyword matching**
     
-    GPT-4 analysis failed. Using basic detection (less accurate).
+    Advanced analysis unavailable. Using basic detection.
     Questions will be based on keywords found in the job description.
     """)
     
@@ -152,13 +152,12 @@ def analyze_with_gpt4(job_title, job_description, company_name, api_key):
     Use GPT-4 to INTELLIGENTLY analyze job description and generate questions + answers
     This is what we SHOULD be using!
     """
-    st.info("🔄 Connecting to GPT-4...")
     from openai import OpenAI
     
     try:
         client = OpenAI(
             api_key=api_key,
-            timeout=45.0  # 45 second timeout to prevent hanging
+            timeout=30.0  # 30 second timeout for faster response
         )
     except Exception as e:
         st.error(f"❌ Failed to initialize OpenAI client: {e}")
@@ -227,7 +226,7 @@ Return ONLY valid JSON (no markdown):
 CRITICAL: Generate 3-4 questions per category! Don't just generate 1 question per category. Total output should be 45-80 questions."""
 
     try:
-        st.info("📤 Sending request to GPT-4...")
+        st.info("⚙️ Generating personalized interview questions...")
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
@@ -239,14 +238,10 @@ CRITICAL: Generate 3-4 questions per category! Don't just generate 1 question pe
             response_format={"type": "json_object"}  # Force JSON output (no markdown)
         )
         
-        st.success("✅ Got response from GPT-4!")
-        st.info("🔄 Parsing response...")
+        # Success message will be shown after formatting is complete
         
         import json
         raw_content = response.choices[0].message.content
-        
-        # Show first 500 chars for debugging
-        st.text(f"Response preview: {raw_content[:500]}...")
         
         # Strip markdown code blocks if present
         raw_content = raw_content.strip()
@@ -264,43 +259,14 @@ CRITICAL: Generate 3-4 questions per category! Don't just generate 1 question pe
         # Final cleanup
         raw_content = raw_content.strip()
         
-        # Debug: Show what we're actually trying to parse
-        st.text(f"After cleanup (first 200 chars): {raw_content[:200]}...")
-        st.text(f"After cleanup (last 200 chars): ...{raw_content[-200:]}")
-        
         try:
             result = json.loads(raw_content)
-            st.success("✅ Successfully parsed response!")
         except json.JSONDecodeError as e:
-            st.error(f"""
-            ❌ **JSON Parsing Error**
+            st.error("""
+            ❌ **Unable to Generate Interview Prep Pack**
             
-            **Error:** {str(e)}
-            **Error Position:** Line {e.lineno}, Column {e.colno}
-            
-            **Content around error (chars {max(0, e.pos-100)}-{min(len(raw_content), e.pos+100)}):**
-            ```
-            {raw_content[max(0, e.pos-100):min(len(raw_content), e.pos+100)]}
-            ```
-            
-            **First 500 chars of cleaned content:**
-            ```
-            {raw_content[:500]}
-            ```
-            
-            **Last 500 chars of cleaned content:**
-            ```
-            {raw_content[-500:]}
-            ```
+            There was an issue processing your job description. Please try again or contact support if the issue persists.
             """)
-            
-            # Try to fix common issues
-            st.warning("Attempting to fix JSON...")
-            
-            # Check if response was truncated (no closing brace)
-            if not raw_content.rstrip().endswith('}'):
-                st.error("❌ Response appears truncated (no closing brace). GPT-4 hit token limit.")
-            
             raise
         
         # Format for our system
