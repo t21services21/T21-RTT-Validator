@@ -300,8 +300,19 @@ def render_create_task():
                 )
                 
                 if task_id:
-                    st.success(f"✅ Task created! ID: {task_id}")
                     st.balloons()
+                    st.success(f"""
+                    ✅ **TASK CREATED SUCCESSFULLY!**
+                    
+                    **Task ID:** {task_id}  
+                    **Priority:** {priority}  
+                    **Due Date:** {due_date}  
+                    **Assigned To:** {assigned_to}  
+                    
+                    ✔️ Task has been saved and is now active!  
+                    📋 Team member will be notified!
+                    """)
+                    st.info("💡 **Next Steps:** Track task progress in the dashboard or update status as work progresses.")
                 else:
                     st.error("❌ Failed to create task")
             else:

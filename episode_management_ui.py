@@ -88,10 +88,20 @@ def render_add_consultant_episode():
     - Can have multiple episodes for same patient (different consultants/specialties)
     """)
     
-    # Success message
+    # Success message - ENHANCED
     if 'consultant_episode_added' in st.session_state:
-        st.success(f"✅ Consultant episode created: {st.session_state['consultant_episode_added']}")
+        episode_id = st.session_state['consultant_episode_added']
         st.balloons()
+        st.success(f"""
+        ✅ **CONSULTANT EPISODE CREATED SUCCESSFULLY!**
+        
+        **Episode ID:** {episode_id}  
+        **Type:** Consultant Episode  
+        
+        ✔️ Episode has been saved and linked to pathway!  
+        📊 Patient care tracking is now active!
+        """)
+        st.info("💡 **Next Steps:** You can now add treatment or diagnostic episodes, or update this episode as care progresses.")
         del st.session_state['consultant_episode_added']
     
     # SMART PATIENT SELECTOR (with search!)
@@ -178,10 +188,20 @@ def render_add_treatment_episode():
     - Minor procedure (e.g., Endoscopy)
     """)
     
-    # Success message
+    # Success message - ENHANCED
     if 'treatment_episode_added' in st.session_state:
-        st.success(f"✅ Treatment episode created: {st.session_state['treatment_episode_added']}")
+        episode_id = st.session_state['treatment_episode_added']
         st.balloons()
+        st.success(f"""
+        ✅ **TREATMENT EPISODE CREATED SUCCESSFULLY!**
+        
+        **Episode ID:** {episode_id}  
+        **Type:** Treatment Episode  
+        
+        ✔️ Treatment has been recorded!  
+        📊 Episode saved and linked to pathway!
+        """)
+        st.info("💡 **Next Steps:** Continue tracking treatment progress or add follow-up episodes.")
         del st.session_state['treatment_episode_added']
     
     with st.form("add_treatment_episode"):
@@ -255,10 +275,20 @@ def render_add_diagnostic_episode():
     - ECG, Echocardiogram
     """)
     
-    # Success message
+    # Success message - ENHANCED
     if 'diagnostic_episode_added' in st.session_state:
-        st.success(f"✅ Diagnostic episode created: {st.session_state['diagnostic_episode_added']}")
+        episode_id = st.session_state['diagnostic_episode_added']
         st.balloons()
+        st.success(f"""
+        ✅ **DIAGNOSTIC EPISODE CREATED SUCCESSFULLY!**
+        
+        **Episode ID:** {episode_id}  
+        **Type:** Diagnostic Episode  
+        
+        ✔️ Diagnostic test has been recorded!  
+        📊 Episode saved and linked to pathway!
+        """)
+        st.info("💡 **Next Steps:** Update episode with test results when available.")
         del st.session_state['diagnostic_episode_added']
     
     with st.form("add_diagnostic_episode"):
@@ -568,8 +598,13 @@ def render_manage_episodes():
                 result = update_episode(selected_episode.get('episode_id'), update_data)
                 
                 if result['success']:
-                    st.success("✅ Episode updated successfully!")
                     st.balloons()
+                    st.success("""
+                    ✅ **EPISODE UPDATED SUCCESSFULLY!**
+                    
+                    ✔️ All changes have been saved!  
+                    📊 Episode information updated in database!
+                    """)
                     st.rerun()
                 else:
                     st.error(f"❌ Update failed: {result.get('error')}")
@@ -601,8 +636,13 @@ def render_manage_episodes():
                 )
                 
                 if result['success']:
-                    st.success("✅ Episode moved successfully!")
                     st.balloons()
+                    st.success("""
+                    ✅ **EPISODE MOVED SUCCESSFULLY!**
+                    
+                    ✔️ Episode has been moved to new pathway!  
+                    🔀 Pathway link updated!
+                    """)
                     st.rerun()
                 else:
                     st.error(f"❌ Move failed: {result.get('error')}")

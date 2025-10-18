@@ -66,16 +66,22 @@ def render_register_patient():
     
     st.subheader("➕ Register New Patient")
     
-    # Show success message if patient was just registered
+    # Show success message if patient was just registered - ENHANCED
     if 'patient_registered' in st.session_state:
         patient_info = st.session_state['patient_registered']
-        st.success(f"✅ Patient registered successfully!")
-        st.info(f"""
-        **Patient ID:** {patient_info['patient_id']}  
-        **NHS Status:** {patient_info['nhs_status']}  
-        **Name:** {patient_info['name']}
-        """)
         st.balloons()
+        st.success(f"""
+        ✅ **PATIENT REGISTERED SUCCESSFULLY!**
+        
+        **Patient ID:** {patient_info['patient_id']}  
+        **NHS Number:** {patient_info.get('nhs_number', 'Not provided')}  
+        **NHS Status:** {patient_info['nhs_status']}  
+        **Name:** {patient_info['name']}  
+        
+        ✔️ Patient has been saved to the database!  
+        📊 All demographic information recorded permanently!
+        """)
+        st.info("💡 **Next Steps:** You can now create pathways, book appointments, or register episodes for this patient.")
         del st.session_state['patient_registered']
     
     with st.form("register_patient"):

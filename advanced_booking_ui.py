@@ -139,9 +139,19 @@ def render_book_appointment():
                     )
                 
                 if result['success']:
-                    st.success(f"✅ {result['confirmation']}")
-                    st.markdown(f"**Appointment ID:** {result['appointment_id']}")
                     st.balloons()
+                    st.success(f"""
+                    ✅ **APPOINTMENT BOOKED SUCCESSFULLY!**
+                    
+                    **Appointment ID:** {result['appointment_id']}  
+                    **Date:** {apt_date}  
+                    **Time:** {apt_time}  
+                    **Specialty:** {specialty}  
+                    
+                    ✔️ {result['confirmation']}  
+                    📧 Patient can be notified of appointment!
+                    """)
+                    st.info("💡 **Next Steps:** Send appointment confirmation to patient or add to PBL if needed.")
                     
                     # Store success info in session state
                     st.session_state['last_booked_appointment_id'] = result['appointment_id']
@@ -222,8 +232,18 @@ def render_clinic_management():
                     clinic_type=clinic_type
                 )
                 
-                st.success(f"✅ Clinic template created! ID: {clinic_id}")
                 st.balloons()
+                st.success(f"""
+                ✅ **CLINIC TEMPLATE CREATED SUCCESSFULLY!**
+                
+                **Template ID:** {clinic_id}  
+                **Specialty:** {clinic_specialty}  
+                **Slots Per Day:** {slots_per_day}  
+                
+                ✔️ Template has been saved!  
+                📅 Ready to use for booking appointments!
+                """)
+                st.info("💡 **Next Steps:** Use this template to book multiple appointments efficiently.")
 
 
 def render_check_availability():
