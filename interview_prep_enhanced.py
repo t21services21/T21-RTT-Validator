@@ -274,17 +274,77 @@ def export_to_pdf(result, job_title, company_name, interview_date=None):
             content.append(Paragraph(answer_text, styles['Normal']))
             content.append(Spacer(1, 0.3*inch))
         
+        # Questions to ask
+        content.append(PageBreak())
+        content.append(Paragraph("QUESTIONS TO ASK THE INTERVIEWER", heading_style))
+        content.append(Paragraph("Having thoughtful questions prepared shows genuine interest and engagement!", styles['Normal']))
+        content.append(Spacer(1, 0.2*inch))
+        
+        questions_to_ask = result.get('questions_to_ask', [])
+        if not questions_to_ask:
+            questions_to_ask = [
+                {"question": "What does a typical day look like in this role?", "why_good": "Shows genuine interest and helps understand expectations"},
+                {"question": "What are the main challenges facing the team currently?", "why_good": "Demonstrates you want to add value and solve problems"},
+                {"question": "How is success measured in this position?", "why_good": "Shows you care about performance and meeting expectations"},
+                {"question": "What training and development opportunities are available?", "why_good": "Demonstrates ambition and commitment to growth"},
+                {"question": "What do you enjoy most about working here?", "why_good": "Personal question that builds rapport"},
+                {"question": "How does this role fit into the wider organizational goals?", "why_good": "Shows strategic thinking"},
+                {"question": "What are the next steps in the recruitment process?", "why_good": "Professional closing question"}
+            ]
+        
+        for i, qa in enumerate(questions_to_ask, 1):
+            q_text = f"<b>{i}. {qa['question']}</b><br/><i>Why this is good:</i> {qa['why_good']}"
+            content.append(Paragraph(q_text, styles['Normal']))
+            content.append(Spacer(1, 0.15*inch))
+        
+        # Common mistakes to avoid
+        content.append(PageBreak())
+        content.append(Paragraph("COMMON MISTAKES TO AVOID", heading_style))
+        content.append(Paragraph("Avoid these pitfalls to make the best impression!", styles['Normal']))
+        content.append(Spacer(1, 0.2*inch))
+        
+        red_flags = [
+            {"mistake": "Arriving late or too early (more than 15 mins)", "why_bad": "Shows poor time management", "instead": "Arrive 10-15 minutes early"},
+            {"mistake": "Speaking negatively about previous employers", "why_bad": "Unprofessional and raises red flags", "instead": "Focus on what you learned and future opportunities"},
+            {"mistake": "Not researching the organization", "why_bad": "Shows lack of genuine interest", "instead": "Research mission, values, recent news, and CQC ratings"},
+            {"mistake": "Forgetting to ask questions", "why_bad": "Seems uninterested or unprepared", "instead": "Prepare 5-10 thoughtful questions"},
+            {"mistake": "Using your phone during interview", "why_bad": "Extremely disrespectful", "instead": "Turn phone OFF completely before entering"},
+            {"mistake": "Weak or overly casual handshake", "why_bad": "Poor first impression", "instead": "Firm, confident handshake with eye contact"},
+            {"mistake": "Not having examples prepared", "why_bad": "Gives vague, unconvincing answers", "instead": "Prepare 5-7 STAR examples"}
+        ]
+        
+        for flag in red_flags:
+            mistake_text = f"<b><font color='red'>❌ {flag['mistake']}</font></b><br/><i>Why it's bad:</i> {flag['why_bad']}<br/><font color='green'>✅ <b>Instead:</b> {flag['instead']}</font>"
+            content.append(Paragraph(mistake_text, styles['Normal']))
+            content.append(Spacer(1, 0.15*inch))
+        
         # Prep checklist
         content.append(PageBreak())
         content.append(Paragraph("PREPARATION CHECKLIST", heading_style))
+        content.append(Spacer(1, 0.2*inch))
         
         prep = result.get('preparation_tips', {})
-        for section, items in prep.items():
-            section_title = section.replace('_', ' ').title()
-            content.append(Paragraph(f"<b>{section_title}:</b>", styles['Normal']))
-            for item in items:
+        if prep:
+            for section, items in prep.items():
+                section_title = section.replace('_', ' ').title()
+                content.append(Paragraph(f"<b>{section_title}:</b>", styles['Normal']))
+                for item in items:
+                    content.append(Paragraph(f"☐ {item}", styles['Normal']))
+                content.append(Spacer(1, 0.1*inch))
+        else:
+            # Default checklist
+            content.append(Paragraph("<b>Before Interview:</b>", styles['Normal']))
+            for item in ["Research company thoroughly", "Practice STAR answers", "Prepare 10-12 questions to ask"]:
                 content.append(Paragraph(f"☐ {item}", styles['Normal']))
             content.append(Spacer(1, 0.1*inch))
+            
+            content.append(Paragraph("<b>On The Day:</b>", styles['Normal']))
+            for item in ["Arrive 10-15 minutes early", "Bring CV copies", "Turn off mobile phone"]:
+                content.append(Paragraph(f"☐ {item}", styles['Normal']))
+        
+        # Final message
+        content.append(Spacer(1, 0.3*inch))
+        content.append(Paragraph("<b>💪 You've got this! Good luck with your interview!</b>", title_style))
         
         # Build PDF
         doc.build(content)
@@ -339,16 +399,105 @@ def export_to_word(result, job_title, company_name, interview_date=None):
             doc.add_paragraph(a['example_answer'])
             doc.add_paragraph()
         
+        # Questions to ask them
+        doc.add_page_break()
+        doc.add_heading('QUESTIONS TO ASK THE INTERVIEWER', 1)
+        doc.add_paragraph("Having thoughtful questions prepared shows genuine interest and engagement!")
+        doc.add_paragraph()
+        
+        questions_to_ask = result.get('questions_to_ask', [])
+        if questions_to_ask:
+            for i, qa in enumerate(questions_to_ask, 1):
+                q_para = doc.add_paragraph()
+                q_run = q_para.add_run(f"{i}. {qa['question']}")
+                q_run.bold = True
+                
+                doc.add_paragraph(f"Why this is good: {qa['why_good']}")
+                doc.add_paragraph()
+        else:
+            # Fallback questions
+            default_questions = [
+                {"question": "What does a typical day look like in this role?", "why_good": "Shows genuine interest and helps understand expectations"},
+                {"question": "What are the main challenges facing the team currently?", "why_good": "Demonstrates you want to add value and solve problems"},
+                {"question": "How is success measured in this position?", "why_good": "Shows you care about performance and meeting expectations"},
+                {"question": "What training and development opportunities are available?", "why_good": "Demonstrates ambition and commitment to growth"},
+                {"question": "What do you enjoy most about working here?", "why_good": "Personal question that builds rapport"},
+                {"question": "How does this role fit into the wider organizational goals?", "why_good": "Shows strategic thinking"},
+                {"question": "What are the next steps in the recruitment process?", "why_good": "Professional closing question"}
+            ]
+            for i, qa in enumerate(default_questions, 1):
+                q_para = doc.add_paragraph()
+                q_run = q_para.add_run(f"{i}. {qa['question']}")
+                q_run.bold = True
+                doc.add_paragraph(f"Why this is good: {qa['why_good']}")
+                doc.add_paragraph()
+        
+        # Common mistakes to avoid
+        doc.add_page_break()
+        doc.add_heading('COMMON MISTAKES TO AVOID', 1)
+        doc.add_paragraph("Avoid these pitfalls to make the best impression!")
+        doc.add_paragraph()
+        
+        red_flags = [
+            {"mistake": "Arriving late or too early (more than 15 mins)", "why_bad": "Shows poor time management", "instead": "Arrive 10-15 minutes early"},
+            {"mistake": "Speaking negatively about previous employers", "why_bad": "Unprofessional and raises red flags", "instead": "Focus on what you learned and future opportunities"},
+            {"mistake": "Not researching the organization", "why_bad": "Shows lack of genuine interest", "instead": "Research mission, values, recent news, and CQC ratings"},
+            {"mistake": "Forgetting to ask questions", "why_bad": "Seems uninterested or unprepared", "instead": "Prepare 5-10 thoughtful questions"},
+            {"mistake": "Using your phone during interview", "why_bad": "Extremely disrespectful", "instead": "Turn phone OFF completely before entering"},
+            {"mistake": "Weak or overly casual handshake", "why_bad": "Poor first impression", "instead": "Firm, confident handshake with eye contact"},
+            {"mistake": "Not having examples prepared", "why_bad": "Gives vague, unconvincing answers", "instead": "Prepare 5-7 STAR examples"},
+            {"mistake": "Talking too much or too little", "why_bad": "Fails to answer effectively", "instead": "Aim for 1-2 minute answers with structure"}
+        ]
+        
+        for i, flag in enumerate(red_flags, 1):
+            # Mistake
+            mistake_para = doc.add_paragraph()
+            mistake_run = mistake_para.add_run(f"❌ {flag['mistake']}")
+            mistake_run.bold = True
+            mistake_run.font.color.rgb = RGBColor(255, 0, 0)
+            
+            doc.add_paragraph(f"Why it's bad: {flag['why_bad']}")
+            
+            # Instead
+            instead_para = doc.add_paragraph()
+            instead_run = instead_para.add_run(f"✅ Instead: {flag['instead']}")
+            instead_run.font.color.rgb = RGBColor(0, 128, 0)
+            doc.add_paragraph()
+        
         # Prep checklist
         doc.add_page_break()
         doc.add_heading('PREPARATION CHECKLIST', 1)
         
         prep = result.get('preparation_tips', {})
-        for section, items in prep.items():
-            section_title = section.replace('_', ' ').title()
-            doc.add_heading(section_title, 2)
-            for item in items:
+        if prep:
+            for section, items in prep.items():
+                section_title = section.replace('_', ' ').title()
+                doc.add_heading(section_title, 2)
+                for item in items:
+                    doc.add_paragraph(f"☐ {item}", style='List Bullet')
+        else:
+            # Default checklist
+            doc.add_heading('Before Interview', 2)
+            for item in ["Research company thoroughly", "Practice STAR answers", "Prepare 10-12 questions to ask", 
+                        "Plan route and arrival time", "Choose professional attire", "Print CV copies"]:
                 doc.add_paragraph(f"☐ {item}", style='List Bullet')
+            
+            doc.add_heading('On The Day', 2)
+            for item in ["Arrive 10-15 minutes early", "Bring CV copies, certificates, portfolio", 
+                        "Dress professionally", "Turn off mobile phone", "Greet everyone with a smile"]:
+                doc.add_paragraph(f"☐ {item}", style='List Bullet')
+            
+            doc.add_heading('Technical Prep', 2)
+            for item in ["Review job description", "Research industry trends", "Know organization's mission/values"]:
+                doc.add_paragraph(f"☐ {item}", style='List Bullet')
+        
+        # Final encouragement
+        doc.add_page_break()
+        final = doc.add_paragraph()
+        final_run = final.add_run("💪 You've got this! Good luck with your interview!")
+        final_run.bold = True
+        final_run.font.size = Pt(14)
+        final.alignment = WD_ALIGN_PARAGRAPH.CENTER
         
         # Save to buffer
         buffer = BytesIO()

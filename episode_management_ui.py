@@ -556,12 +556,12 @@ def render_manage_episodes():
             st.write(f"**Status:** {selected_episode.get('status')}")
             if selected_episode.get('episode_code'):
                 st.write(f"**Episode Code:** {selected_episode.get('episode_code')}")
-            # SHOW RTT CODE
-            rtt_code = selected_episode.get('rtt_code', 'N/A')
-            if rtt_code and rtt_code != 'N/A':
-                st.write(f"**🎯 RTT Code:** {rtt_code}")
+            # SHOW EPISODE CODE (HRG Code)
+            episode_code = selected_episode.get('episode_code', 'N/A')
+            if episode_code and episode_code != 'N/A':
+                st.write(f"**📋 Episode/HRG Code:** {episode_code}")
             else:
-                st.write(f"**🎯 RTT Code:** Not set")
+                st.write(f"**📋 Episode/HRG Code:** Not set")
             if selected_episode.get('pathway_id'):
                 st.write(f"**Pathway:** {selected_episode.get('pathway_id')}")
         
@@ -595,17 +595,8 @@ def render_manage_episodes():
                     placeholder="e.g., 10, AA10, 20C"
                 )
                 
-                # RTT CODE EDIT
-                rtt_codes = ['', '10', '11', '12', '20', '21', '30', '31', '32', '34', '91', '92', '93', '94', '95', '96']
-                current_rtt = selected_episode.get('rtt_code', '')
-                rtt_index = rtt_codes.index(current_rtt) if current_rtt in rtt_codes else 0
-                
-                new_rtt_code = st.selectbox(
-                    "🎯 RTT Code (Critical!)",
-                    options=rtt_codes,
-                    index=rtt_index,
-                    help="Change RTT code if wrong code was entered"
-                )
+                # Note: RTT codes are set on RTT PATHWAYS, not episodes
+                # Episodes use episode_code (HRG codes) instead
             
             with col_edit2:
                 # DATE EDIT
@@ -658,8 +649,7 @@ def render_manage_episodes():
                 update_data = {
                     'episode_code': new_episode_code,
                     'notes': new_notes,
-                    'rtt_code': new_rtt_code if new_rtt_code else None,  # ADD RTT CODE
-                    'start_date': str(new_date)  # ADD DATE
+                    'start_date': str(new_date)
                 }
                 
                 if new_end_date:
