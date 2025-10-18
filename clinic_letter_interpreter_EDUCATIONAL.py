@@ -73,7 +73,9 @@ def ai_educational_interpretation(letter_text):
         prompt = f"""
         You are a T21 Services NHS RTT validation trainer. Analyze this clinical letter and provide EDUCATIONAL interpretation.
         
-        TEACH the user HOW to interpret this letter step-by-step using OFFICIAL T21 COMMENTING STYLES.
+        CRITICAL: Return ONLY the scenarios that apply to THIS specific letter. Do NOT return all possible scenarios.
+        
+        TEACH the user HOW to interpret THIS letter step-by-step using OFFICIAL T21 COMMENTING STYLES.
         
         T21 OFFICIAL COMMENT FORMATS (ENHANCED WITH FULL DETAILS):
         
@@ -84,6 +86,8 @@ def ai_educational_interpretation(letter_text):
         - REF REC'D [REF_DATE] FOR [CONDITION] - PT ON PBL - AWAITING 1ST OPA [SPECIALTY]
         - REF REC'D [REF_DATE] FOR [CONDITION] - 1ST OPA [DATE] [SPECIALTY] (appointment booked)
         - REF REC'D [REF_DATE] FOR [CONDITION] - 1ST OPA ATTENDED [DATE] [SPECIALTY]
+        
+        DIAGNOSTIC Examples (Validator must CHECK test status):
         - AWAITING DSG [TEST NAME] FOR [CONDITION] (test NOT booked yet)
         - DSG [TEST NAME] [DATE] FOR [CONDITION] (test BOOKED but not done yet - check date!)
         - DXG [TEST NAME] [DATE] FOR [CONDITION] - AWAITING RESULTS (test DONE, waiting for results)
@@ -156,7 +160,7 @@ def ai_educational_interpretation(letter_text):
                     "apt_attended": "{{today_date}} T21 - REF REC'D {{ref_date}} FOR {{condition}} - 1ST OPA ATTENDED {{apt_date}} {{specialty}}",
                     "validator_must_check": "Check: Is PT on PBL? Is appointment booked? Has appointment happened? Comment what you FIND!",
                     "example": "18/10/2025 T21 - REF REC'D 01/10/2025 FOR CHEST PAIN - PT ON PBL - AWAITING 1ST OPA CARDIOLOGY"
-                }},
+                }} (ONLY include if letter is a REFERRAL),
                 
                 "diagnostic_scenarios": {{
                     "awaiting_not_booked": "{{today_date}} T21 - AWAITING DSG [{{test_name}}] FOR {{condition}}",
@@ -165,14 +169,14 @@ def ai_educational_interpretation(letter_text):
                     "done_results_received": "{{today_date}} T21 - DXG [{{test_name}}] {{test_date}} FOR {{condition}} - RESULTS: {{outcome}}",
                     "validator_must_check": "Check: Is test booked? Has test date passed? Are results available? Comment based on what you FIND!",
                     "example": "Check date and status, then use: AWAITING DSG (not booked) | DSG [date] (booked but not done) | DXG [date] AWAITING RESULTS (done, no results) | DXG [date] RESULTS: [outcome] (results received)"
-                }},
+                }} (ONLY include if letter mentions DIAGNOSTIC tests),
                 
                 "treatment_scenarios": {{
                     "basic": "CS ({{tx_date}})(30) {{init}} PT RCVD {{treatment_name}} FOR {{condition}}",
                     "with_followup_booked": "CS ({{tx_date}})(30) {{init}} PT RCVD {{treatment_name}} FOR {{condition}}. F/U APT {{fu_date}} BOOKED",
                     "with_followup_weeks": "CS ({{tx_date}})(30) {{init}} PT RCVD {{treatment_name}} FOR {{condition}}. F/U APPT REQUIRED IN {{weeks}} WEEKS",
                     "example": "CS (10/10/2025)(30) TSO PT RCVD ANTIBIOTICS FOR CHEST INFECTION. F/U APPT 15/11/2025 BOOKED"
-                }},
+                }} (ONLY include if letter mentions TREATMENT given),
                 
                 "surgery_scenarios": {{
                     "not_on_wl": "{{today_date}} T21 - REF FOR {{procedure}} FOR {{condition}} - PT NOT ON WAITING LIST - REQUIRES WL ENTRY",
@@ -181,7 +185,7 @@ def ai_educational_interpretation(letter_text):
                     "surgery_done": "{{today_date}} T21 - SURGERY COMPLETED {{surgery_date}} {{procedure}} FOR {{condition}}",
                     "validator_must_check": "Check: Is PT on waiting list? Is TCI date set? Has surgery happened? Comment what you FIND!",
                     "example": "18/10/2025 T21 - PT ON WAITING LIST FOR KNEE ARTHROSCOPY FOR MENISCAL TEAR - AWAITING 1CL"
-                }},
+                }} (ONLY include if letter mentions SURGERY/procedure),
                 
                 "followup_scenarios": {{
                     "needed_not_booked": "{{today_date}} T21 - F/U APPT REQUIRED POST {{treatment_event}} FOR {{condition}} - NOT BOOKED",
@@ -189,13 +193,13 @@ def ai_educational_interpretation(letter_text):
                     "attended": "{{today_date}} T21 - F/U APPT ATTENDED {{apt_date}} POST {{treatment_event}} FOR {{condition}}",
                     "validator_must_check": "Check: Is F/U booked? Has F/U date passed? Was F/U attended? Comment what you FIND!",
                     "example": "18/10/2025 T21 - F/U APPT 15/11/2025 POST TREATMENT FOR CHEST INFECTION"
-                }},
+                }} (ONLY include if letter mentions FOLLOW-UP needed),
                 
                 "discharge_scenarios": {{
                     "basic": "CS ({{discharge_date}})(34) {{init}} PT DISCHARGED - {{diagnosis}} - NO FURTHER TX REQUIRED",
                     "to_gp": "CS ({{discharge_date}})(34) {{init}} PT DISCHARGED BACK TO GP - {{condition}} RESOLVED",
                     "example": "CS (15/09/2025)(34) TSO PT DISCHARGED - HYPERTENSION CONTROLLED - NO FURTHER TX REQUIRED"
-                }},
+                }} (ONLY include if letter is DISCHARGE),
                 
                 "teaching": "ALWAYS include FULL DETAILS: referral dates, condition/diagnosis, treatment names, test results, specialty. Make comments informative!"
             }},
@@ -228,6 +232,11 @@ def ai_educational_interpretation(letter_text):
         }}
         
         Be EDUCATIONAL - explain WHY, not just WHAT.
+        
+        CRITICAL INSTRUCTION: Only return scenario sections that are RELEVANT to this letter.
+        Example: If it's a REFERRAL letter, return referral_scenarios. If it mentions tests, also return diagnostic_scenarios.
+        Do NOT return surgery_scenarios if the letter doesn't mention surgery.
+        Do NOT return discharge_scenarios if it's not a discharge letter.
         """
         
         response = client.chat.completions.create(
@@ -249,29 +258,37 @@ def ai_educational_interpretation(letter_text):
 
 
 def basic_educational_interpretation(letter_text):
-    """Fallback basic interpretation"""
+    """Fallback basic interpretation - returns ONLY relevant scenarios"""
     
     letter_lower = letter_text.lower()
     
-    # Detect letter type
-    if any(word in letter_lower for word in ['refer', 'referral', 'i am writing to refer']):
+    # Detect letter type and what it contains
+    is_referral = any(word in letter_lower for word in ['refer', 'referral', 'i am writing to refer'])
+    is_discharge = any(word in letter_lower for word in ['discharg', 'no further', 'no treatment required'])
+    is_treatment = any(word in letter_lower for word in ['treatment', 'medication prescribed', 'procedure completed'])
+    has_tests = any(word in letter_lower for word in ['x-ray', 'mri', 'ct scan', 'ultrasound', 'blood test', 'investigation'])
+    has_surgery = any(word in letter_lower for word in ['surgery', 'operation', 'procedure'])
+    has_followup = any(word in letter_lower for word in ['follow-up', 'follow up', 'review appointment', 'see again'])
+    
+    # Determine primary letter type
+    if is_referral:
         letter_type = "Referral Letter"
         suggested_code = "10"
         code_name = "Referral (Clock Start)"
         clock_action = "START"
-        t21_format = f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] - AWAITING 1ST OPA [SPECIALTY]"
-    elif any(word in letter_lower for word in ['discharg', 'no further', 'no treatment required']):
+        t21_format = f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] FOR [CONDITION] - AWAITING 1ST OPA [SPECIALTY]"
+    elif is_discharge:
         letter_type = "Discharge Letter"
         suggested_code = "34"
         code_name = "Discharge (Clock Stop)"
         clock_action = "STOP"
-        t21_format = "CS ([DISCHARGE_DATE])(34) [INITIALS] PATIENT DISCHARGED - NO TREATMENT REQUIRED"
-    elif any(word in letter_lower for word in ['treatment', 'medication prescribed', 'procedure completed']):
+        t21_format = "CS ([DISCHARGE_DATE])(34) [INITIALS] PT DISCHARGED - [DIAGNOSIS] - NO FURTHER TX REQUIRED"
+    elif is_treatment:
         letter_type = "Treatment Letter"
         suggested_code = "30"
         code_name = "First Definitive Treatment (Clock Stop)"
         clock_action = "STOP"
-        t21_format = "CS ([TREATMENT_DATE])(30) [INITIALS] PATIENT RCVD MEDICATION/TREATMENT"
+        t21_format = "CS ([TREATMENT_DATE])(30) [INITIALS] PT RCVD [TREATMENT_NAME] FOR [CONDITION]"
     else:
         letter_type = "Clinic Outcome Letter"
         suggested_code = "20"
@@ -279,7 +296,8 @@ def basic_educational_interpretation(letter_text):
         clock_action = "CONTINUE"
         t21_format = "[DATE] T21 - [ACTION BASED ON LETTER]"
     
-    return {
+    # Build result with ONLY relevant scenarios
+    result = {
         "step1_identify_letter_type": {
             "letter_type": letter_type,
             "how_you_know": "Based on key phrases in the letter",
@@ -293,11 +311,13 @@ def basic_educational_interpretation(letter_text):
         },
         "step3_understand_content": {
             "what_happened": "Analyze letter content",
+            "plan_stated": "Review what the letter says will happen next",
             "teaching": "Identify PAST actions (done) vs FUTURE actions (to do)"
         },
         "step4_determine_rtt_code": {
             "suggested_code": suggested_code,
             "code_name": code_name,
+            "clock_action": clock_action,
             "why_this_code": f"This appears to be a {letter_type}",
             "teaching": "Match letter content to RTT code definitions"
         },
@@ -307,64 +327,85 @@ def basic_educational_interpretation(letter_text):
             "format_clock_stops": "CS ([DATE])([CODE]) [INITIALS] DETAILED REASON WITH CONTEXT",
             "comment_line": t21_format,
             "comment_breakdown": f"Use T21 enhanced format. Clock {clock_action}s. Include ALL details: dates, conditions, treatments",
-            "referral_scenarios": {
-                "not_on_pbl": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] FOR [CONDITION] - PT NOT ON PBL - AWAITING 1ST OPA [SPECIALTY]",
-                "on_pbl_no_apt": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] FOR [CONDITION] - PT ON PBL - AWAITING 1ST OPA [SPECIALTY]",
-                "apt_booked": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] FOR [CONDITION] - 1ST OPA [DATE] [SPECIALTY]",
-                "apt_attended": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] FOR [CONDITION] - 1ST OPA ATTENDED [DATE] [SPECIALTY]",
-                "validator_must_check": "Validator must CHECK: Is PT on PBL? Is appointment booked? Has appointment happened?",
-                "example": "18/10/2025 T21 - REF REC'D 01/10/2025 FOR CHEST PAIN - PT ON PBL - AWAITING 1ST OPA CARDIOLOGY"
-            },
-            "diagnostic_scenarios": {
-                "awaiting_not_booked": f"{datetime.now().strftime('%d/%m/%Y')} T21 - AWAITING DSG [TEST_NAME] FOR [CONDITION]",
-                "booked_not_done": f"{datetime.now().strftime('%d/%m/%Y')} T21 - DSG [TEST_NAME] [TEST_DATE] FOR [CONDITION]",
-                "done_awaiting_results": f"{datetime.now().strftime('%d/%m/%Y')} T21 - DXG [TEST_NAME] [TEST_DATE] FOR [CONDITION] - AWAITING RESULTS",
-                "done_results_received": f"{datetime.now().strftime('%d/%m/%Y')} T21 - DXG [TEST_NAME] [TEST_DATE] FOR [CONDITION] - RESULTS: [OUTCOME]",
-                "validator_must_check": "Validator must CHECK: Is test booked? Has test date passed? Are results available?",
-                "example": "Check system then comment: Not booked → AWAITING DSG | Booked not done → DSG [date] | Done no results → DXG AWAITING RESULTS | Results in → DXG RESULTS: [outcome]"
-            },
-            "treatment_scenarios": {
-                "basic": "CS ([TX_DATE])(30) [INIT] PT RCVD [TREATMENT_NAME] FOR [CONDITION]",
-                "with_followup_booked": "CS ([TX_DATE])(30) [INIT] PT RCVD [TREATMENT_NAME] FOR [CONDITION]. F/U APPT [DATE] BOOKED",
-                "with_followup_weeks": "CS ([TX_DATE])(30) [INIT] PT RCVD [TREATMENT_NAME] FOR [CONDITION]. F/U APPT REQUIRED IN [WEEKS] WEEKS",
-                "example": "CS (10/10/2025)(30) TSO PT RCVD ANTIBIOTICS FOR CHEST INFECTION. F/U APPT 15/11/2025 BOOKED"
-            },
-            "surgery_scenarios": {
-                "not_on_wl": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF FOR [PROCEDURE] FOR [CONDITION] - PT NOT ON WAITING LIST - REQUIRES WL ENTRY",
-                "on_wl_no_tci": f"{datetime.now().strftime('%d/%m/%Y')} T21 - PT ON WAITING LIST FOR [PROCEDURE] FOR [CONDITION] - AWAITING 1CL",
-                "tci_set": f"{datetime.now().strftime('%d/%m/%Y')} T21 - 1CL [SURGERY_DATE] [PROCEDURE] FOR [CONDITION]",
-                "surgery_done": f"{datetime.now().strftime('%d/%m/%Y')} T21 - SURGERY COMPLETED [SURGERY_DATE] [PROCEDURE] FOR [CONDITION]",
-                "validator_must_check": "Validator must CHECK: Is PT on waiting list? Is TCI date set? Has surgery happened?",
-                "example": "18/10/2025 T21 - PT ON WAITING LIST FOR KNEE ARTHROSCOPY FOR MENISCAL TEAR - AWAITING 1CL"
-            },
-            "followup_scenarios": {
-                "needed_not_booked": f"{datetime.now().strftime('%d/%m/%Y')} T21 - F/U APPT REQUIRED POST [TREATMENT/EVENT] FOR [CONDITION] - NOT BOOKED",
-                "booked_not_done": f"{datetime.now().strftime('%d/%m/%Y')} T21 - F/U APPT [DATE] POST [TREATMENT/EVENT] FOR [CONDITION]",
-                "attended": f"{datetime.now().strftime('%d/%m/%Y')} T21 - F/U APPT ATTENDED [DATE] POST [TREATMENT/EVENT] FOR [CONDITION]",
-                "validator_must_check": "Validator must CHECK: Is F/U booked? Has F/U date passed? Was F/U attended?",
-                "example": "18/10/2025 T21 - F/U APPT 15/11/2025 POST TREATMENT FOR CHEST INFECTION"
-            },
-            "discharge_scenarios": {
-                "basic": "CS ([DISCHARGE_DATE])(34) [INIT] PT DISCHARGED - [DIAGNOSIS] - NO FURTHER TX REQUIRED",
-                "to_gp": "CS ([DISCHARGE_DATE])(34) [INIT] PT DISCHARGED BACK TO GP - [CONDITION] RESOLVED",
-                "example": "CS (15/09/2025)(34) TSO PT DISCHARGED - HYPERTENSION CONTROLLED - NO FURTHER TX REQUIRED"
-            },
             "critical_point": "CHECK systems FIRST. Include FULL DETAILS: referral date, condition, treatment name, specialty, test results!",
             "teaching": "T21 enhanced formats include ALL relevant details from letter. Make comments informative and clear!"
         },
         "step6_next_actions": {
-            "actions_required": [
-                "Check if patient is on Partial Booking List (PBL)",
-                "If letter says 'patient to be added to waiting list' - verify they ARE on PBL",
-                "If NOT on PBL - escalate to booking team",
-                "Update RTT code in PAS",
-                "Add validation comment with today's date"
-            ],
-            "pbl_check_critical": "ALWAYS check PBL when letter mentions waiting list",
-            "teaching": "PBL verification is FIRST priority - prevents patients being lost!"
+            "actions_required": [],
+            "teaching": "Check relevant systems based on letter content"
         },
         "interpretation_confidence": "Medium"
     }
+    
+    # Add ONLY relevant scenario sections
+    if is_referral:
+        result["step5_nhs_comment_format"]["referral_scenarios"] = {
+            "not_on_pbl": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] FOR [CONDITION] - PT NOT ON PBL - AWAITING 1ST OPA [SPECIALTY]",
+            "on_pbl_no_apt": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] FOR [CONDITION] - PT ON PBL - AWAITING 1ST OPA [SPECIALTY]",
+            "apt_booked": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] FOR [CONDITION] - 1ST OPA [DATE] [SPECIALTY]",
+            "apt_attended": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] FOR [CONDITION] - 1ST OPA ATTENDED [DATE] [SPECIALTY]",
+            "validator_must_check": "Validator must CHECK: Is PT on PBL? Is appointment booked? Has appointment happened?",
+            "example": "18/10/2025 T21 - REF REC'D 01/10/2025 FOR CHEST PAIN - PT ON PBL - AWAITING 1ST OPA CARDIOLOGY"
+        }
+        result["step6_next_actions"]["actions_required"].append("Check if patient is on Partial Booking List (PBL)")
+        result["step6_next_actions"]["actions_required"].append("Check if 1st OPA appointment is booked")
+        result["step6_next_actions"]["pbl_check_critical"] = "ALWAYS check PBL for referrals"
+    
+    if has_tests:
+        result["step5_nhs_comment_format"]["diagnostic_scenarios"] = {
+            "awaiting_not_booked": f"{datetime.now().strftime('%d/%m/%Y')} T21 - AWAITING DSG [TEST_NAME] FOR [CONDITION]",
+            "booked_not_done": f"{datetime.now().strftime('%d/%m/%Y')} T21 - DSG [TEST_NAME] [TEST_DATE] FOR [CONDITION]",
+            "done_awaiting_results": f"{datetime.now().strftime('%d/%m/%Y')} T21 - DXG [TEST_NAME] [TEST_DATE] FOR [CONDITION] - AWAITING RESULTS",
+            "done_results_received": f"{datetime.now().strftime('%d/%m/%Y')} T21 - DXG [TEST_NAME] [TEST_DATE] FOR [CONDITION] - RESULTS: [OUTCOME]",
+            "validator_must_check": "Validator must CHECK: Is test booked? Has test date passed? Are results available?",
+            "example": "Check system then comment: Not booked → AWAITING DSG | Booked not done → DSG [date] | Done no results → DXG AWAITING RESULTS | Results in → DXG RESULTS: [outcome]"
+        }
+        result["step6_next_actions"]["actions_required"].append("Check if diagnostic test is booked/completed")
+    
+    if is_treatment:
+        result["step5_nhs_comment_format"]["treatment_scenarios"] = {
+            "basic": "CS ([TX_DATE])(30) [INIT] PT RCVD [TREATMENT_NAME] FOR [CONDITION]",
+            "with_followup_booked": "CS ([TX_DATE])(30) [INIT] PT RCVD [TREATMENT_NAME] FOR [CONDITION]. F/U APPT [DATE] BOOKED",
+            "with_followup_weeks": "CS ([TX_DATE])(30) [INIT] PT RCVD [TREATMENT_NAME] FOR [CONDITION]. F/U APPT REQUIRED IN [WEEKS] WEEKS",
+            "example": "CS (10/10/2025)(30) TSO PT RCVD ANTIBIOTICS FOR CHEST INFECTION. F/U APPT 15/11/2025 BOOKED"
+        }
+        result["step6_next_actions"]["actions_required"].append("Check if follow-up appointment is booked (if needed)")
+    
+    if has_surgery:
+        result["step5_nhs_comment_format"]["surgery_scenarios"] = {
+            "not_on_wl": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF FOR [PROCEDURE] FOR [CONDITION] - PT NOT ON WAITING LIST - REQUIRES WL ENTRY",
+            "on_wl_no_tci": f"{datetime.now().strftime('%d/%m/%Y')} T21 - PT ON WAITING LIST FOR [PROCEDURE] FOR [CONDITION] - AWAITING 1CL",
+            "tci_set": f"{datetime.now().strftime('%d/%m/%Y')} T21 - 1CL [SURGERY_DATE] [PROCEDURE] FOR [CONDITION]",
+            "surgery_done": f"{datetime.now().strftime('%d/%m/%Y')} T21 - SURGERY COMPLETED [SURGERY_DATE] [PROCEDURE] FOR [CONDITION]",
+            "validator_must_check": "Validator must CHECK: Is PT on waiting list? Is TCI date set? Has surgery happened?",
+            "example": "18/10/2025 T21 - PT ON WAITING LIST FOR KNEE ARTHROSCOPY FOR MENISCAL TEAR - AWAITING 1CL"
+        }
+        result["step6_next_actions"]["actions_required"].append("Check if patient is on surgical waiting list")
+        result["step6_next_actions"]["actions_required"].append("Check if TCI (To Come In) date is set")
+    
+    if has_followup:
+        result["step5_nhs_comment_format"]["followup_scenarios"] = {
+            "needed_not_booked": f"{datetime.now().strftime('%d/%m/%Y')} T21 - F/U APPT REQUIRED POST [TREATMENT/EVENT] FOR [CONDITION] - NOT BOOKED",
+            "booked_not_done": f"{datetime.now().strftime('%d/%m/%Y')} T21 - F/U APPT [DATE] POST [TREATMENT/EVENT] FOR [CONDITION]",
+            "attended": f"{datetime.now().strftime('%d/%m/%Y')} T21 - F/U APPT ATTENDED [DATE] POST [TREATMENT/EVENT] FOR [CONDITION]",
+            "validator_must_check": "Validator must CHECK: Is F/U booked? Has F/U date passed? Was F/U attended?",
+            "example": "18/10/2025 T21 - F/U APPT 15/11/2025 POST TREATMENT FOR CHEST INFECTION"
+        }
+        result["step6_next_actions"]["actions_required"].append("Check if follow-up appointment is booked")
+    
+    if is_discharge:
+        result["step5_nhs_comment_format"]["discharge_scenarios"] = {
+            "basic": "CS ([DISCHARGE_DATE])(34) [INIT] PT DISCHARGED - [DIAGNOSIS] - NO FURTHER TX REQUIRED",
+            "to_gp": "CS ([DISCHARGE_DATE])(34) [INIT] PT DISCHARGED BACK TO GP - [CONDITION] RESOLVED",
+            "example": "CS (15/09/2025)(34) TSO PT DISCHARGED - HYPERTENSION CONTROLLED - NO FURTHER TX REQUIRED"
+        }
+        result["step6_next_actions"]["actions_required"].append("Verify pathway is closed in PAS")
+    
+    # Always add these
+    result["step6_next_actions"]["actions_required"].append("Update RTT code in PAS")
+    result["step6_next_actions"]["actions_required"].append("Add T21 validation comment with today's date")
+    
+    return result
 
 
 def render_clinic_letter_interpreter():
