@@ -166,6 +166,36 @@ def render_book_appointment():
                 else:
                     st.warning(f"⚠️ {result['message']}")
                     
+                    # NHS WORKFLOW: Add to Partial Booking List if no slots available
+                    st.markdown("---")
+                    st.error("❌ **No appointment slots available**")
+                    st.info("""
+                    📋 **NHS Partial Booking List (PBL) Workflow**
+                    
+                    When no appointment is available, the patient should be added to the Partial Booking List:
+                    - ✅ Send acknowledgment email to patient
+                    - 📊 Monitor RTT breach risk
+                    - 🔔 Alert when slots become available
+                    - 📧 Automatically notify patient when booked
+                    """)
+                    
+                    # Add to PBL button
+                    col_pbl1, col_pbl2, col_pbl3 = st.columns([2, 1, 2])
+                    with col_pbl2:
+                        if st.button("➕ Add to Partial Booking List", type="primary", key="add_to_pbl_btn"):
+                            st.session_state['add_to_pbl_pending'] = {
+                                'patient_name': patient_name,
+                                'nhs_number': nhs_number,
+                                'appointment_type': appointment_type,
+                                'priority': priority,
+                                'contact_number': contact_number,
+                                'special_requirements': special_requirements
+                            }
+                            st.success("✅ Patient info saved! Scroll down to complete PBL form.")
+                            st.rerun()
+                    
+                    st.markdown("---")
+                    
                     if result.get('alternatives'):
                         st.markdown("### 🤖 AI-Suggested Alternative Slots:")
                         
@@ -185,6 +215,94 @@ def render_book_appointment():
                                 st.markdown(f"**Rating:** {alt['recommendation']}")
                             
                             st.markdown("---")
+    
+    # PBL FORM - Shows when user clicks "Add to PBL" button
+    if 'add_to_pbl_pending' in st.session_state:
+        st.markdown("---")
+        st.markdown("## 📋 Add to Partial Booking List")
+        st.success("✅ Patient details saved. Complete additional information below:")
+        
+        pending_data = st.session_state['add_to_pbl_pending']
+        
+        with st.form("pbl_form"):
+            st.markdown("### Complete PBL Information")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.write(f"**Patient:** {pending_data['patient_name']}")
+                st.write(f"**NHS Number:** {pending_data['nhs_number']}")
+                st.write(f"**Priority:** {pending_data['priority']}")
+                
+                dob = st.date_input("Date of Birth*", value=datetime.now() - timedelta(days=365*40))
+                referral_date = st.date_input("Referral Date*", value=datetime.now())
+                specialty = st.selectbox("Specialty*", SPECIALTIES)
+            
+            with col2:
+                email = st.text_input("Patient Email*", placeholder="patient@email.com")
+                phone = st.text_input("Patient Phone", value=pending_data.get('contact_number', ''))
+                referring_gp = st.text_input("Referring GP", placeholder="Dr. Jones")
+                referral_reason = st.text_area("Referral Reason", 
+                                              value=pending_data.get('special_requirements', ''),
+                                              height=100)
+            
+            send_acknowledgment = st.checkbox("📧 Send Acknowledgment Email to Patient", value=True)
+            
+            notes = st.text_area("Additional Notes", height=80)
+            
+            submit_pbl = st.form_submit_button("✅ Add to Partial Booking List", type="primary")
+            
+            if submit_pbl:
+                if not email or not specialty:
+                    st.error("❌ Please fill all required fields (Email and Specialty)!")
+                else:
+                    try:
+                        from partial_booking_list_system import add_to_pbl
+                        
+                        pbl_data = {
+                            'nhs_number': pending_data['nhs_number'],
+                            'name': pending_data['patient_name'],
+                            'dob': str(dob),
+                            'referral_date': str(referral_date),
+                            'specialty': specialty,
+                            'priority': pending_data['priority'],
+                            'email': email,
+                            'phone': phone,
+                            'referring_gp': referring_gp,
+                            'referral_reason': referral_reason,
+                            'notes': notes
+                        }
+                        
+                        result = add_to_pbl(pbl_data, send_acknowledgment=send_acknowledgment)
+                        
+                        if result['success']:
+                            st.balloons()
+                            st.success(f"""
+                            ✅ **PATIENT ADDED TO PARTIAL BOOKING LIST!**
+                            
+                            **Patient:** {pending_data['patient_name']}  
+                            **NHS Number:** {pending_data['nhs_number']}  
+                            **Specialty:** {specialty}  
+                            **Priority:** {pending_data['priority']}  
+                            
+                            {'✅ Acknowledgment email sent!' if send_acknowledgment and email else ''}
+                            
+                            📋 **Next Steps:**
+                            - Patient is now on PBL and monitored for RTT breach risk
+                            - Go to "Partial Booking List" tab to view and manage
+                            - System will alert when appointments become available
+                            - Patient will be automatically notified when booked
+                            """)
+                            
+                            # Clear pending state
+                            del st.session_state['add_to_pbl_pending']
+                            
+                        else:
+                            st.error(f"❌ {result['message']}")
+                    
+                    except Exception as e:
+                        st.error(f"❌ Error adding to PBL: {e}")
+                        st.info("💡 The Partial Booking List module may not be fully configured. Contact system administrator.")
 
 
 def render_clinic_management():

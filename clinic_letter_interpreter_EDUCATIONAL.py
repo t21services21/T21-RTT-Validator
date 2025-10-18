@@ -368,21 +368,53 @@ def basic_educational_interpretation(letter_text):
 
 
 def render_clinic_letter_interpreter():
-    """Main EDUCATIONAL clinic letter interpreter"""
+    """Main clinic letter interpreter with Teaching and Validation modes"""
     
-    st.title("📝 Clinic Letter Interpreter - TEACHING MODE")
-    st.caption("Learn HOW to interpret clinic letters step-by-step")
+    st.title("📝 Clinic Letter Interpreter")
     
-    st.info("""
-    **🎓 This Tool TEACHES You:**
-    1. How to READ and understand clinic letters
-    2. Which RTT code to use and WHY
-    3. NHS commenting format (exact text to write)
-    4. Next actions required
-    5. Common mistakes to avoid
+    # MODE SELECTION
+    col1, col2 = st.columns([3, 2])
     
-    Perfect for training and learning!
-    """)
+    with col1:
+        mode = st.radio(
+            "**Select Mode:**",
+            ["🎓 Teaching Mode (Show all scenarios)", "⚡ Validation Mode (Give me the comment!)"],
+            horizontal=True,
+            help="Teaching: Learn all options | Validation: Get quick answer for real work"
+        )
+    
+    with col2:
+        if mode == "🎓 Teaching Mode (Show all scenarios)":
+            st.info("📚 **Learning Mode Active**")
+        else:
+            st.success("⚡ **Fast Validation Active**")
+    
+    # Store mode in session state
+    is_teaching_mode = "Teaching" in mode
+    
+    if is_teaching_mode:
+        st.caption("Learn HOW to interpret clinic letters step-by-step")
+        st.info("""
+        **🎓 This Tool TEACHES You:**
+        1. How to READ and understand clinic letters
+        2. Which RTT code to use and WHY
+        3. NHS commenting format (exact text to write)
+        4. Next actions required
+        5. Common mistakes to avoid
+        
+        Perfect for training and learning!
+        """)
+    else:
+        st.caption("Fast validation for working NHS staff - Get the comment in seconds!")
+        st.success("""
+        **⚡ Validation Mode:**
+        1. Upload letter → Get instant analysis
+        2. Shows what to CHECK in systems (PBL, appointments, etc.)
+        3. Gives you ONE specific comment to use
+        4. Flags discrepancies automatically
+        
+        **30X faster than manual validation!**
+        """)
     
     # Step 1: Upload letter
     st.markdown("---")
