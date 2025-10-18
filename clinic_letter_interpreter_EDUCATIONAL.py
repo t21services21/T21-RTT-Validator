@@ -75,24 +75,37 @@ def ai_educational_interpretation(letter_text):
         
         TEACH the user HOW to interpret this letter step-by-step using OFFICIAL T21 COMMENTING STYLES.
         
-        T21 OFFICIAL COMMENT FORMATS:
+        T21 OFFICIAL COMMENT FORMATS (ENHANCED WITH FULL DETAILS):
         
-        CLOCK CONTINUES: [DATE] T21 - [ACTION]
-        Examples:
-        - AWAITING 1ST OPA (referral, no appointment yet)
-        - 1ST OPA [DATE] (first appointment booked)
-        - AWAITING DSG [TEST NAME] (diagnostic test to be booked)
-        - DSG [TEST NAME] [DATE] (diagnostic booked)
-        - DXG [TEST NAME] [DATE] (diagnostic done)
-        - AWAITING 1CL (waiting for surgery TCI date)
-        - 1CL [DATE] (surgery date set)
-        - AWAITING F/U APPT (follow-up needed)
-        - F/U APPT [DATE] (follow-up booked)
+        CLOCK CONTINUES: [DATE] T21 - [DETAILED ACTION WITH CONTEXT]
         
-        CLOCK STOPS: CS ([STOP_DATE])([CODE]) [INITIALS] REASON
-        Examples:
-        - CS (23/04/2025)(30) JDS PATIENT RCVD MEDICATION/TREATMENT. F/U APPT BOOKED
-        - CS (15/09/2025)(34) MOD PATIENT DISCHARGED - NO TREATMENT REQUIRED
+        REFERRAL Examples with FULL DETAILS (Validator must CHECK PBL and appointment status):
+        - REF REC'D [REF_DATE] FOR [CONDITION] - PT NOT ON PBL - AWAITING 1ST OPA [SPECIALTY]
+        - REF REC'D [REF_DATE] FOR [CONDITION] - PT ON PBL - AWAITING 1ST OPA [SPECIALTY]
+        - REF REC'D [REF_DATE] FOR [CONDITION] - 1ST OPA [DATE] [SPECIALTY] (appointment booked)
+        - REF REC'D [REF_DATE] FOR [CONDITION] - 1ST OPA ATTENDED [DATE] [SPECIALTY]
+        - AWAITING DSG [TEST NAME] FOR [CONDITION] (test NOT booked yet)
+        - DSG [TEST NAME] [DATE] FOR [CONDITION] (test BOOKED but not done yet - check date!)
+        - DXG [TEST NAME] [DATE] FOR [CONDITION] - AWAITING RESULTS (test DONE, waiting for results)
+        - DXG [TEST NAME] [DATE] FOR [CONDITION] - RESULTS: [OUTCOME] (test DONE, results received)
+        
+        SURGERY Examples (Validator must CHECK waiting list and TCI status):
+        - REF FOR [PROCEDURE] FOR [CONDITION] - PT NOT ON WAITING LIST - REQUIRES WL ENTRY
+        - PT ON WAITING LIST FOR [PROCEDURE] FOR [CONDITION] - AWAITING 1CL
+        - 1CL [DATE] [PROCEDURE] FOR [CONDITION] (TCI date set)
+        - SURGERY COMPLETED [DATE] [PROCEDURE] FOR [CONDITION]
+        
+        FOLLOW-UP Examples (Validator must CHECK booking and attendance):
+        - F/U APPT REQUIRED POST [TREATMENT/EVENT] FOR [CONDITION] - NOT BOOKED
+        - F/U APPT [DATE] POST [TREATMENT/EVENT] FOR [CONDITION] (booked but not done)
+        - F/U APPT ATTENDED [DATE] POST [TREATMENT/EVENT] FOR [CONDITION]
+        
+        CLOCK STOPS: CS ([STOP_DATE])([CODE]) [INITIALS] DETAILED REASON WITH CONTEXT
+        Examples with FULL DETAILS:
+        - CS (23/04/2025)(30) JDS PT RCVD [TREATMENT NAME] FOR [CONDITION]. F/U APPT [DATE] BOOKED
+        - CS (23/04/2025)(30) JDS PT RCVD [TREATMENT NAME] FOR [CONDITION]. F/U APPT REQUIRED IN [WEEKS]
+        - CS (15/09/2025)(34) MOD PT DISCHARGED - [DIAGNOSIS] - NO FURTHER TX REQUIRED
+        - CS (15/09/2025)(34) MOD PT DISCHARGED BACK TO GP - [CONDITION] RESOLVED
         
         CLINICAL LETTER:
         {letter_text}
@@ -129,29 +142,62 @@ def ai_educational_interpretation(letter_text):
                 "teaching": "How to recognize this scenario in future letters"
             }},
             "step5_nhs_comment_format": {{
-                "comment_format": "Use T21 OFFICIAL format based on clock action",
-                "format_if_clock_continues": "[DATE] T21 - [ACTION]",
-                "format_if_clock_stops": "CS ([STOP_DATE])([CODE]) [INITIALS] REASON",
-                "comment_line": "T21 format based on letter content",
-                "comment_breakdown": "Choose correct T21 format: Clock continues OR Clock stops",
-                "critical_point": "MUST CHECK systems (PBL, appointments, diagnostics) and use correct T21 format based on what you FIND",
+                "comment_format": "Use T21 ENHANCED format with FULL DETAILS from letter",
+                "format_if_clock_continues": "[DATE] T21 - [DETAILED ACTION WITH CONTEXT]",
+                "format_if_clock_stops": "CS ([STOP_DATE])([CODE]) [INITIALS] DETAILED REASON WITH CONTEXT",
+                "comment_line": "T21 enhanced format with condition, treatment, dates, etc.",
+                "comment_breakdown": "Include ALL relevant details: referral date, condition, treatment name, specialty, etc.",
+                "critical_point": "MUST include: What (action), When (dates), Why (condition/diagnosis), Where (specialty)",
                 
                 "referral_scenarios": {{
-                    "if_no_appointment": "{{today_date}} T21 - AWAITING 1ST OPA",
-                    "if_appointment_booked": "{{today_date}} T21 - 1ST OPA {{appointment_date}}"
+                    "not_on_pbl": "{{today_date}} T21 - REF REC'D {{ref_date}} FOR {{condition}} - PT NOT ON PBL - AWAITING 1ST OPA {{specialty}}",
+                    "on_pbl_no_apt": "{{today_date}} T21 - REF REC'D {{ref_date}} FOR {{condition}} - PT ON PBL - AWAITING 1ST OPA {{specialty}}",
+                    "apt_booked": "{{today_date}} T21 - REF REC'D {{ref_date}} FOR {{condition}} - 1ST OPA {{apt_date}} {{specialty}}",
+                    "apt_attended": "{{today_date}} T21 - REF REC'D {{ref_date}} FOR {{condition}} - 1ST OPA ATTENDED {{apt_date}} {{specialty}}",
+                    "validator_must_check": "Check: Is PT on PBL? Is appointment booked? Has appointment happened? Comment what you FIND!",
+                    "example": "18/10/2025 T21 - REF REC'D 01/10/2025 FOR CHEST PAIN - PT ON PBL - AWAITING 1ST OPA CARDIOLOGY"
+                }},
+                
+                "diagnostic_scenarios": {{
+                    "awaiting_not_booked": "{{today_date}} T21 - AWAITING DSG [{{test_name}}] FOR {{condition}}",
+                    "booked_not_done": "{{today_date}} T21 - DSG [{{test_name}}] {{test_date}} FOR {{condition}}",
+                    "done_awaiting_results": "{{today_date}} T21 - DXG [{{test_name}}] {{test_date}} FOR {{condition}} - AWAITING RESULTS",
+                    "done_results_received": "{{today_date}} T21 - DXG [{{test_name}}] {{test_date}} FOR {{condition}} - RESULTS: {{outcome}}",
+                    "validator_must_check": "Check: Is test booked? Has test date passed? Are results available? Comment based on what you FIND!",
+                    "example": "Check date and status, then use: AWAITING DSG (not booked) | DSG [date] (booked but not done) | DXG [date] AWAITING RESULTS (done, no results) | DXG [date] RESULTS: [outcome] (results received)"
                 }},
                 
                 "treatment_scenarios": {{
-                    "treatment_no_followup": "CS ({{treatment_date}})(30) {{initials}} PATIENT RCVD MEDICATION/TREATMENT",
-                    "treatment_with_followup_not_booked": "CS ({{treatment_date}})(30) {{initials}} PATIENT RCVD MEDICATION/TREATMENT. F/U APPT REQUIRED",
-                    "treatment_with_followup_booked": "CS ({{treatment_date}})(30) {{initials}} PATIENT RCVD MEDICATION/TREATMENT. F/U APPT BOOKED"
+                    "basic": "CS ({{tx_date}})(30) {{init}} PT RCVD {{treatment_name}} FOR {{condition}}",
+                    "with_followup_booked": "CS ({{tx_date}})(30) {{init}} PT RCVD {{treatment_name}} FOR {{condition}}. F/U APT {{fu_date}} BOOKED",
+                    "with_followup_weeks": "CS ({{tx_date}})(30) {{init}} PT RCVD {{treatment_name}} FOR {{condition}}. F/U APPT REQUIRED IN {{weeks}} WEEKS",
+                    "example": "CS (10/10/2025)(30) TSO PT RCVD ANTIBIOTICS FOR CHEST INFECTION. F/U APPT 15/11/2025 BOOKED"
+                }},
+                
+                "surgery_scenarios": {{
+                    "not_on_wl": "{{today_date}} T21 - REF FOR {{procedure}} FOR {{condition}} - PT NOT ON WAITING LIST - REQUIRES WL ENTRY",
+                    "on_wl_no_tci": "{{today_date}} T21 - PT ON WAITING LIST FOR {{procedure}} FOR {{condition}} - AWAITING 1CL",
+                    "tci_set": "{{today_date}} T21 - 1CL {{surgery_date}} {{procedure}} FOR {{condition}}",
+                    "surgery_done": "{{today_date}} T21 - SURGERY COMPLETED {{surgery_date}} {{procedure}} FOR {{condition}}",
+                    "validator_must_check": "Check: Is PT on waiting list? Is TCI date set? Has surgery happened? Comment what you FIND!",
+                    "example": "18/10/2025 T21 - PT ON WAITING LIST FOR KNEE ARTHROSCOPY FOR MENISCAL TEAR - AWAITING 1CL"
+                }},
+                
+                "followup_scenarios": {{
+                    "needed_not_booked": "{{today_date}} T21 - F/U APPT REQUIRED POST {{treatment_event}} FOR {{condition}} - NOT BOOKED",
+                    "booked_not_done": "{{today_date}} T21 - F/U APPT {{apt_date}} POST {{treatment_event}} FOR {{condition}}",
+                    "attended": "{{today_date}} T21 - F/U APPT ATTENDED {{apt_date}} POST {{treatment_event}} FOR {{condition}}",
+                    "validator_must_check": "Check: Is F/U booked? Has F/U date passed? Was F/U attended? Comment what you FIND!",
+                    "example": "18/10/2025 T21 - F/U APPT 15/11/2025 POST TREATMENT FOR CHEST INFECTION"
                 }},
                 
                 "discharge_scenarios": {{
-                    "discharge": "CS ({{discharge_date}})(34) {{initials}} PATIENT DISCHARGED - NO TREATMENT REQUIRED"
+                    "basic": "CS ({{discharge_date}})(34) {{init}} PT DISCHARGED - {{diagnosis}} - NO FURTHER TX REQUIRED",
+                    "to_gp": "CS ({{discharge_date}})(34) {{init}} PT DISCHARGED BACK TO GP - {{condition}} RESOLVED",
+                    "example": "CS (15/09/2025)(34) TSO PT DISCHARGED - HYPERTENSION CONTROLLED - NO FURTHER TX REQUIRED"
                 }},
                 
-                "teaching": "Use OFFICIAL T21 format. Check systems first, then choose correct format based on what you FIND!"
+                "teaching": "ALWAYS include FULL DETAILS: referral dates, condition/diagnosis, treatment names, test results, specialty. Make comments informative!"
             }},
             "step6_next_actions": {{
                 "actions_required": [
@@ -213,7 +259,7 @@ def basic_educational_interpretation(letter_text):
         suggested_code = "10"
         code_name = "Referral (Clock Start)"
         clock_action = "START"
-        t21_format = "[DATE] T21 - AWAITING 1ST OPA"
+        t21_format = f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] - AWAITING 1ST OPA [SPECIALTY]"
     elif any(word in letter_lower for word in ['discharg', 'no further', 'no treatment required']):
         letter_type = "Discharge Letter"
         suggested_code = "34"
@@ -256,22 +302,55 @@ def basic_educational_interpretation(letter_text):
             "teaching": "Match letter content to RTT code definitions"
         },
         "step5_nhs_comment_format": {
-            "comment_format": "T21 OFFICIAL FORMAT",
-            "format_clock_continues": "[DATE] T21 - [ACTION]",
-            "format_clock_stops": "CS ([DATE])([CODE]) [INITIALS] REASON",
+            "comment_format": "T21 ENHANCED FORMAT WITH FULL DETAILS",
+            "format_clock_continues": "[DATE] T21 - [DETAILED ACTION WITH CONTEXT]",
+            "format_clock_stops": "CS ([DATE])([CODE]) [INITIALS] DETAILED REASON WITH CONTEXT",
             "comment_line": t21_format,
-            "comment_breakdown": f"Use T21 official format. Clock {clock_action}s → Use appropriate format",
-            "referral_examples": {
-                "if_no_appointment": f"{datetime.now().strftime('%d/%m/%Y')} T21 - AWAITING 1ST OPA",
-                "if_appointment_booked": f"{datetime.now().strftime('%d/%m/%Y')} T21 - 1ST OPA [DATE]"
+            "comment_breakdown": f"Use T21 enhanced format. Clock {clock_action}s. Include ALL details: dates, conditions, treatments",
+            "referral_scenarios": {
+                "not_on_pbl": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] FOR [CONDITION] - PT NOT ON PBL - AWAITING 1ST OPA [SPECIALTY]",
+                "on_pbl_no_apt": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] FOR [CONDITION] - PT ON PBL - AWAITING 1ST OPA [SPECIALTY]",
+                "apt_booked": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] FOR [CONDITION] - 1ST OPA [DATE] [SPECIALTY]",
+                "apt_attended": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF REC'D [REF_DATE] FOR [CONDITION] - 1ST OPA ATTENDED [DATE] [SPECIALTY]",
+                "validator_must_check": "Validator must CHECK: Is PT on PBL? Is appointment booked? Has appointment happened?",
+                "example": "18/10/2025 T21 - REF REC'D 01/10/2025 FOR CHEST PAIN - PT ON PBL - AWAITING 1ST OPA CARDIOLOGY"
             },
-            "treatment_examples": {
-                "no_followup": f"CS ([TREATMENT_DATE])(30) [INIT] PATIENT RCVD MEDICATION/TREATMENT",
-                "followup_booked": f"CS ([TREATMENT_DATE])(30) [INIT] PATIENT RCVD MEDICATION/TREATMENT. F/U APPT BOOKED",
-                "followup_not_booked": f"CS ([TREATMENT_DATE])(30) [INIT] PATIENT RCVD MEDICATION/TREATMENT. F/U APPT REQUIRED"
+            "diagnostic_scenarios": {
+                "awaiting_not_booked": f"{datetime.now().strftime('%d/%m/%Y')} T21 - AWAITING DSG [TEST_NAME] FOR [CONDITION]",
+                "booked_not_done": f"{datetime.now().strftime('%d/%m/%Y')} T21 - DSG [TEST_NAME] [TEST_DATE] FOR [CONDITION]",
+                "done_awaiting_results": f"{datetime.now().strftime('%d/%m/%Y')} T21 - DXG [TEST_NAME] [TEST_DATE] FOR [CONDITION] - AWAITING RESULTS",
+                "done_results_received": f"{datetime.now().strftime('%d/%m/%Y')} T21 - DXG [TEST_NAME] [TEST_DATE] FOR [CONDITION] - RESULTS: [OUTCOME]",
+                "validator_must_check": "Validator must CHECK: Is test booked? Has test date passed? Are results available?",
+                "example": "Check system then comment: Not booked → AWAITING DSG | Booked not done → DSG [date] | Done no results → DXG AWAITING RESULTS | Results in → DXG RESULTS: [outcome]"
             },
-            "critical_point": "CHECK systems FIRST (PBL, appointments, etc.) then use correct T21 format based on what you FIND!",
-            "teaching": "T21 official formats must be used. Choose format based on clock action and what you discovered when checking!"
+            "treatment_scenarios": {
+                "basic": "CS ([TX_DATE])(30) [INIT] PT RCVD [TREATMENT_NAME] FOR [CONDITION]",
+                "with_followup_booked": "CS ([TX_DATE])(30) [INIT] PT RCVD [TREATMENT_NAME] FOR [CONDITION]. F/U APPT [DATE] BOOKED",
+                "with_followup_weeks": "CS ([TX_DATE])(30) [INIT] PT RCVD [TREATMENT_NAME] FOR [CONDITION]. F/U APPT REQUIRED IN [WEEKS] WEEKS",
+                "example": "CS (10/10/2025)(30) TSO PT RCVD ANTIBIOTICS FOR CHEST INFECTION. F/U APPT 15/11/2025 BOOKED"
+            },
+            "surgery_scenarios": {
+                "not_on_wl": f"{datetime.now().strftime('%d/%m/%Y')} T21 - REF FOR [PROCEDURE] FOR [CONDITION] - PT NOT ON WAITING LIST - REQUIRES WL ENTRY",
+                "on_wl_no_tci": f"{datetime.now().strftime('%d/%m/%Y')} T21 - PT ON WAITING LIST FOR [PROCEDURE] FOR [CONDITION] - AWAITING 1CL",
+                "tci_set": f"{datetime.now().strftime('%d/%m/%Y')} T21 - 1CL [SURGERY_DATE] [PROCEDURE] FOR [CONDITION]",
+                "surgery_done": f"{datetime.now().strftime('%d/%m/%Y')} T21 - SURGERY COMPLETED [SURGERY_DATE] [PROCEDURE] FOR [CONDITION]",
+                "validator_must_check": "Validator must CHECK: Is PT on waiting list? Is TCI date set? Has surgery happened?",
+                "example": "18/10/2025 T21 - PT ON WAITING LIST FOR KNEE ARTHROSCOPY FOR MENISCAL TEAR - AWAITING 1CL"
+            },
+            "followup_scenarios": {
+                "needed_not_booked": f"{datetime.now().strftime('%d/%m/%Y')} T21 - F/U APPT REQUIRED POST [TREATMENT/EVENT] FOR [CONDITION] - NOT BOOKED",
+                "booked_not_done": f"{datetime.now().strftime('%d/%m/%Y')} T21 - F/U APPT [DATE] POST [TREATMENT/EVENT] FOR [CONDITION]",
+                "attended": f"{datetime.now().strftime('%d/%m/%Y')} T21 - F/U APPT ATTENDED [DATE] POST [TREATMENT/EVENT] FOR [CONDITION]",
+                "validator_must_check": "Validator must CHECK: Is F/U booked? Has F/U date passed? Was F/U attended?",
+                "example": "18/10/2025 T21 - F/U APPT 15/11/2025 POST TREATMENT FOR CHEST INFECTION"
+            },
+            "discharge_scenarios": {
+                "basic": "CS ([DISCHARGE_DATE])(34) [INIT] PT DISCHARGED - [DIAGNOSIS] - NO FURTHER TX REQUIRED",
+                "to_gp": "CS ([DISCHARGE_DATE])(34) [INIT] PT DISCHARGED BACK TO GP - [CONDITION] RESOLVED",
+                "example": "CS (15/09/2025)(34) TSO PT DISCHARGED - HYPERTENSION CONTROLLED - NO FURTHER TX REQUIRED"
+            },
+            "critical_point": "CHECK systems FIRST. Include FULL DETAILS: referral date, condition, treatment name, specialty, test results!",
+            "teaching": "T21 enhanced formats include ALL relevant details from letter. Make comments informative and clear!"
         },
         "step6_next_actions": {
             "actions_required": [
@@ -485,23 +564,142 @@ def render_clinic_letter_interpreter():
         st.markdown("**Comment Breakdown:**")
         st.write(step5.get('comment_breakdown', 'Explanation of comment structure'))
         
+        # Show T21 format types
+        if step5.get('format_clock_continues') or step5.get('format_clock_stops'):
+            st.markdown("**📋 T21 OFFICIAL FORMATS:**")
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("**Clock CONTINUES:**")
+                st.code(step5.get('format_clock_continues', '[DATE] T21 - [ACTION]'), language=None)
+            with col2:
+                st.markdown("**Clock STOPS:**")
+                st.code(step5.get('format_clock_stops', 'CS ([DATE])([CODE]) [INIT] REASON'), language=None)
+        
         # Show critical point
         if step5.get('critical_point'):
             st.error(f"🚨 **CRITICAL:** {step5.get('critical_point')}")
         
-        # Show PBL examples
-        if step5.get('example_if_on_pbl') or step5.get('example_if_not_on_pbl'):
-            st.markdown("**📋 PBL Check Workflow:**")
-            st.info("**Step 1:** Go to PBL/Outpatient Waiting List system\n**Step 2:** Search for this patient\n**Step 3:** Is patient on the list?\n**Step 4:** Comment what you FOUND (see examples below)")
-            st.markdown("**Comment Examples Based on What You FIND:**")
+        # Show DETAILED examples for all scenarios
+        if step5.get('referral_scenarios'):
+            st.markdown("**📌 REFERRAL Examples - Validator Must CHECK PBL & Appointment Status:**")
+            ref_ex = step5.get('referral_scenarios', {})
+            
+            if ref_ex.get('validator_must_check'):
+                st.warning(f"**⚠️ {ref_ex.get('validator_must_check')}**")
             
             col1, col2 = st.columns(2)
             with col1:
-                st.markdown("**If patient IS on PBL:**")
-                st.code(step5.get('example_if_on_pbl', 'Check example'), language=None)
+                st.markdown("**1️⃣ PT NOT on PBL:**")
+                st.code(ref_ex.get('not_on_pbl', 'Example'), language=None)
+                st.markdown("**2️⃣ PT ON PBL - no appointment:**")
+                st.code(ref_ex.get('on_pbl_no_apt', 'Example'), language=None)
             with col2:
-                st.markdown("**If patient NOT on PBL:**")
-                st.code(step5.get('example_if_not_on_pbl', 'Check example'), language=None)
+                st.markdown("**3️⃣ Appointment booked:**")
+                st.code(ref_ex.get('apt_booked', 'Example'), language=None)
+                st.markdown("**4️⃣ Appointment attended:**")
+                st.code(ref_ex.get('apt_attended', 'Example'), language=None)
+            
+            if ref_ex.get('example'):
+                st.info(f"**💡 Example:** {ref_ex.get('example')}")
+        
+        # Show diagnostic examples
+        if step5.get('diagnostic_scenarios'):
+            st.markdown("**🔬 DIAGNOSTIC Examples - Validator Must CHECK Date & Status:**")
+            diag_ex = step5.get('diagnostic_scenarios', {})
+            
+            if diag_ex.get('validator_must_check'):
+                st.warning(f"**⚠️ {diag_ex.get('validator_must_check')}**")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("**1️⃣ Test NOT booked yet:**")
+                st.code(diag_ex.get('awaiting_not_booked', 'Example'), language=None)
+                st.markdown("**2️⃣ Test BOOKED but not done:**")
+                st.code(diag_ex.get('booked_not_done', 'Example'), language=None)
+            with col2:
+                st.markdown("**3️⃣ Test DONE - awaiting results:**")
+                st.code(diag_ex.get('done_awaiting_results', 'Example'), language=None)
+                st.markdown("**4️⃣ Test DONE - results received:**")
+                st.code(diag_ex.get('done_results_received', 'Example'), language=None)
+            
+            if diag_ex.get('example'):
+                st.info(f"**💡 Workflow:** {diag_ex.get('example')}")
+        
+        # Show treatment examples
+        if step5.get('treatment_scenarios'):
+            st.markdown("**💊 TREATMENT Examples (Clock Stops - Enhanced):**")
+            treat_ex = step5.get('treatment_scenarios', {})
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.markdown("**No follow-up:**")
+                st.code(treat_ex.get('basic', 'Example'), language=None)
+            with col2:
+                st.markdown("**Follow-up BOOKED:**")
+                st.code(treat_ex.get('with_followup_booked', 'Example'), language=None)
+            with col3:
+                st.markdown("**Follow-up in X weeks:**")
+                st.code(treat_ex.get('with_followup_weeks', 'Example'), language=None)
+            if treat_ex.get('example'):
+                st.info(f"**💡 Example:** {treat_ex.get('example')}")
+        
+        # Show surgery examples
+        if step5.get('surgery_scenarios'):
+            st.markdown("**🏥 SURGERY Examples - Validator Must CHECK Waiting List & TCI Status:**")
+            surg_ex = step5.get('surgery_scenarios', {})
+            
+            if surg_ex.get('validator_must_check'):
+                st.warning(f"**⚠️ {surg_ex.get('validator_must_check')}**")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("**1️⃣ PT NOT on waiting list:**")
+                st.code(surg_ex.get('not_on_wl', 'Example'), language=None)
+                st.markdown("**2️⃣ PT ON waiting list - no TCI:**")
+                st.code(surg_ex.get('on_wl_no_tci', 'Example'), language=None)
+            with col2:
+                st.markdown("**3️⃣ TCI date set:**")
+                st.code(surg_ex.get('tci_set', 'Example'), language=None)
+                st.markdown("**4️⃣ Surgery completed:**")
+                st.code(surg_ex.get('surgery_done', 'Example'), language=None)
+            
+            if surg_ex.get('example'):
+                st.info(f"**💡 Example:** {surg_ex.get('example')}")
+        
+        # Show follow-up examples
+        if step5.get('followup_scenarios'):
+            st.markdown("**📅 FOLLOW-UP Examples - Validator Must CHECK Booking & Attendance:**")
+            fu_ex = step5.get('followup_scenarios', {})
+            
+            if fu_ex.get('validator_must_check'):
+                st.warning(f"**⚠️ {fu_ex.get('validator_must_check')}**")
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.markdown("**F/U needed - NOT booked:**")
+                st.code(fu_ex.get('needed_not_booked', 'Example'), language=None)
+            with col2:
+                st.markdown("**F/U booked - not done:**")
+                st.code(fu_ex.get('booked_not_done', 'Example'), language=None)
+            with col3:
+                st.markdown("**F/U attended:**")
+                st.code(fu_ex.get('attended', 'Example'), language=None)
+            
+            if fu_ex.get('example'):
+                st.info(f"**💡 Example:** {fu_ex.get('example')}")
+        
+        # Show discharge examples
+        if step5.get('discharge_scenarios'):
+            st.markdown("**📋 DISCHARGE Examples (Clock Stops - Enhanced):**")
+            disch_ex = step5.get('discharge_scenarios', {})
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("**Discharged - no further treatment:**")
+                st.code(disch_ex.get('basic', 'Example'), language=None)
+            with col2:
+                st.markdown("**Discharged back to GP:**")
+                st.code(disch_ex.get('to_gp', 'Example'), language=None)
+            if disch_ex.get('example'):
+                st.info(f"**💡 Example:** {disch_ex.get('example')}")
         
         if step5.get('format_rules'):
             st.markdown("**Format Rules:**")
