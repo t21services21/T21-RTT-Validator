@@ -56,10 +56,51 @@ def extract_text_from_file(uploaded_file):
         return False, f"File processing error: {str(e)}"
 
 
+def filter_relevant_scenarios(result, letter_text):
+    """
+    POST-PROCESSING: Remove irrelevant scenarios based on actual letter content
+    This ensures we only show what applies to THIS specific letter
+    """
+    letter_lower = letter_text.lower()
+    
+    # Detect what's actually in the letter
+    is_referral = any(word in letter_lower for word in ['refer', 'referral', 'i am writing to refer'])
+    is_discharge = any(word in letter_lower for word in ['discharg', 'no further', 'no treatment required'])
+    is_treatment = any(word in letter_lower for word in ['treatment given', 'medication prescribed', 'procedure completed', 'received treatment'])
+    has_tests = any(word in letter_lower for word in ['x-ray', 'mri', 'ct scan', 'ultrasound', 'blood test', 'investigation', 'test', 'scan'])
+    has_surgery = any(word in letter_lower for word in ['surgery', 'operation', 'waiting list', 'tci date'])
+    has_followup = any(word in letter_lower for word in ['follow-up', 'follow up', 'review appointment', 'see again', 'review in'])
+    
+    # Get step5 scenarios
+    step5 = result.get('step5_nhs_comment_format', {})
+    
+    # Remove scenarios that don't apply
+    if not is_referral and 'referral_scenarios' in step5:
+        del step5['referral_scenarios']
+    
+    if not has_tests and 'diagnostic_scenarios' in step5:
+        del step5['diagnostic_scenarios']
+    
+    if not is_treatment and 'treatment_scenarios' in step5:
+        del step5['treatment_scenarios']
+    
+    if not has_surgery and 'surgery_scenarios' in step5:
+        del step5['surgery_scenarios']
+    
+    if not has_followup and 'followup_scenarios' in step5:
+        del step5['followup_scenarios']
+    
+    if not is_discharge and 'discharge_scenarios' in step5:
+        del step5['discharge_scenarios']
+    
+    return result
+
+
 def ai_educational_interpretation(letter_text):
     """
     AI provides EDUCATIONAL interpretation
     Shows HOW to interpret the letter step-by-step
+    POST-PROCESSED to show ONLY relevant scenarios
     """
     
     try:
@@ -250,6 +291,10 @@ def ai_educational_interpretation(letter_text):
         )
         
         result = json.loads(response.choices[0].message.content)
+        
+        # POST-PROCESS: Filter out irrelevant scenarios
+        result = filter_relevant_scenarios(result, letter_text)
+        
         return result
         
     except Exception as e:
@@ -696,6 +741,20 @@ def render_clinic_letter_interpreter():
         # ========================================
         # TEACHING MODE CONTENT BELOW
         # ========================================
+        
+        # Show what scenarios are being displayed
+        step5 = interpretation.get('step5_nhs_comment_format', {})
+        scenarios_shown = []
+        if 'referral_scenarios' in step5: scenarios_shown.append("REFERRAL")
+        if 'diagnostic_scenarios' in step5: scenarios_shown.append("DIAGNOSTIC")
+        if 'treatment_scenarios' in step5: scenarios_shown.append("TREATMENT")
+        if 'surgery_scenarios' in step5: scenarios_shown.append("SURGERY")
+        if 'followup_scenarios' in step5: scenarios_shown.append("FOLLOW-UP")
+        if 'discharge_scenarios' in step5: scenarios_shown.append("DISCHARGE")
+        
+        if scenarios_shown:
+            st.info(f"📌 **Showing scenarios for THIS letter only:** {', '.join(scenarios_shown)}")
+        
         # Step 1: Identify Letter Type
         st.markdown("### 📋 Step 1: Identify Letter Type")
         
