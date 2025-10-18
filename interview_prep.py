@@ -164,8 +164,8 @@ def analyze_with_gpt4(job_title, job_description, company_name, api_key):
         st.error(f"❌ Failed to initialize OpenAI client: {e}")
         raise
     
-    # FAST PROMPT - Generate job-specific questions quickly!
-    prompt = f"""You are preparing a candidate for a job interview. Analyze the job description and generate EXACTLY 15-20 likely interview questions.
+    # COMPREHENSIVE PROMPT - Generate 40-50+ job-specific questions!
+    prompt = f"""You are preparing a candidate for a job interview. Analyze the job description and generate 15-20 CATEGORIES with 3-4 questions EACH (total: 45-80 questions).
 
 JOB TITLE: {job_title}
 ORGANIZATION: {company_name}
@@ -174,16 +174,18 @@ JOB DESCRIPTION:
 {job_description[:2000]}
 
 REQUIREMENTS:
-1. Generate EXACTLY 15-20 questions (not less!)
-2. All questions must be SPECIFIC to this job description
-3. Include a mix of:
-   - Technical questions (about systems/skills mentioned in the job)
-   - Competency-based questions (STAR method scenarios)
-   - Scenario questions (realistic situations for this role)
-   - Motivation questions (why this role/organization)
-   - Closing questions (strengths, weaknesses, questions for them)
+1. Generate 15-20 CATEGORIES of questions
+2. For EACH category, generate 3-4 SPECIFIC questions (not just 1!)
+3. Total questions: 45-80 (15 categories × 3-4 questions each)
+4. All questions must be SPECIFIC to this job description
+5. Include categories like:
+   - Technical questions (about systems/skills mentioned - 3-4 questions)
+   - Competency-based (STAR method scenarios - 3-4 questions)
+   - Scenario questions (realistic situations - 3-4 questions)
+   - Motivation questions (why this role/organization - 3-4 questions)
+   - Closing questions (strengths, weaknesses, etc. - 3-4 questions)
 
-4. For EACH question provide:
+6. For EACH question provide:
    - Exact question text
    - Why they ask it
    - Likelihood percentage
@@ -195,18 +197,34 @@ Return ONLY valid JSON (no markdown):
 {{
   "questions": [
     {{
-      "category": "Technical - [Specific Area]",
-      "question": "Full question text",
-      "why_asked": "What competency they're testing",
+      "category": "Technical - Medical Terminology",
+      "question": "Can you explain your experience with medical terminology?",
+      "why_asked": "Tests knowledge of core skill",
       "likelihood": "95%",
-      "answer": "Professional 100-150 word answer with specifics",
-      "tips": ["Specific tip 1", "Specific tip 2", "Specific tip 3"]
+      "answer": "Professional answer here...",
+      "tips": ["Tip 1", "Tip 2", "Tip 3"]
     }},
-    ... (continue for 15-20 total questions)
+    {{
+      "category": "Technical - Medical Terminology",
+      "question": "How do you ensure accuracy when using medical terms in correspondence?",
+      "why_asked": "Tests attention to detail",
+      "likelihood": "90%",
+      "answer": "Professional answer here...",
+      "tips": ["Tip 1", "Tip 2", "Tip 3"]
+    }},
+    {{
+      "category": "Technical - Medical Terminology",
+      "question": "Give an example of a complex medical term you've used in your work.",
+      "why_asked": "Tests practical application",
+      "likelihood": "85%",
+      "answer": "Professional answer here...",
+      "tips": ["Tip 1", "Tip 2", "Tip 3"]
+    }},
+    ... (continue with 3-4 questions per category, 15-20 categories total = 45-80 questions)
   ]
 }}
 
-CRITICAL: You MUST generate at least 15 questions. More is better (up to 20)."""
+CRITICAL: Generate 3-4 questions per category! Don't just generate 1 question per category. Total output should be 45-80 questions."""
 
     try:
         st.info("📤 Sending request to GPT-4...")
@@ -217,7 +235,7 @@ CRITICAL: You MUST generate at least 15 questions. More is better (up to 20)."""
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7,
-            max_tokens=8000,  # For 15-20 questions with concise answers
+            max_tokens=16000,  # For 45-80 questions with full answers (increased from 8000)
             response_format={"type": "json_object"}  # Force JSON output (no markdown)
         )
         
