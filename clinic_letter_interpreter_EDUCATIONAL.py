@@ -460,23 +460,199 @@ def render_clinic_letter_interpreter():
         if letter_text:
             st.success(f"✅ Letter provided ({len(letter_text)} characters)")
     
-    # Interpret button
+    # Interpret button (text changes based on mode)
     if letter_text:
-        if st.button("🎓 Interpret & Teach Me", type="primary", use_container_width=True):
-            with st.spinner("🤖 AI analyzing and preparing teaching explanation..."):
+        button_text = "🎓 Interpret & Teach Me" if is_teaching_mode else "⚡ Analyze Letter (Fast Validation)"
+        spinner_text = "🤖 AI analyzing and preparing teaching explanation..." if is_teaching_mode else "⚡ Fast analysis in progress..."
+        
+        if st.button(button_text, type="primary", use_container_width=True):
+            with st.spinner(spinner_text):
                 interpretation = ai_educational_interpretation(letter_text)
                 st.session_state['interpretation'] = interpretation
+                st.session_state['is_teaching_mode'] = is_teaching_mode  # Store mode
             
-            st.success("✅ Educational interpretation complete!")
+            success_msg = "✅ Educational interpretation complete!" if is_teaching_mode else "✅ Fast validation analysis complete!"
+            st.success(success_msg)
             st.rerun()
     
     # Show interpretation
     if 'interpretation' in st.session_state:
         interpretation = st.session_state['interpretation']
+        stored_mode = st.session_state.get('is_teaching_mode', True)
         
         st.markdown("---")
-        st.markdown("## 🎓 STEP-BY-STEP INTERPRETATION GUIDE")
         
+        # DIFFERENT DISPLAY BASED ON MODE
+        if stored_mode:
+            # TEACHING MODE - Show all scenarios
+            st.markdown("## 🎓 STEP-BY-STEP INTERPRETATION GUIDE")
+        else:
+            # ========================================
+            # VALIDATION MODE - DIFFERENT WORKFLOW
+            # ========================================
+            st.markdown("## ⚡ VALIDATION WORKFLOW")
+            
+            step2 = interpretation.get('step2_extract_key_info', {})
+            step3 = interpretation.get('step3_understand_content', {})
+            step4 = interpretation.get('step4_determine_rtt_code', {})
+            step5 = interpretation.get('step5_nhs_comment_format', {})
+            
+            # Quick Summary
+            st.success(f"""
+            **Letter Type:** {interpretation.get('step1_identify_letter_type', {}).get('letter_type', 'Unknown')}
+            **Patient:** {step2.get('patient_name', 'Not extracted')}
+            **NHS Number:** {step2.get('nhs_number', 'Not extracted')}
+            **Specialty:** {step2.get('specialty', 'Not extracted')}
+            **RTT Code:** {step4.get('suggested_code', '?')} - {step4.get('code_name', 'Unknown')}
+            **Clock:** {step4.get('clock_action', 'CONTINUE')}
+            """)
+            
+            # SYSTEM CHECKS REQUIRED
+            st.markdown("---")
+            st.markdown("### 🔍 STEP 1: VERIFY IN SYSTEMS")
+            st.error("""
+            **🚨 CRITICAL: Check systems FIRST before writing comment!**
+            
+            You MUST verify the information across multiple systems.
+            Do NOT just copy what the letter says!
+            """)
+            
+            # Determine what type of letter to show relevant checks
+            letter_type = interpretation.get('step1_identify_letter_type', {}).get('letter_type', '').lower()
+            
+            with st.expander("📋 System Verification Checklist", expanded=True):
+                st.markdown("**Check these systems and record what you FIND:**")
+                
+                # PAS Check
+                st.markdown("**1. PAS System:**")
+                pas_check = st.radio(
+                    "Patient details match?",
+                    ["✅ All match", "❌ Mismatch found", "⚠️ Not checked yet"],
+                    key="pas_check",
+                    horizontal=True
+                )
+                if pas_check == "❌ Mismatch found":
+                    st.text_input("Describe mismatch:", key="pas_mismatch")
+                
+                # PBL Check (if referral/waiting)
+                if 'referral' in letter_type or 'waiting' in step3.get('plan_stated', '').lower():
+                    st.markdown("**2. Partial Booking List (PBL):**")
+                    pbl_status = st.radio(
+                        "Is patient on PBL?",
+                        ["✅ ON PBL", "❌ NOT on PBL", "⚠️ Not checked yet"],
+                        key="pbl_check",
+                        horizontal=True
+                    )
+                
+                # Appointment Check
+                st.markdown("**3. Appointments System:**")
+                apt_status = st.radio(
+                    "Appointment status:",
+                    ["✅ Booked", "✅ Attended", "❌ NOT booked", "⚠️ Not checked yet"],
+                    key="apt_check",
+                    horizontal=True
+                )
+                if apt_status == "✅ Booked" or apt_status == "✅ Attended":
+                    apt_date = st.date_input("Appointment date:", key="apt_date")
+                
+                # Referral Check
+                if 'referral' in letter_type:
+                    st.markdown("**4. Referral System:**")
+                    ref_check = st.radio(
+                        "Referral exists in system?",
+                        ["✅ Yes", "❌ No", "⚠️ Not checked yet"],
+                        key="ref_check",
+                        horizontal=True
+                    )
+                    if ref_check == "✅ Yes":
+                        ref_date = st.date_input("Referral date in system:", key="ref_date")
+            
+            # GENERATE COMMENT BASED ON FINDINGS
+            st.markdown("---")
+            st.markdown("### 💬 STEP 2: YOUR COMMENT")
+            
+            if st.button("✅ Generate Comment Based on My Checks", type="primary"):
+                # Build comment based on what user selected
+                today = datetime.now().strftime('%d/%m/%Y')
+                
+                # Get values from checks
+                pbl_val = st.session_state.get('pbl_check', '')
+                apt_val = st.session_state.get('apt_check', '')
+                pas_val = st.session_state.get('pas_check', '')
+                
+                # Generate appropriate comment
+                if 'referral' in letter_type:
+                    specialty = step2.get('specialty', '[SPECIALTY]')
+                    ref_date_val = st.session_state.get('ref_date', 'REF_DATE')
+                    condition = step3.get('diagnosis', '') or step3.get('what_happened', '')[:50]
+                    
+                    if 'ON PBL' in pbl_val and 'NOT booked' in apt_val:
+                        generated_comment = f"{today} T21 - REF REC'D {ref_date_val} FOR {condition} - PT ON PBL - AWAITING 1ST OPA {specialty}"
+                    elif 'NOT on PBL' in pbl_val:
+                        generated_comment = f"{today} T21 - REF REC'D {ref_date_val} FOR {condition} - PT NOT ON PBL - AWAITING 1ST OPA {specialty}"
+                    elif 'Booked' in apt_val:
+                        apt_date_val = st.session_state.get('apt_date', 'APT_DATE')
+                        generated_comment = f"{today} T21 - REF REC'D {ref_date_val} FOR {condition} - 1ST OPA {apt_date_val} {specialty}"
+                    elif 'Attended' in apt_val:
+                        apt_date_val = st.session_state.get('apt_date', 'APT_DATE')
+                        generated_comment = f"{today} T21 - REF REC'D {ref_date_val} FOR {condition} - 1ST OPA ATTENDED {apt_date_val} {specialty}"
+                    else:
+                        generated_comment = f"{today} T21 - REF REC'D [DATE] - AWAITING 1ST OPA {specialty}"
+                else:
+                    # Use suggested comment from interpretation
+                    generated_comment = step5.get('comment_line', f"{today} T21 - [ACTION]")
+                
+                st.session_state['generated_comment'] = generated_comment
+            
+            # Show generated comment with copy button
+            if 'generated_comment' in st.session_state:
+                st.markdown("**✅ Your Comment (Ready to Use):**")
+                comment = st.session_state['generated_comment']
+                
+                st.code(comment, language=None)
+                
+                col1, col2 = st.columns([1, 3])
+                with col1:
+                    if st.button("📋 Copy Comment"):
+                        st.success("✅ Select the text above and press Ctrl+C to copy!")
+                
+                # Check for discrepancies
+                if st.session_state.get('pas_check', '') == "❌ Mismatch found":
+                    st.error("""
+                    🚨 **DISCREPANCY DETECTED!**
+                    
+                    PAS data doesn't match letter. Investigate before finalizing comment.
+                    You may need to flag this for correction.
+                    """)
+                
+                # Show what was checked
+                with st.expander("📊 Verification Summary", expanded=False):
+                    st.markdown("**Your Checks:**")
+                    st.write(f"- PAS: {st.session_state.get('pas_check', 'Not checked')}")
+                    st.write(f"- PBL: {st.session_state.get('pbl_check', 'Not applicable')}")
+                    st.write(f"- Appointments: {st.session_state.get('apt_check', 'Not checked')}")
+                    st.write(f"- Referral: {st.session_state.get('ref_check', 'Not applicable')}")
+                    
+                    st.info("💡 Your comment reflects what you FOUND in systems, not just what letter says!")
+            
+            st.markdown("---")
+            st.success("""
+            ⚡ **Validation Complete!**
+            
+            You've:
+            1. ✅ Verified information across systems
+            2. ✅ Generated comment based on REALITY
+            3. ✅ Ready to paste into PAS
+            
+            **This is professional validation work!** 👏
+            """)
+            
+            # End of validation mode - don't show teaching content
+            st.stop()
+        
+        # ========================================
+        # TEACHING MODE CONTENT BELOW
+        # ========================================
         # Step 1: Identify Letter Type
         st.markdown("### 📋 Step 1: Identify Letter Type")
         
