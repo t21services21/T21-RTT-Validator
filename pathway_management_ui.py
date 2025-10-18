@@ -82,12 +82,20 @@ def render_create_pathway():
     4. Add episodes to track progress
     """)
     
-    # Success message
+    # Success message - ENHANCED WITH CLEAR CONFIRMATION
     if 'pathway_created' in st.session_state:
         pathway_info = st.session_state['pathway_created']
-        st.success(f"✅ Pathway created: {pathway_info['pathway_id']}")
-        st.info(f"**Breach Date:** {pathway_info['breach_date']}")
         st.balloons()
+        st.success(f"""
+        ✅ **PATHWAY CREATED SUCCESSFULLY!**
+        
+        **Pathway ID:** {pathway_info['pathway_id']}  
+        **Breach Date:** {pathway_info['breach_date']}  
+        **Status:** RTT Clock Started ⏱️
+        
+        ✔️ Pathway is now active and being tracked!
+        """)
+        st.info("💡 **Next Steps:** You can now manage this pathway, record milestones, or pause/resume the clock below.")
         del st.session_state['pathway_created']
     
     # Patient selector with SEARCH
@@ -502,9 +510,15 @@ def render_clock_management(pathway: dict):
                 result = resume_pathway_clock(pathway.get('pathway_id'), str(resume_date))
                 
                 if result['success']:
-                    st.success(f"✅ {result['message']}")
-                    st.info(f"🆕 New Breach Date: **{result['new_breach_date']}**")
                     st.balloons()
+                    st.success(f"""
+                    ✅ **CLOCK RESUMED SUCCESSFULLY!**
+                    
+                    {result['message']}  
+                    🆕 **New Breach Date:** {result['new_breach_date']}
+                    
+                    ✔️ RTT Clock is now RUNNING again!
+                    """)
                     st.rerun()
                 else:
                     st.error(f"❌ Failed: {result.get('error')}")
@@ -551,8 +565,16 @@ def render_clock_management(pathway: dict):
                 )
                 
                 if result['success']:
-                    st.success("✅ RTT clock paused successfully!")
-                    st.warning("⚠️ Remember to resume clock when patient is available!")
+                    st.balloons()
+                    st.success("""
+                    ✅ **CLOCK PAUSED SUCCESSFULLY!**
+                    
+                    ⏸️ RTT Clock is now PAUSED  
+                    ✔️ Pause reason has been recorded  
+                    
+                    **IMPORTANT:** Clock is not counting while paused!
+                    """)
+                    st.warning("⚠️ **Remember:** Resume clock when patient becomes available again!")
                     st.rerun()
                 else:
                     st.error(f"❌ Failed: {result.get('error')}")
@@ -660,8 +682,17 @@ def render_milestone_recording(pathway: dict):
                 )
                 
                 if result['success']:
-                    st.success(f"✅ {result['message']}")
                     st.balloons()
+                    st.success(f"""
+                    ✅ **MILESTONE RECORDED SUCCESSFULLY!**
+                    
+                    {result['message']}  
+                    ✔️ Pathway updated with new milestone  
+                    📊 Tracking information saved  
+                    
+                    **Status:** Milestone has been permanently recorded!
+                    """)
+                    st.info("💡 **Next:** Continue managing pathway or record additional milestones as needed.")
                     st.rerun()
                 else:
                     st.error(f"❌ Failed: {result.get('error')}")
@@ -704,7 +735,15 @@ def render_status_management(pathway: dict):
         result = update_rtt_status(pathway.get('pathway_id'), new_status)
         
         if result['success']:
-            st.success(f"✅ {result['message']}")
+            st.balloons()
+            st.success(f"""
+            ✅ **STATUS UPDATED SUCCESSFULLY!**
+            
+            {result['message']}  
+            ✔️ Pathway status has been changed  
+            
+            **Status:** Update has been saved!
+            """)
             st.rerun()
         else:
             st.error(f"❌ Failed: {result.get('error')}")
