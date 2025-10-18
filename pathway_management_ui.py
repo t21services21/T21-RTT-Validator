@@ -401,9 +401,54 @@ def render_pathway_card(pathway: dict):
             st.markdown("**📄 Clinical Notes:**")
             st.write(pathway.get('notes'))
         
-        # Show episodes count
-        episodes = get_patient_episodes(pathway.get('patient_id', ''))
-        st.info(f"📋 **Episodes Linked:** {episodes.get('total_count', 0)}")
+        # Show FULL EPISODES TABLE (like PAS system)
+        st.markdown("---")
+        st.markdown("### 📋 Episodes")
+        
+        episodes_data = get_patient_episodes(pathway.get('patient_id', ''))
+        all_episodes = episodes_data.get('all_episodes', [])
+        
+        # Filter episodes for this pathway
+        pathway_episodes = [ep for ep in all_episodes if ep.get('pathway_id') == pathway.get('pathway_id')]
+        
+        if pathway_episodes:
+            st.success(f"✅ {len(pathway_episodes)} episode(s) linked to this pathway")
+            
+            # Display episodes in table format
+            for idx, episode in enumerate(pathway_episodes, 1):
+                with st.expander(f"📌 Episode {idx}: {episode.get('episode_type', 'Unknown').title()} - {episode.get('start_date', 'N/A')}", expanded=False):
+                    col1, col2, col3 = st.columns(3)
+                    
+                    with col1:
+                        st.write(f"**Episode ID:** {episode.get('episode_id')}")
+                        st.write(f"**Type:** {episode.get('episode_type', 'N/A').title()}")
+                        st.write(f"**Start Date:** {episode.get('start_date', 'N/A')}")
+                        st.write(f"**End Date:** {episode.get('end_date', 'Not ended')}")
+                    
+                    with col2:
+                        st.write(f"**Specialty:** {episode.get('specialty', 'N/A')}")
+                        st.write(f"**Consultant:** {episode.get('consultant_name', 'N/A')}")
+                        st.write(f"**Status:** {episode.get('status', 'N/A').title()}")
+                    
+                    with col3:
+                        if episode.get('treatment_type'):
+                            st.write(f"**Treatment:** {episode.get('treatment_type')}")
+                        if episode.get('test_type'):
+                            st.write(f"**Test:** {episode.get('test_type')}")
+                        if episode.get('result'):
+                            st.write(f"**Result:** {episode.get('result')}")
+                    
+                    if episode.get('notes'):
+                        st.markdown("**📝 Notes:**")
+                        st.write(episode.get('notes'))
+            
+            # Add episode button
+            if st.button("➕ Add New Episode to This Pathway", key=f"add_ep_{pathway.get('pathway_id')}"):
+                st.info("💡 Go to 'Episode Management' module to add episodes")
+        else:
+            st.warning("📋 No episodes linked to this pathway yet")
+            if st.button("➕ Add First Episode", key=f"add_first_ep_{pathway.get('pathway_id')}"):
+                st.info("💡 Go to 'Episode Management' module to add episodes")
 
 
 def render_manage_pathway():
@@ -465,6 +510,55 @@ def render_manage_pathway():
             st.write(f"**Breach Date:** {selected_pathway.get('breach_date')}")
             if selected_pathway.get('total_pause_days', 0) > 0:
                 st.write(f"**Total Paused:** {selected_pathway.get('total_pause_days')} days")
+    
+    # Show EPISODES TABLE (like PAS system)
+    st.markdown("---")
+    st.markdown("### 📋 Episodes Linked to This Pathway")
+    
+    episodes_data = get_patient_episodes(selected_pathway.get('patient_id', ''))
+    all_episodes = episodes_data.get('all_episodes', [])
+    
+    # Filter episodes for this pathway
+    pathway_episodes = [ep for ep in all_episodes if ep.get('pathway_id') == selected_pathway.get('pathway_id')]
+    
+    if pathway_episodes:
+        st.success(f"✅ {len(pathway_episodes)} episode(s) linked to this pathway")
+        
+        # Display episodes in table format
+        for idx, episode in enumerate(pathway_episodes, 1):
+            with st.expander(f"📌 Episode {idx}: {episode.get('episode_type', 'Unknown').title()} - {episode.get('start_date', 'N/A')}", expanded=False):
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.write(f"**Episode ID:** {episode.get('episode_id')}")
+                    st.write(f"**Type:** {episode.get('episode_type', 'N/A').title()}")
+                    st.write(f"**Start Date:** {episode.get('start_date', 'N/A')}")
+                    st.write(f"**End Date:** {episode.get('end_date', 'Not ended')}")
+                
+                with col2:
+                    st.write(f"**Specialty:** {episode.get('specialty', 'N/A')}")
+                    st.write(f"**Consultant:** {episode.get('consultant_name', 'N/A')}")
+                    st.write(f"**Status:** {episode.get('status', 'N/A').title()}")
+                
+                with col3:
+                    if episode.get('treatment_type'):
+                        st.write(f"**Treatment:** {episode.get('treatment_type')}")
+                    if episode.get('test_type'):
+                        st.write(f"**Test:** {episode.get('test_type')}")
+                    if episode.get('result'):
+                        st.write(f"**Result:** {episode.get('result')}")
+                
+                if episode.get('notes'):
+                    st.markdown("**📝 Notes:**")
+                    st.write(episode.get('notes'))
+        
+        # Add episode button
+        if st.button("➕ Add New Episode to This Pathway", key=f"add_ep_manage_{selected_pathway.get('pathway_id')}"):
+            st.info("💡 Go to 'Episode Management' module to add episodes to this pathway")
+    else:
+        st.warning("📋 No episodes linked to this pathway yet")
+        if st.button("➕ Add First Episode", key=f"add_first_ep_manage_{selected_pathway.get('pathway_id')}"):
+            st.info("💡 Go to 'Episode Management' module to add episodes to this pathway")
     
     st.markdown("---")
     
