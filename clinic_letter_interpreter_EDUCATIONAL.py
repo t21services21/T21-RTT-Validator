@@ -19,6 +19,15 @@ import io
 import os
 from openai import OpenAI
 
+# Import learning system components
+try:
+    from letter_interpreter_rag import letter_rag
+    from learning_system_core import learning_system
+    RAG_ENABLED = True
+except ImportError:
+    RAG_ENABLED = False
+    print("Warning: Learning system not available")
+
 def extract_text_from_file(uploaded_file):
     """Extract text from uploaded file"""
     
@@ -558,6 +567,7 @@ def render_clinic_letter_interpreter():
                 interpretation = ai_educational_interpretation(letter_text)
                 st.session_state['interpretation'] = interpretation
                 st.session_state['is_teaching_mode'] = is_teaching_mode  # Store mode
+                st.session_state['letter_text'] = letter_text  # Store for feedback collection
             
             success_msg = "✅ Educational interpretation complete!" if is_teaching_mode else "✅ Fast validation analysis complete!"
             st.success(success_msg)
@@ -1080,6 +1090,94 @@ def render_clinic_letter_interpreter():
         
         if interpretation.get('learning_summary'):
             st.info(f"**Key Takeaways:** {interpretation.get('learning_summary')}")
+        
+        # FEEDBACK COLLECTION - Help the system learn!
+        if RAG_ENABLED:
+            st.markdown("---")
+            st.markdown("### 🧠 Help The System Learn!")
+            
+            st.write("Was this interpretation helpful? Your feedback improves the AI for everyone.")
+            
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                if st.button("✅ Perfect - Save as Example", type="primary", use_container_width=True):
+                    # Save as validated example
+                    if 'letter_text' in st.session_state:
+                        letter_rag.record_interpretation(
+                            letter_text=st.session_state.get('letter_text', ''),
+                            ai_interpretation=interpretation,
+                            is_correct=True,
+                            metadata={
+                                'letter_type': interpretation.get('step1_identify_letter_type', {}).get('letter_type', ''),
+                                'specialty': interpretation.get('step2_extract_key_info', {}).get('specialty', ''),
+                                'timestamp': datetime.now().isoformat()
+                            }
+                        )
+                        st.success("✅ Thank you! Example saved to learning library. The system is now smarter!")
+                        st.balloons()
+            
+            with col2:
+                if st.button("⚠️ Mostly Correct", use_container_width=True):
+                    st.info("Thank you! Logged as acceptable interpretation.")
+            
+            with col3:
+                if st.button("❌ Wrong - Let Me Correct", use_container_width=True):
+                    st.session_state['show_correction_form'] = True
+            
+            # Show correction form if needed
+            if st.session_state.get('show_correction_form', False):
+                st.markdown("**Please provide the correct comment:**")
+                correct_comment = st.text_area(
+                    "Correct T21 Comment:",
+                    key="correct_comment_input",
+                    height=100,
+                    placeholder="Enter the correct T21 comment format here..."
+                )
+                
+                col_a, col_b = st.columns([1, 3])
+                with col_a:
+                    if st.button("💾 Submit Correction"):
+                        if correct_comment:
+                            letter_rag.record_interpretation(
+                                letter_text=st.session_state.get('letter_text', ''),
+                                ai_interpretation=interpretation,
+                                is_correct=False,
+                                user_correction=correct_comment,
+                                metadata={
+                                    'letter_type': interpretation.get('step1_identify_letter_type', {}).get('letter_type', ''),
+                                    'specialty': interpretation.get('step2_extract_key_info', {}).get('specialty', ''),
+                                    'timestamp': datetime.now().isoformat()
+                                }
+                            )
+                            st.success("✅ Correction saved! The system will learn from this.")
+                            st.session_state['show_correction_form'] = False
+                            st.rerun()
+                        else:
+                            st.error("Please enter the correct comment")
+            
+            # Show learning stats
+            with st.expander("📊 Learning System Stats", expanded=False):
+                stats = letter_rag.get_learning_stats()
+                library = stats.get('example_library', {})
+                
+                if library:
+                    st.write(f"**Total validated examples:** {library.get('total_examples', 0)}")
+                    
+                    categories = library.get('categories', {})
+                    if categories:
+                        st.write("**Examples by category:**")
+                        for cat, data in categories.items():
+                            st.write(f"  - {cat.title()}: {data.get('count', 0)} examples")
+                else:
+                    st.info("No examples yet. Be the first to validate and help the system learn!")
+                
+                # Show suggestions
+                suggestions = letter_rag.get_improvement_suggestions()
+                if suggestions:
+                    st.write("**💡 Improvement Opportunities:**")
+                    for sug in suggestions[:3]:  # Show top 3
+                        st.write(f"  - {sug['message']}")
         
         # Download option
         st.markdown("---")

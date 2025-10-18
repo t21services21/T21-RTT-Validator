@@ -113,8 +113,13 @@ except:
 try:
     from interview_prep import (analyze_job_description, generate_smart_questions_to_ask, 
                                 generate_red_flags_to_avoid)
+    from interview_prep_enhanced import (analyze_job_with_complete_answers, 
+                                         export_to_pdf, export_to_word,
+                                         collect_interview_feedback)
+    INTERVIEW_ENHANCED = True
 except:
     def analyze_job_description(desc): return {}
+    INTERVIEW_ENHANCED = False
     def generate_smart_questions_to_ask(role): return []
     def generate_red_flags_to_avoid(role): return []
 
@@ -3528,9 +3533,26 @@ Just paste ANY job description here!"""
             st.error("Please enter job title and job description!")
         else:
             with st.spinner("⚡ Analyzing job description and generating interview prep pack..."):
-                result = analyze_job_description(job_title, job_description, company_name)
+                # Use enhanced version if available, otherwise fallback
+                if INTERVIEW_ENHANCED:
+                    result = analyze_job_with_complete_answers(job_title, job_description, company_name)
+                else:
+                    result = analyze_job_description(job_title, job_description, company_name)
+                
+                if not result:
+                    st.error("Failed to generate interview prep. Please check API configuration.")
+                    st.stop()
                 
                 st.success("✅ Interview Prep Pack Generated!")
+                
+                # VIEW MODE SELECTION
+                st.markdown("---")
+                view_mode = st.radio(
+                    "📖 Choose how to view questions & answers:",
+                    ["🎯 Practice Mode (Test yourself first)", "📄 Study Mode (See all answers)"],
+                    horizontal=True,
+                    help="Practice Mode: Try answering before revealing | Study Mode: Print-friendly format with all answers visible"
+                )
                 
                 # ===== LIKELY INTERVIEW QUESTIONS =====
                 st.markdown("---")
@@ -3558,23 +3580,84 @@ Just paste ANY job description here!"""
                 # ===== EXAMPLE ANSWERS =====
                 st.markdown("---")
                 st.subheader("💡 Example Answers (STAR Method)")
-                st.info("📝 **Professional example answers** - Use these as templates for your responses!")
                 
-                if result['example_answers']:
-                    for i, answer in enumerate(result['example_answers'], 1):
-                        with st.expander(f"📝 Answer #{i}: {answer['question']}", expanded=(i==1)):
-                            # GPT-4 generated answers have 'answer' field, old ones have 'example_answer'
-                            answer_text = answer.get('answer', answer.get('example_answer', ''))
+                if "Practice Mode" in view_mode:
+                    st.info("🎯 **Practice Mode:** Try answering each question yourself, then click to reveal the example answer!")
+                else:
+                    st.info("📄 **Study Mode:** All answers visible - perfect for printing or quick review!")
+                
+                if result.get('example_answers'):
+                    if "Practice Mode" in view_mode:
+                        # PRACTICE MODE - Expandable answers
+                        for i, answer in enumerate(result['example_answers'], 1):
+                            with st.expander(f"📝 Q{i}: {answer['question']}", expanded=False):
+                                answer_text = answer.get('answer', answer.get('example_answer', 'Answer not available'))
+                                st.markdown(answer_text)
+                                
+                                if answer.get('tips'):
+                                    st.markdown("---")
+                                    st.markdown("**💡 Additional Tips:**")
+                                    for tip in answer['tips']:
+                                        st.markdown(f"✅ {tip}")
+                    else:
+                        # STUDY MODE - All visible (print-friendly)
+                        for i, (q, answer) in enumerate(zip(result['interview_questions'], result['example_answers']), 1):
+                            st.markdown(f"### Q{i}. {q['question']}")
+                            st.caption(f"**Category:** {q['category']} | **Likelihood:** {q['likelihood']}")
+                            
+                            answer_text = answer.get('answer', answer.get('example_answer', 'Answer not available'))
                             st.markdown(answer_text)
                             
-                            # Old format tips
                             if answer.get('tips'):
-                                st.markdown("---")
-                                st.markdown("**Additional Tips:**")
+                                st.markdown("**💡 Tips:**")
                                 for tip in answer['tips']:
                                     st.markdown(f"- ✅ {tip}")
+                            
+                            if i < len(result['example_answers']):
+                                st.markdown("---")
                 else:
                     st.warning("⚠️ No example answers generated. Please try regenerating the prep pack.")
+                
+                # ===== EXPORT OPTIONS =====
+                if INTERVIEW_ENHANCED and result.get('example_answers'):
+                    st.markdown("---")
+                    st.subheader("📥 Export Your Interview Pack")
+                    st.info("💡 Download your prep pack to review offline, print, or share with a career coach!")
+                    
+                    col1, col2, col3 = st.columns(3)
+                    
+                    with col1:
+                        if st.button("📄 Export to PDF", use_container_width=True, key="export_pdf_main"):
+                            with st.spinner("📄 Generating professional PDF..."):
+                                pdf_buffer = export_to_pdf(result, job_title, company_name, interview_date)
+                                if pdf_buffer:
+                                    st.download_button(
+                                        label="⬇️ Download PDF",
+                                        data=pdf_buffer,
+                                        file_name=f"Interview_Prep_{job_title.replace(' ', '_')}.pdf",
+                                        mime="application/pdf",
+                                        use_container_width=True,
+                                        key="download_pdf_main"
+                                    )
+                                    st.success("✅ PDF ready to download!")
+                    
+                    with col2:
+                        if st.button("📝 Export to Word", use_container_width=True, key="export_word_main"):
+                            with st.spinner("📝 Generating editable Word document..."):
+                                docx_buffer = export_to_word(result, job_title, company_name, interview_date)
+                                if docx_buffer:
+                                    st.download_button(
+                                        label="⬇️ Download Word",
+                                        data=docx_buffer,
+                                        file_name=f"Interview_Prep_{job_title.replace(' ', '_')}.docx",
+                                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                        use_container_width=True,
+                                        key="download_word_main"
+                                    )
+                                    st.success("✅ Word document ready to download!")
+                    
+                    with col3:
+                        st.info("💡 **Tip:** Export to Word to customize answers with your own examples!")
                 
                 # ===== PREPARATION TIPS =====
                 st.markdown("---")
@@ -3684,6 +3767,10 @@ LIKELY INTERVIEW QUESTIONS ({len(result['interview_questions'])} questions)
                     file_name=f"Interview_Prep_{job_title.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.txt",
                     mime="text/plain"
                 )
+                
+                # ===== FEEDBACK COLLECTION =====
+                if INTERVIEW_ENHANCED:
+                    collect_interview_feedback(result, job_title, job_description)
                 
                 st.success("💪 **You've got this! Good luck with your interview!**")
 
@@ -6325,11 +6412,12 @@ Just paste ANY job description here!"""
 
 elif tool == "⚙️ Administration":
     st.header("⚙️ Administration")
-    st.info("Account settings and admin tools")
+    st.info("Account settings, admin tools, and learning analytics")
     
     tabs = st.tabs([
         "⚙️ My Account", 
         "🔧 Admin Panel", 
+        "📊 Learning Analytics",
         "🏥 Trust AI Settings",
         "📋 Exam Management",
         "🤖 AI Document Training"
@@ -6440,7 +6528,7 @@ elif tool == "⚙️ Administration":
                 
                 with admin_tab10:
                     try:
-                        render_user_tracking_dashboard()
+                        render_user_tracking_admin()
                     except Exception as e:
                         st.error(f"Error loading User Tracking: {str(e)}")
                         st.info("💡 This feature is being updated. Please try again later.")
@@ -6450,12 +6538,29 @@ elif tool == "⚙️ Administration":
             st.error("⛔ Access Denied - Admin or Staff privileges required")
     
     with tabs[2]:
-        # NEW: Trust AI Customization (Sigma-beating feature!)
-        st.subheader("🏥 Trust AI Customization")
-        from trust_customization_ui import render_trust_customization
-        render_trust_customization()
+        # NEW: LEARNING ANALYTICS DASHBOARD
+        st.subheader("📊 Learning Analytics Dashboard")
+        try:
+            from learning_analytics_dashboard import render_learning_analytics_dashboard
+            render_learning_analytics_dashboard()
+        except Exception as e:
+            st.error(f"Error loading Learning Analytics: {str(e)}")
+            st.info("💡 The learning analytics dashboard is being set up. Please try again later.")
+            import traceback
+            with st.expander("🔍 Show Error Details"):
+                st.code(traceback.format_exc())
     
     with tabs[3]:
+        # Trust AI Customization (Sigma-beating feature!)
+        st.subheader("🏥 Trust AI Customization")
+        try:
+            from trust_customization_ui import render_trust_customization
+            render_trust_customization()
+        except Exception as e:
+            st.error(f"Error loading Trust AI Customization: {str(e)}")
+            st.info("💡 This feature is being updated. Please try again later.")
+    
+    with tabs[4]:
         # NEW: Exam Management for Tutors/Admin
         st.subheader("📋 Exam Management")
         
@@ -6468,8 +6573,8 @@ elif tool == "⚙️ Administration":
             st.warning("⚠️ Exam Management is only available to tutors and administrators")
             st.info("Contact your administrator if you need access to exam management features")
     
-    with tabs[4]:
-        # NEW: AI Document Training System
+    with tabs[5]:
+        # AI Document Training System
         st.subheader("🤖 AI Document Training")
         
         # Check if user has admin/staff privileges
