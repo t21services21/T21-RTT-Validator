@@ -422,7 +422,7 @@ def render_pathway_card(pathway: dict):
                     with col1:
                         st.write(f"**Episode ID:** {episode.get('episode_id')}")
                         st.write(f"**Type:** {episode.get('episode_type', 'N/A').title()}")
-                        st.write(f"**Start Date:** {episode.get('start_date', 'N/A')}")
+                        st.write(f"**Date:** {episode.get('start_date', 'N/A')}")
                         st.write(f"**End Date:** {episode.get('end_date', 'Not ended')}")
                     
                     with col2:
@@ -444,11 +444,27 @@ def render_pathway_card(pathway: dict):
             
             # Add episode button
             if st.button("➕ Add New Episode to This Pathway", key=f"add_ep_{pathway.get('pathway_id')}"):
-                st.info("💡 Go to 'Episode Management' module to add episodes")
+                # Store pathway info in session state for Episode Management
+                st.session_state['selected_pathway_for_episode'] = {
+                    'pathway_id': pathway.get('pathway_id'),
+                    'patient_name': pathway.get('patient_name'),
+                    'patient_id': pathway.get('patient_id'),
+                    'specialty': pathway.get('specialty')
+                }
+                st.success("✅ Pathway selected! Now go to **Episode Management** module (from top menu) to add episode.")
+                st.info("💡 The pathway details have been saved. Select Episode Management from the top dropdown menu.")
         else:
             st.warning("📋 No episodes linked to this pathway yet")
             if st.button("➕ Add First Episode", key=f"add_first_ep_{pathway.get('pathway_id')}"):
-                st.info("💡 Go to 'Episode Management' module to add episodes")
+                # Store pathway info in session state for Episode Management
+                st.session_state['selected_pathway_for_episode'] = {
+                    'pathway_id': pathway.get('pathway_id'),
+                    'patient_name': pathway.get('patient_name'),
+                    'patient_id': pathway.get('patient_id'),
+                    'specialty': pathway.get('specialty')
+                }
+                st.success("✅ Pathway selected! Now go to **Episode Management** module (from top menu) to add episode.")
+                st.info("💡 The pathway details have been saved. Select Episode Management from the top dropdown menu.")
 
 
 def render_manage_pathway():
@@ -532,7 +548,7 @@ def render_manage_pathway():
                 with col1:
                     st.write(f"**Episode ID:** {episode.get('episode_id')}")
                     st.write(f"**Type:** {episode.get('episode_type', 'N/A').title()}")
-                    st.write(f"**Start Date:** {episode.get('start_date', 'N/A')}")
+                    st.write(f"**Date:** {episode.get('start_date', 'N/A')}")
                     st.write(f"**End Date:** {episode.get('end_date', 'Not ended')}")
                 
                 with col2:
@@ -554,11 +570,27 @@ def render_manage_pathway():
         
         # Add episode button
         if st.button("➕ Add New Episode to This Pathway", key=f"add_ep_manage_{selected_pathway.get('pathway_id')}"):
-            st.info("💡 Go to 'Episode Management' module to add episodes to this pathway")
+            # Store pathway info in session state for Episode Management
+            st.session_state['selected_pathway_for_episode'] = {
+                'pathway_id': selected_pathway.get('pathway_id'),
+                'patient_name': selected_pathway.get('patient_name'),
+                'patient_id': selected_pathway.get('patient_id'),
+                'specialty': selected_pathway.get('specialty')
+            }
+            st.success("✅ Pathway selected! Now go to **Episode Management** module (from top menu) to add episode.")
+            st.info("💡 The pathway details have been saved. Select Episode Management from the top dropdown menu.")
     else:
         st.warning("📋 No episodes linked to this pathway yet")
         if st.button("➕ Add First Episode", key=f"add_first_ep_manage_{selected_pathway.get('pathway_id')}"):
-            st.info("💡 Go to 'Episode Management' module to add episodes to this pathway")
+            # Store pathway info in session state for Episode Management
+            st.session_state['selected_pathway_for_episode'] = {
+                'pathway_id': selected_pathway.get('pathway_id'),
+                'patient_name': selected_pathway.get('patient_name'),
+                'patient_id': selected_pathway.get('patient_id'),
+                'specialty': selected_pathway.get('specialty')
+            }
+            st.success("✅ Pathway selected! Now go to **Episode Management** module (from top menu) to add episode.")
+            st.info("💡 The pathway details have been saved. Select Episode Management from the top dropdown menu.")
     
     st.markdown("---")
     

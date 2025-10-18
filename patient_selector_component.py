@@ -190,6 +190,12 @@ def render_pathway_selector(patient_id: str = None, key_prefix: str = "pathway_s
     
     st.markdown("### 📁 Select Pathway")
     
+    # Check if pathway was selected from Pathway Management
+    if 'selected_pathway_for_episode' in st.session_state:
+        saved_pathway = st.session_state['selected_pathway_for_episode']
+        st.success(f"✅ Pathway pre-selected: **{saved_pathway.get('pathway_id')}** - {saved_pathway.get('patient_name')}")
+        st.info("💡 This pathway was selected from Pathway Management. Change it below if needed.")
+    
     # Get pathways
     if patient_id:
         pathways = get_patient_pathways(patient_id)
@@ -218,9 +224,21 @@ def render_pathway_selector(patient_id: str = None, key_prefix: str = "pathway_s
         for p in pathways
     }
     
+    # Determine default selection
+    default_index = 0  # "-- Select Pathway --"
+    if 'selected_pathway_for_episode' in st.session_state:
+        saved_pathway = st.session_state['selected_pathway_for_episode']
+        saved_pathway_id = saved_pathway.get('pathway_id')
+        # Find matching pathway in options
+        for idx, (option_text, pathway) in enumerate(pathway_options.items(), start=1):
+            if pathway.get('pathway_id') == saved_pathway_id:
+                default_index = idx
+                break
+    
     selected_option = st.selectbox(
         "Select pathway:",
         options=["-- Select Pathway --"] + list(pathway_options.keys()),
+        index=default_index,
         key=f"{key_prefix}_dropdown"
     )
     
