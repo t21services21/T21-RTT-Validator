@@ -308,11 +308,14 @@ def request_password_reset(email):
     
     # Send email
     try:
-        send_password_reset_email(email, reset_code)
-        return True, "Reset code sent to your email. Check your inbox!"
+        email_sent = send_password_reset_email(email, reset_code)
+        if email_sent:
+            return True, "Reset code sent to your email. Check your inbox!"
+        else:
+            return False, "Failed to send reset email. Please check SendGrid configuration."
     except Exception as e:
         print(f"Failed to send reset email: {e}")
-        return False, "Failed to send reset email. Please try again."
+        return False, f"Email sending error: {str(e)}"
 
 
 def verify_reset_code(email, code):

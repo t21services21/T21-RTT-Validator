@@ -206,8 +206,9 @@ else:
                                         st.rerun()
                                     else:
                                         st.error(message)
-                                except:
-                                    st.error("Password reset not available. Contact admin@t21services.co.uk")
+                                except Exception as e:
+                                    st.error(f"Password reset error: {str(e)}")
+                                    st.error("Please contact admin@t21services.co.uk")
                             else:
                                 st.warning("Please enter your email")
                     with col2:
