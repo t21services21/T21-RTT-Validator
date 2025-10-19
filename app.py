@@ -1541,13 +1541,15 @@ user_email = st.session_state.user_email if 'user_email' in st.session_state els
 
 # Define modules based on role
 if user_role in ['student', 'student_basic', 'student_standard', 'student_premium', 'student_ultimate', 'trial']:
-    # STUDENTS: Learning and career development only
+    # STUDENTS: Learning + Hands-on NHS Practice
     accessible_modules = [
-        "🎓 Learning Portal",  # Their courses
+        "🏥 Patient Administration Hub",  # PRACTICE: Register patients, pathways, waiting lists
+        "🏥 Clinical Workflows",  # PRACTICE: PTL, booking, MDT workflows
+        "🎓 Learning Portal",  # Their courses and materials
         "🎓 Training & Certification",  # Training, AI Tutor, Certification
-        "🔒 Information Governance",  # Mandatory training
+        "🔒 Information Governance",  # Mandatory NHS training
         "💼 Career Development",  # Interview prep, CV builder
-        "⚙️ Administration",  # My Account only
+        "⚙️ My Account",  # Personal settings ONLY (not admin tools)
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
@@ -6540,27 +6542,39 @@ Just paste ANY job description here!"""
                 
                 st.success("🎉 **CV Generated Successfully!**")
 
-elif tool == "⚙️ Administration":
-    st.header("⚙️ Administration")
-    st.info("Account settings, admin tools, and learning analytics")
+elif tool == "⚙️ Administration" or tool == "⚙️ My Account":
+    # SECURITY: Students see only "My Account", Admins see all tools
+    user_role = st.session_state.user_license.role if hasattr(st.session_state.user_license, 'role') else "trial"
+    is_student = user_role in ['student', 'student_basic', 'student_standard', 'student_premium', 'student_ultimate', 'trial']
     
-    tabs = st.tabs([
-        "⚙️ My Account", 
-        "🔧 Admin Panel", 
-        "📊 Learning Analytics",
-        "🏥 Trust AI Settings",
-        "📋 Exam Management",
-        "🤖 AI Document Training"
-    ])
+    if is_student:
+        # STUDENTS: Only My Account
+        st.header("⚙️ My Account")
+        st.info("Manage your personal account settings")
+        tabs = st.tabs(["⚙️ My Account"])
+    else:
+        # ADMINS/TEACHERS: Full administration tools
+        st.header("⚙️ Administration")
+        st.info("Account settings, admin tools, and learning analytics")
+        tabs = st.tabs([
+            "⚙️ My Account", 
+            "🔧 Admin Panel", 
+            "📊 Learning Analytics",
+            "🏥 Trust AI Settings",
+            "📋 Exam Management",
+            "🤖 AI Document Training"
+        ])
     
     with tabs[0]:
-        # Redirect to My Account handler (exists around line 4098)
+        # My Account - Available to ALL users
         st.info("Loading account settings...")
         # The actual handler will be called by the existing code
     
-    with tabs[1]:
-        # ADMIN PANEL - Actually render it
-        if st.session_state.user_license:
+    # ADMIN TABS: Only show if NOT student
+    if not is_student and len(tabs) > 1:
+        with tabs[1]:
+            # ADMIN PANEL - Actually render it
+            if st.session_state.user_license:
             # Check if user is admin
             is_admin = False
             if isinstance(st.session_state.user_license, UserAccount):
@@ -6666,55 +6680,55 @@ elif tool == "⚙️ Administration":
                 st.error("⛔ Access Denied - Admin or Staff privileges required")
         else:
             st.error("⛔ Access Denied - Admin or Staff privileges required")
-    
-    with tabs[2]:
-        # NEW: LEARNING ANALYTICS DASHBOARD
-        st.subheader("📊 Learning Analytics Dashboard")
-        try:
-            from learning_analytics_dashboard import render_learning_analytics_dashboard
-            render_learning_analytics_dashboard()
-        except Exception as e:
-            st.error(f"Error loading Learning Analytics: {str(e)}")
-            st.info("💡 The learning analytics dashboard is being set up. Please try again later.")
-            import traceback
-            with st.expander("🔍 Show Error Details"):
-                st.code(traceback.format_exc())
-    
-    with tabs[3]:
-        # Trust AI Customization (Sigma-beating feature!)
-        st.subheader("🏥 Trust AI Customization")
-        try:
-            from trust_customization_ui import render_trust_customization
-            render_trust_customization()
-        except Exception as e:
-            st.error(f"Error loading Trust AI Customization: {str(e)}")
-            st.info("💡 This feature is being updated. Please try again later.")
-    
-    with tabs[4]:
-        # NEW: Exam Management for Tutors/Admin
-        st.subheader("📋 Exam Management")
         
-        # Check if user has admin/tutor privileges
-        user_role = getattr(st.session_state.get('user_license'), 'role', 'student')
-        if user_role in ['admin', 'staff', 'tutor', 'tier2', 'tier3']:
-            from exam_management_admin import render_exam_management_admin
-            render_exam_management_admin()
-        else:
-            st.warning("⚠️ Exam Management is only available to tutors and administrators")
-            st.info("Contact your administrator if you need access to exam management features")
-    
-    with tabs[5]:
-        # AI Document Training System
-        st.subheader("🤖 AI Document Training")
+        with tabs[2]:
+            # NEW: LEARNING ANALYTICS DASHBOARD
+            st.subheader("📊 Learning Analytics Dashboard")
+            try:
+                from learning_analytics_dashboard import render_learning_analytics_dashboard
+                render_learning_analytics_dashboard()
+            except Exception as e:
+                st.error(f"Error loading Learning Analytics: {str(e)}")
+                st.info("💡 The learning analytics dashboard is being set up. Please try again later.")
+                import traceback
+                with st.expander("🔍 Show Error Details"):
+                    st.code(traceback.format_exc())
         
-        # Check if user has admin/staff privileges
-        user_role = getattr(st.session_state.get('user_license'), 'role', 'student')
-        if user_role in ['admin', 'staff', 'tutor', 'tier2', 'tier3']:
-            from ai_document_trainer import render_ai_document_trainer
-            render_ai_document_trainer()
-        else:
-            st.warning("⚠️ AI Document Training is only available to staff and administrators")
-            st.info("Upload RTT policies and procedures to train the AI on your Trust's specific content")
+        with tabs[3]:
+            # Trust AI Customization (Sigma-beating feature!)
+            st.subheader("🏥 Trust AI Customization")
+            try:
+                from trust_customization_ui import render_trust_customization
+                render_trust_customization()
+            except Exception as e:
+                st.error(f"Error loading Trust AI Customization: {str(e)}")
+                st.info("💡 This feature is being updated. Please try again later.")
+        
+        with tabs[4]:
+            # NEW: Exam Management for Tutors/Admin
+            st.subheader("📋 Exam Management")
+            
+            # Check if user has admin/tutor privileges
+            user_role_check = getattr(st.session_state.get('user_license'), 'role', 'student')
+            if user_role_check in ['admin', 'staff', 'tutor', 'tier2', 'tier3']:
+                from exam_management_admin import render_exam_management_admin
+                render_exam_management_admin()
+            else:
+                st.warning("⚠️ Exam Management is only available to tutors and administrators")
+                st.info("Contact your administrator if you need access to exam management features")
+        
+        with tabs[5]:
+            # AI Document Training System
+            st.subheader("🤖 AI Document Training")
+            
+            # Check if user has admin/staff privileges
+            user_role_check = getattr(st.session_state.get('user_license'), 'role', 'student')
+            if user_role_check in ['admin', 'staff', 'tutor', 'tier2', 'tier3']:
+                from ai_document_trainer import render_ai_document_trainer
+                render_ai_document_trainer()
+            else:
+                st.warning("⚠️ AI Document Training is only available to staff and administrators")
+                st.info("Upload RTT policies and procedures to train the AI on your Trust's specific content")
 
 elif tool == "✅ Task Management":
     st.header("✅ Task Management")
