@@ -26,14 +26,19 @@ import re
 
 # Import Supabase for permanent storage
 try:
-    from supabase_database import supabase
-    SUPABASE_ENABLED = True
+    from supabase_database import supabase, SUPABASE_AVAILABLE
+    SUPABASE_ENABLED = SUPABASE_AVAILABLE and supabase is not None
 except ImportError:
     SUPABASE_ENABLED = False
+    supabase = None
     print("⚠️ Supabase not available - using local storage")
+except Exception as e:
+    SUPABASE_ENABLED = False
+    supabase = None
+    print(f"⚠️ Supabase error: {e} - using local storage")
 
 # Check if patients table exists
-if SUPABASE_ENABLED:
+if SUPABASE_ENABLED and supabase is not None:
     try:
         # Test if patients table exists
         test = supabase.table('patients').select('*').limit(1).execute()

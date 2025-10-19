@@ -8,19 +8,26 @@ from datetime import datetime
 import streamlit as st
 
 # Try to get credentials from Streamlit secrets first, then from config file
+SUPABASE_AVAILABLE = False
+supabase = None
+
 try:
     SUPABASE_URL = st.secrets["SUPABASE_URL"]
     SUPABASE_KEY = st.secrets["SUPABASE_SERVICE_KEY"]
-except:
+    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    SUPABASE_AVAILABLE = True
+except Exception as e:
     # Fallback to config file for local testing
     try:
         from supabase_config_SAFE import SUPABASE_URL, SUPABASE_SERVICE_KEY
         SUPABASE_KEY = SUPABASE_SERVICE_KEY
-    except ImportError:
-        raise Exception("Supabase credentials not found! Add to Streamlit secrets or supabase_config_SAFE.py")
-
-# Create Supabase client
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+        supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+        SUPABASE_AVAILABLE = True
+    except Exception:
+        # Supabase not available - system will work without it (degraded mode)
+        print("⚠️ Supabase not configured. System running in local mode.")
+        supabase = None
+        SUPABASE_AVAILABLE = False
 
 
 # ============================================
@@ -29,6 +36,9 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def add_ptl_patient(user_email, patient_data):
     """Add patient to PTL for specific user - PERMANENT STORAGE"""
+    if not SUPABASE_AVAILABLE or supabase is None:
+        return False, "Supabase not configured"
+    
     try:
         patient_data['user_email'] = user_email
         patient_data['created_at'] = datetime.now().isoformat()
@@ -42,6 +52,9 @@ def add_ptl_patient(user_email, patient_data):
 
 def get_ptl_patients_for_user(user_email):
     """Get all PTL patients for specific user - ONLY THEIR DATA"""
+    if not SUPABASE_AVAILABLE or supabase is None:
+        return []
+    
     print(f"DEBUG: Fetching PTL patients for {user_email}")
     try:
         result = supabase.table('ptl_patients').select('*').eq('user_email', user_email).execute()
