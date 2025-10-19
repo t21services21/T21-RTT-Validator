@@ -327,15 +327,91 @@ def get_code_info(code_number):
 
 def answer_question(question):
     """
-    Answer RTT-related questions using GPT-4 AI (with fallback to knowledge base)
+    Answer RTT-related questions using built-in knowledge FIRST (cost-effective!)
+    Only uses OpenAI if built-in answer is insufficient.
     """
-    # Try GPT-4 first for intelligent, comprehensive answers
+    question_lower = question.lower()
+    
+    # TIER 1: Try built-in knowledge base FIRST (FREE! 🆓)
+    builtin_answer = get_builtin_answer(question_lower)
+    
+    # If we got a good answer from built-in knowledge, use it!
+    if builtin_answer:
+        return builtin_answer + "\n\n💡 *Answered using T21's built-in RTT knowledge base*"
+    
+    # TIER 2: Only use OpenAI if built-in knowledge wasn't sufficient
     gpt4_answer = ask_gpt4(question)
     if gpt4_answer:
-        return gpt4_answer
+        return gpt4_answer + "\n\n🤖 *Enhanced answer using AI (built-in knowledge + OpenAI)*"
     
-    # Fallback to keyword-based system if GPT-4 unavailable
-    question_lower = question.lower()
+    # TIER 3: Generic fallback if everything fails
+    return """
+I'm here to help with RTT questions! 
+
+Try asking about:
+- RTT codes (e.g., "What is Code 10?")
+- Clock rules (e.g., "When does the clock start?")
+- NHS targets (e.g., "What is the 18-week target?")
+- Specific scenarios (e.g., "How do I handle DNA?")
+
+Or browse the Training Library for real RTT scenarios!
+"""
+
+
+def get_builtin_answer(question_lower):
+    """
+    Get answer from built-in knowledge base (FREE!)
+    Returns None if question is too complex for built-in knowledge
+    """
+    
+    # RTT meaning / what is RTT questions
+    if ("what is rtt" in question_lower or "rtt meaning" in question_lower or 
+        "what does rtt mean" in question_lower or "rtt stand for" in question_lower or
+        "define rtt" in question_lower):
+        return """
+# 🏥 RTT - Referral to Treatment
+
+## What is RTT?
+**RTT stands for Referral to Treatment** - it's the NHS system for tracking how long patients wait from their GP referral to receiving first definitive treatment.
+
+## The 18-Week Target
+- 🎯 **92% of patients** must receive treatment within **18 weeks** (126 days)
+- 📅 This is a **legal NHS requirement**
+- 💰 Trusts can be fined £10,000+ per breach
+
+## Why RTT Matters
+✅ **Patient Care** - Faster treatment = better outcomes  
+✅ **Performance** - NHS monitors Trust performance  
+✅ **Funding** - Affects Trust ratings and funding  
+✅ **Legal** - Patients have right to treatment within 18 weeks  
+
+## Key RTT Concepts
+📋 **Pathway**: Patient's journey from referral to treatment  
+⏰ **Clock Start**: When 18-week countdown begins (Code 10)  
+🏁 **Clock Stop**: When countdown ends (Code 30 - treatment)  
+🚨 **Breach**: When treatment takes longer than 18 weeks  
+
+## RTT Codes
+RTT uses codes (10-36, 90-92) to track pathway events:
+- **Code 10**: GP Referral (Clock START)
+- **Code 20**: Appointments/Diagnostics (Clock CONTINUES)
+- **Code 30**: First Treatment (Clock STOP)
+
+## Example RTT Pathway
+```
+RTT - 10 - 22/04/25 - Referral from GP Dr Smith (Clock starts)
+RTT - 20 - 05/05/25 - Outpatient appointment attended (Clock continues)
+RTT - 30 - 12/06/25 - Definitive treatment - Surgery performed (Clock stops)
+Wait time: 51 days ✅ (within 126 days)
+```
+
+## Your Role as RTT Administrator
+- Track patient pathways
+- Ensure timely treatment
+- Use correct RTT codes
+- Prevent breaches
+- Report to NHS
+"""
     
     # Code-specific questions
     for code, info in RTT_KNOWLEDGE_BASE["codes"].items():
@@ -621,31 +697,9 @@ A breach occurs when a patient doesn't receive treatment within 18 weeks.
     if response_parts:
         return "\n\n".join(response_parts) + "\n\n💡 **Need more specific info?** Ask me about a specific code, scenario, or topic!"
     
-    # Default helpful response
-    return """
-🤖 **I'm here to help with RTT!**
-
-I can answer questions about:
-- 📋 RTT Codes (10-36, 90-92)
-- ⏰ Clock management (start, stop, continue)
-- 🎯 NHS targets (18-week, 2WW, 62-day)
-- ⚠️ Breaches and prevention
-- 🖥️ PAS systems and commenting
-- 👥 Multiple pathways
-- 🚨 DNAs and patient events
-- 📝 RTT commenting style
-
-**Try asking:**
-- "What is commenting style?"
-- "When does the clock stop?"
-- "What code for GP referral?"
-- "How to prevent breaches?"
-- "What's Code 20?"
-- "Explain the 18-week target"
-- "What happens if patient DNA?"
-
-💡 **Be specific and I'll give you a detailed answer!**
-"""
+    # Return None to signal that OpenAI should handle this question
+    # This allows complex questions to get AI-enhanced answers
+    return None
 
 
 def generate_related_quiz(topic):
