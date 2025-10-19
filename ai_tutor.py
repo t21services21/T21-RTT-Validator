@@ -75,18 +75,20 @@ RTT_KNOWLEDGE_BASE = {
             "clock_effect": "STOP"
         },
         "31": {
-            "name": "Start of Watchful Wait by Patient",
-            "action": "Stops RTT clock",
-            "description": "When a patient chooses to decline treatment for the time being to see how their condition develops. Patient may think about treatment or is on a waiting list and comes back for a follow up appointment.",
-            "examples": ["Patient wants to wait", "Patient thinking about treatment", "Patient declines for now"],
-            "clock_effect": "STOP"
+            "name": "Patient-Initiated Pause (Watchful Wait)",
+            "action": "Stops RTT clock (PAUSE)",
+            "description": "When a PATIENT chooses to pause their pathway to think about treatment options or see how their condition develops. This is a PAUSE, not a refusal. Patient wants time to consider.",
+            "examples": ["Patient wants time to think", "Patient considering options", "Patient requests pause to decide", "Let me think about surgery"],
+            "clock_effect": "STOP (Can restart with Code 11)",
+            "restart": "YES - Use Code 11 when patient ready"
         },
         "32": {
-            "name": "Start of Watchful Wait by Clinician",
-            "action": "Stops RTT clock",
-            "description": "When a clinician decides to monitor the patient's condition and not offer treatment. May occur following an outpatient appointment, a diagnostic procedure, or if a patients' treatment plan changes.",
-            "examples": ["Clinician decides to monitor", "Watch and wait approach", "Active monitoring", "No immediate treatment needed"],
-            "clock_effect": "STOP"
+            "name": "Hospital/Clinician-Initiated Pause (Active Monitoring)",
+            "action": "Stops RTT clock (PAUSE)",
+            "description": "When HOSPITAL/CLINICIAN decides to actively monitor the patient's condition instead of immediate treatment. This is clinical watchful waiting, not patient's decision.",
+            "examples": ["Clinician-initiated monitoring", "Watch and wait approach", "Active surveillance", "Hospital decides to monitor for 6 months"],
+            "clock_effect": "STOP (Can restart with Code 11)",
+            "restart": "YES - Use Code 11 when treatment needed"
         },
         "33": {
             "name": "Patient DNA's the 1st Activity",
@@ -327,22 +329,48 @@ def get_code_info(code_number):
 
 def answer_question(question):
     """
-    Answer RTT-related questions using built-in knowledge FIRST (cost-effective!)
-    Only uses OpenAI if built-in answer is insufficient.
+    Answer RTT-related questions using SMART 4-TIER SYSTEM:
+    1. Check cache (previous answers) - FREE & INSTANT!
+    2. Try built-in knowledge - FREE!
+    3. Use OpenAI if needed - Paid, but SAVE to cache
+    4. Fallback helper
+    
+    This system LEARNS from every question to reduce costs!
     """
+    from ai_question_cache import search_cache, save_to_cache
+    
     question_lower = question.lower()
     
-    # TIER 1: Try built-in knowledge base FIRST (FREE! 🆓)
+    # TIER 0: Check if we've answered this before! (FREE & INSTANT! ⚡)
+    cached_answer = search_cache(question, similarity_threshold=0.85)
+    if cached_answer:
+        match_type = cached_answer.get('match_type', 'exact')
+        times_used = cached_answer.get('times_used', 1)
+        
+        if match_type == 'exact':
+            footer = f"\n\n🎯 *Instant answer from cache (asked {times_used} times before) - $0 cost!*"
+        else:
+            similarity = cached_answer.get('similarity', 0.85)
+            footer = f"\n\n🎯 *Similar question answered before ({similarity*100:.0f}% match, used {times_used} times) - $0 cost!*"
+        
+        return cached_answer['answer'] + footer
+    
+    # TIER 1: Try built-in knowledge base (FREE! 🆓)
     builtin_answer = get_builtin_answer(question_lower)
     
-    # If we got a good answer from built-in knowledge, use it!
+    # If we got a good answer from built-in knowledge, use it AND cache it!
     if builtin_answer:
-        return builtin_answer + "\n\n💡 *Answered using T21's built-in RTT knowledge base*"
+        final_answer = builtin_answer + "\n\n💡 *Answered using T21's built-in RTT knowledge base*"
+        save_to_cache(question, final_answer, source="builtin")
+        return final_answer
     
-    # TIER 2: Only use OpenAI if built-in knowledge wasn't sufficient
+    # TIER 2: Use OpenAI if needed (Paid, but we'll SAVE it!)
     gpt4_answer = ask_gpt4(question)
     if gpt4_answer:
-        return gpt4_answer + "\n\n🤖 *Enhanced answer using AI (built-in knowledge + OpenAI)*"
+        final_answer = gpt4_answer + "\n\n🤖 *Enhanced answer using AI (built-in knowledge + OpenAI)*"
+        # IMPORTANT: Save to cache so next student gets it FREE!
+        save_to_cache(question, final_answer, source="openai")
+        return final_answer
     
     # TIER 3: Generic fallback if everything fails
     return """
