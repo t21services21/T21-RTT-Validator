@@ -5359,33 +5359,44 @@ elif tool == "🏥 Patient Administration Hub":
 
 elif tool == "🎓 Learning Portal":
     st.header("🎓 Learning Portal")
-    st.info("All learning resources in one place")
+    st.info("📚 Complete 8-Week RTT Training Programme - Learn Before You Test!")
     
     tabs = st.tabs([
+        "📖 Structured Learning",  # NEW - Main learning path!
         "📚 Materials",
         "🎥 Videos",
         "📢 News",
         "📝 Assignments",
-        "🎯 Quizzes"
+        "🎯 Practice Quizzes"
     ])
     
     with tabs[0]:
-        from lms_system import render_lms_feature
-        render_lms_feature("learning_materials")
+        # COMPREHENSIVE LEARNING SYSTEM - Learn BEFORE testing!
+        try:
+            from comprehensive_learning_system import render_comprehensive_learning
+            render_comprehensive_learning()
+        except Exception as e:
+            st.error(f"Error loading learning system: {str(e)}")
+            st.info("💡 The comprehensive learning system is being set up. Meanwhile, use other tabs for materials and videos.")
     
     with tabs[1]:
         from lms_system import render_lms_feature
-        render_lms_feature("video_library")
+        render_lms_feature("learning_materials")
     
     with tabs[2]:
         from lms_system import render_lms_feature
-        render_lms_feature("announcements")
+        render_lms_feature("video_library")
     
     with tabs[3]:
         from lms_system import render_lms_feature
-        render_lms_feature("assignments")
+        render_lms_feature("announcements")
     
     with tabs[4]:
+        from lms_system import render_lms_feature
+        render_lms_feature("assignments")
+    
+    with tabs[5]:
+        # Practice quizzes AFTER learning
         from lms_system import render_lms_feature
         render_lms_feature("quizzes")
 
