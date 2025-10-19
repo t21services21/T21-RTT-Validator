@@ -114,12 +114,26 @@ def render_ptl_dashboard():
     
     st.subheader("📊 PTL Dashboard")
     
-    # UNIVERSAL DEBUG PANEL
+    # UNIVERSAL DEBUG PANEL - SUPER ADMIN ONLY!
+    # CRITICAL SECURITY: Students/teachers/staff MUST NOT see debug info!
     try:
-        from universal_debug_panel import show_universal_debug_info
-        show_universal_debug_info()
+        user_license = st.session_state.get('user_license')
+        user_role = user_license.role if (user_license and hasattr(user_license, 'role')) else 'student'
+        user_email = st.session_state.get('user_email', '').lower()
+        
+        # Only super admin can see debug
+        is_super_admin = (
+            user_role == 'super_admin' or 
+            'admin@t21services' in user_email or
+            user_email == 'admin@t21services.co.uk' or
+            user_email == 't21services21@gmail.com'
+        )
+        
+        if is_super_admin:
+            from universal_debug_panel import show_universal_debug_info
+            show_universal_debug_info()
     except:
-        pass
+        pass  # If any error, DON'T show debug (safe default)
     
     # DEBUG: Show current user email and session info (SUPER ADMIN ONLY!)
     # CRITICAL SECURITY CHECK: Only super admin can see debug info

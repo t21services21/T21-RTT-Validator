@@ -933,12 +933,539 @@ MDT ensures best patient outcomes!
     },
     
     "module_4": {
-        "title": "Information Governance & Certification",
+        "title": "Clinic Letter Interpretation & Validation",
         "duration": "Week 7-8",
         "order": 4,
         "lessons": [
             {
                 "lesson_id": "4.1",
+                "title": "Understanding Clinical Letters",
+                "type": "theory",
+                "content": """
+# 📝 Understanding NHS Clinical Letters
+
+## What are Clinical Letters?
+Letters sent between healthcare professionals about patient care.
+
+## Types of Clinical Letters
+✅ Referral letters (GP to Consultant)
+✅ Clinic letters (after appointments)
+✅ Discharge summaries
+✅ Investigation results
+✅ Treatment plans
+
+## Why Validation Matters
+**Problem:** NHS backlogs caused by validation errors!
+
+**Common Errors:**
+- Letter says patient treated → NOT in system
+- Letter says discharge → Pathway still active
+- Letter says appointment booked → NOT booked
+- Letter says test done → NO results
+
+**Your Role:** VERIFY everything in the letter against PAS system!
+
+## Validation vs Just Reading
+❌ **Reading:** Accept what letter says
+✅ **Validation:** CHECK if it's actually true in the system!
+
+## Medical Terminology Basics
+- OPD = Outpatient Department
+- DNA = Did Not Attend
+- MRI = Magnetic Resonance Imaging
+- CT = Computerized Tomography
+- Mx = Management/Treatment
+- Hx = History
+- Rx = Treatment/Prescription
+                """,
+                "duration": "1 hour"
+            },
+            {
+                "lesson_id": "4.2",
+                "title": "Letter Validation Process",
+                "type": "detailed",
+                "content": """
+# 📋 How to Validate Clinical Letters
+
+## Step-by-Step Validation Workflow
+
+### Step 1: Read the Letter
+- Patient details (NHS number, name, DOB)
+- Appointment date
+- What happened (seen, treated, discharged, DNA)
+- Next steps (follow-up, tests, treatment)
+
+### Step 2: Check PAS System
+✅ Is patient registered?
+✅ Does pathway exist?
+✅ Is appointment recorded?
+✅ Are test results in system?
+✅ Is treatment recorded?
+
+### Step 3: Identify Discrepancies
+🚨 Letter says X → System shows Y
+
+Examples:
+- Letter: "Patient treated"
+  System: No treatment recorded → FLAG ERROR
+  
+- Letter: "Patient discharged"
+  System: Pathway still active → FLAG ERROR
+  
+- Letter: "MRI booked for 15/05"
+  System: No MRI booking → FLAG ERROR
+
+### Step 4: Generate Correct RTT Code
+Based on VERIFIED reality, not letter claims!
+
+- Letter says treated, System confirms: Code 30 ✅
+- Letter says treated, System shows nothing: INVESTIGATE 🚨
+- Letter says discharge, System shows active: INVESTIGATE 🚨
+
+### Step 5: Add Comment
+RTT - [CODE] - [DATE] - [VERIFIED ACTION]
+
+Example:
+- "RTT - 30 - 15/05/24 - Definitive treatment verified - Surgery performed"
+- "RTT - INVESTIGATE - 15/05/24 - Letter states treatment but no system record"
+                """,
+                "duration": "1.5 hours"
+            },
+            {
+                "lesson_id": "4.3",
+                "title": "PRACTICAL: Clinic Letter Interpreter",
+                "type": "hands-on",
+                "content": """
+# 🏥 HANDS-ON: Validate Real Clinic Letters
+
+## Welcome to Real NHS Validation!
+This is what NHS validators do every single day!
+
+## Where to Practice
+Go to: **Clinic Letter Interpreter** (in sidebar)
+
+## Step-by-Step Practice
+
+### Task 1: Read Your First Letter
+1. Click "Clinic Letter Interpreter"
+2. Letter appears - read it carefully
+3. Note key information:
+   - Patient name
+   - Appointment date
+   - What happened
+   - What letter claims
+
+### Task 2: Check Against PAS
+1. Look at "PAS System Check" section
+2. See what's ACTUALLY recorded:
+   - Was appointment attended?
+   - Was treatment given?
+   - Are tests recorded?
+   - Is pathway status correct?
+
+### Task 3: Identify Discrepancies
+1. Compare letter vs PAS
+2. Do they match?
+   - YES = Validate normally
+   - NO = FLAG DISCREPANCY!
+
+Example:
+```
+Letter says: "Patient treated with injection"
+PAS shows: No treatment recorded
+
+ACTION: FLAG for investigation!
+```
+
+### Task 4: Choose Correct RTT Code
+1. Based on VERIFIED information
+2. Not based on letter alone!
+3. Select from:
+   - Code 10 (Referral)
+   - Code 20 (Appointment/Test)
+   - Code 30 (Treatment)
+   - Code 33 (DNA)
+   - Code 34 (Discharge)
+   - INVESTIGATE (If mismatch)
+
+### Task 5: Generate Comment
+1. Use standard format
+2. Reflect VERIFIED reality
+3. Flag any issues
+4. Submit validation
+
+### Task 6: Get Instant Feedback
+1. See if you're correct ✅ or wrong ❌
+2. Read explanation
+3. Learn from mistakes
+4. Try next letter
+
+## Practice Goals
+✅ Validate 20 clinic letters
+✅ Identify 5 discrepancies
+✅ Use correct RTT codes
+✅ Generate proper comments
+✅ Achieve 90%+ accuracy
+
+## Real NHS Impact
+Proper validation prevents:
+- NHS backlogs
+- Patient delays
+- Financial penalties
+- Data errors
+- Breach investigations
+
+## Teaching Mode Features
+✅ See multiple scenarios
+✅ Learn why each code fits
+✅ Understand validation logic
+✅ Build decision-making skills
+
+## AI Validation
+✅ Use AI Auto-Validator
+✅ Get AI suggestions
+✅ Compare your answer vs AI
+✅ Learn from AI reasoning
+                """,
+                "practical_module": "Clinic Letter Interpreter",
+                "duration": "3 hours hands-on"
+            },
+            {
+                "lesson_id": "4.4",
+                "title": "PRACTICAL: AI Auto-Validator",
+                "type": "hands-on",
+                "content": """
+# 🤖 HANDS-ON: Use AI Auto-Validator
+
+## AI-Powered Validation
+Let AI help you validate faster and more accurately!
+
+## Where to Practice
+Go to: **AI Auto-Validator** (in sidebar)
+
+## Step-by-Step Practice
+
+### Task 1: Upload/Paste Letter
+1. Click "AI Auto-Validator"
+2. Paste clinic letter
+3. Click "Analyze"
+4. AI reads and interprets
+
+### Task 2: See AI Analysis
+AI shows you:
+✅ Patient details extracted
+✅ Key events identified
+✅ RTT code recommendation
+✅ Comment line generated
+✅ Confidence score
+
+### Task 3: Review AI Suggestions
+1. Read AI reasoning
+2. Check if you agree
+3. Learn AI logic
+4. Understand why
+
+### Task 4: Compare Your Answer
+1. You validate letter
+2. AI validates letter
+3. Compare results
+4. Discuss differences
+5. Learn best practice
+
+### Task 5: Batch Validation
+1. Process multiple letters
+2. AI validates 10 letters/minute
+3. Review AI results
+4. Approve or override
+5. 30X faster than manual!
+
+## Practice Goals
+✅ Use AI on 30 letters
+✅ Compare AI vs manual
+✅ Learn AI reasoning
+✅ Achieve validation speed
+✅ Maintain accuracy
+
+## Real NHS Value
+- Manual validation: 2-3 minutes per letter
+- AI validation: 5 seconds per letter
+- **30X FASTER!**
+
+Backlog of 10,000 letters:
+- Manual: 500 hours (12 weeks)
+- AI: 14 hours (2 days!)
+                """,
+                "practical_module": "AI Auto-Validator",
+                "duration": "2 hours hands-on"
+            }
+        ]
+    },
+    
+    "module_5": {
+        "title": "Medical Secretary & Communication Skills",
+        "duration": "Week 9-10",
+        "order": 5,
+        "lessons": [
+            {
+                "lesson_id": "5.1",
+                "title": "Medical Secretary Role",
+                "type": "theory",
+                "content": """
+# 📧 NHS Medical Secretary Role
+
+## What Do Medical Secretaries Do?
+Support consultants and clinical teams with administrative duties.
+
+## Key Responsibilities
+✅ Type clinic letters
+✅ Manage consultant diaries
+✅ Book appointments
+✅ Handle correspondence
+✅ Coordinate clinics
+✅ Patient communication
+✅ File management
+✅ Meeting coordination
+
+## Skills Required
+- Fast typing (50+ WPM)
+- Medical terminology
+- Professional communication
+- Organization
+- Confidentiality
+- Multi-tasking
+- IT skills
+
+## Career Path
+Medical Secretary → Senior Secretary → PA → Office Manager
+
+## Salary Range
+- Junior: £22,000-£25,000
+- Experienced: £26,000-£30,000
+- Senior: £30,000-£35,000
+                """,
+                "duration": "1 hour"
+            },
+            {
+                "lesson_id": "5.2",
+                "title": "PRACTICAL: Medical Secretary AI",
+                "type": "hands-on",
+                "content": """
+# 🏥 HANDS-ON: Medical Secretary Tasks
+
+## Where to Practice
+Go to: **Medical Secretary AI** (in sidebar)
+
+## Step-by-Step Practice
+
+### Task 1: Generate Clinic Letter
+1. Click "Medical Secretary AI"
+2. Select letter type: Clinic Letter
+3. Fill in details:
+   - Patient name
+   - Date of appointment
+   - Consultant name
+   - Clinical findings
+   - Plan
+4. Click "Generate Letter"
+5. AI creates professional letter
+6. Review and edit
+7. Save/Export
+
+### Task 2: Create Referral Letter
+1. Select: Referral Letter
+2. Enter patient details
+3. Reason for referral
+4. Urgency (routine/2WW)
+5. Generate
+6. Professional referral created!
+
+### Task 3: Discharge Summary
+1. Select: Discharge Summary
+2. Admission details
+3. Treatment given
+4. Follow-up plan
+5. GP instructions
+6. Generate complete summary
+
+### Task 4: Manage Consultant Diary
+1. View diary
+2. Book appointments
+3. Block time for clinics
+4. Schedule meetings
+5. Holiday planning
+
+## Practice Goals
+✅ Generate 10 clinic letters
+✅ Create 5 referral letters
+✅ Write 3 discharge summaries
+✅ Manage diary for 1 week
+
+## Real NHS Skills
+This is exactly what medical secretaries do daily!
+                """,
+                "practical_module": "Medical Secretary AI",
+                "duration": "3 hours hands-on"
+            }
+        ]
+    },
+    
+    "module_6": {
+        "title": "Data Quality & Timeline Auditing",
+        "duration": "Week 11-12",
+        "order": 6,
+        "lessons": [
+            {
+                "lesson_id": "6.1",
+                "title": "PRACTICAL: Timeline Auditor",
+                "type": "hands-on",
+                "content": """
+# 📅 HANDS-ON: Audit RTT Timelines
+
+## Where to Practice
+Go to: **Timeline Auditor** (in sidebar)
+
+## What You'll Do
+Check if RTT events are in correct chronological order and properly coded.
+
+## Step-by-Step Practice
+
+### Task 1: Review Timeline
+1. See complete patient pathway
+2. Check sequence of events
+3. Verify dates are logical
+4. Check code progression
+
+### Task 2: Identify Errors
+Common errors:
+- Code 30 before Code 10 (impossible!)
+- Code 20 after Code 30 (should be Code 90)
+- DNA coded as Code 20 (should be Code 33 if first)
+- Dates out of sequence
+
+### Task 3: Correct Timeline
+1. Identify wrong codes
+2. Suggest corrections
+3. Re-sequence events
+4. Generate audit report
+
+## Practice Goals
+✅ Audit 15 timelines
+✅ Find 20 errors
+✅ Correct all mistakes
+✅ Generate audit reports
+                """,
+                "practical_module": "Timeline Auditor",
+                "duration": "2 hours hands-on"
+            },
+            {
+                "lesson_id": "6.2",
+                "title": "PRACTICAL: Data Quality System",
+                "type": "hands-on",
+                "content": """
+# 📊 HANDS-ON: Data Quality Management
+
+## Where to Practice
+Go to: **Data Quality System** (in sidebar)
+
+## Step-by-Step Practice
+
+### Task 1: Run Data Validation
+1. Select validation checks:
+   - Missing NHS numbers
+   - Invalid dates
+   - Duplicate pathways
+   - Orphaned episodes
+   - Data inconsistencies
+2. Run validation
+3. See errors found
+
+### Task 2: Review Errors
+1. See list of data errors
+2. Prioritize by severity
+3. Assign to team members
+4. Track corrections
+
+### Task 3: Correct Data
+1. Fix NHS numbers
+2. Correct dates
+3. Merge duplicates
+4. Link orphaned records
+5. Validate corrections
+
+### Task 4: Generate Reports
+1. Data quality scorecard
+2. Error trends
+3. Improvement metrics
+4. Submit to managers
+
+## Practice Goals
+✅ Validate 100 patient records
+✅ Find 30 errors
+✅ Correct all errors
+✅ Improve data quality score to 95%+
+                """,
+                "practical_module": "Data Quality System",
+                "duration": "2 hours hands-on"
+            }
+        ]
+    },
+    
+    "module_7": {
+        "title": "NHS Reporting & Analytics",
+        "duration": "Week 13-14",
+        "order": 7,
+        "lessons": [
+            {
+                "lesson_id": "7.1",
+                "title": "PRACTICAL: Interactive Reports",
+                "type": "hands-on",
+                "content": """
+# 📊 HANDS-ON: Build NHS Reports
+
+## Where to Practice
+Go to: **Interactive Reports** (in sidebar)
+
+## Step-by-Step Practice
+
+### Task 1: Monthly RTT Report
+1. Generate RTT performance report
+2. See 18-week achievement %
+3. Breach analysis
+4. By specialty breakdown
+5. Export to Excel
+
+### Task 2: Cancer Waiting Times
+1. 2WW performance
+2. 62-day achievement
+3. Diagnostic waiting times
+4. Treatment performance
+
+### Task 3: Dashboard Creation
+1. Build live dashboard
+2. Key metrics
+3. Visual charts
+4. Traffic light indicators
+5. Share with team
+
+## Practice Goals
+✅ Generate 5 different reports
+✅ Build 3 dashboards
+✅ Export 10 datasets
+✅ Present findings
+                """,
+                "practical_module": "Interactive Reports",
+                "duration": "2 hours hands-on"
+            }
+        ]
+    },
+    
+    "module_8": {
+        "title": "Information Governance & Certification",
+        "duration": "Week 15-16",
+        "order": 8,
+        "lessons": [
+            {
+                "lesson_id": "8.1",
                 "title": "Information Governance (Mandatory)",
                 "type": "mandatory",
                 "content": """
@@ -973,6 +1500,36 @@ Unlimited retakes allowed until you pass.
                 "practical_module": "Information Governance",
                 "duration": "2 hours",
                 "mandatory": True
+            },
+            {
+                "lesson_id": "8.2",
+                "title": "Career Preparation",
+                "type": "career",
+                "content": """
+# 💼 Prepare for NHS Careers
+
+## CV Building
+Go to: **CV Builder** module
+- Create professional CV
+- ATS-optimized
+- NHS-specific format
+- Export to PDF/Word
+
+## Interview Preparation
+Go to: **Job Interview Prep** module
+- Practice interview questions
+- STAR technique
+- Competency questions
+- Mock interviews
+
+## Final Certification
+Go to: **Certification Exam** module
+- 100 questions
+- 90 minutes
+- 80% pass rate
+- TQUK-endorsed certificate
+                """,
+                "duration": "4 hours"
             }
         ]
     }

@@ -2591,17 +2591,33 @@ elif tool == "🎓 Training Library":
     user_role = st.session_state.get('user_type', 'student')
     
     # ADMIN, TEACHERS, and STAFF get ALL scenarios unlocked!
-    is_privileged = user_role in ['admin', 'teacher', 'staff'] or 'admin' in user_email.lower() or 'teacher' in user_email.lower()
+    is_privileged = user_role in ['super_admin', 'admin', 'teacher', 'staff']
     
-    # Check if user has full training library access
-    has_full_access = is_privileged or user_has_module_access(user_email, "training_library")
+    # STUDENT ACCESS BY TIER:
+    if user_role == 'student_ultimate':
+        has_full_access = True  # Ultimate gets ALL scenarios
+    elif user_role == 'student_premium':
+        has_full_access = True  # Premium gets ALL scenarios
+    elif user_role == 'student_standard':
+        has_full_access = True  # Standard gets ALL scenarios
+    elif user_role == 'student_basic':
+        accessible_count = 20  # Basic gets 20 scenarios
+        has_full_access = False
+    elif user_role == 'trial':
+        accessible_count = 5  # Trial gets 5 scenarios
+        has_full_access = False
+    else:
+        has_full_access = is_privileged or user_has_module_access(user_email, "training_library")
     
     # Count accessible scenarios
-    accessible_count = 0
-    for scenario in scenarios:
-        scenario_id = f"scenario_{scenario['id']:02d}"
-        if has_full_access or user_has_module_access(user_email, scenario_id):
-            accessible_count += 1
+    if has_full_access:
+        accessible_count = len(scenarios)
+    elif user_role not in ['student_basic', 'trial']:
+        accessible_count = 0
+        for scenario in scenarios:
+            scenario_id = f"scenario_{scenario['id']:02d}"
+            if user_has_module_access(user_email, scenario_id):
+                accessible_count += 1
     
     st.markdown(f"### 📚 Scenarios Available: {accessible_count}/{len(scenarios)}")
     
@@ -2610,9 +2626,18 @@ elif tool == "🎓 Training Library":
     elif accessible_count < len(scenarios):
         st.info(f"🔒 You have access to {accessible_count} scenarios. Upgrade to unlock all {len(scenarios)} scenarios!")
     
-    for scenario in scenarios:
+    for idx, scenario in enumerate(scenarios, 1):
         scenario_id = f"scenario_{scenario['id']:02d}"
-        has_access = has_full_access or user_has_module_access(user_email, scenario_id)
+        
+        # Check access based on tier
+        if has_full_access:
+            has_access = True
+        elif user_role == 'student_basic':
+            has_access = (idx <= 20)  # First 20 scenarios
+        elif user_role == 'trial':
+            has_access = (idx <= 5)  # First 5 scenarios
+        else:
+            has_access = user_has_module_access(user_email, scenario_id)
         
         # Icon based on access
         icon = "✅" if has_access else "🔒"
