@@ -1564,12 +1564,12 @@ elif user_role in ['teacher', 'instructor', 'trainer']:
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
-elif user_role in ['admin', 'super_admin'] or 'admin@t21services' in user_email.lower():
-    # ADMINS: Everything
+elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
+    # SUPER ADMIN: Absolute everything (including admin management)
     accessible_modules = [
         "🏥 Patient Administration Hub",
         "🎓 Learning Portal",
-        "👨‍🏫 Teaching & Assessment",  # ADMIN ONLY!
+        "👨‍🏫 Teaching & Assessment",
         "🏥 Clinical Workflows",
         "✅ Task Management",
         "🤖 AI & Automation",
@@ -1577,7 +1577,24 @@ elif user_role in ['admin', 'super_admin'] or 'admin@t21services' in user_email.
         "🎓 Training & Certification",
         "🔒 Information Governance",
         "💼 Career Development",
-        "⚙️ Administration",
+        "⚙️ Administration",  # FULL admin tools + platform config
+        "ℹ️ Help & Information",
+        "📧 Contact & Support"
+    ]
+elif user_role == 'admin':
+    # REGULAR ADMIN: Everything except super admin features
+    accessible_modules = [
+        "🏥 Patient Administration Hub",
+        "🎓 Learning Portal",
+        "👨‍🏫 Teaching & Assessment",
+        "🏥 Clinical Workflows",
+        "✅ Task Management",
+        "🤖 AI & Automation",
+        "📊 Reports & Analytics",
+        "🎓 Training & Certification",
+        "🔒 Information Governance",
+        "💼 Career Development",
+        "⚙️ Administration",  # LIMITED admin tools (no super admin features)
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
@@ -6543,19 +6560,23 @@ Just paste ANY job description here!"""
                 st.success("🎉 **CV Generated Successfully!**")
 
 elif tool == "⚙️ Administration" or tool == "⚙️ My Account":
-    # SECURITY: Students see only "My Account", Admins see all tools
+    # SECURITY: Role-based administration access
     user_role = st.session_state.user_license.role if hasattr(st.session_state.user_license, 'role') else "trial"
+    user_email = st.session_state.get('user_email', '')
     is_student = user_role in ['student', 'student_basic', 'student_standard', 'student_premium', 'student_ultimate', 'trial']
+    is_super_admin = (user_role == 'super_admin' or 'admin@t21services' in user_email.lower())
+    is_admin = (user_role == 'admin')
     
     if is_student:
         # STUDENTS: Only My Account
         st.header("⚙️ My Account")
         st.info("Manage your personal account settings")
         tabs = st.tabs(["⚙️ My Account"])
-    else:
-        # ADMINS/TEACHERS: Full administration tools
-        st.header("⚙️ Administration")
-        st.info("Account settings, admin tools, and learning analytics")
+    elif is_super_admin:
+        # SUPER ADMIN: ALL administration tools (including platform config)
+        st.header("⚙️ Administration (Super Admin)")
+        st.info("Full platform control: Account settings, admin tools, platform configuration")
+        st.warning("🔴 **Super Admin Access:** You have full platform control including user termination and platform settings")
         tabs = st.tabs([
             "⚙️ My Account", 
             "🔧 Admin Panel", 
@@ -6563,6 +6584,26 @@ elif tool == "⚙️ Administration" or tool == "⚙️ My Account":
             "🏥 Trust AI Settings",
             "📋 Exam Management",
             "🤖 AI Document Training"
+        ])
+    elif is_admin:
+        # REGULAR ADMIN: Limited administration tools (no platform config)
+        st.header("⚙️ Administration (Admin)")
+        st.info("User management and admin tools")
+        st.info("🟡 **Admin Access:** You can manage users but cannot terminate accounts or change platform settings")
+        tabs = st.tabs([
+            "⚙️ My Account", 
+            "🔧 Admin Panel",
+            "📊 Learning Analytics",
+            "📋 Exam Management"
+        ])
+    else:
+        # TEACHERS/STAFF: Basic administration
+        st.header("⚙️ Administration")
+        st.info("Account settings and limited admin tools")
+        tabs = st.tabs([
+            "⚙️ My Account", 
+            "🔧 Admin Panel", 
+            "📊 Learning Analytics"
         ])
     
     with tabs[0]:
