@@ -5792,8 +5792,29 @@ elif tool == "🎓 Training & Certification":
         if st.button("📤 Ask AI Tutor", type="primary"):
             if user_question:
                 st.success("🤖 **AI Tutor Response:**")
-                st.info("This is a training question about RTT codes. Let me help you understand...")
-                st.markdown("**Note:** Full AI integration requires OpenAI API key configuration.")
+                
+                # ACTUALLY CALL THE AI TUTOR!
+                try:
+                    from ai_tutor import answer_question
+                    
+                    with st.spinner("🤖 AI Tutor is thinking..."):
+                        answer = answer_question(user_question)
+                    
+                    # Display the answer
+                    st.markdown(answer)
+                    
+                    # Add to chat history if available
+                    if 'tutor_history' not in st.session_state:
+                        st.session_state['tutor_history'] = []
+                    
+                    st.session_state['tutor_history'].append({
+                        'question': user_question,
+                        'answer': answer
+                    })
+                    
+                except Exception as e:
+                    st.error(f"Error: {str(e)}")
+                    st.info("💡 The AI Tutor uses the built-in RTT knowledge base to answer your questions. If you see an error, it may be a temporary issue.")
             else:
                 st.warning("Please enter a question first!")
         
