@@ -247,6 +247,21 @@ def render_patient_list():
     
     st.subheader("📋 Full Patient Tracking List")
     
+    # SECURITY CHECK for debug info
+    try:
+        user_license = st.session_state.get('user_license')
+        user_role = user_license.role if (user_license and hasattr(user_license, 'role')) else 'student'
+        user_email = st.session_state.get('user_email', '').lower()
+        
+        is_super_admin = (
+            user_role == 'super_admin' or 
+            'admin@t21services' in user_email or
+            user_email == 'admin@t21services.co.uk' or
+            user_email == 't21services21@gmail.com'
+        )
+    except:
+        is_super_admin = False
+    
     # Filters
     st.markdown("### 🔍 Filters")
     col1, col2, col3, col4 = st.columns(4)
