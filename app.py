@@ -1534,48 +1534,67 @@ if not check_migration_done():
 
 # Sidebar navigation
 st.sidebar.title(" Platform Modules")
-# TEMPORARILY: Show CORE modules only for all users (testing phase)
-# Get user's accessible modules based on their role AND user-specific access
+
+# CRITICAL: Proper access control based on user role
 user_role = st.session_state.user_license.role if hasattr(st.session_state.user_license, 'role') else "trial"
 user_email = st.session_state.user_email if 'user_email' in st.session_state else None
-# accessible_modules = get_accessible_modules(user_role, user_email)  # DISABLED - showing too many modules
 
-# FORCE CORE MODULES ONLY (for testing)
-accessible_modules = []
-
-# Remove any duplicates (use dict to preserve order while removing duplicates)
-accessible_modules = list(dict.fromkeys(accessible_modules))
-
-# Show CORE modules only - CONSOLIDATED STRUCTURE
-if not accessible_modules:
+# Define modules based on role
+if user_role in ['student', 'student_basic', 'student_standard', 'student_premium', 'student_ultimate', 'trial']:
+    # STUDENTS: Learning and career development only
     accessible_modules = [
-        # === 🏥 FULLY WORKING HUBS (Features in Tabs) ===
-        "🏥 Patient Administration Hub",  # 6 tabs: Registration, Pathways, Episodes, Waiting List, DNA, Alerts
-        "🎓 Learning Portal",  # 5 tabs: Materials, Videos, Announcements, Assignments, Quizzes
-        "👨‍🏫 Teaching & Assessment",  # 4 tabs: Teacher, Students, Portfolio, Reports
-        
-        # === 🏥 CLINICAL & WORKFLOW ===
-        "🏥 Clinical Workflows",  # 4 tabs: PTL, Cancer, MDT, Booking
-        "✅ Task Management",
-        
-        # === 🤖 AI & TOOLS ===
-        "🤖 AI & Automation",  # 4 tabs: Auto-Validator, Secretary, Letters, Documents
-        
-        # === 📊 REPORTS & ANALYTICS ===
-        "📊 Reports & Analytics",  # 3 tabs: Dashboard, Interactive Reports, Data Quality
-        
-        # === 🎓 TRAINING & CAREER ===
-        "🎓 Training & Certification",  # 4 tabs: Training Library, Interactive Learning, AI Tutor, Certification Exam
-        "🔒 Information Governance",  # MANDATORY NHS Training: GDPR, Caldicott, Data Protection, Confidentiality
-        "💼 Career Development",  # 2 tabs: Job Interview Prep, CV Builder
-        
-        # === ⚙️ ADMIN ===
-        "⚙️ Administration",  # 2 tabs: My Account, Admin Panel
-        
-        # === ℹ️ INFO & SUPPORT ===
+        "🎓 Learning Portal",  # Their courses
+        "🎓 Training & Certification",  # Training, AI Tutor, Certification
+        "🔒 Information Governance",  # Mandatory training
+        "💼 Career Development",  # Interview prep, CV builder
+        "⚙️ Administration",  # My Account only
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
+elif user_role in ['teacher', 'instructor', 'trainer']:
+    # TEACHERS: Student management + learning tools
+    accessible_modules = [
+        "👨‍🏫 Teaching & Assessment",  # Teacher tools, student management
+        "🎓 Learning Portal",
+        "🎓 Training & Certification",
+        "📊 Reports & Analytics",
+        "⚙️ Administration",
+        "ℹ️ Help & Information",
+        "📧 Contact & Support"
+    ]
+elif user_role in ['admin', 'super_admin'] or 'admin@t21services' in user_email.lower():
+    # ADMINS: Everything
+    accessible_modules = [
+        "🏥 Patient Administration Hub",
+        "🎓 Learning Portal",
+        "👨‍🏫 Teaching & Assessment",  # ADMIN ONLY!
+        "🏥 Clinical Workflows",
+        "✅ Task Management",
+        "🤖 AI & Automation",
+        "📊 Reports & Analytics",
+        "🎓 Training & Certification",
+        "🔒 Information Governance",
+        "💼 Career Development",
+        "⚙️ Administration",
+        "ℹ️ Help & Information",
+        "📧 Contact & Support"
+    ]
+else:
+    # DEFAULT: Basic access for NHS staff
+    accessible_modules = [
+        "🏥 Patient Administration Hub",
+        "🏥 Clinical Workflows",
+        "✅ Task Management",
+        "🤖 AI & Automation",
+        "📊 Reports & Analytics",
+        "🔒 Information Governance",
+        "⚙️ Administration",
+        "ℹ️ Help & Information",
+        "📧 Contact & Support"
+    ]
+
+# Remove duplicates (preserve order)
+accessible_modules = list(dict.fromkeys(accessible_modules))
 
 # Show module selector (st.switch_page creates clean URLs automatically)
 # Check if tool was pre-selected from sidebar_manager
