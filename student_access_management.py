@@ -756,7 +756,7 @@ def render_edit_student_form():
                 
                 if reset_password and new_password:
                     import hashlib
-                    update_data['password'] = hashlib.sha256(new_password.encode()).hexdigest()
+                    update_data['password_hash'] = hashlib.sha256(new_password.encode()).hexdigest()
                 
                 supabase.table('users').update(update_data).eq('email', student_email).execute()
                 st.success("✅ Student updated successfully!")
