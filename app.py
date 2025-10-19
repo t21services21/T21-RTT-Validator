@@ -686,8 +686,8 @@ if 'user_license' not in st.session_state:
     st.session_state.user_license = None
 if 'user_email' not in st.session_state:
     st.session_state.user_email = None
-if 'last_activity' not in st.session_state:
-    st.session_state.last_activity = None
+if 'session_email' not in st.session_state:
+    st.session_state.session_email = None
 if 'last_activity' not in st.session_state:
     st.session_state.last_activity = None
 
@@ -712,7 +712,7 @@ if st.session_state.logged_in:
     st.session_state.last_activity = datetime.now()
 
 # Session persistence - restore login on refresh
-if not st.session_state.logged_in and st.session_state.session_email:
+if not st.session_state.logged_in and st.session_state.get('session_email'):
     # Try to restore session
     try:
         import hashlib
