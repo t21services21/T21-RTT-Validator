@@ -14,6 +14,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from student_auth import login_student, register_student
 from advanced_access_control import UserAccount
+from auth_persistence import initialize_auth_session, save_auth_cookie
+import hashlib
 
 
 # Remove ALL spacing and center logo
@@ -48,6 +50,9 @@ st.markdown("""
     <p style='color: #666; font-size: 14px; margin: 0 0 10px 0;'>Professional NHS Administration Training</p>
 </div>
 """, unsafe_allow_html=True)
+
+# Initialize authentication (restore from cookie if available)
+initialize_auth_session()
 
 # Check if already logged in
 if 'logged_in' not in st.session_state:
@@ -116,10 +121,13 @@ else:
                                         st.session_state.user_email = email
                                         st.session_state.session_email = email
                                         
-                                        st.success(f"✅ Welcome back {user_obj.full_name}!")
+                                        # Save to cookie for persistent login
+                                        save_auth_cookie(email, password_hash, supabase_user)
+                                        
+                                        st.success(f" Welcome back {user_obj.full_name}!")
                                         st.switch_page("app.py")
                                 else:
-                                    st.error("❌ Incorrect password")
+                                    st.error(" Incorrect password")
                             else:
                                 # Fall back to old student system
                                 result = login_student(email, password)
@@ -129,10 +137,15 @@ else:
                                     st.session_state.user_license = result["license"]
                                     st.session_state.user_email = email
                                     
-                                    st.success(f"✅ Welcome back {result['student_name']}!")
+                                    # Save to cookie for persistent login
+                                    password_hash = hashlib.sha256(password.encode()).hexdigest()
+                                    user_dict = {'email': email, 'full_name': email, 'user_type': 'student', 'role': 'student'}
+                                    save_auth_cookie(email, password_hash, user_dict)
+                                    
+                                    st.success(" Login successful! Welcome back!")
                                     st.switch_page("app.py")
                                 else:
-                                    st.error(f"❌ {result['message']}")
+                                    st.error(f" {result['message']}")
                         except Exception as e:
                             # Fall back to old system
                             result = login_student(email, password)
@@ -142,23 +155,28 @@ else:
                                 st.session_state.user_license = result["license"]
                                 st.session_state.user_email = email
                                 
-                                st.success(f"✅ Welcome back {result['student_name']}!")
+                                # Save to cookie for persistent login
+                                password_hash = hashlib.sha256(password.encode()).hexdigest()
+                                user_dict = {'email': email, 'full_name': email, 'user_type': 'student', 'role': 'student'}
+                                save_auth_cookie(email, password_hash, user_dict)
+                                
+                                st.success(" Login successful! Welcome to T21 Healthcare Platform!")
                                 st.switch_page("app.py")
                             else:
-                                st.error(f"❌ {result['message']}")
+                                st.error(f" {result['message']}")
                     else:
-                        st.error("❌ Please enter both email and password")
+                        st.error(" Please enter both email and password")
             
             # Forgot Password Button
             st.markdown("---")
-            if st.button("🔒 Forgot Password? Click Here to Reset", use_container_width=True):
+            if st.button(" Forgot Password? Click Here to Reset", use_container_width=True):
                 st.session_state.show_student_password_reset = True
                 st.rerun()
             
             # Password Reset Form
             if st.session_state.get('show_student_password_reset'):
                 st.markdown("---")
-                st.markdown("### 🔒 Reset Your Password")
+                st.markdown("### Reset Your Password")
                 
                 reset_email = st.text_input("Enter your email address:", key="student_reset_email")
                 
@@ -168,7 +186,7 @@ else:
                 if st.session_state.student_reset_step == 1:
                     col1, col2 = st.columns(2)
                     with col1:
-                        if st.button("📧 Send Reset Code", type="primary", use_container_width=True, key="student_send_code"):
+                        if st.button(" Send Reset Code", type="primary", use_container_width=True, key="student_send_code"):
                             if reset_email:
                                 try:
                                     from student_auth import request_password_reset
@@ -184,20 +202,20 @@ else:
                             else:
                                 st.warning("Please enter your email")
                     with col2:
-                        if st.button("← Cancel", use_container_width=True, key="student_cancel_reset"):
+                        if st.button(" Cancel", use_container_width=True, key="student_cancel_reset"):
                             st.session_state.show_student_password_reset = False
                             st.session_state.student_reset_step = 1
                             st.rerun()
                 
                 elif st.session_state.student_reset_step == 2:
-                    st.info(f"✅ Reset code sent to {reset_email}")
+                    st.info(f" Reset code sent to {reset_email}")
                     reset_code = st.text_input("6-digit code:", max_chars=6, key="student_reset_code")
                     new_password = st.text_input("New Password (min 8 chars):", type="password", key="student_new_pass")
                     confirm_password = st.text_input("Confirm Password:", type="password", key="student_confirm_pass")
                     
                     col1, col2, col3 = st.columns(3)
                     with col1:
-                        if st.button("✅ Reset Password", type="primary", key="student_do_reset"):
+                        if st.button(" Reset Password", type="primary", key="student_do_reset"):
                             if not (reset_code and new_password and confirm_password):
                                 st.warning("Fill all fields")
                             elif new_password != confirm_password:
@@ -219,7 +237,7 @@ else:
                                 except:
                                     st.error("Reset failed. Contact admin@t21services.co.uk")
                     with col2:
-                        if st.button("← Start Over", key="student_reset_restart"):
+                        if st.button(" Start Over", key="student_reset_restart"):
                             st.session_state.student_reset_step = 1
                             st.rerun()
                     with col3:
@@ -231,7 +249,7 @@ else:
             # 2FA Verification Prompt
             if st.session_state.get('show_2fa_prompt'):
                 st.markdown("---")
-                st.markdown("### 🔐 Two-Factor Authentication Required")
+                st.markdown("### Two-Factor Authentication Required")
                 
                 pending_user = st.session_state.get('pending_2fa_user')
                 
@@ -243,16 +261,11 @@ else:
                     col1, col2 = st.columns(2)
                     
                     with col1:
-                        if st.button("✅ Verify & Login", type="primary", key="student_verify_2fa"):
+                        if st.button(" Verify & Login", type="primary", key="student_verify_2fa"):
                             if two_fa_code and len(two_fa_code) == 6:
-                                from two_factor_auth import verify_2fa_code
-                                
                                 secret = pending_user.get('two_factor_secret')
                                 
                                 if verify_2fa_code(secret, two_fa_code):
-                                    from supabase_database import update_user_last_login
-                                    
-                                    email = pending_user.get('email')
                                     update_user_last_login(email)
                                     
                                     class SimpleUser:
@@ -269,13 +282,17 @@ else:
                                     st.session_state.user_email = email
                                     st.session_state.session_email = email
                                     
+                                    # Save to cookie for persistent login
+                                    save_auth_cookie(email, pending_user.get('password_hash'), pending_user)
+                                    
+                                    # Clear 2FA prompt
                                     st.session_state.show_2fa_prompt = False
                                     st.session_state.pending_2fa_user = None
                                     
-                                    st.success(f"✅ 2FA Verified! Welcome, {user_obj.full_name}!")
+                                    st.success(f" 2FA Verified! Welcome back!")
                                     st.switch_page("app.py")
                                 else:
-                                    st.error("❌ Invalid 2FA code. Please try again.")
+                                    st.error(" Invalid 2FA code. Please try again.")
                             else:
                                 st.error("Please enter a 6-digit code")
                     

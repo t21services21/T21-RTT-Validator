@@ -14,6 +14,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from admin_management import load_users_db
 from advanced_access_control import UserAccount
+from auth_persistence import initialize_auth_session, save_auth_cookie
 import hashlib
 
 
@@ -81,6 +82,9 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# Initialize authentication (restore from cookie if available)
+initialize_auth_session()
+
 # Check if already logged in
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
@@ -133,6 +137,9 @@ else:
                                 st.session_state.user_license = user_obj
                                 st.session_state.user_email = email
                                 st.session_state.session_email = email
+                                
+                                # Save to cookie for persistent login
+                                save_auth_cookie(email, pending_user.get('password_hash'), pending_user)
                                 
                                 # Clear 2FA prompt
                                 st.session_state.show_2fa_prompt = False
@@ -216,6 +223,9 @@ else:
                                         st.session_state.session_email = email
                                         st.session_state.auth_source = "supabase"
                                         
+                                        # Save to cookie for persistent login
+                                        save_auth_cookie(email, password_hash, supabase_user)
+                                        
                                         st.switch_page("app.py")
                                 else:
                                     st.error("❌ This portal is for staff/partners only")
@@ -255,6 +265,15 @@ else:
                                             st.session_state.user_license = user_data
                                             st.session_state.user_email = email
                                             st.session_state.auth_source = "local_json"
+                                            
+                                            # Save to cookie for persistent login
+                                            user_dict = user_data if isinstance(user_data, dict) else {
+                                                'email': email,
+                                                'full_name': getattr(user_data, 'full_name', email),
+                                                'role': getattr(user_data, 'role', 'staff'),
+                                                'user_type': getattr(user_data, 'user_type', 'staff')
+                                            }
+                                            save_auth_cookie(email, password_hash, user_dict)
                                             
                                             st.success(f"✅ Welcome to Staff Portal!")
                                             st.switch_page("app.py")

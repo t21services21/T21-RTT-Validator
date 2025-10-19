@@ -15,6 +15,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from student_auth import login_student
 from admin_management import load_users_db
 from advanced_access_control import UserAccount
+from auth_persistence import initialize_auth_session, save_auth_cookie
 import hashlib
 
 
@@ -83,6 +84,9 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# Initialize authentication (restore from cookie if available)
+initialize_auth_session()
+
 # Check if already logged in
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
@@ -147,12 +151,15 @@ else:
                                     st.session_state.user_email = email
                                     st.session_state.session_email = email
                                     
-                                    st.success(f"✅ Welcome to NHS Organization Portal, {user_account.full_name}!")
+                                    # Save to cookie for persistent login
+                                    save_auth_cookie(email, password_hash, supabase_user)
+                                    
+                                    st.success(f" Welcome to NHS Organization Portal, {user_account.full_name}!")
                                     st.switch_page("app.py")
                             else:
-                                st.error("❌ This portal is for NHS organizations only. Students should use the Training Portal.")
+                                st.error(" This portal is for NHS organizations only. Students should use the Training Portal.")
                         elif supabase_user:
-                            st.error("❌ Incorrect password")
+                            st.error(" Incorrect password")
                         else:
                             # Fall back to old system
                             users_db = load_users_db()
@@ -174,29 +181,38 @@ else:
                                         st.session_state.user_license = user_data
                                         st.session_state.user_email = email
                                         
-                                        st.success(f"✅ Welcome to NHS Organization Portal!")
+                                        # Save to cookie for persistent login
+                                        user_dict = user_data if isinstance(user_data, dict) else {
+                                            'email': email,
+                                            'full_name': getattr(user_data, 'full_name', email),
+                                            'role': getattr(user_data, 'role', 'nhs_user'),
+                                            'user_type': getattr(user_data, 'user_type', 'nhs_user')
+                                        }
+                                        save_auth_cookie(email, password_hash, user_dict)
+                                        
+                                        st.success(f" Welcome back!")
                                         st.switch_page("app.py")
                                     else:
-                                        st.error("❌ This portal is for NHS organizations only. Students should use the Training Portal.")
+                                        st.error(" This portal is for NHS organizations only. Students should use the Training Portal.")
                                 else:
-                                    st.error("❌ Incorrect password")
+                                    st.error(" Incorrect password")
                             else:
-                                st.error("❌ Organization account not found")
+                                st.error(" Organization account not found")
                     except Exception as e:
-                        st.error(f"❌ Login error. Please try the main app login page.")
+                        st.error(f" Login error. Please try the main app login page.")
                 else:
-                    st.error("❌ Please enter both email and password")
+                    st.error(" Please enter both email and password")
         
         # Forgot Password Button
         st.markdown("---")
-        if st.button("🔒 Forgot Password? Click Here to Reset", use_container_width=True, key="nhs_forgot_btn"):
+        if st.button(" Forgot Password? Click Here to Reset", use_container_width=True, key="nhs_forgot_btn"):
             st.session_state.show_nhs_password_reset = True
             st.rerun()
         
         # Password Reset Form
         if st.session_state.get('show_nhs_password_reset'):
             st.markdown("---")
-            st.markdown("### 🔒 Reset Your Password")
+            st.markdown("### Reset Your Password")
             
             reset_email = st.text_input("Enter your organization email:", key="nhs_reset_email")
             
@@ -206,7 +222,7 @@ else:
             if st.session_state.nhs_reset_step == 1:
                 col1, col2 = st.columns(2)
                 with col1:
-                    if st.button("📧 Send Reset Code", type="primary", use_container_width=True, key="nhs_send_code"):
+                    if st.button(" Send Reset Code", type="primary", use_container_width=True, key="nhs_send_code"):
                         if reset_email:
                             try:
                                 from student_auth import request_password_reset
@@ -222,20 +238,20 @@ else:
                         else:
                             st.warning("Please enter your email")
                 with col2:
-                    if st.button("← Cancel", use_container_width=True, key="nhs_cancel_reset"):
+                    if st.button(" Cancel", use_container_width=True, key="nhs_cancel_reset"):
                         st.session_state.show_nhs_password_reset = False
                         st.session_state.nhs_reset_step = 1
                         st.rerun()
             
             elif st.session_state.nhs_reset_step == 2:
-                st.info(f"✅ Reset code sent to {reset_email}")
+                st.info(f" Reset code sent to {reset_email}")
                 reset_code = st.text_input("6-digit code:", max_chars=6, key="nhs_reset_code")
                 new_password = st.text_input("New Password (min 8 chars):", type="password", key="nhs_new_pass")
                 confirm_password = st.text_input("Confirm Password:", type="password", key="nhs_confirm_pass")
                 
                 col1, col2, col3 = st.columns(3)
                 with col1:
-                    if st.button("✅ Reset Password", type="primary", key="nhs_do_reset"):
+                    if st.button(" Reset Password", type="primary", key="nhs_do_reset"):
                         if not (reset_code and new_password and confirm_password):
                             st.warning("Fill all fields")
                         elif new_password != confirm_password:
@@ -257,7 +273,7 @@ else:
                             except:
                                 st.error("Reset failed. Contact admin@t21services.co.uk")
                 with col2:
-                    if st.button("← Start Over", key="nhs_reset_restart"):
+                    if st.button(" Start Over", key="nhs_reset_restart"):
                         st.session_state.nhs_reset_step = 1
                         st.rerun()
                 with col3:
@@ -269,7 +285,7 @@ else:
         # 2FA Verification Prompt
         if st.session_state.get('show_2fa_prompt'):
             st.markdown("---")
-            st.markdown("### 🔐 Two-Factor Authentication Required")
+            st.markdown("### Two-Factor Authentication Required")
             
             pending_user = st.session_state.get('pending_2fa_user')
             
@@ -281,7 +297,7 @@ else:
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    if st.button("✅ Verify & Login", type="primary", key="nhs_verify_2fa"):
+                    if st.button(" Verify & Login", type="primary", key="nhs_verify_2fa"):
                         if two_fa_code and len(two_fa_code) == 6:
                             from two_factor_auth import verify_2fa_code
                             
@@ -307,13 +323,17 @@ else:
                                 st.session_state.user_email = email
                                 st.session_state.session_email = email
                                 
+                                # Save to cookie for persistent login
+                                save_auth_cookie(email, pending_user.get('password_hash'), pending_user)
+                                
+                                # Clear 2FA prompt
                                 st.session_state.show_2fa_prompt = False
                                 st.session_state.pending_2fa_user = None
                                 
-                                st.success(f"✅ 2FA Verified! Welcome, {user_obj.full_name}!")
+                                st.success(f" 2FA Verified! Welcome!")
                                 st.switch_page("app.py")
                             else:
-                                st.error("❌ Invalid 2FA code. Please try again.")
+                                st.error(" Invalid 2FA code. Please try again.")
                         else:
                             st.error("Please enter a 6-digit code")
                 

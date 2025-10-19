@@ -672,6 +672,13 @@ except Exception as e:
 # AUTHENTICATION & ACCESS CONTROL
 # ============================================
 
+# Initialize persistent authentication (restore from cookies if available)
+try:
+    from auth_persistence import initialize_auth_session
+    initialize_auth_session()
+except:
+    pass
+
 # Initialize session state
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
@@ -679,8 +686,8 @@ if 'user_license' not in st.session_state:
     st.session_state.user_license = None
 if 'user_email' not in st.session_state:
     st.session_state.user_email = None
-if 'session_email' not in st.session_state:
-    st.session_state.session_email = None
+if 'last_activity' not in st.session_state:
+    st.session_state.last_activity = None
 if 'last_activity' not in st.session_state:
     st.session_state.last_activity = None
 
@@ -1450,10 +1457,17 @@ if st.session_state.user_license:
         except:
             pass
         
-        st.session_state.logged_in = False
-        st.session_state.user_license = None
-        st.session_state.user_email = None
-        st.session_state.session_email = None  # Clear persistent session
+        # Clear session and cookies
+        try:
+            from auth_persistence import logout_user
+            logout_user()
+        except:
+            # Fallback if auth_persistence not available
+            st.session_state.logged_in = False
+            st.session_state.user_license = None
+            st.session_state.user_email = None
+            st.session_state.session_email = None
+        
         st.rerun()
 
 st.sidebar.markdown("---")
