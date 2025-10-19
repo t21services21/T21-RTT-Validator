@@ -459,7 +459,47 @@ def render_add_student():
             
             st.rerun()
         else:
-            st.error(f"❌ Error: {result.get('error')}")
+            error_msg = result.get('error', '')
+            st.error(f"❌ Error: {error_msg}")
+            
+            # Check if it's a duplicate email error
+            if 'already exists' in error_msg or 'duplicate key' in error_msg or '23505' in error_msg:
+                st.warning("### 🔄 This student already exists in the system!")
+                
+                st.info("""
+                **Options:**
+                
+                1. **Resend Login Details** - Use password reset instead:
+                   - Student can go to login page
+                   - Click "Forgot Password"
+                   - Enter their email
+                   - New password will be emailed
+                
+                2. **Update Existing Student** - Use "👥 All Students" tab to:
+                   - View the existing student
+                   - Update their access/role
+                   - Manually reset their password
+                
+                3. **Different Email** - If this is a new student:
+                   - Check for typos in the email
+                   - Use a different email address
+                """)
+                
+                # Show existing student info if available
+                try:
+                    from supabase_database import get_user_by_email
+                    existing_user = get_user_by_email(email)
+                    if existing_user:
+                        st.info(f"""
+                        **Existing Student Details:**
+                        - Name: {existing_user.get('full_name', 'N/A')}
+                        - Email: {existing_user.get('email')}
+                        - Role: {existing_user.get('role', 'N/A')}
+                        - Status: {existing_user.get('status', 'N/A')}
+                        - Created: {existing_user.get('created_at', 'N/A')[:10]}
+                        """)
+                except:
+                    pass
 
 
 def render_all_students():

@@ -274,11 +274,26 @@ RESET_CODES = {}
 def request_password_reset(email):
     """
     Request password reset - generates code and sends email
+    Works with both Supabase and local JSON storage
     Returns: (success: bool, message: str)
     """
-    users = load_users()
+    # Check Supabase first
+    user_found = False
+    try:
+        from supabase_database import get_user_by_email
+        supabase_user = get_user_by_email(email)
+        if supabase_user:
+            user_found = True
+    except:
+        pass
     
-    if email not in users:
+    # Check local JSON if not in Supabase
+    if not user_found:
+        users = load_users()
+        if email in users:
+            user_found = True
+    
+    if not user_found:
         # For security, don't reveal if email exists
         return True, "If this email exists, a reset code has been sent."
     
@@ -325,6 +340,7 @@ def verify_reset_code(email, code):
 def reset_password(email, code, new_password):
     """
     Reset password with verified code
+    Works with both Supabase and local JSON storage
     Returns: (success: bool, message: str)
     """
     # Verify code first
@@ -332,20 +348,39 @@ def reset_password(email, code, new_password):
     if not valid:
         return False, message
     
-    # Update password
-    users = load_users()
+    # Try Supabase first
+    password_updated = False
+    try:
+        from supabase_database import supabase, SUPABASE_AVAILABLE
+        if SUPABASE_AVAILABLE and supabase:
+            supabase_user = supabase.table('users').select('*').eq('email', email).execute()
+            if supabase_user.data:
+                # Update password in Supabase
+                new_hash = hash_password(new_password)
+                supabase.table('users').update({'password_hash': new_hash}).eq('email', email).execute()
+                password_updated = True
+    except Exception as e:
+        print(f"Supabase password update failed: {e}")
     
-    if email not in users:
-        return False, "Email not found"
-    
-    users[email]["password_hash"] = hash_password(new_password)
-    save_users(users)
+    # Try local JSON if Supabase failed
+    if not password_updated:
+        users = load_users()
+        
+        if email not in users:
+            return False, "Email not found"
+        
+        users[email]["password_hash"] = hash_password(new_password)
+        save_users(users)
+        password_updated = True
     
     # Delete used code
     if email in RESET_CODES:
         del RESET_CODES[email]
     
-    return True, "Password reset successful! You can now login with your new password."
+    if password_updated:
+        return True, "Password reset successful! You can now login with your new password."
+    else:
+        return False, "Failed to update password. Please try again or contact support."
 
 
 def delete_student(email):
