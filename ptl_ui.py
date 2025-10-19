@@ -121,28 +121,35 @@ def render_ptl_dashboard():
     except:
         pass
     
-    # DEBUG: Show current user email and session info
-    from ptl_system import get_current_user_email
-    current_email = get_current_user_email()
+    # DEBUG: Show current user email and session info (SUPER ADMIN ONLY!)
+    # SECURITY: Check if user is super admin before showing debug info
+    user_role = st.session_state.user_license.role if (st.session_state.get('user_license') and hasattr(st.session_state.user_license, 'role')) else 'student'
+    user_email_check = st.session_state.get('user_email', '')
+    is_super_admin = (user_role == 'super_admin' or 'admin@t21services' in user_email_check.lower())
     
-    with st.expander("🔍 DEBUG INFO - Click to see"):
-        st.write("**Current Session:**")
-        st.write(f"- user_email: `{st.session_state.get('user_email', 'NOT SET')}`")
-        st.write(f"- session_email: `{st.session_state.get('session_email', 'NOT SET')}`")
-        st.write(f"- get_current_user_email(): `{current_email}`")
-        st.write(f"- logged_in: `{st.session_state.get('logged_in', False)}`")
+    if is_super_admin:
+        from ptl_system import get_current_user_email
+        current_email = get_current_user_email()
         
-        st.write("\n**Patients in Supabase by user:**")
-        try:
-            from supabase_database import supabase
-            result = supabase.table('ptl_patients').select('user_email, patient_name').execute()
-            if result.data:
-                for p in result.data:
-                    st.write(f"- {p.get('patient_name')} → `{p.get('user_email')}`")
-            else:
-                st.write("No patients in database")
-        except Exception as e:
-            st.write(f"Error: {e}")
+        st.warning("🔴 **Super Admin Debug Panel** (Only you can see this)")
+        with st.expander("🔍 DEBUG INFO - Click to see"):
+            st.write("**Current Session:**")
+            st.write(f"- user_email: `{st.session_state.get('user_email', 'NOT SET')}`")
+            st.write(f"- session_email: `{st.session_state.get('session_email', 'NOT SET')}`")
+            st.write(f"- get_current_user_email(): `{current_email}`")
+            st.write(f"- logged_in: `{st.session_state.get('logged_in', False)}`")
+            
+            st.write("\n**Patients in Supabase by user:**")
+            try:
+                from supabase_database import supabase
+                result = supabase.table('ptl_patients').select('user_email, patient_name').execute()
+                if result.data:
+                    for p in result.data:
+                        st.write(f"- {p.get('patient_name')} → `{p.get('user_email')}`")
+                else:
+                    st.write("No patients in database")
+            except Exception as e:
+                st.write(f"Error: {e}")
     
     stats = get_ptl_stats()
     
@@ -248,14 +255,16 @@ def render_patient_list():
     if not patients:
         st.info("No patients on PTL. Add patients using the 'Add Patient' tab.")
         
-        # Debug: Check if data exists
-        with st.expander("🔧 Debug Info"):
-            ptl_data = load_ptl()
-            st.write(f"Total patients in database: {len(ptl_data.get('patients', []))}")
-            st.write(f"User email: {st.session_state.get('user_email', 'Not logged in')}")
-            if ptl_data.get('patients'):
-                st.write("Sample patient data:")
-                st.json(ptl_data['patients'][0] if ptl_data['patients'] else {})
+        # Debug: Check if data exists (SUPER ADMIN ONLY!)
+        if is_super_admin:
+            st.warning("🔴 **Debug Info** (Super Admin Only)")
+            with st.expander("🔧 Debug Info"):
+                ptl_data = load_ptl()
+                st.write(f"Total patients in database: {len(ptl_data.get('patients', []))}")
+                st.write(f"User email: {st.session_state.get('user_email', 'Not logged in')}")
+                if ptl_data.get('patients'):
+                    st.write("Sample patient data:")
+                    st.json(ptl_data['patients'][0] if ptl_data['patients'] else {})
         return
     
     # Display patients

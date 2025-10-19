@@ -485,15 +485,22 @@ def render_appointments_list():
         st.success(f"✅ **Recently Booked:** {st.session_state['last_booked_appointment_id']}")
         st.info("👇 Your new appointment should appear below. If not, click Refresh.")
     
-    # Debug info
-    user_email = get_current_user_email()
-    with st.expander("🔍 Debug Info - Click to see technical details"):
-        st.write(f"**User Email:** {user_email}")
-        st.write(f"**Supabase Enabled:** {SUPABASE_ENABLED}")
-        st.write(f"**Checking appointments for this user...**")
-        if 'last_booked_appointment_id' in st.session_state:
-            st.write(f"**Last Booked:** {st.session_state['last_booked_appointment_id']}")
-            st.write(f"**Booking Time:** {st.session_state.get('last_booking_time', 'Unknown')}")
+    # Debug info (SUPER ADMIN ONLY!)
+    # SECURITY: Check if user is super admin before showing debug info
+    user_role = st.session_state.user_license.role if (st.session_state.get('user_license') and hasattr(st.session_state.user_license, 'role')) else 'student'
+    user_email_check = st.session_state.get('user_email', '')
+    is_super_admin = (user_role == 'super_admin' or 'admin@t21services' in user_email_check.lower())
+    
+    if is_super_admin:
+        user_email = get_current_user_email()
+        st.warning("🔴 **Debug Panel** (Super Admin Only)")
+        with st.expander("🔍 Debug Info - Click to see technical details"):
+            st.write(f"**User Email:** {user_email}")
+            st.write(f"**Supabase Enabled:** {SUPABASE_ENABLED}")
+            st.write(f"**Checking appointments for this user...**")
+            if 'last_booked_appointment_id' in st.session_state:
+                st.write(f"**Last Booked:** {st.session_state['last_booked_appointment_id']}")
+                st.write(f"**Booking Time:** {st.session_state.get('last_booking_time', 'Unknown')}")
     
     # Get all appointments
     appointments_data = load_appointments()

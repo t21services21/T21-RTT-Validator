@@ -2,16 +2,34 @@
 UNIVERSAL DEBUG PANEL
 Shows what's happening across ALL data modules
 Helps diagnose "data not showing" issues
+
+🔐 SECURITY: SUPER ADMIN ONLY!
 """
 
 import streamlit as st
 
 def show_universal_debug_info():
-    """Display comprehensive debug information"""
+    """
+    Display comprehensive debug information
     
-    st.markdown("### 🔧 Universal Debug Panel")
+    🔐 SECURITY: Only visible to super admins
+    Students, teachers, staff, and regular admins CANNOT see this
+    """
     
-    with st.expander("🔍 Click to see debug information"):
+    # SECURITY CHECK: Only super admin can see debug info
+    user_role = st.session_state.user_license.role if (st.session_state.get('user_license') and hasattr(st.session_state.user_license, 'role')) else 'student'
+    user_email = st.session_state.get('user_email', '')
+    is_super_admin = (user_role == 'super_admin' or 'admin@t21services' in user_email.lower())
+    
+    # If NOT super admin, don't show anything
+    if not is_super_admin:
+        return  # Exit immediately - students/teachers/staff/admin don't see this!
+    
+    # SUPER ADMIN ONLY SECTION
+    st.markdown("### 🔧 Universal Debug Panel (Super Admin Only)")
+    st.warning("🔴 **Super Admin Tool:** This debug panel is only visible to you. Students/teachers/staff cannot see this.")
+    
+    with st.expander("🔍 Click to see debug information", expanded=False):
         
         # SESSION STATE
         st.markdown("#### 📊 Session State")
@@ -132,9 +150,23 @@ def show_universal_debug_info():
 
 
 def show_quick_debug():
-    """Quick debug info at top of page"""
+    """
+    Quick debug info at top of page
+    
+    🔐 SECURITY: Only visible to super admins
+    """
+    # SECURITY CHECK: Only super admin can see debug info
+    user_role = st.session_state.user_license.role if (st.session_state.get('user_license') and hasattr(st.session_state.user_license, 'role')) else 'student'
+    user_email_check = st.session_state.get('user_email', '')
+    is_super_admin = (user_role == 'super_admin' or 'admin@t21services' in user_email_check.lower())
+    
+    # If NOT super admin, don't show anything
+    if not is_super_admin:
+        return  # Exit immediately
+    
+    # SUPER ADMIN ONLY
     user_email = st.session_state.get('user_email', 'NOT SET')
     if user_email == 'NOT SET':
         st.warning(f"⚠️ Debug: user_email = `{user_email}` - You may not see any data!")
     else:
-        st.info(f"📧 Logged in as: `{user_email}`")
+        st.info(f"📧 Debug (Super Admin Only): Logged in as: `{user_email}`")
