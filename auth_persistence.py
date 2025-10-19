@@ -18,10 +18,22 @@ except ImportError:
 
 
 def get_cookie_manager():
-    """Get cookie manager instance"""
-    if COOKIES_AVAILABLE:
-        return stx.CookieManager()
-    return None
+    """
+    Get cookie manager instance (singleton pattern)
+    Creates only once per session to avoid duplicate key errors
+    """
+    if not COOKIES_AVAILABLE:
+        return None
+    
+    # Use session state to ensure only one instance
+    if '_cookie_manager' not in st.session_state:
+        try:
+            st.session_state._cookie_manager = stx.CookieManager(key='t21_cookie_manager')
+        except Exception as e:
+            print(f"Cookie manager initialization error: {e}")
+            st.session_state._cookie_manager = None
+    
+    return st.session_state._cookie_manager
 
 
 def generate_auth_token(email: str, password_hash: str) -> str:

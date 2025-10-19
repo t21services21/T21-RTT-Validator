@@ -151,8 +151,11 @@ else:
                                     st.session_state.user_email = email
                                     st.session_state.session_email = email
                                     
-                                    # Save to cookie for persistent login
-                                    save_auth_cookie(email, password_hash, supabase_user)
+                                    # Save to cookie for persistent login (non-blocking)
+                                    try:
+                                        save_auth_cookie(email, password_hash, supabase_user)
+                                    except:
+                                        pass  # Continue even if cookies fail
                                     
                                     st.success(f" Welcome to NHS Organization Portal, {user_account.full_name}!")
                                     st.switch_page("app.py")
@@ -188,7 +191,10 @@ else:
                                             'role': getattr(user_data, 'role', 'nhs_user'),
                                             'user_type': getattr(user_data, 'user_type', 'nhs_user')
                                         }
-                                        save_auth_cookie(email, password_hash, user_dict)
+                                        try:
+                                            save_auth_cookie(email, password_hash, user_dict)
+                                        except:
+                                            pass  # Continue even if cookies fail
                                         
                                         st.success(f" Welcome back!")
                                         st.switch_page("app.py")
@@ -323,8 +329,11 @@ else:
                                 st.session_state.user_email = email
                                 st.session_state.session_email = email
                                 
-                                # Save to cookie for persistent login
-                                save_auth_cookie(email, pending_user.get('password_hash'), pending_user)
+                                # Save to cookie for persistent login (non-blocking)
+                                try:
+                                    save_auth_cookie(email, pending_user.get('password_hash'), pending_user)
+                                except:
+                                    pass  # Continue even if cookies fail
                                 
                                 # Clear 2FA prompt
                                 st.session_state.show_2fa_prompt = False

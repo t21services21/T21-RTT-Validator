@@ -121,8 +121,11 @@ else:
                                         st.session_state.user_email = email
                                         st.session_state.session_email = email
                                         
-                                        # Save to cookie for persistent login
-                                        save_auth_cookie(email, password_hash, supabase_user)
+                                        # Save to cookie for persistent login (non-blocking)
+                                        try:
+                                            save_auth_cookie(email, password_hash, supabase_user)
+                                        except:
+                                            pass  # Continue even if cookies fail
                                         
                                         st.success(f" Welcome back {user_obj.full_name}!")
                                         st.switch_page("app.py")
@@ -137,10 +140,13 @@ else:
                                     st.session_state.user_license = result["license"]
                                     st.session_state.user_email = email
                                     
-                                    # Save to cookie for persistent login
+                                    # Save to cookie for persistent login (non-blocking)
                                     password_hash = hashlib.sha256(password.encode()).hexdigest()
                                     user_dict = {'email': email, 'full_name': email, 'user_type': 'student', 'role': 'student'}
-                                    save_auth_cookie(email, password_hash, user_dict)
+                                    try:
+                                        save_auth_cookie(email, password_hash, user_dict)
+                                    except:
+                                        pass  # Continue even if cookies fail
                                     
                                     st.success(" Login successful! Welcome back!")
                                     st.switch_page("app.py")
@@ -155,10 +161,13 @@ else:
                                 st.session_state.user_license = result["license"]
                                 st.session_state.user_email = email
                                 
-                                # Save to cookie for persistent login
+                                # Save to cookie for persistent login (non-blocking)
                                 password_hash = hashlib.sha256(password.encode()).hexdigest()
                                 user_dict = {'email': email, 'full_name': email, 'user_type': 'student', 'role': 'student'}
-                                save_auth_cookie(email, password_hash, user_dict)
+                                try:
+                                    save_auth_cookie(email, password_hash, user_dict)
+                                except:
+                                    pass  # Continue even if cookies fail
                                 
                                 st.success(" Login successful! Welcome to T21 Healthcare Platform!")
                                 st.switch_page("app.py")
@@ -282,8 +291,11 @@ else:
                                     st.session_state.user_email = email
                                     st.session_state.session_email = email
                                     
-                                    # Save to cookie for persistent login
-                                    save_auth_cookie(email, pending_user.get('password_hash'), pending_user)
+                                    # Save to cookie for persistent login (non-blocking)
+                                    try:
+                                        save_auth_cookie(email, pending_user.get('password_hash'), pending_user)
+                                    except:
+                                        pass  # Continue even if cookies fail
                                     
                                     # Clear 2FA prompt
                                     st.session_state.show_2fa_prompt = False
