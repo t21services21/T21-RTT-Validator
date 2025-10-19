@@ -6616,109 +6616,109 @@ elif tool == "⚙️ Administration" or tool == "⚙️ My Account":
         with tabs[1]:
             # ADMIN PANEL - Actually render it
             if st.session_state.user_license:
-            # Check if user is admin
-            is_admin = False
-            if isinstance(st.session_state.user_license, UserAccount):
-                user_type = st.session_state.user_license.role
-                if "admin" in user_type or "staff" in user_type:
-                    is_admin = True
-            else:
-                # Old UserLicense system - check role
-                user_role = st.session_state.user_license.role
-                if user_role == "admin":
-                    is_admin = True
-            
-            if is_admin:
-                st.subheader("🔧 Admin Panel")
+                # Check if user is admin
+                is_admin = False
+                if isinstance(st.session_state.user_license, UserAccount):
+                    user_type = st.session_state.user_license.role
+                    if "admin" in user_type or "staff" in user_type:
+                        is_admin = True
+                else:
+                    # Old UserLicense system - check role
+                    user_role = st.session_state.user_license.role
+                    if user_role == "admin":
+                        is_admin = True
                 
-                # Create tabs for different admin functions
-                admin_tab1, admin_tab2, admin_tab3, admin_tab4, admin_tab5, admin_tab6, admin_tab7, admin_tab8, admin_tab9, admin_tab10 = st.tabs([
-                    "👥 User Management", 
-                    "🔐 Module Access Control",
-                    "🎯 Modular Access",
-                    "📧 Bulk Email",
-                    "💬 Personal Message",
-                    "⏰ Trial Automation",
-                    "📚 LMS Courses",
-                    "🏫 School Management",
-                    "🤖 AI Training",
-                    "🗺️ User Tracking"
-                ])
-                
-                with admin_tab1:
-                    try:
-                        render_admin_panel(st.session_state.user_email)
-                    except Exception as e:
-                        st.error(f"Error loading User Management: {str(e)}")
-                        import traceback
-                        with st.expander("🔍 Show Full Error Details"):
-                            st.code(traceback.format_exc())
-                        st.info("💡 If you see this error, please report it with the details above.")
-                
-                with admin_tab2:
-                    try:
-                        render_module_access_admin()
-                    except Exception as e:
-                        st.error(f"Error loading Module Access Control: {str(e)}")
-                        st.info("💡 This feature is being updated. Please try again later.")
-                
-                with admin_tab3:
-                    try:
-                        render_modular_access_admin()
-                    except Exception as e:
-                        st.error(f"Error loading Modular Access: {str(e)}")
-                        st.info("💡 This feature is being updated. Please try again later.")
-                
-                with admin_tab4:
-                    try:
-                        render_bulk_email_ui()
-                    except Exception as e:
-                        st.error(f"Error loading Bulk Email: {str(e)}")
-                        st.info("💡 This feature is being updated. Please try again later.")
-                
-                with admin_tab5:
-                    try:
-                        render_personal_message_ui()
-                    except Exception as e:
-                        st.error(f"Error loading Personal Message: {str(e)}")
-                        st.info("💡 This feature is being updated. Please try again later.")
-                
-                with admin_tab6:
-                    try:
-                        render_trial_automation_ui()
-                    except Exception as e:
-                        st.error(f"Error loading Trial Automation: {str(e)}")
-                        st.info("💡 This feature is being updated. Please try again later.")
-                
-                with admin_tab7:
-                    try:
-                        render_course_manager_ui()
-                    except Exception as e:
-                        st.error(f"Error loading LMS Courses: {str(e)}")
-                        st.info("💡 This feature is being updated. Please try again later.")
-                
-                with admin_tab8:
-                    try:
-                        render_school_management_admin()
-                    except Exception as e:
-                        st.error(f"Error loading School Management: {str(e)}")
-                        st.info("💡 This feature is being updated. Please try again later.")
-                
-                with admin_tab9:
-                    try:
-                        render_ai_training_admin()
-                    except Exception as e:
-                        st.error(f"Error loading AI Training: {str(e)}")
-                        st.info("💡 This feature is being updated. Please try again later.")
-                
-                with admin_tab10:
-                    try:
-                        render_user_tracking_admin()
-                    except Exception as e:
-                        st.error(f"Error loading User Tracking: {str(e)}")
-                        st.info("💡 This feature is being updated. Please try again later.")
-            else:
-                st.error("⛔ Access Denied - Admin or Staff privileges required")
+                if is_admin:
+                    st.subheader("🔧 Admin Panel")
+                    
+                    # Create tabs for different admin functions
+                    admin_tab1, admin_tab2, admin_tab3, admin_tab4, admin_tab5, admin_tab6, admin_tab7, admin_tab8, admin_tab9, admin_tab10 = st.tabs([
+                        "👥 User Management", 
+                        "🔐 Module Access Control",
+                        "🎯 Modular Access",
+                        "📧 Bulk Email",
+                        "💬 Personal Message",
+                        "⏰ Trial Automation",
+                        "📚 LMS Courses",
+                        "🏫 School Management",
+                        "🤖 AI Training",
+                        "🗺️ User Tracking"
+                    ])
+                    
+                    with admin_tab1:
+                        try:
+                            render_admin_panel(st.session_state.user_email)
+                        except Exception as e:
+                            st.error(f"Error loading User Management: {str(e)}")
+                            import traceback
+                            with st.expander("🔍 Show Full Error Details"):
+                                st.code(traceback.format_exc())
+                            st.info("💡 If you see this error, please report it with the details above.")
+                    
+                    with admin_tab2:
+                        try:
+                            render_module_access_admin()
+                        except Exception as e:
+                            st.error(f"Error loading Module Access Control: {str(e)}")
+                            st.info("💡 This feature is being updated. Please try again later.")
+                    
+                    with admin_tab3:
+                        try:
+                            render_modular_access_admin()
+                        except Exception as e:
+                            st.error(f"Error loading Modular Access: {str(e)}")
+                            st.info("💡 This feature is being updated. Please try again later.")
+                    
+                    with admin_tab4:
+                        try:
+                            render_bulk_email_ui()
+                        except Exception as e:
+                            st.error(f"Error loading Bulk Email: {str(e)}")
+                            st.info("💡 This feature is being updated. Please try again later.")
+                    
+                    with admin_tab5:
+                        try:
+                            render_personal_message_ui()
+                        except Exception as e:
+                            st.error(f"Error loading Personal Message: {str(e)}")
+                            st.info("💡 This feature is being updated. Please try again later.")
+                    
+                    with admin_tab6:
+                        try:
+                            render_trial_automation_ui()
+                        except Exception as e:
+                            st.error(f"Error loading Trial Automation: {str(e)}")
+                            st.info("💡 This feature is being updated. Please try again later.")
+                    
+                    with admin_tab7:
+                        try:
+                            render_course_manager_ui()
+                        except Exception as e:
+                            st.error(f"Error loading LMS Courses: {str(e)}")
+                            st.info("💡 This feature is being updated. Please try again later.")
+                    
+                    with admin_tab8:
+                        try:
+                            render_school_management_ui()
+                        except Exception as e:
+                            st.error(f"Error loading School Management: {str(e)}")
+                            st.info("💡 This feature is being updated. Please try again later.")
+                    
+                    with admin_tab9:
+                        try:
+                            render_ai_training_admin()
+                        except Exception as e:
+                            st.error(f"Error loading AI Training: {str(e)}")
+                            st.info("💡 This feature is being updated. Please try again later.")
+                    
+                    with admin_tab10:
+                        try:
+                            render_user_tracking_admin()
+                        except Exception as e:
+                            st.error(f"Error loading User Tracking: {str(e)}")
+                            st.info("💡 This feature is being updated. Please try again later.")
+                else:
+                    st.error("⛔ Access Denied - Admin or Staff privileges required")
         else:
             st.error("⛔ Access Denied - Admin or Staff privileges required")
         
