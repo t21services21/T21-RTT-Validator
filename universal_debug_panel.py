@@ -16,14 +16,26 @@ def show_universal_debug_info():
     Students, teachers, staff, and regular admins CANNOT see this
     """
     
-    # SECURITY CHECK: Only super admin can see debug info
-    user_role = st.session_state.user_license.role if (st.session_state.get('user_license') and hasattr(st.session_state.user_license, 'role')) else 'student'
-    user_email = st.session_state.get('user_email', '')
-    is_super_admin = (user_role == 'super_admin' or 'admin@t21services' in user_email.lower())
-    
-    # If NOT super admin, don't show anything
-    if not is_super_admin:
-        return  # Exit immediately - students/teachers/staff/admin don't see this!
+    # CRITICAL SECURITY CHECK: Only super admin can see debug info
+    try:
+        user_license = st.session_state.get('user_license')
+        user_role = user_license.role if (user_license and hasattr(user_license, 'role')) else 'student'
+        user_email = st.session_state.get('user_email', '').lower()
+        
+        # Triple check for super admin
+        is_super_admin = (
+            user_role == 'super_admin' or 
+            'admin@t21services' in user_email or
+            user_email == 'admin@t21services.co.uk' or
+            user_email == 't21services21@gmail.com'
+        )
+        
+        # If NOT super admin, EXIT IMMEDIATELY - NO DEBUG INFO!
+        if not is_super_admin:
+            return  # Students, teachers, staff, admins CANNOT see this!
+    except:
+        # If any error in checking, assume NOT super admin - DON'T SHOW!
+        return
     
     # SUPER ADMIN ONLY SECTION
     st.markdown("### 🔧 Universal Debug Panel (Super Admin Only)")
@@ -155,14 +167,26 @@ def show_quick_debug():
     
     🔐 SECURITY: Only visible to super admins
     """
-    # SECURITY CHECK: Only super admin can see debug info
-    user_role = st.session_state.user_license.role if (st.session_state.get('user_license') and hasattr(st.session_state.user_license, 'role')) else 'student'
-    user_email_check = st.session_state.get('user_email', '')
-    is_super_admin = (user_role == 'super_admin' or 'admin@t21services' in user_email_check.lower())
-    
-    # If NOT super admin, don't show anything
-    if not is_super_admin:
-        return  # Exit immediately
+    # CRITICAL SECURITY CHECK: Only super admin can see debug info
+    try:
+        user_license = st.session_state.get('user_license')
+        user_role = user_license.role if (user_license and hasattr(user_license, 'role')) else 'student'
+        user_email_check = st.session_state.get('user_email', '').lower()
+        
+        # Triple check for super admin
+        is_super_admin = (
+            user_role == 'super_admin' or 
+            'admin@t21services' in user_email_check or
+            user_email_check == 'admin@t21services.co.uk' or
+            user_email_check == 't21services21@gmail.com'
+        )
+        
+        # If NOT super admin, EXIT IMMEDIATELY
+        if not is_super_admin:
+            return  # Students, teachers, staff, admins CANNOT see this!
+    except:
+        # If any error, assume NOT super admin - DON'T SHOW!
+        return
     
     # SUPER ADMIN ONLY
     user_email = st.session_state.get('user_email', 'NOT SET')

@@ -122,10 +122,22 @@ def render_ptl_dashboard():
         pass
     
     # DEBUG: Show current user email and session info (SUPER ADMIN ONLY!)
-    # SECURITY: Check if user is super admin before showing debug info
-    user_role = st.session_state.user_license.role if (st.session_state.get('user_license') and hasattr(st.session_state.user_license, 'role')) else 'student'
-    user_email_check = st.session_state.get('user_email', '')
-    is_super_admin = (user_role == 'super_admin' or 'admin@t21services' in user_email_check.lower())
+    # CRITICAL SECURITY CHECK: Only super admin can see debug info
+    try:
+        user_license = st.session_state.get('user_license')
+        user_role = user_license.role if (user_license and hasattr(user_license, 'role')) else 'student'
+        user_email_check = st.session_state.get('user_email', '').lower()
+        
+        # Triple check for super admin
+        is_super_admin = (
+            user_role == 'super_admin' or 
+            'admin@t21services' in user_email_check or
+            user_email_check == 'admin@t21services.co.uk' or
+            user_email_check == 't21services21@gmail.com'
+        )
+    except:
+        # If any error, assume NOT super admin
+        is_super_admin = False
     
     if is_super_admin:
         from ptl_system import get_current_user_email
