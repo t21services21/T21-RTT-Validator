@@ -115,14 +115,18 @@ def render_materials_teacher():
                         # Upload to Supabase Storage
                         from supabase_database import supabase
                         
-                        # Create file path: learning_materials/user_email/filename
-                        file_path = f"learning_materials/{user_email}/{uploaded_file.name}"
+                        # Sanitize filename to avoid path issues
+                        import re
+                        safe_filename = re.sub(r'[^a-zA-Z0-9._-]', '_', uploaded_file.name)
+                        safe_email = re.sub(r'[^a-zA-Z0-9@._-]', '_', user_email)
                         
-                        # Upload file
-                        supabase.storage.from_('learning_materials').upload(
+                        # Create file path: learning_materials/user_email/filename
+                        file_path = f"{safe_email}/{safe_filename}"
+                        
+                        # Upload file (v1.0.4 syntax - NO file_options parameter!)
+                        result = supabase.storage.from_('learning_materials').upload(
                             file_path,
-                            uploaded_file.getvalue(),
-                            file_options={"content-type": uploaded_file.type}
+                            uploaded_file.getvalue()
                         )
                         
                         # Get public URL
@@ -131,15 +135,21 @@ def render_materials_teacher():
                         st.success(f"✅ File uploaded to cloud storage!")
                     
                     except Exception as upload_error:
-                        # If Supabase Storage not configured, show helpful message
-                        st.warning(f"⚠️ Cloud storage not configured yet. Using temporary URL.")
-                        st.info("""
-                        **To enable file uploads:**
-                        1. Go to your Supabase dashboard
-                        2. Click "Storage" in left sidebar
-                        3. Create a bucket called "learning_materials"
-                        4. Make it public
-                        5. Enable file uploads
+                        # Show the ACTUAL error for debugging
+                        st.error(f"❌ Upload Error: {str(upload_error)}")
+                        st.error(f"Error Type: {type(upload_error).__name__}")
+                        
+                        # Show detailed error info
+                        import traceback
+                        with st.expander("🔍 Debug Info - Click to see full error"):
+                            st.code(traceback.format_exc())
+                        
+                        st.warning("""
+                        **Possible issues:**
+                        1. Storage policies not set up correctly
+                        2. Authentication issue
+                        3. File permissions
+                        4. Network connectivity
                         
                         **For now, please use the 'Link to External URL' option.**
                         """)
