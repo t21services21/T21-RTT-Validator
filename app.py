@@ -6719,8 +6719,8 @@ elif tool == "⚙️ Administration" or tool == "⚙️ My Account":
                             st.info("💡 This feature is being updated. Please try again later.")
                 else:
                     st.error("⛔ Access Denied - Admin or Staff privileges required")
-        else:
-            st.error("⛔ Access Denied - Admin or Staff privileges required")
+            else:
+                st.error("⛔ Access Denied - Admin or Staff privileges required")
         
         with tabs[2]:
             # NEW: LEARNING ANALYTICS DASHBOARD
