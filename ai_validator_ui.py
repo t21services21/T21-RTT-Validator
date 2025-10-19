@@ -327,9 +327,23 @@ def render_letter_analysis():
                         st.markdown(f"**Treatment Plan:** {result.get('treatment_plan', 'N/A')}")
                         st.markdown(f"**Next Steps:** {result.get('next_steps', 'N/A')}")
                     
-                    st.markdown("---")
-                    st.markdown("### 📝 Full Analysis (JSON)")
-                    st.json(result)
+                    # SECURITY: Only show JSON to super admin (protect IP and system logic)
+                    user_license = st.session_state.get('user_license')
+                    user_email = st.session_state.get('user_email', '')
+                    user_role = user_license.role if (user_license and hasattr(user_license, 'role')) else 'student'
+                    
+                    # CRITICAL: Only super admin sees JSON (security + IP protection)
+                    # Prevents: competitors, confused staff, system logic exposure
+                    is_super_admin = (user_role == 'super_admin' or 
+                                     'admin@t21services' in user_email.lower() or
+                                     user_email in ['admin@t21services.co.uk', 't21services21@gmail.com'])
+                    
+                    if is_super_admin:
+                        st.markdown("---")
+                        st.markdown("### 🔐 Technical Analysis (Super Admin Only)")
+                        st.warning("⚠️ **Confidential:** System logic and data structure. Do not share!")
+                        with st.expander("🔍 View JSON Data Structure", expanded=False):
+                            st.json(result)
                 
                 else:
                     st.error(f"❌ Analysis Error: {result.get('error')}")
