@@ -256,10 +256,82 @@ def render_materials_teacher(user_email):
             
             for material in materials:
                 with st.expander(f"📄 {material['title']} - Week {material.get('week', 0)}"):
-                    st.write(f"**Category:** {material.get('category')}")
-                    st.write(f"**Description:** {material.get('description', 'N/A')}")
-                    st.write(f"**Downloads:** {material.get('download_count', 0)}")
-                    st.markdown(f"[🔗 View File]({material['file_url']})")
+                    # Check if in edit mode for this material
+                    edit_mode_key = f"edit_mode_{material.get('id')}"
+                    if edit_mode_key not in st.session_state:
+                        st.session_state[edit_mode_key] = False
+                    
+                    if st.session_state[edit_mode_key]:
+                        # EDIT MODE - Show form
+                        st.markdown("### ✏️ Edit Material")
+                        
+                        edit_title = st.text_input("Title*", value=material.get('title', ''), key=f"edit_title_{material.get('id')}")
+                        edit_category = st.selectbox("Category*", [
+                            "Lecture Notes", "Video Recordings", "Tutorial Sheets",
+                            "Practice Exercises", "Reference Materials", "Templates", "Other"
+                        ], index=["Lecture Notes", "Video Recordings", "Tutorial Sheets", "Practice Exercises", "Reference Materials", "Templates", "Other"].index(material.get('category', 'Lecture Notes')), key=f"edit_cat_{material.get('id')}")
+                        edit_week = st.number_input("Week Number", min_value=0, max_value=52, value=int(material.get('week', 1)), key=f"edit_week_{material.get('id')}")
+                        edit_description = st.text_area("Description", value=material.get('description', ''), key=f"edit_desc_{material.get('id')}")
+                        edit_required = st.checkbox("Required Material", value=material.get('required', True), key=f"edit_req_{material.get('id')}")
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            if st.button("💾 Save Changes", key=f"save_{material.get('id')}", type="primary"):
+                                try:
+                                    # Update material
+                                    supabase.table('learning_materials').update({
+                                        'title': edit_title,
+                                        'category': edit_category,
+                                        'week': edit_week,
+                                        'description': edit_description,
+                                        'required': edit_required
+                                    }).eq('id', material.get('id')).execute()
+                                    
+                                    st.success("✅ Material updated!")
+                                    st.session_state[edit_mode_key] = False
+                                    st.rerun()
+                                    
+                                except Exception as e:
+                                    st.error(f"❌ Update failed: {e}")
+                        
+                        with col2:
+                            if st.button("❌ Cancel", key=f"cancel_{material.get('id')}", type="secondary"):
+                                st.session_state[edit_mode_key] = False
+                                st.rerun()
+                    
+                    else:
+                        # VIEW MODE - Show material info
+                        col1, col2 = st.columns([3, 1])
+                        
+                        with col1:
+                            st.write(f"**Category:** {material.get('category')}")
+                            st.write(f"**Description:** {material.get('description', 'N/A')}")
+                            st.write(f"**Downloads:** {material.get('download_count', 0)}")
+                            st.write(f"**Uploaded by:** {material.get('uploaded_by', 'Unknown')}")
+                            st.write(f"**Upload date:** {material.get('uploaded_date', 'N/A')}")
+                            st.markdown(f"[🔗 View File]({material['file_url']})")
+                        
+                        with col2:
+                            st.write("")  # Spacing
+                            
+                            # EDIT BUTTON
+                            if st.button("✏️ Edit", key=f"edit_{material.get('id')}", type="primary"):
+                                st.session_state[edit_mode_key] = True
+                                st.rerun()
+                            
+                            # DELETE BUTTON
+                            if st.button("🗑️ Delete", key=f"delete_{material.get('id')}", type="secondary"):
+                                try:
+                                    # Soft delete - mark as inactive
+                                    supabase.table('learning_materials').update({
+                                        'status': 'deleted'
+                                    }).eq('id', material.get('id')).execute()
+                                    
+                                    st.success("✅ Material deleted!")
+                                    st.rerun()
+                                    
+                                except Exception as e:
+                                    st.error(f"❌ Delete failed: {e}")
         
         except Exception as e:
             st.error(f"Error loading materials: {e}")
