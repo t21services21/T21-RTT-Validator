@@ -162,6 +162,118 @@ else:
     st.info("Redirecting to dashboard...")
     st.switch_page("app.py")
 
+# ============================================
+# FLOATING AI CHATBOT (For public homepage)
+# ============================================
+if not is_logged_in:
+    st.markdown("---")
+    st.markdown("## 💬 Questions? Ask Our AI Assistant!")
+    st.info("Get instant answers about our training, pricing, features, and more!")
+    
+    # Initialize chat history for public AI
+    if "public_ai_messages" not in st.session_state:
+        st.session_state.public_ai_messages = [
+            {
+                "role": "assistant",
+                "content": "👋 **Welcome to T21!** I'm your AI assistant.\n\n"
+                          "Ask me about:\n"
+                          "💰 Pricing and payment options\n"
+                          "📚 Courses and training content\n"
+                          "🎓 Certification and qualifications\n"
+                          "💼 Career opportunities (20+ NHS roles!)\n"
+                          "🏥 NHS Trust solutions\n\n"
+                          "What would you like to know?"
+            }
+        ]
+    
+    # Display chat messages
+    for message in st.session_state.public_ai_messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+    
+    # Chat input
+    if prompt := st.chat_input("Ask anything about T21..."):
+        # Add user message
+        st.session_state.public_ai_messages.append({"role": "user", "content": prompt})
+        
+        with st.chat_message("user"):
+            st.markdown(prompt)
+        
+        # Generate AI response
+        with st.chat_message("assistant"):
+            with st.spinner("✨ Thinking..."):
+                try:
+                    from openai import OpenAI
+                    from COMPLETE_PLATFORM_KNOWLEDGE import COMPLETE_PLATFORM_KNOWLEDGE
+                    import json
+                    
+                    client = OpenAI(api_key=st.secrets.get("OPENAI_API_KEY"))
+                    
+                    system_prompt = f"""You are an enthusiastic sales AI for T21 Healthcare Platform.
+                    
+COMPLETE PLATFORM INFO:
+{json.dumps(COMPLETE_PLATFORM_KNOWLEDGE, indent=2)}
+
+INSTRUCTIONS:
+1. Be enthusiastic and helpful
+2. Use the COMPLETE_PLATFORM_KNOWLEDGE for accurate answers
+3. Highlight value: "£5,000+ value for £1,299" for Tier 2
+4. Mention urgency: "Limited spots (30/month for Tier 2)", "Price increase April 2026"
+5. Add bonuses: "£300 in FREE bonuses right now!"
+6. Use social proof: "Sarah (secretary £24k → coordinator £34k in 8 weeks)"
+7. Show ROI: "92% get jobs within 3 months"
+8. Mention 20+ career paths (not just secretary!)
+9. End with CTA: "Ready to start?" or "Want to enroll?"
+10. Keep under 200 words unless detailed explanation needed
+
+PRICING (ACCURATE):
+- Taster: £99 / 1 month
+- Tier 1: £499 / 6 months (full access, no cert)
+- Tier 2: £1,299 / 12 months (TQUK cert) - MOST POPULAR
+- Tier 3: £1,799 / 12 months (cert + career coach)
+- NHS Trust: Custom pricing
+
+If user wants to enroll, guide them to click "Student Login" button above to register!"""
+                    
+                    response = client.chat.completions.create(
+                        model="gpt-4o-mini",
+                        messages=[
+                            {"role": "system", "content": system_prompt},
+                            *st.session_state.public_ai_messages[-6:]
+                        ],
+                        max_tokens=400,
+                        temperature=0.7
+                    )
+                    
+                    answer = response.choices[0].message.content
+                    st.markdown(answer)
+                    st.session_state.public_ai_messages.append({"role": "assistant", "content": answer})
+                    
+                except Exception as e:
+                    error_msg = f"AI temporarily unavailable. Please email admin@t21services.co.uk or click Student Login to register!"
+                    st.error(error_msg)
+                    st.session_state.public_ai_messages.append({"role": "assistant", "content": error_msg})
+    
+    # Quick action buttons
+    st.markdown("---")
+    st.markdown("**Quick Questions:**")
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        if st.button("💰 How much?", key="quick_price"):
+            st.session_state.public_ai_messages.append({"role": "user", "content": "How much does it cost?"})
+            st.rerun()
+    
+    with col2:
+        if st.button("🎓 What careers?", key="quick_career"):
+            st.session_state.public_ai_messages.append({"role": "user", "content": "What career paths are available?"})
+            st.rerun()
+    
+    with col3:
+        if st.button("⏱️ How long?", key="quick_time"):
+            st.session_state.public_ai_messages.append({"role": "user", "content": "How long does it take?"})
+            st.rerun()
+
 # Footer
 st.markdown("---")
 st.markdown("""
