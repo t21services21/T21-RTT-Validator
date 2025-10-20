@@ -126,8 +126,7 @@ def render_materials_teacher(user_email):
                         try:
                             status_text.text(f"Uploading {idx+1}/{len(uploaded_files)}: {uploaded_file.name}...")
                             
-                            # Upload to Supabase Storage
-                            from supabase_database import supabase
+                            # Upload to Supabase Storage (using import from top of file)
                             import time
                             import re
                             
