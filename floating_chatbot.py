@@ -337,60 +337,17 @@ def render_floating_chatbot():
     </style>
     """, unsafe_allow_html=True)
     
-    # Floating bubble toggle button (ONLY show when chat is CLOSED)
-    if not st.session_state.chat_open:
-        unread_badge = "1" if st.session_state.proactive_message_shown else ""
-        
-        # Create toggle button
-        button_label = "💬 Chat with Us"
-        if unread_badge:
-            button_label = "💬 New Message!"
-        
-        # Button to open chat
-        if st.button(button_label, key="chat_toggle_floating", type="primary"):
-            st.session_state.chat_open = True
+    # Toggle button
+    col1, col2 = st.columns([10, 1])
+    with col2:
+        if st.button("💬" if not st.session_state.chat_open else "✖️", key="chat_toggle"):
+            st.session_state.chat_open = not st.session_state.chat_open
             st.rerun()
     
     # Show chat window if open
     if st.session_state.chat_open:
-        # Close button at TOP (like professional chat widgets)
-        col1, col2 = st.columns([4, 1])
-        with col1:
-            st.markdown("### 💬 T21 AI Assistant")
-        with col2:
-            if st.button("✖️ Close", key="close_chat_top", type="secondary"):
-                st.session_state.chat_open = False
-                st.session_state.chatbot_minimized_by_user = True
-                st.rerun()
-        
+        st.markdown("### 💬 T21 AI Assistant")
         st.info("🚀 Get instant answers! I learn from every conversation.")
-        
-        # HIDE the bottom blue navigation bar when chat is open
-        st.markdown("""
-        <style>
-            /* Hide bottom blue navigation when chat open */
-            div[data-testid="stBottom"] {
-                display: none !important;
-            }
-            
-            /* Hide any fixed bottom elements */
-            section[data-testid="stBottomBar"] {
-                display: none !important;
-            }
-            
-            /* Make sure chat input is visible */
-            section[data-testid="stChatInput"] {
-                position: fixed !important;
-                bottom: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                z-index: 999999 !important;
-                background: white !important;
-                padding: 10px !important;
-                box-shadow: 0 -4px 20px rgba(0,0,0,0.3) !important;
-            }
-        </style>
-        """, unsafe_allow_html=True)
         
         # Display messages
         for msg in st.session_state.floating_chat_messages:
@@ -667,6 +624,3 @@ Guide them to click LOGIN/REGISTER!"""
         with fb2:
             if st.button("👎 No", key="helpful_no"):
                 st.info("We'll improve! Any specific question? Ask me!")
-        
-        # Add LARGE spacer at bottom to push chat input above close button
-        st.markdown("<br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
