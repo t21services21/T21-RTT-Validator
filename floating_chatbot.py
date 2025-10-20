@@ -337,20 +337,19 @@ def render_floating_chatbot():
     </style>
     """, unsafe_allow_html=True)
     
-    # Floating bubble toggle button (Streamlit native with fixed position)
-    unread_badge = "1" if not st.session_state.chat_open and st.session_state.proactive_message_shown else ""
-    
-    # Create toggle button
-    button_label = "✖️ Close" if st.session_state.chat_open else "💬 Chat with Us"
-    if unread_badge:
-        button_label = "💬 New Message!"
-    
-    # Button with fixed position
-    if st.button(button_label, key="chat_toggle_floating", type="primary"):
-        st.session_state.chat_open = not st.session_state.chat_open
-        if not st.session_state.chat_open:
-            st.session_state.chatbot_minimized_by_user = True
-        st.rerun()
+    # Floating bubble toggle button (ONLY show when chat is CLOSED)
+    if not st.session_state.chat_open:
+        unread_badge = "1" if st.session_state.proactive_message_shown else ""
+        
+        # Create toggle button
+        button_label = "💬 Chat with Us"
+        if unread_badge:
+            button_label = "💬 New Message!"
+        
+        # Button to open chat
+        if st.button(button_label, key="chat_toggle_floating", type="primary"):
+            st.session_state.chat_open = True
+            st.rerun()
     
     # Show chat window if open
     if st.session_state.chat_open:
