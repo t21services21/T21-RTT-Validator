@@ -365,29 +365,29 @@ def render_floating_chatbot():
         
         st.info("🚀 Get instant answers! I learn from every conversation.")
         
-        # Add CSS to make chat input appear ABOVE bottom navigation bar
+        # HIDE the bottom blue navigation bar when chat is open
         st.markdown("""
         <style>
-            /* Force chat input above bottom navigation */
+            /* Hide bottom blue navigation when chat open */
+            div[data-testid="stBottom"] {
+                display: none !important;
+            }
+            
+            /* Hide any fixed bottom elements */
+            section[data-testid="stBottomBar"] {
+                display: none !important;
+            }
+            
+            /* Make sure chat input is visible */
             section[data-testid="stChatInput"] {
-                position: relative !important;
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
                 z-index: 999999 !important;
-                margin-bottom: 80px !important;
                 background: white !important;
                 padding: 10px !important;
-                border-radius: 10px !important;
-                box-shadow: 0 -4px 20px rgba(0,0,0,0.2) !important;
-            }
-            
-            /* Add padding to chat container */
-            .main .block-container {
-                padding-bottom: 150px !important;
-            }
-            
-            /* Ensure chat input text is visible */
-            section[data-testid="stChatInput"] textarea {
-                background: white !important;
-                color: black !important;
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.3) !important;
             }
         </style>
         """, unsafe_allow_html=True)
