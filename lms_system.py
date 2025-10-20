@@ -498,10 +498,11 @@ def render_videos_teacher():
                 return
             
             try:
-                # Only use fields that DEFINITELY exist in database
+                # Fields that exist in database (vimeo_url is required!)
                 video_data = {
                     'title': title,
                     'description': description,
+                    'vimeo_url': video_url,  # REQUIRED FIELD
                     'vimeo_id': vimeo_id,
                     'week': week,
                     'duration_minutes': duration,
