@@ -503,7 +503,6 @@ def render_videos_teacher():
                     'description': description,
                     'video_url': video_url if video_url else "",
                     'vimeo_id': vimeo_id,
-                    'video_source': video_source,
                     'category': category,
                     'week': week,
                     'duration_minutes': duration,
