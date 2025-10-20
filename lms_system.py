@@ -22,6 +22,15 @@ from supabase_database import supabase
 import json
 import os
 
+# Get Supabase URL for public file URLs
+try:
+    SUPABASE_URL = st.secrets.get("SUPABASE_URL", "")
+except:
+    try:
+        from supabase_config_SAFE import SUPABASE_URL
+    except:
+        SUPABASE_URL = ""
+
 
 # ============================================
 # LEARNING MATERIALS SYSTEM
@@ -144,12 +153,10 @@ def render_materials_teacher(user_email):
                                 uploaded_file.getvalue()
                             )
                             
-                            # Get SIGNED URL (works better than public URL)
-                            # Signed URLs are valid for specific time period
-                            file_url = supabase.storage.from_('learning_materials').create_signed_url(
-                                file_path,
-                                60 * 60 * 24 * 365 * 10  # Valid for 10 years
-                            )['signedURL']
+                            # Get public URL (bucket must be public)
+                            # For v1.0.4, we use public URLs and rely on bucket being public
+                            base_url = SUPABASE_URL.replace('/rest/v1', '')  # Remove API path
+                            file_url = f"{base_url}/storage/v1/object/public/learning_materials/{file_path}"
                             
                             uploaded_count += 1
                             uploaded_materials.append({
@@ -366,7 +373,7 @@ def render_materials_student(user_email):
                 st.write(f"**Week:** {material.get('week', 0)}")
                 st.write(f"**Downloads:** {material.get('download_count', 0)}")
                 
-                # Show VIEW and DOWNLOAD buttons directly
+                # Show VIEW and DOWNLOAD links directly (both work the same with signed URLs)
                 col1, col2 = st.columns(2)
                 
                 with col1:
@@ -374,25 +381,8 @@ def render_materials_student(user_email):
                     st.markdown(f"[**👁️ View File**]({material['file_url']})")
                 
                 with col2:
-                    # Download button - tracks download
-                    if st.button(f"📥 Download", key=f"dl_{material.get('id')}"):
-                        # Track download
-                        try:
-                            download_data = {
-                                'material_id': material.get('id'),
-                                'student_email': st.session_state.get('user_email', ''),
-                                'download_date': datetime.now().isoformat()
-                            }
-                            supabase.table('material_downloads').insert(download_data).execute()
-                            
-                            # Increment count
-                            supabase.table('learning_materials').update({
-                                'download_count': material.get('download_count', 0) + 1
-                            }).eq('id', material.get('id')).execute()
-                            
-                            st.success("✅ Download tracked!")
-                        except Exception as e:
-                            st.warning(f"Download tracking failed: {e}")
+                    # Download button - same as view, browser handles download
+                    st.markdown(f"[**📥 Download**]({material['file_url']})")
     
     except Exception as e:
         st.error(f"Error loading materials: {e}")
