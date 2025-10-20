@@ -477,26 +477,33 @@ def render_videos_teacher():
                     st.error("Please upload a video file")
                     return
             
-            # Extract Vimeo ID
+            # Extract video ID based on source
             import re
-            vimeo_id = ""
-            patterns = [r'vimeo\.com/(\d+)', r'player\.vimeo\.com/video/(\d+)']
-            for pattern in patterns:
-                match = re.search(pattern, vimeo_url)
-                if match:
-                    vimeo_id = match.group(1)
-                    break
+            video_id = ""
             
-            if not vimeo_id:
-                st.error("Invalid Vimeo URL")
-                return
+            # Only extract Vimeo ID if source is Vimeo
+            if video_source == "📹 Vimeo":
+                patterns = [r'vimeo\.com/(\d+)', r'player\.vimeo\.com/video/(\d+)']
+                for pattern in patterns:
+                    match = re.search(pattern, video_url)
+                    if match:
+                        video_id = match.group(1)
+                        break
+                
+                if not video_id:
+                    st.error("Invalid Vimeo URL")
+                    return
+                vimeo_id = video_id
+            else:
+                vimeo_id = ""
             
             try:
                 video_data = {
                     'title': title,
                     'description': description,
-                    'vimeo_url': vimeo_url,
+                    'video_url': video_url if video_url else "",
                     'vimeo_id': vimeo_id,
+                    'video_source': video_source,
                     'category': category,
                     'week': week,
                     'duration_minutes': duration,

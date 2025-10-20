@@ -342,11 +342,9 @@ def render_floating_chatbot():
     if not st.session_state.chat_open:
         if st.button("💬 Chat with Our AI Assistant", key="chat_toggle", type="primary", use_container_width=True):
             st.session_state.chat_open = True
-            st.rerun()
     else:
         if st.button("✖️ Close Chat", key="chat_close", type="secondary", use_container_width=True):
             st.session_state.chat_open = False
-            st.rerun()
     
     # Show chat window if open
     if st.session_state.chat_open:
@@ -368,17 +366,13 @@ def render_floating_chatbot():
         with col_send:
             send_btn = st.button("Send", key="send_btn", type="primary", use_container_width=True)
         
+        prompt = None
         if send_btn and user_input:
             prompt = user_input
             # Add user message
             st.session_state.floating_chat_messages.append({"role": "user", "content": prompt})
-            # Clear input by rerunning
-            st.rerun()
         elif send_btn and not user_input:
             st.warning("Please type a message first!")
-            prompt = None
-        else:
-            prompt = None
         
         if prompt:
             
@@ -455,17 +449,14 @@ Guide them to click LOGIN/REGISTER!"""
         with qa1:
             if st.button("💰 Price", key="float_q1", use_container_width=True):
                 st.session_state.quick_question = "How much does it cost?"
-                st.rerun()
         
         with qa2:
             if st.button("🎓 Jobs", key="float_q2", use_container_width=True):
                 st.session_state.quick_question = "What career paths are available?"
-                st.rerun()
         
         with qa3:
             if st.button("⏱️ Time", key="float_q3", use_container_width=True):
                 st.session_state.quick_question = "How long does training take?"
-                st.rerun()
         
         # Handle quick question (generate AI response)
         if "quick_question" in st.session_state and st.session_state.quick_question:
@@ -534,12 +525,9 @@ Guide them to click LOGIN/REGISTER!"""
                 # Save conversation for learning
                 save_conversation(prompt, answer, topic="quick_question")
                 
-                st.rerun()  # Refresh to show answer
-                
             except Exception as e:
                 error = "AI temporarily unavailable. Email: admin@t21services.co.uk"
                 st.session_state.floating_chat_messages.append({"role": "assistant", "content": error})
-                st.rerun()
         
         # LEAD CAPTURE: Progressive approach (email first, then phone)
         message_count = len([m for m in st.session_state.floating_chat_messages if m["role"] == "user"])
@@ -553,7 +541,6 @@ Guide them to click LOGIN/REGISTER!"""
                 if email_input and "@" in email_input:
                     st.session_state.email_captured = email_input
                     st.success("✅ Perfect! One more thing...")
-                    st.rerun()
                 else:
                     st.error("Please enter a valid email")
         
@@ -606,7 +593,6 @@ Guide them to click LOGIN/REGISTER!"""
                     st.info("Ready to enroll now? Click **LOGIN/REGISTER** above!")
                 except:
                     pass
-                st.rerun()
             
             if skip_phone:
                 st.session_state.phone_captured = "Not provided"
@@ -635,7 +621,6 @@ Guide them to click LOGIN/REGISTER!"""
                     pass
                 st.success("✅ No problem! Check your email for the guide!")
                 st.info("Ready to enroll? Click **LOGIN/REGISTER** above!")
-                st.rerun()
         
         # Feedback
         st.markdown("---")
