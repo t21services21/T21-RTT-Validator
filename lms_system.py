@@ -380,8 +380,11 @@ def render_materials_student(user_email):
                     st.markdown(f"[**👁️ View File**]({material['file_url']})")
                 
                 with col2:
-                    # Download button - same as view, browser handles download
-                    st.markdown(f"[**📥 Download**]({material['file_url']})")
+                    # Download button - show error message for troubleshooting
+                    if st.button(f"📥 Download", key=f"btn_dl_{material.get('id')}"):
+                        st.warning(f"⚠️ Direct download having issues. Try:")
+                        st.info(f"1. Right-click 'View File' → 'Save Link As...'\n2. Or ask admin to use External URL (Google Drive)")
+                        st.code(material['file_url'], language=None)
     
     except Exception as e:
         st.error(f"Error loading materials: {e}")

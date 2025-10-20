@@ -1631,6 +1631,13 @@ tool = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
+
+# AI Assistant button
+if st.sidebar.button("🤖 AI Assistant - Ask Me Anything!", key="sidebar_ai_assistant", use_container_width=True, type="primary"):
+    st.session_state.selected_tool = "🤖 AI Assistant"
+    st.rerun()
+
+st.sidebar.markdown("---")
 if BROWSER_HISTORY_ENABLED:
     st.sidebar.success("✅ **Navigation:** Dropdown, back buttons, AND browser arrows all work!")
 else:
@@ -3118,6 +3125,14 @@ Course: Understanding RTT and Hospital Administration (PDLC-01-039)
         
         else:
             st.warning(f"⚠️ Please answer all questions before submitting ({total - answered} remaining)")
+
+
+# ============================================
+# AI ASSISTANT - PLATFORM CHATBOT
+# ============================================
+elif tool == "🤖 AI Assistant":
+    from ai_assistant import render_ai_assistant
+    render_ai_assistant()
 
 
 # ============================================
