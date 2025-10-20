@@ -301,23 +301,23 @@ def render_floating_chatbot():
         """, unsafe_allow_html=True)
         st.session_state.proactive_message_shown = True
     
-    # Floating bubble with pulse animation and unread badge
+    # Floating bubble toggle button (Streamlit native)
     pulse_class = "pulse" if not st.session_state.chat_open and time_on_page > 5 else ""
-    unread_badge = '<span class="unread-badge">1</span>' if not st.session_state.chat_open and st.session_state.proactive_message_shown else ""
+    unread_badge = "1" if not st.session_state.chat_open and st.session_state.proactive_message_shown else ""
     
-    st.markdown(f"""
-    <div class="floating-chat-bubble {pulse_class}" onclick="document.getElementById('chat_toggle_btn').click()">
-        <span style="font-size: 32px;">💬</span>
-        {unread_badge}
-    </div>
-    """, unsafe_allow_html=True)
+    # Create toggle button
+    button_label = "✖️ Close Chat" if st.session_state.chat_open else "💬 Chat with Us"
+    if unread_badge:
+        button_label = "💬 New Message!"
     
-    # Hidden toggle button (clicked by JavaScript)
-    if st.button("💬", key="chat_toggle_btn", type="secondary"):
-        st.session_state.chat_open = not st.session_state.chat_open
-        if not st.session_state.chat_open:
-            st.session_state.chatbot_minimized_by_user = True
-        st.rerun()
+    # Position button at bottom right using columns
+    col_spacer, col_button = st.columns([10, 1])
+    with col_button:
+        if st.button(button_label, key="chat_toggle_floating", type="primary" if unread_badge else "secondary"):
+            st.session_state.chat_open = not st.session_state.chat_open
+            if not st.session_state.chat_open:
+                st.session_state.chatbot_minimized_by_user = True
+            st.rerun()
     
     # Show chat window if open
     if st.session_state.chat_open:
