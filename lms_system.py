@@ -37,12 +37,12 @@ def render_learning_materials():
     is_teacher = 'admin' in user_email or 'teacher' in user_email
     
     if is_teacher:
-        render_materials_teacher()
+        render_materials_teacher(user_email)
     else:
-        render_materials_student()
+        render_materials_student(user_email)
 
 
-def render_materials_teacher():
+def render_materials_teacher(user_email):
     """Teacher view - upload and manage materials"""
     
     st.info("**Teacher View:** Upload and manage learning materials")
@@ -201,7 +201,7 @@ def render_materials_teacher():
             st.error(f"Error loading materials: {e}")
 
 
-def render_materials_student():
+def render_materials_student(user_email):
     """Student view - access materials"""
     
     st.info("**Student View:** Access learning materials")
