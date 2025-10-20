@@ -76,16 +76,20 @@ def render_materials_teacher(user_email):
         
         with col2:
             if upload_method == "📤 Upload File Directly":
-                uploaded_file = st.file_uploader(
-                    "Upload File*",
+                uploaded_files = st.file_uploader(
+                    "Upload File(s)*",
                     type=['pdf', 'docx', 'doc', 'xlsx', 'xls', 'pptx', 'ppt', 'txt', 'zip'],
                     key="material_file_uploader",
-                    help="Supported: PDF, Word, Excel, PowerPoint, Text, ZIP"
+                    accept_multiple_files=True,
+                    help="📤 You can upload MULTIPLE files at once! Supported: PDF, Word, Excel, PowerPoint, Text, ZIP"
                 )
                 file_url = None
-                file_name = uploaded_file.name if uploaded_file else ""
+                file_name = ", ".join([f.name for f in uploaded_files]) if uploaded_files else ""
+                
+                if uploaded_files:
+                    st.success(f"✅ {len(uploaded_files)} file(s) selected")
             else:
-                uploaded_file = None
+                uploaded_files = None
                 file_url = st.text_input("File URL*", placeholder="https://drive.google.com/file/d/...", key="material_file_url")
                 file_name = st.text_input("File Name*", placeholder="week1_intro.pdf", key="material_file_name")
             
@@ -93,15 +97,15 @@ def render_materials_teacher(user_email):
         
         description = st.text_area("Description", placeholder="Brief description...", key="material_description_area")
         
-        if st.button("📤 Upload Material", type="primary", key="upload_material_btn"):
+        if st.button("📤 Upload Material(s)", type="primary", key="upload_material_btn"):
             # Validation
             if not title:
                 st.error("Please enter a title")
                 return
             
             if upload_method == "📤 Upload File Directly":
-                if not uploaded_file:
-                    st.error("Please upload a file")
+                if not uploaded_files:
+                    st.error("Please upload at least one file")
                     return
             else:
                 if not file_url:
@@ -110,69 +114,129 @@ def render_materials_teacher(user_email):
             
             try:
                 # Handle file upload to Supabase Storage
-                if upload_method == "📤 Upload File Directly" and uploaded_file:
-                    try:
-                        # Upload to Supabase Storage
-                        from supabase_database import supabase
-                        
-                        # Sanitize filename to avoid path issues
-                        import re
-                        safe_filename = re.sub(r'[^a-zA-Z0-9._-]', '_', uploaded_file.name)
-                        safe_email = re.sub(r'[^a-zA-Z0-9@._-]', '_', user_email)
-                        
-                        # Create file path: learning_materials/user_email/filename
-                        file_path = f"{safe_email}/{safe_filename}"
-                        
-                        # Upload file (v1.0.4 syntax - NO file_options parameter!)
-                        result = supabase.storage.from_('learning_materials').upload(
-                            file_path,
-                            uploaded_file.getvalue()
-                        )
-                        
-                        # Get public URL
-                        file_url = supabase.storage.from_('learning_materials').get_public_url(file_path)
-                        
-                        st.success(f"✅ File uploaded to cloud storage!")
+                if upload_method == "📤 Upload File Directly" and uploaded_files:
+                    uploaded_count = 0
+                    uploaded_materials = []
                     
-                    except Exception as upload_error:
-                        # Show the ACTUAL error for debugging
-                        st.error(f"❌ Upload Error: {str(upload_error)}")
-                        st.error(f"Error Type: {type(upload_error).__name__}")
+                    # Progress bar
+                    progress_bar = st.progress(0)
+                    status_text = st.empty()
+                    
+                    for idx, uploaded_file in enumerate(uploaded_files):
+                        try:
+                            status_text.text(f"Uploading {idx+1}/{len(uploaded_files)}: {uploaded_file.name}...")
+                            
+                            # Upload to Supabase Storage
+                            from supabase_database import supabase
+                            import time
+                            import re
+                            
+                            # Sanitize filename to avoid path issues
+                            safe_filename = re.sub(r'[^a-zA-Z0-9._-]', '_', uploaded_file.name)
+                            safe_email = re.sub(r'[^a-zA-Z0-9@._-]', '_', user_email)
+                            
+                            # Add timestamp to avoid duplicates
+                            timestamp = int(time.time())
+                            file_path = f"{safe_email}/{timestamp}_{safe_filename}"
+                            
+                            # Upload file
+                            result = supabase.storage.from_('learning_materials').upload(
+                                file_path,
+                                uploaded_file.getvalue()
+                            )
+                            
+                            # Get SIGNED URL (works better than public URL)
+                            # Signed URLs are valid for specific time period
+                            file_url = supabase.storage.from_('learning_materials').create_signed_url(
+                                file_path,
+                                60 * 60 * 24 * 365 * 10  # Valid for 10 years
+                            )['signedURL']
+                            
+                            uploaded_count += 1
+                            uploaded_materials.append({
+                                'name': uploaded_file.name,
+                                'url': file_url
+                            })
+                            
+                        except Exception as upload_error:
+                            st.error(f"❌ Failed to upload {uploaded_file.name}: {str(upload_error)}")
+                            continue
                         
-                        # Show detailed error info
-                        import traceback
-                        with st.expander("🔍 Debug Info - Click to see full error"):
-                            st.code(traceback.format_exc())
-                        
-                        st.warning("""
-                        **Possible issues:**
-                        1. Storage policies not set up correctly
-                        2. Authentication issue
-                        3. File permissions
-                        4. Network connectivity
-                        
-                        **For now, please use the 'Link to External URL' option.**
-                        """)
+                        # Update progress
+                        progress_bar.progress((idx + 1) / len(uploaded_files))
+                    
+                    progress_bar.empty()
+                    status_text.empty()
+                    
+                    if uploaded_count == 0:
+                        st.error("❌ All uploads failed!")
                         return
+                    
+                    st.success(f"✅ {uploaded_count}/{len(uploaded_files)} file(s) uploaded successfully!")
+                    st.balloons()
+                    
+                    # Create separate database entry for EACH file
+                    for material in uploaded_materials:
+                        material_data = {
+                            'title': f"{title} - {material['name']}" if len(uploaded_materials) > 1 else title,
+                            'description': description,
+                            'category': category,
+                            'file_url': material['url'],
+                            'file_name': material['name'],
+                            'week': week,
+                            'required': required,
+                            'uploaded_by': user_email,
+                            'uploaded_date': datetime.now().date().isoformat(),
+                            'download_count': 0,
+                            'status': 'active'
+                        }
+                        
+                        supabase.table('learning_materials').insert(material_data).execute()
+                    
+                    # Show uploaded materials summary
+                    st.info(f"""✅ **Upload Confirmed:**
+                    - **Base Title:** {title}
+                    - **Category:** {category}
+                    - **Week:** {week}
+                    - **Files Uploaded:** {uploaded_count}
+                    
+                    📊 Go to "All Materials" tab to see all uploaded files.""")
+                    
+                    # Show links to all uploaded files
+                    st.markdown("**📎 View Uploaded Files:**")
+                    for material in uploaded_materials:
+                        st.markdown(f"- [{material['name']}]({material['url']})")
                 
-                material_data = {
-                    'title': title,
-                    'description': description,
-                    'category': category,
-                    'file_url': file_url,
-                    'file_name': file_name,
-                    'week': week,
-                    'required': required,
-                    'uploaded_by': user_email,
-                    'uploaded_date': datetime.now().date().isoformat(),
-                    'download_count': 0,
-                    'status': 'active'
-                }
-                
-                supabase.table('learning_materials').insert(material_data).execute()
-                st.success("✅ Material uploaded successfully!")
-                st.balloons()
-                st.rerun()
+                else:
+                    # External URL method
+                    material_data = {
+                        'title': title,
+                        'description': description,
+                        'category': category,
+                        'file_url': file_url,
+                        'file_name': file_name,
+                        'week': week,
+                        'required': required,
+                        'uploaded_by': user_email,
+                        'uploaded_date': datetime.now().date().isoformat(),
+                        'download_count': 0,
+                        'status': 'active'
+                    }
+                    
+                    result = supabase.table('learning_materials').insert(material_data).execute()
+                    st.success("✅ Material linked successfully!")
+                    st.balloons()
+                    
+                    if result.data:
+                        uploaded = result.data[0]
+                        st.info(f"""✅ **Link Confirmed:**
+                        - **Title:** {uploaded.get('title')}
+                        - **Category:** {uploaded.get('category')}
+                        - **Week:** {uploaded.get('week')}
+                        - **File:** {uploaded.get('file_name')}
+                        
+                        📊 Go to "All Materials" tab to see all materials.""")
+                        st.markdown(f"[🔗 View Linked File]({uploaded.get('file_url')})")
             
             except Exception as e:
                 st.error(f"Error uploading material: {e}")
@@ -229,26 +293,35 @@ def render_materials_student(user_email):
                 st.write(f"**Description:** {material.get('description', 'N/A')}")
                 st.write(f"**Category:** {material.get('category')}")
                 st.write(f"**Week:** {material.get('week', 0)}")
+                st.write(f"**Downloads:** {material.get('download_count', 0)}")
                 
-                if st.button(f"📥 Download", key=f"dl_{material.get('id')}"):
-                    # Track download
-                    try:
-                        download_data = {
-                            'material_id': material.get('id'),
-                            'student_email': st.session_state.get('user_email', ''),
-                            'download_date': datetime.now().isoformat()
-                        }
-                        supabase.table('material_downloads').insert(download_data).execute()
-                        
-                        # Increment count
-                        supabase.table('learning_materials').update({
-                            'download_count': material.get('download_count', 0) + 1
-                        }).eq('id', material.get('id')).execute()
-                    except:
-                        pass
-                    
-                    st.markdown(f"[**🔗 Open File**]({material['file_url']})")
-                    st.success("Download tracked!")
+                # Show VIEW and DOWNLOAD buttons directly
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    # View button - opens file in new tab
+                    st.markdown(f"[**👁️ View File**]({material['file_url']})")
+                
+                with col2:
+                    # Download button - tracks download
+                    if st.button(f"📥 Download", key=f"dl_{material.get('id')}"):
+                        # Track download
+                        try:
+                            download_data = {
+                                'material_id': material.get('id'),
+                                'student_email': st.session_state.get('user_email', ''),
+                                'download_date': datetime.now().isoformat()
+                            }
+                            supabase.table('material_downloads').insert(download_data).execute()
+                            
+                            # Increment count
+                            supabase.table('learning_materials').update({
+                                'download_count': material.get('download_count', 0) + 1
+                            }).eq('id', material.get('id')).execute()
+                            
+                            st.success("✅ Download tracked!")
+                        except Exception as e:
+                            st.warning(f"Download tracking failed: {e}")
     
     except Exception as e:
         st.error(f"Error loading materials: {e}")
