@@ -437,6 +437,7 @@ def render_videos_teacher():
             elif video_source == "📹 Vimeo":
                 video_url = st.text_input("Vimeo URL*", placeholder="https://vimeo.com/123456789", key="video_url_input")
                 st.info("📹 Paste Vimeo link - video will be embedded")
+                st.warning("⚠️ **IMPORTANT:** Before adding, go to your Vimeo video → Settings → Privacy → 'Where can this be embedded?' → Select **'Everywhere'** (or 'Specific domains' and add your site)")
             elif video_source == "💼 Zoom Recording":
                 video_url = st.text_input("Zoom Recording URL*", placeholder="https://zoom.us/rec/share/...", key="video_url_input")
                 st.info("💼 Paste Zoom recording link")
@@ -532,18 +533,44 @@ def render_videos_teacher():
             
             for video in videos:
                 with st.expander(f"🎥 {video['title']} - Week {video.get('week', 0)} ({video.get('duration_minutes', 0)} min)"):
-                    st.write(f"**Description:** {video.get('description', 'N/A')}")
-                    st.write(f"**Views:** {video.get('view_count', 0)}")
+                    col_info, col_actions = st.columns([3, 1])
+                    
+                    with col_info:
+                        st.write(f"**Description:** {video.get('description', 'N/A')}")
+                        st.write(f"**Views:** {video.get('view_count', 0)}")
+                        st.write(f"**Vimeo URL:** {video.get('vimeo_url', 'N/A')}")
+                    
+                    with col_actions:
+                        if st.button("🗑️ Delete", key=f"delete_{video['id']}", type="secondary"):
+                            try:
+                                supabase.table('video_library').delete().eq('id', video['id']).execute()
+                                st.success("✅ Video deleted!")
+                                st.rerun()
+                            except Exception as e:
+                                st.error(f"Error: {e}")
                     
                     # Embed video
                     vimeo_id = video.get('vimeo_id')
+                    vimeo_url = video.get('vimeo_url', '')
+                    
                     if vimeo_id:
+                        # Try with hash parameter if URL contains it
+                        embed_url = f"https://player.vimeo.com/video/{vimeo_id}"
+                        if '?h=' in vimeo_url or '&h=' in vimeo_url:
+                            # Extract hash if present
+                            import re
+                            hash_match = re.search(r'[?&]h=([a-zA-Z0-9]+)', vimeo_url)
+                            if hash_match:
+                                embed_url += f"?h={hash_match.group(1)}"
+                        
                         st.markdown(f"""
-                        <iframe src="https://player.vimeo.com/video/{vimeo_id}" 
+                        <iframe src="{embed_url}" 
                                 width="640" height="360" frameborder="0" 
                                 allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
                         </iframe>
                         """, unsafe_allow_html=True)
+                        
+                        st.info("⚠️ **Video not showing?** Make sure Vimeo privacy settings allow embedding: Settings → Privacy → 'Where can this be embedded?' → Everywhere")
         
         except Exception as e:
             st.error(f"Error loading videos: {e}")
@@ -596,13 +623,32 @@ def render_videos_student():
             
             # Embed video
             vimeo_id = video.get('vimeo_id')
+            vimeo_url = video.get('vimeo_url', '')
+            
             if vimeo_id:
+                # Try with hash parameter if URL contains it
+                embed_url = f"https://player.vimeo.com/video/{vimeo_id}"
+                if '?h=' in vimeo_url or '&h=' in vimeo_url:
+                    # Extract hash if present
+                    import re
+                    hash_match = re.search(r'[?&]h=([a-zA-Z0-9]+)', vimeo_url)
+                    if hash_match:
+                        embed_url += f"?h={hash_match.group(1)}"
+                
                 st.markdown(f"""
-                <iframe src="https://player.vimeo.com/video/{vimeo_id}" 
-                        width="100%" height="400" frameborder="0" 
-                        allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
-                </iframe>
+                <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+                    <iframe src="{embed_url}" 
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                            frameborder="0" 
+                            allow="autoplay; fullscreen; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
                 """, unsafe_allow_html=True)
+                
+                st.caption("⚠️ Video not showing? The instructor needs to update Vimeo privacy settings to allow embedding.")
+            else:
+                st.warning("⚠️ Video not available")
             
             st.markdown("---")
     
