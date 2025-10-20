@@ -153,10 +153,9 @@ def render_materials_teacher(user_email):
                                 uploaded_file.getvalue()
                             )
                             
-                            # Get public URL (bucket must be public)
-                            # For v1.0.4, we use public URLs and rely on bucket being public
-                            base_url = SUPABASE_URL.replace('/rest/v1', '')  # Remove API path
-                            file_url = f"{base_url}/storage/v1/object/public/learning_materials/{file_path}"
+                            # Get public URL using Supabase's get_public_url method
+                            # This works correctly in v1.0.4 if bucket is public
+                            file_url = supabase.storage.from_('learning_materials').get_public_url(file_path)
                             
                             uploaded_count += 1
                             uploaded_materials.append({
