@@ -651,3 +651,6 @@ Guide them to click LOGIN/REGISTER!"""
         with fb2:
             if st.button("👎 No", key="helpful_no"):
                 st.info("We'll improve! Any specific question? Ask me!")
+        
+        # Add LARGE spacer at bottom to push chat input above close button
+        st.markdown("<br><br><br><br><br><br><br><br>", unsafe_allow_html=True)
