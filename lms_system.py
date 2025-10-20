@@ -531,7 +531,7 @@ def render_videos_teacher():
             
             st.write(f"**Total Videos: {len(videos)}**")
             
-            for video in videos:
+            for idx, video in enumerate(videos):
                 with st.expander(f"🎥 {video['title']} - Week {video.get('week', 0)} ({video.get('duration_minutes', 0)} min)"):
                     col_info, col_actions = st.columns([3, 1])
                     
@@ -541,13 +541,20 @@ def render_videos_teacher():
                         st.write(f"**Vimeo URL:** {video.get('vimeo_url', 'N/A')}")
                     
                     with col_actions:
-                        if st.button("🗑️ Delete", key=f"delete_{video['id']}", type="secondary"):
+                        if st.button("🗑️ Delete", key=f"delete_video_{video.get('id', idx)}_{idx}", type="secondary"):
                             try:
+                                # First delete related video views
+                                try:
+                                    supabase.table('video_views').delete().eq('video_id', video['id']).execute()
+                                except:
+                                    pass  # Views table might not exist
+                                
+                                # Then delete the video
                                 supabase.table('video_library').delete().eq('id', video['id']).execute()
                                 st.success("✅ Video deleted!")
                                 st.rerun()
                             except Exception as e:
-                                st.error(f"Error: {e}")
+                                st.error(f"Error deleting video: {e}")
                     
                     # Embed video
                     vimeo_id = video.get('vimeo_id')
