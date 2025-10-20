@@ -337,11 +337,15 @@ def render_floating_chatbot():
     </style>
     """, unsafe_allow_html=True)
     
-    # Toggle button
-    col1, col2 = st.columns([10, 1])
-    with col2:
-        if st.button("💬" if not st.session_state.chat_open else "✖️", key="chat_toggle"):
-            st.session_state.chat_open = not st.session_state.chat_open
+    # Toggle button - Make it visible!
+    st.markdown("---")
+    if not st.session_state.chat_open:
+        if st.button("💬 Chat with Our AI Assistant", key="chat_toggle", type="primary", use_container_width=True):
+            st.session_state.chat_open = True
+            st.rerun()
+    else:
+        if st.button("✖️ Close Chat", key="chat_close", type="secondary", use_container_width=True):
+            st.session_state.chat_open = False
             st.rerun()
     
     # Show chat window if open
@@ -624,3 +628,5 @@ Guide them to click LOGIN/REGISTER!"""
         with fb2:
             if st.button("👎 No", key="helpful_no"):
                 st.info("We'll improve! Any specific question? Ask me!")
+
+# End of render_floating_chatbot function
