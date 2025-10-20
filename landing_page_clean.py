@@ -246,4 +246,5 @@ def render_clean_landing_page():
     # ============================================
     # FLOATING CHATBOT (Professional Style)
     # ============================================
-    render_floating_chatbot()
+    # Temporarily disabled to debug login issue
+    # render_floating_chatbot()
