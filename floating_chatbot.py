@@ -301,23 +301,56 @@ def render_floating_chatbot():
         """, unsafe_allow_html=True)
         st.session_state.proactive_message_shown = True
     
-    # Floating bubble toggle button (Streamlit native)
-    pulse_class = "pulse" if not st.session_state.chat_open and time_on_page > 5 else ""
+    # Add fixed position container for button
+    st.markdown("""
+    <style>
+        .fixed-chat-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999999;
+        }
+        
+        /* Override Streamlit button styling for chat button */
+        div[data-testid="stButton"] > button[kind="primary"] {
+            position: fixed !important;
+            bottom: 20px !important;
+            right: 20px !important;
+            z-index: 999999 !important;
+            border-radius: 50px !important;
+            padding: 12px 24px !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+            animation: pulse 2s infinite !important;
+        }
+        
+        div[data-testid="stButton"] > button[kind="primary"]:hover {
+            transform: scale(1.05) !important;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4) !important;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5); }
+            50% { box-shadow: 0 4px 20px rgba(102, 126, 234, 0.9); }
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Floating bubble toggle button (Streamlit native with fixed position)
     unread_badge = "1" if not st.session_state.chat_open and st.session_state.proactive_message_shown else ""
     
     # Create toggle button
-    button_label = "✖️ Close Chat" if st.session_state.chat_open else "💬 Chat with Us"
+    button_label = "✖️ Close" if st.session_state.chat_open else "💬 Chat with Us"
     if unread_badge:
         button_label = "💬 New Message!"
     
-    # Position button at bottom right using columns
-    col_spacer, col_button = st.columns([10, 1])
-    with col_button:
-        if st.button(button_label, key="chat_toggle_floating", type="primary" if unread_badge else "secondary"):
-            st.session_state.chat_open = not st.session_state.chat_open
-            if not st.session_state.chat_open:
-                st.session_state.chatbot_minimized_by_user = True
-            st.rerun()
+    # Button with fixed position
+    if st.button(button_label, key="chat_toggle_floating", type="primary"):
+        st.session_state.chat_open = not st.session_state.chat_open
+        if not st.session_state.chat_open:
+            st.session_state.chatbot_minimized_by_user = True
+        st.rerun()
     
     # Show chat window if open
     if st.session_state.chat_open:
@@ -419,38 +452,101 @@ Guide them to click LOGIN/REGISTER!"""
                 st.session_state.floating_chat_messages.append({"role": "user", "content": "How long?"})
                 st.rerun()
         
-        # LEAD CAPTURE: Ask for email after 3 messages
+        # LEAD CAPTURE: Progressive approach (email first, then phone)
         message_count = len([m for m in st.session_state.floating_chat_messages if m["role"] == "user"])
+        
+        # Step 1: Email capture (after 3 messages)
         if message_count >= 3 and "email_captured" not in st.session_state:
             st.markdown("---")
-            st.info("💌 **Want more info?** Enter your email and I'll send you our complete guide!")
-            email_input = st.text_input("Email", key="lead_email", placeholder="your@email.com")
-            if st.button("📧 Send Me Info", key="capture_email"):
+            st.info("💌 **Want our complete course guide?** Enter your email below!")
+            email_input = st.text_input("📧 Email Address", key="lead_email", placeholder="your@email.com")
+            if st.button("📥 Get Free Guide", key="capture_email"):
                 if email_input and "@" in email_input:
                     st.session_state.email_captured = email_input
-                    st.success("✅ Great! Check your email for our complete course guide!")
-                    # Save lead to database
-                    try:
-                        conn = sqlite3.connect("chatbot_conversations.db")
-                        cursor = conn.cursor()
-                        cursor.execute("""
-                        CREATE TABLE IF NOT EXISTS leads (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            email TEXT,
-                            timestamp TEXT,
-                            conversation_count INTEGER
-                        )
-                        """)
-                        cursor.execute("""
-                        INSERT INTO leads (email, timestamp, conversation_count)
-                        VALUES (?, ?, ?)
-                        """, (email_input, datetime.now().isoformat(), message_count))
-                        conn.commit()
-                        conn.close()
-                    except:
-                        pass
+                    st.success("✅ Perfect! One more thing...")
+                    st.rerun()
                 else:
                     st.error("Please enter a valid email")
+        
+        # Step 2: Phone capture (after email captured)
+        elif "email_captured" in st.session_state and "phone_captured" not in st.session_state:
+            st.markdown("---")
+            st.success(f"✅ Email saved: {st.session_state.email_captured}")
+            st.info("📞 **Want faster help?** Our team can call you to answer questions!")
+            
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                phone_input = st.text_input("📱 Phone Number (Optional)", key="lead_phone", placeholder="07XXX XXXXXX or +44...")
+            with col2:
+                st.markdown("<br>", unsafe_allow_html=True)
+                skip_phone = st.button("Skip", key="skip_phone")
+            
+            if st.button("📞 Yes, Call Me!", key="capture_phone"):
+                st.session_state.phone_captured = phone_input if phone_input else "Not provided"
+                # Save complete lead to database
+                try:
+                    conn = sqlite3.connect("chatbot_conversations.db")
+                    cursor = conn.cursor()
+                    cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS leads (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        email TEXT,
+                        phone TEXT,
+                        timestamp TEXT,
+                        conversation_count INTEGER,
+                        quality TEXT
+                    )
+                    """)
+                    
+                    # Determine lead quality
+                    quality = "HOT" if phone_input and message_count >= 5 else "WARM" if phone_input else "COLD"
+                    
+                    cursor.execute("""
+                    INSERT INTO leads (email, phone, timestamp, conversation_count, quality)
+                    VALUES (?, ?, ?, ?, ?)
+                    """, (st.session_state.email_captured, st.session_state.phone_captured, 
+                          datetime.now().isoformat(), message_count, quality))
+                    conn.commit()
+                    conn.close()
+                    
+                    if phone_input:
+                        st.success("🎉 Amazing! We'll call you within 24 hours!")
+                    else:
+                        st.success("✅ Great! Check your email for the complete guide!")
+                    
+                    st.info("Ready to enroll now? Click **LOGIN/REGISTER** above!")
+                except:
+                    pass
+                st.rerun()
+            
+            if skip_phone:
+                st.session_state.phone_captured = "Not provided"
+                # Save to database
+                try:
+                    conn = sqlite3.connect("chatbot_conversations.db")
+                    cursor = conn.cursor()
+                    cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS leads (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        email TEXT,
+                        phone TEXT,
+                        timestamp TEXT,
+                        conversation_count INTEGER,
+                        quality TEXT
+                    )
+                    """)
+                    cursor.execute("""
+                    INSERT INTO leads (email, phone, timestamp, conversation_count, quality)
+                    VALUES (?, ?, ?, ?, ?)
+                    """, (st.session_state.email_captured, "Not provided", 
+                          datetime.now().isoformat(), message_count, "COLD"))
+                    conn.commit()
+                    conn.close()
+                except:
+                    pass
+                st.success("✅ No problem! Check your email for the guide!")
+                st.info("Ready to enroll? Click **LOGIN/REGISTER** above!")
+                st.rerun()
         
         # Feedback
         st.markdown("---")
