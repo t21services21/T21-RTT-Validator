@@ -246,8 +246,6 @@ def render_clean_landing_page():
     # ============================================
     # FLOATING CHATBOT (Professional Style)
     # ============================================
-    try:
-        render_floating_chatbot()
-    except Exception as e:
-        # If chatbot fails, show simple message instead of breaking the page
-        st.info("💬 Chat currently unavailable. Please use the contact form or login to access support!")
+    # DISABLED - Chatbot is breaking login buttons
+    # TODO: Fix chatbot rendering issues before re-enabling
+    st.info("💬 **Need Help?** Login to access our support team, or email: admin@t21services.co.uk")
