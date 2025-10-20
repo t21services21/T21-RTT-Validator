@@ -354,29 +354,24 @@ def render_floating_chatbot():
     
     # Show chat window if open
     if st.session_state.chat_open:
-        st.markdown("### 💬 T21 AI Assistant")
+        # Close button at TOP (like professional chat widgets)
+        col1, col2 = st.columns([4, 1])
+        with col1:
+            st.markdown("### 💬 T21 AI Assistant")
+        with col2:
+            if st.button("✖️ Close", key="close_chat_top", type="secondary"):
+                st.session_state.chat_open = False
+                st.session_state.chatbot_minimized_by_user = True
+                st.rerun()
+        
         st.info("🚀 Get instant answers! I learn from every conversation.")
         
-        # Add CSS to prevent chat input being covered by close button
+        # Add spacer at bottom so input isn't covered
         st.markdown("""
         <style>
-            /* Add padding to bottom of chat to prevent input being covered */
+            /* Add space at bottom of page for chat input */
             .main .block-container {
-                padding-bottom: 100px !important;
-            }
-            
-            /* Ensure chat input is visible above close button */
-            section[data-testid="stChatInput"] {
-                margin-bottom: 80px !important;
-                padding-bottom: 20px !important;
-            }
-            
-            /* Style the chat input for better visibility */
-            div[data-testid="stChatInput"] > div {
-                background: white !important;
-                border: 2px solid #667eea !important;
-                border-radius: 10px !important;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+                padding-bottom: 120px !important;
             }
         </style>
         """, unsafe_allow_html=True)
