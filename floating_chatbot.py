@@ -357,6 +357,30 @@ def render_floating_chatbot():
         st.markdown("### 💬 T21 AI Assistant")
         st.info("🚀 Get instant answers! I learn from every conversation.")
         
+        # Add CSS to prevent chat input being covered by close button
+        st.markdown("""
+        <style>
+            /* Add padding to bottom of chat to prevent input being covered */
+            .main .block-container {
+                padding-bottom: 100px !important;
+            }
+            
+            /* Ensure chat input is visible above close button */
+            section[data-testid="stChatInput"] {
+                margin-bottom: 80px !important;
+                padding-bottom: 20px !important;
+            }
+            
+            /* Style the chat input for better visibility */
+            div[data-testid="stChatInput"] > div {
+                background: white !important;
+                border: 2px solid #667eea !important;
+                border-radius: 10px !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+        
         # Display messages
         for msg in st.session_state.floating_chat_messages:
             with st.chat_message(msg["role"]):
