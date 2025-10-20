@@ -3,6 +3,9 @@ T21 SERVICES - PROFESSIONAL LANDING PAGE
 """
 
 import streamlit as st
+import sys
+import os
+from floating_chatbot import render_floating_chatbot
 
 def render_clean_landing_page():
     """Professional landing page with hero image"""
@@ -332,17 +335,31 @@ Keep under 200 words unless detailed explanation needed."""
     
     with q1:
         if st.button("💰 Pricing", key="q_price"):
-            st.session_state.public_ai_chat.append({"role": "user", "content": "How much does it cost?"})
-            st.rerun()
+            # Check if not already added
+            last_msg = st.session_state.public_ai_chat[-1]["content"] if st.session_state.public_ai_chat else ""
+            if last_msg != "How much does it cost?":
+                st.session_state.public_ai_chat.append({"role": "user", "content": "How much does it cost?"})
+                st.rerun()
     
     with q2:
         if st.button("🎓 Careers", key="q_career"):
-            st.session_state.public_ai_chat.append({"role": "user", "content": "What career paths are available?"})
-            st.rerun()
+            # Check if not already added
+            last_msg = st.session_state.public_ai_chat[-1]["content"] if st.session_state.public_ai_chat else ""
+            if last_msg != "What career paths are available?":
+                st.session_state.public_ai_chat.append({"role": "user", "content": "What career paths are available?"})
+                st.rerun()
     
     with q3:
         if st.button("⏱️ Duration", key="q_time"):
-            st.session_state.public_ai_chat.append({"role": "user", "content": "How long does training take?"})
-            st.rerun()
+            # Check if not already added
+            last_msg = st.session_state.public_ai_chat[-1]["content"] if st.session_state.public_ai_chat else ""
+            if last_msg != "How long does training take?":
+                st.session_state.public_ai_chat.append({"role": "user", "content": "How long does training take?"})
+                st.rerun()
     
     st.markdown("---")
+    
+    # ============================================
+    # FLOATING CHATBOT (Professional Style)
+    # ============================================
+    render_floating_chatbot()
