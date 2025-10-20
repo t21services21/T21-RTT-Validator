@@ -439,17 +439,91 @@ Guide them to click LOGIN/REGISTER!"""
         
         with qa1:
             if st.button("💰 Price", key="float_q1", use_container_width=True):
-                st.session_state.floating_chat_messages.append({"role": "user", "content": "How much?"})
+                st.session_state.quick_question = "How much does it cost?"
                 st.rerun()
         
         with qa2:
             if st.button("🎓 Jobs", key="float_q2", use_container_width=True):
-                st.session_state.floating_chat_messages.append({"role": "user", "content": "What careers?"})
+                st.session_state.quick_question = "What career paths are available?"
                 st.rerun()
         
         with qa3:
             if st.button("⏱️ Time", key="float_q3", use_container_width=True):
-                st.session_state.floating_chat_messages.append({"role": "user", "content": "How long?"})
+                st.session_state.quick_question = "How long does training take?"
+                st.rerun()
+        
+        # Handle quick question (generate AI response)
+        if "quick_question" in st.session_state and st.session_state.quick_question:
+            prompt = st.session_state.quick_question
+            st.session_state.quick_question = None  # Clear flag
+            
+            # Add user message
+            st.session_state.floating_chat_messages.append({"role": "user", "content": prompt})
+            
+            # Get similar previous questions (RAG)
+            similar_qa = get_similar_questions(prompt)
+            context_from_history = ""
+            if similar_qa:
+                context_from_history = "\n\nPREVIOUS SIMILAR QUESTIONS:\n"
+                for q, a in similar_qa:
+                    context_from_history += f"Q: {q}\nA: {a[:200]}...\n\n"
+            
+            # Generate AI response
+            try:
+                from openai import OpenAI
+                from COMPLETE_PLATFORM_KNOWLEDGE import COMPLETE_PLATFORM_KNOWLEDGE
+                import json
+                
+                client = OpenAI(api_key=st.secrets.get("OPENAI_API_KEY"))
+                
+                system_prompt = f"""You are an enthusiastic sales AI for T21 Healthcare Platform.
+
+COMPLETE PLATFORM INFO:
+{json.dumps(COMPLETE_PLATFORM_KNOWLEDGE, indent=2)}
+
+{context_from_history}
+
+INSTRUCTIONS:
+1. Use COMPLETE_PLATFORM_KNOWLEDGE for accurate answers
+2. If similar questions were asked before, use that context too
+3. Highlight value: "£5,000+ for £1,299" (Tier 2)
+4. Create urgency: "30 spots/month", "Price increase April 2026"
+5. Add bonuses: "£300 FREE bonuses!"
+6. Social proof: "Sarah: £24k → £34k (8 weeks)"
+7. ROI: "92% get jobs within 3 months"
+8. Show 20+ career paths
+9. End with CTA
+10. Keep under 200 words
+
+PRICING:
+- Taster: £99/1 month
+- Tier 1: £499/6 months
+- Tier 2: £1,299/12 months (TQUK cert) ⭐ MOST POPULAR
+- Tier 3: £1,799/12 months (cert + coach)
+
+Guide them to click LOGIN/REGISTER!"""
+                
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        *st.session_state.floating_chat_messages[-6:]
+                    ],
+                    max_tokens=400,
+                    temperature=0.7
+                )
+                
+                answer = response.choices[0].message.content
+                st.session_state.floating_chat_messages.append({"role": "assistant", "content": answer})
+                
+                # Save conversation for learning
+                save_conversation(prompt, answer, topic="quick_question")
+                
+                st.rerun()  # Refresh to show answer
+                
+            except Exception as e:
+                error = "AI temporarily unavailable. Email: admin@t21services.co.uk"
+                st.session_state.floating_chat_messages.append({"role": "assistant", "content": error})
                 st.rerun()
         
         # LEAD CAPTURE: Progressive approach (email first, then phone)
