@@ -358,13 +358,29 @@ def render_floating_chatbot():
             with st.chat_message(msg["role"]):
                 st.markdown(msg["content"])
         
-        # Add spacing before chat input to keep it above blue bar
-        st.markdown("<br><br>", unsafe_allow_html=True)
+        # Chat input using regular text input (won't create blue bar!)
+        st.markdown("---")
+        st.markdown("**💬 Type your message:**")
         
-        # Chat input
-        if prompt := st.chat_input("Ask me anything...", key="floating_chat_input"):
+        col_input, col_send = st.columns([5, 1])
+        with col_input:
+            user_input = st.text_input("Message", key="chat_text_input", placeholder="Ask me anything...", label_visibility="collapsed")
+        with col_send:
+            send_btn = st.button("Send", key="send_btn", type="primary", use_container_width=True)
+        
+        if send_btn and user_input:
+            prompt = user_input
             # Add user message
             st.session_state.floating_chat_messages.append({"role": "user", "content": prompt})
+            # Clear input by rerunning
+            st.rerun()
+        elif send_btn and not user_input:
+            st.warning("Please type a message first!")
+            prompt = None
+        else:
+            prompt = None
+        
+        if prompt:
             
             with st.chat_message("user"):
                 st.markdown(prompt)
