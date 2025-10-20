@@ -358,6 +358,9 @@ def render_floating_chatbot():
             with st.chat_message(msg["role"]):
                 st.markdown(msg["content"])
         
+        # Add spacing before chat input to keep it above blue bar
+        st.markdown("<br><br>", unsafe_allow_html=True)
+        
         # Chat input
         if prompt := st.chat_input("Ask me anything...", key="floating_chat_input"):
             # Add user message
