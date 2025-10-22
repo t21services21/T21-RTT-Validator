@@ -23,9 +23,14 @@ def search_patient(search_term, search_type="nhs_number"):
         return []
     
     try:
+        # Clean search term (remove spaces from NHS number)
+        clean_search = search_term.replace(' ', '').strip()
+        
         if search_type == "nhs_number":
-            # Search by NHS number
-            result = supabase.table('patients').select('*').ilike('nhs_number', f'%{search_term}%').execute()
+            # Search by NHS number (try both with and without spaces)
+            result = supabase.table('patients').select('*').or_(
+                f'nhs_number.ilike.%{clean_search}%,nhs_number.ilike.%{search_term}%'
+            ).execute()
         elif search_type == "name":
             # Search by name (first or last)
             result = supabase.table('patients').select('*').or_(
@@ -111,6 +116,10 @@ def render_find_patient():
             with st.spinner("Searching..."):
                 patients = search_patient(search_term, search_type)
                 
+                # Debug output
+                st.info(f"🔍 Searched for: '{search_term}' (type: {search_type})")
+                st.info(f"📊 Database returned: {len(patients) if patients else 0} results")
+                
                 if patients:
                     st.success(f"✅ Found {len(patients)} patient(s)")
                     
@@ -118,6 +127,7 @@ def render_find_patient():
                     st.session_state['search_results'] = patients
                 else:
                     st.warning("⚠️ No patients found")
+                    st.info("💡 Try searching by name instead, or check if NHS number has spaces")
                     st.session_state['search_results'] = []
         else:
             st.error("❌ Please enter a search term")
@@ -132,9 +142,14 @@ def render_find_patient():
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    st.write(f"**Name:** {patient.get('first_name', '')} {patient.get('last_name', '')}")
+                    # Handle different possible field names
+                    first_name = patient.get('first_name') or patient.get('firstname') or ''
+                    last_name = patient.get('last_name') or patient.get('lastname') or ''
+                    full_name = patient.get('full_name') or patient.get('name') or f"{first_name} {last_name}"
+                    
+                    st.write(f"**Name:** {full_name}")
                     st.write(f"**NHS Number:** {patient.get('nhs_number', 'N/A')}")
-                    st.write(f"**DOB:** {patient.get('date_of_birth', 'N/A')}")
+                    st.write(f"**DOB:** {patient.get('date_of_birth') or patient.get('dob', 'N/A')}")
                 
                 with col2:
                     st.write(f"**Contact:** {patient.get('contact_number', 'N/A')}")
