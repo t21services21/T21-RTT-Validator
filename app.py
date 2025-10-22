@@ -6025,9 +6025,26 @@ elif tool == "💼 Career Development":
     tabs = st.tabs(["🤖 Job Automation", "💼 Interview Prep", "📄 CV Builder"])
     
     with tabs[0]:
-        # JOB AUTOMATION - COMPLETE STUDENT DASHBOARD (VIEW ONLY)
-        from job_automation_student_view import job_automation_student_view
-        job_automation_student_view()
+        # JOB AUTOMATION - Role-based view
+        user_role = st.session_state.get('user_license', {})
+        user_email = st.session_state.get('user_email', '')
+        
+        # Check if user is admin/staff
+        is_admin = False
+        if hasattr(user_role, 'role'):
+            if user_role.role in ['admin', 'super_admin', 'staff', 'tier2', 'tier3']:
+                is_admin = True
+        elif 'admin' in user_email.lower() or 'staff' in str(user_role).lower():
+            is_admin = True
+        
+        if is_admin:
+            # STAFF/ADMIN: Show Staff Control Center
+            from job_automation_staff_setup import job_automation_staff_control
+            job_automation_staff_control()
+        else:
+            # STUDENTS: Show Student Dashboard (view only)
+            from job_automation_student_view import job_automation_student_view
+            job_automation_student_view()
     
     with tabs[1]:
         # INTERVIEW PREP

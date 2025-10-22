@@ -33,6 +33,13 @@ def job_automation_staff_control():
         st.error("⚠️ Job automation system is currently unavailable.")
         return
     
+    # Admin info
+    user_email = st.session_state.get('user_email', '')
+    if 'admin' in user_email.lower() or 'super_admin' in str(st.session_state.get('user_license', '')).lower():
+        st.success("👑 **ADMIN ACCESS:** You can manage students, view all applications, monitor staff activity, and control the entire system")
+    else:
+        st.info("👥 **STAFF ACCESS:** You can manage students and monitor job applications")
+    
     # Main tabs
     tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "➕ Add Students",
