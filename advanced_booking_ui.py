@@ -22,6 +22,7 @@ from advanced_booking_system import (
     APPOINTMENT_TYPES,
     SPECIALTIES
 )
+from patient_search_booking import render_find_patient
 from datetime import datetime, timedelta
 
 
@@ -42,8 +43,9 @@ def render_advanced_booking():
     """)
     
     # Tabs
-    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
         "📋 Book Appointment",
+        "🔍 Find Patient",
         "📋 Partial Booking List",
         "📅 Clinic Management",
         "🔍 Check Availability",
@@ -56,6 +58,9 @@ def render_advanced_booking():
         render_book_appointment()
     
     with tab2:
+        render_find_patient()
+    
+    with tab3:
         # PARTIAL BOOKING LIST - NHS-Critical Workflow
         try:
             from partial_booking_list_ui import render_partial_booking_list
@@ -664,12 +669,30 @@ def render_manage_appointments():
     
     st.subheader("⚙️ Manage Appointments")
     
-    action = st.radio("Action", ["View All Appointments", "Cancel Appointment", "Reschedule Appointment"])
+    action = st.radio("Action", ["View All Appointments", "Outcome Appointment", "Cancel Appointment", "Reschedule Appointment"])
     
     if action == "View All Appointments":
         render_appointments_list()
     
-    if action == "Cancel Appointment":
+    elif action == "Outcome Appointment":
+        with st.form("outcome_appt"):
+            appointment_id = st.text_input("Appointment ID*", placeholder="APPT_20250109...")
+            outcome = st.selectbox("Outcome*", ["Attended", "DNA (Did Not Attend)", "Patient Cancelled", "Hospital Cancelled", "Rescheduled"])
+            outcome_notes = st.text_area("Outcome Notes", height=100, placeholder="Additional details about the outcome...")
+            
+            if st.form_submit_button("✅ Save Outcome", type="primary"):
+                if appointment_id and outcome:
+                    from patient_search_booking import outcome_appointment
+                    success = outcome_appointment(appointment_id, outcome, outcome_notes)
+                    if success:
+                        st.success("✅ Appointment outcomed successfully!")
+                        st.balloons()
+                    else:
+                        st.error("❌ Failed to outcome appointment")
+                else:
+                    st.error("❌ Please fill all required fields")
+    
+    elif action == "Cancel Appointment":
         with st.form("cancel_appt"):
             appointment_id = st.text_input("Appointment ID*", placeholder="APPT_20250109...")
             reason = st.text_area("Cancellation Reason*", height=100)
