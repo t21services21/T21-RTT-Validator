@@ -64,8 +64,31 @@ def render_manual_runner():
         st.markdown("### 1️⃣ Scrape Jobs")
         st.info("Find new NHS jobs matching student preferences")
         
-        # Try RSS/API first (most reliable)
-        if st.button("📡 RUN RSS/API SCRAPER", use_container_width=True, type="primary"):
+        # Try Adzuna first (BEST - has real NHS jobs!)
+        if st.button("🎯 RUN ADZUNA SCRAPER (REAL JOBS!)", use_container_width=True, type="primary"):
+            with st.spinner("Fetching real NHS jobs from Adzuna..."):
+                try:
+                    from job_automation.adzuna_scraper import scrape_jobs_adzuna
+                    
+                    jobs = scrape_jobs_adzuna(
+                        keywords=['RTT', 'Validation', 'Administrator', 'Pathway', 'NHS'],
+                        location='London',
+                        max_results=20
+                    )
+                    
+                    if jobs and len(jobs) > 0:
+                        st.success(f"🎉 Found {len(jobs)} REAL NHS jobs from Adzuna!")
+                        st.balloons()
+                        st.rerun()
+                    else:
+                        st.warning("⚠️ Adzuna found 0 jobs. Try different keywords or 'Add Test Jobs'.")
+                
+                except Exception as e:
+                    st.error(f"❌ Adzuna error: {str(e)}")
+                    st.code(str(e))
+        
+        # Try RSS/API as backup
+        if st.button("📡 RUN RSS/API SCRAPER", use_container_width=True):
             with st.spinner("Fetching jobs from NHS Jobs RSS/API..."):
                 try:
                     from job_automation.rss_scraper import scrape_nhs_jobs_rss
