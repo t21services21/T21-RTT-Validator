@@ -69,7 +69,7 @@ def scrape_jobs_adzuna(keywords=None, location='London', max_results=20):
             'category': 'healthcare-nursing-jobs',  # Filter for healthcare
             'sort_by': 'date'
         }
-    
+        
         try:
             print(f"🔍 Searching Adzuna for: {search_query} in {location}")
             
@@ -83,56 +83,56 @@ def scrape_jobs_adzuna(keywords=None, location='London', max_results=20):
             results = data.get('results', [])
             
             print(f"✅ Found {len(results)} jobs for '{search_query}'")
-        
-        for job in results:
-            try:
-                title = job.get('title', 'Unknown')
-                company = job.get('company', {}).get('display_name', 'NHS Trust')
-                location_text = job.get('location', {}).get('display_name', location)
-                description = job.get('description', '')
-                job_url = job.get('redirect_url', '')
-                
-                # Extract salary
-                salary_min = int(job.get('salary_min', 0)) if job.get('salary_min') else 0
-                salary_max = int(job.get('salary_max', 0)) if job.get('salary_max') else 0
-                
-                # Extract band from title or description
-                band = "Not specified"
-                for band_num in range(2, 9):
-                    if f'band {band_num}' in title.lower() or f'band {band_num}' in description.lower():
-                        band = f'Band {band_num}'
-                        break
-                
-                # Generate job reference
-                job_id = job.get('id', '')
-                job_reference = f"ADZUNA-{job_id}" if job_id else f"ADZUNA-{int(datetime.now().timestamp())}"
-                
-                # Get created date
-                created_date = job.get('created', datetime.now().isoformat())
-                
-                # Create job data
-                job_data = {
-                    'title': title,
-                    'trust': company,
-                    'location': location_text,
-                    'band': band,
-                    'salary_min': salary_min,
-                    'salary_max': salary_max,
-                    'closing_date': (datetime.now() + timedelta(days=30)).isoformat(),
-                    'nhs_jobs_url': job_url,
-                    'job_reference': job_reference,
-                    'discovered_at': datetime.now().isoformat()
-                }
-                
-                # Check if already exists
-                existing = supabase.table('discovered_jobs').select('id').eq('job_reference', job_reference).execute()
-                
-                if not existing.data:
-                    result = supabase.table('discovered_jobs').insert(job_data).execute()
-                    if result.data:
-                        discovered_jobs.append(result.data[0])
-                        print(f"✅ Added: {title} at {company}")
             
+            for job in results:
+                try:
+                    title = job.get('title', 'Unknown')
+                    company = job.get('company', {}).get('display_name', 'NHS Trust')
+                    location_text = job.get('location', {}).get('display_name', location)
+                    description = job.get('description', '')
+                    job_url = job.get('redirect_url', '')
+                    
+                    # Extract salary
+                    salary_min = int(job.get('salary_min', 0)) if job.get('salary_min') else 0
+                    salary_max = int(job.get('salary_max', 0)) if job.get('salary_max') else 0
+                    
+                    # Extract band from title or description
+                    band = "Not specified"
+                    for band_num in range(2, 9):
+                        if f'band {band_num}' in title.lower() or f'band {band_num}' in description.lower():
+                            band = f'Band {band_num}'
+                            break
+                    
+                    # Generate job reference
+                    job_id = job.get('id', '')
+                    job_reference = f"ADZUNA-{job_id}" if job_id else f"ADZUNA-{int(datetime.now().timestamp())}"
+                    
+                    # Get created date
+                    created_date = job.get('created', datetime.now().isoformat())
+                    
+                    # Create job data
+                    job_data = {
+                        'title': title,
+                        'trust': company,
+                        'location': location_text,
+                        'band': band,
+                        'salary_min': salary_min,
+                        'salary_max': salary_max,
+                        'closing_date': (datetime.now() + timedelta(days=30)).isoformat(),
+                        'nhs_jobs_url': job_url,
+                        'job_reference': job_reference,
+                        'discovered_at': datetime.now().isoformat()
+                    }
+                    
+                    # Check if already exists
+                    existing = supabase.table('discovered_jobs').select('id').eq('job_reference', job_reference).execute()
+                    
+                    if not existing.data:
+                        result = supabase.table('discovered_jobs').insert(job_data).execute()
+                        if result.data:
+                            discovered_jobs.append(result.data[0])
+                            print(f"✅ Added: {title} at {company}")
+                
                 except Exception as e:
                     print(f"⚠️ Error processing job: {str(e)}")
                     continue
