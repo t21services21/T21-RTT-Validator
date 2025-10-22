@@ -6025,9 +6025,9 @@ elif tool == "💼 Career Development":
     tabs = st.tabs(["🤖 Job Automation", "💼 Interview Prep", "📄 CV Builder"])
     
     with tabs[0]:
-        # JOB AUTOMATION PORTAL
-        from job_automation_student_portal import job_automation_student_portal
-        job_automation_student_portal()
+        # JOB AUTOMATION - COMPLETE STUDENT DASHBOARD (VIEW ONLY)
+        from job_automation_student_view import job_automation_student_view
+        job_automation_student_view()
     
     with tabs[1]:
         # INTERVIEW PREP
@@ -6803,14 +6803,14 @@ elif tool == "⚙️ Administration" or tool == "⚙️ My Account":
                 st.error("⛔ Access Denied - Admin or Staff privileges required")
         
         with tabs[2]:
-            # JOB AUTOMATION DASHBOARD (Staff monitoring)
-            st.subheader("💼 Job Automation Dashboard")
+            # JOB AUTOMATION CONTROL CENTER (Staff controls everything)
+            st.subheader("💼 Job Automation Control Center")
             try:
-                from job_automation_staff_dashboard import job_automation_staff_dashboard
-                job_automation_staff_dashboard()
+                from job_automation_staff_setup import job_automation_staff_control
+                job_automation_staff_control()
             except Exception as e:
-                st.error(f"Error loading Job Automation Dashboard: {str(e)}")
-                st.info("💡 The job automation dashboard is being set up. Please try again later.")
+                st.error(f"Error loading Job Automation: {str(e)}")
+                st.info("💡 The job automation system is being set up. Please try again later.")
                 import traceback
                 with st.expander("🔍 Show Error Details"):
                     st.code(traceback.format_exc())
