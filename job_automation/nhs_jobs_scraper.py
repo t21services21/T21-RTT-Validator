@@ -120,8 +120,7 @@ def scrape_nhs_jobs(locations=None, bands=None, requires_sponsorship=False, keyw
                     'closing_date': closing_date,
                     'nhs_jobs_url': job_url,
                     'job_reference': job_reference,
-                    'discovered_at': datetime.now().isoformat(),
-                    'status': 'active'
+                    'discovered_at': datetime.now().isoformat()
                 }
                 
                 # Check if job already exists in database

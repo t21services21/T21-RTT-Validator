@@ -174,8 +174,7 @@ def render_manual_runner():
                 'closing_date': (datetime.now() + timedelta(days=14)).isoformat(),
                 'nhs_jobs_url': f'https://www.jobs.nhs.uk/test-{random_id}',
                 'job_reference': f'TEST-{timestamp}-{random_id}',
-                'discovered_at': datetime.now().isoformat(),
-                'status': 'active'
+                'discovered_at': datetime.now().isoformat()
             }
             
             try:

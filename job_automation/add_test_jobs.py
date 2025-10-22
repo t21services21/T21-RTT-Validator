@@ -33,8 +33,7 @@ def add_test_jobs():
             'nhs_jobs_url': 'https://www.jobs.nhs.uk/example-1',
             'job_reference': 'TEST-RTT-001',
             'description': 'We are looking for an enthusiastic RTT Validation Officer to join our team. You will be responsible for validating patient pathways and ensuring compliance with 18-week RTT standards.',
-            'discovered_at': datetime.now().isoformat(),
-            'status': 'active'
+            'discovered_at': datetime.now().isoformat()
         },
         {
             'title': 'Patient Pathway Coordinator',
@@ -49,8 +48,7 @@ def add_test_jobs():
             'nhs_jobs_url': 'https://www.jobs.nhs.uk/example-2',
             'job_reference': 'TEST-PATH-002',
             'description': 'Join our team as a Patient Pathway Coordinator. You will manage patient pathways from referral to treatment, ensuring timely care delivery.',
-            'discovered_at': datetime.now().isoformat(),
-            'status': 'active'
+            'discovered_at': datetime.now().isoformat()
         },
         {
             'title': 'NHS Administrator - RTT',
@@ -65,8 +63,7 @@ def add_test_jobs():
             'nhs_jobs_url': 'https://www.jobs.nhs.uk/example-3',
             'job_reference': 'TEST-ADMIN-003',
             'description': 'We need an NHS Administrator with knowledge of RTT pathways. You will support the booking team and validate patient pathway data.',
-            'discovered_at': datetime.now().isoformat(),
-            'status': 'active'
+            'discovered_at': datetime.now().isoformat()
         },
         {
             'title': 'Outpatient Booking Administrator',
@@ -81,8 +78,7 @@ def add_test_jobs():
             'nhs_jobs_url': 'https://www.jobs.nhs.uk/example-4',
             'job_reference': 'TEST-BOOK-004',
             'description': 'Join our busy outpatient booking team. Experience with NHS systems and understanding of RTT principles is essential.',
-            'discovered_at': datetime.now().isoformat(),
-            'status': 'active'
+            'discovered_at': datetime.now().isoformat()
         },
         {
             'title': 'Referral Management Coordinator',
@@ -97,8 +93,7 @@ def add_test_jobs():
             'nhs_jobs_url': 'https://www.jobs.nhs.uk/example-5',
             'job_reference': 'TEST-REF-005',
             'description': 'Coordinate referral management processes across the trust. Knowledge of RTT pathways and patient tracking systems required.',
-            'discovered_at': datetime.now().isoformat(),
-            'status': 'active'
+            'discovered_at': datetime.now().isoformat()
         }
     ]
     
