@@ -64,7 +64,30 @@ def render_manual_runner():
         st.markdown("### 1️⃣ Scrape Jobs")
         st.info("Find new NHS jobs matching student preferences")
         
-        if st.button("🔍 RUN SCRAPER", use_container_width=True, type="primary"):
+        # Try Selenium first
+        if st.button("🌐 RUN BROWSER SCRAPER (SELENIUM)", use_container_width=True, type="primary"):
+            with st.spinner("Opening browser and scraping NHS Jobs..."):
+                try:
+                    from job_automation.selenium_scraper import scrape_nhs_jobs_selenium
+                    
+                    jobs = scrape_nhs_jobs_selenium(
+                        keywords=['RTT', 'Validation', 'Administrator', 'Pathway'],
+                        location='London',
+                        max_jobs=20
+                    )
+                    
+                    if jobs and len(jobs) > 0:
+                        st.success(f"✅ Found {len(jobs)} new jobs using browser automation!")
+                        st.balloons()
+                        st.rerun()
+                    else:
+                        st.warning("⚠️ Browser scraper found 0 jobs. Try 'Add Test Jobs' instead.")
+                
+                except Exception as e:
+                    st.error(f"❌ Browser scraper error: {str(e)}")
+                    st.info("Selenium may not be installed. Use 'Add Test Jobs' for now.")
+        
+        if st.button("🔍 RUN BASIC SCRAPER", use_container_width=True):
             with st.spinner("Scraping NHS Jobs..."):
                 progress_container = st.empty()
                 
