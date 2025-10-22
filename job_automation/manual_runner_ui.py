@@ -150,69 +150,45 @@ def render_manual_runner():
     st.info(f"Current jobs in database: {current_jobs.count if current_jobs else 0}")
     
     if st.button("📦 ADD TEST JOBS", use_container_width=True):
-        with st.spinner("Adding 5 test NHS jobs..."):
+        with st.spinner("Adding test NHS jobs..."):
+            # Clear existing jobs first
             try:
-                # Add test jobs directly here
-                from datetime import datetime, timedelta
-                
-                test_jobs = [
-                    {
-                        'title': 'RTT Validation Officer',
-                        'trust': 'Royal London Hospital',
-                        'location': 'London',
-                        'band': 'Band 3',
-                        'salary_min': 24000,
-                        'salary_max': 28000,
-                        'closing_date': (datetime.now() + timedelta(days=14)).isoformat(),
-                        'nhs_jobs_url': 'https://www.jobs.nhs.uk/test-1',
-                        'job_reference': f'TEST-{datetime.now().timestamp()}-1',
-                        'discovered_at': datetime.now().isoformat(),
-                        'status': 'active'
-                    },
-                    {
-                        'title': 'Patient Pathway Coordinator',
-                        'trust': "Guy's Hospital",
-                        'location': 'London',
-                        'band': 'Band 4',
-                        'salary_min': 28000,
-                        'salary_max': 32000,
-                        'closing_date': (datetime.now() + timedelta(days=10)).isoformat(),
-                        'nhs_jobs_url': 'https://www.jobs.nhs.uk/test-2',
-                        'job_reference': f'TEST-{datetime.now().timestamp()}-2',
-                        'discovered_at': datetime.now().isoformat(),
-                        'status': 'active'
-                    },
-                    {
-                        'title': 'NHS Administrator - RTT',
-                        'trust': "King's College Hospital",
-                        'location': 'London',
-                        'band': 'Band 3',
-                        'salary_min': 24000,
-                        'salary_max': 27000,
-                        'closing_date': (datetime.now() + timedelta(days=7)).isoformat(),
-                        'nhs_jobs_url': 'https://www.jobs.nhs.uk/test-3',
-                        'job_reference': f'TEST-{datetime.now().timestamp()}-3',
-                        'discovered_at': datetime.now().isoformat(),
-                        'status': 'active'
-                    }
-                ]
-                
-                added = 0
-                for job in test_jobs:
-                    try:
-                        result = supabase.table('discovered_jobs').insert(job).execute()
-                        if result.data:
-                            added += 1
-                    except:
-                        pass
-                
-                if added > 0:
-                    st.success(f"✅ Added {added} test jobs! Now click 'RUN AI GENERATOR' to create applications.")
+                supabase.table('discovered_jobs').delete().neq('id', '00000000-0000-0000-0000-000000000000').execute()
+            except:
+                pass
+            
+            # Add fresh jobs
+            from datetime import datetime, timedelta
+            import random
+            
+            timestamp = str(int(datetime.now().timestamp()))
+            random_id = str(random.randint(1000, 9999))
+            
+            job_data = {
+                'title': 'RTT Validation Officer',
+                'trust': 'Royal London Hospital',
+                'location': 'London',
+                'band': 'Band 3',
+                'salary_min': 24000,
+                'salary_max': 28000,
+                'closing_date': (datetime.now() + timedelta(days=14)).isoformat(),
+                'nhs_jobs_url': f'https://www.jobs.nhs.uk/test-{random_id}',
+                'job_reference': f'TEST-{timestamp}-{random_id}',
+                'discovered_at': datetime.now().isoformat(),
+                'status': 'active'
+            }
+            
+            try:
+                result = supabase.table('discovered_jobs').insert(job_data).execute()
+                if result.data:
+                    st.success("✅ Added 1 test job! Now click 'RUN AI GENERATOR'")
+                    st.balloons()
                     st.rerun()
                 else:
-                    st.warning("⚠️ Test jobs may already exist. Try 'RUN AI GENERATOR' anyway.")
+                    st.error("❌ Failed to add job")
             except Exception as e:
-                st.error(f"❌ Error adding test jobs: {str(e)}")
+                st.error(f"❌ Database error: {str(e)}")
+                st.code(str(e))
     
     st.markdown("---")
     
