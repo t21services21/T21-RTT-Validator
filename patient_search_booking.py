@@ -70,14 +70,20 @@ def search_patient(search_term, search_type="nhs_number"):
         return []
 
 
-def get_patient_appointments(patient_id):
-    """Get all appointments for a patient"""
+def get_patient_appointments(patient_id_or_nhs):
+    """Get all appointments for a patient by patient_id or NHS number"""
     
     if not SUPABASE_AVAILABLE or supabase is None:
         return []
     
     try:
-        result = supabase.table('appointments').select('*').eq('patient_id', patient_id).order('appointment_date', desc=True).execute()
+        # Try searching by patient_id first
+        result = supabase.table('appointments').select('*').eq('patient_id', patient_id_or_nhs).order('appointment_date', desc=True).execute()
+        
+        # If no results, try searching by NHS number
+        if not result.data:
+            result = supabase.table('appointments').select('*').eq('nhs_number', patient_id_or_nhs).order('appointment_date', desc=True).execute()
+        
         return result.data if result.data else []
     except Exception as e:
         st.error(f"Error fetching appointments: {str(e)}")
@@ -207,7 +213,8 @@ def render_find_patient():
                 
                 with col2:
                     if st.button(f"📋 View Appointments", key=f"view_{patient.get('id')}", use_container_width=True):
-                        appointments = get_patient_appointments(patient.get('id'))
+                        # Pass NHS number to find appointments
+                        appointments = get_patient_appointments(patient.get('nhs_number'))
                         
                         if appointments:
                             st.markdown("#### 📅 Appointment History")
