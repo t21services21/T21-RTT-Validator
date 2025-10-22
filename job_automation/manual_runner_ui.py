@@ -64,8 +64,30 @@ def render_manual_runner():
         st.markdown("### 1️⃣ Scrape Jobs")
         st.info("Find new NHS jobs matching student preferences")
         
-        # Try Selenium first
-        if st.button("🌐 RUN BROWSER SCRAPER (SELENIUM)", use_container_width=True, type="primary"):
+        # Try RSS/API first (most reliable)
+        if st.button("📡 RUN RSS/API SCRAPER", use_container_width=True, type="primary"):
+            with st.spinner("Fetching jobs from NHS Jobs RSS/API..."):
+                try:
+                    from job_automation.rss_scraper import scrape_nhs_jobs_rss
+                    
+                    jobs = scrape_nhs_jobs_rss(
+                        keywords=['RTT', 'Validation', 'Administrator', 'Pathway'],
+                        location='London'
+                    )
+                    
+                    if jobs and len(jobs) > 0:
+                        st.success(f"✅ Found {len(jobs)} new jobs from RSS/API!")
+                        st.balloons()
+                        st.rerun()
+                    else:
+                        st.warning("⚠️ RSS/API found 0 jobs. Try 'Add Test Jobs' instead.")
+                
+                except Exception as e:
+                    st.error(f"❌ RSS/API error: {str(e)}")
+                    st.info("Try 'Add Test Jobs' for manual entry.")
+        
+        # Try Selenium as backup
+        if st.button("🌐 RUN BROWSER SCRAPER (SELENIUM)", use_container_width=True):
             with st.spinner("Opening browser and scraping NHS Jobs..."):
                 try:
                     from job_automation.selenium_scraper import scrape_nhs_jobs_selenium
