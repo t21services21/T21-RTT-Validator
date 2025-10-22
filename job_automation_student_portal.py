@@ -7,27 +7,31 @@ Fully functional with all features integrated
 import streamlit as st
 import os
 from datetime import datetime, timedelta
-from supabase import create_client
 from cryptography.fernet import Fernet
 import pandas as pd
 
-# Initialize Supabase
-supabase = create_client(
-    st.secrets["SUPABASE_URL"],
-    st.secrets["SUPABASE_KEY"]
-)
+# Import existing Supabase connection
+from supabase_database import supabase, SUPABASE_AVAILABLE
 
 def encrypt_password(password):
     """Encrypt Trac password"""
-    key = st.secrets["ENCRYPTION_KEY"].encode()
-    f = Fernet(key)
-    return f.encrypt(password.encode()).decode()
+    try:
+        key = st.secrets["ENCRYPTION_KEY"].encode()
+        f = Fernet(key)
+        return f.encrypt(password.encode()).decode()
+    except KeyError:
+        st.error("⚠️ Encryption key not configured. Please add ENCRYPTION_KEY to Streamlit secrets.")
+        return None
 
 def decrypt_password(encrypted_password):
     """Decrypt Trac password"""
-    key = st.secrets["ENCRYPTION_KEY"].encode()
-    f = Fernet(key)
-    return f.decrypt(encrypted_password.encode()).decode()
+    try:
+        key = st.secrets["ENCRYPTION_KEY"].encode()
+        f = Fernet(key)
+        return f.decrypt(encrypted_password.encode()).decode()
+    except KeyError:
+        st.error("⚠️ Encryption key not configured.")
+        return None
 
 def get_student_settings(student_id):
     """Get student automation settings"""
@@ -101,6 +105,12 @@ def job_automation_student_portal():
     
     st.title("💼 NHS Job Application Automation")
     st.markdown("**Automated job applications to NHS trusts - your personal AI assistant**")
+    
+    # Check if Supabase is available
+    if not SUPABASE_AVAILABLE or supabase is None:
+        st.error("⚠️ Job automation system is currently unavailable. Database connection not configured.")
+        st.info("Please contact support@t21services.co.uk for assistance.")
+        return
     
     # Get student ID from session
     if 'user_id' not in st.session_state:

@@ -6,16 +6,12 @@ Full control over all student job automation
 
 import streamlit as st
 from datetime import datetime, timedelta
-from supabase import create_client
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
-# Initialize Supabase
-supabase = create_client(
-    st.secrets["SUPABASE_URL"],
-    st.secrets["SUPABASE_KEY"]
-)
+# Import existing Supabase connection
+from supabase_database import supabase, SUPABASE_AVAILABLE
 
 def get_all_students_overview():
     """Get overview of all students with automation"""
@@ -87,6 +83,12 @@ def job_automation_staff_dashboard():
     
     st.title("📊 NHS Job Automation - Staff Dashboard")
     st.markdown("**Complete monitoring and management of student job applications**")
+    
+    # Check if Supabase is available
+    if not SUPABASE_AVAILABLE or supabase is None:
+        st.error("⚠️ Job automation system is currently unavailable. Database connection not configured.")
+        st.info("Please contact admin@t21services.co.uk for assistance.")
+        return
     
     # Navigation tabs
     tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
