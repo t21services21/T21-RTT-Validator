@@ -120,22 +120,24 @@ def job_automation_staff_control():
                         st.error("Please fill in all required fields!")
                     else:
                         try:
-                            # 1. Find or create student in users table
+                            # 1. Get student from existing users table
+                            # Staff enters email of EXISTING student account
                             user_check = supabase.table('users').select('id').eq('email', student_email).execute()
                             
                             if user_check.data:
                                 student_id = user_check.data[0]['id']
+                                
+                                # Check if this student already has automation set up
+                                existing_check = supabase.table('student_automation_settings').select('id').eq('student_id', student_id).execute()
+                                if existing_check.data:
+                                    st.warning(f"⚠️ Automation already exists for {student_email}")
+                                    st.info("Go to 'Manage Students' tab to edit existing settings")
+                                    return
                             else:
-                                # Create student account
-                                new_user = {
-                                    'email': student_email,
-                                    'first_name': first_name,
-                                    'last_name': last_name,
-                                    'role': 'student',
-                                    'created_at': datetime.now().isoformat()
-                                }
-                                result = supabase.table('users').insert(new_user).execute()
-                                student_id = result.data[0]['id']
+                                st.error(f"❌ Student account not found for {student_email}")
+                                st.info("💡 Student must create an account first before you can set up job automation")
+                                st.info("Ask student to register at the platform, then come back here to activate automation")
+                                return
                             
                             # 2. Encrypt password
                             encrypted_pwd = encrypt_password(trac_password)
@@ -243,21 +245,15 @@ def job_automation_staff_control():
                             try:
                                 status_text.text(f"Processing {row['first_name']} {row['last_name']}...")
                                 
-                                # Create user
+                                # Check if student account exists
                                 user_check = supabase.table('users').select('id').eq('email', row['email']).execute()
                                 
                                 if user_check.data:
                                     student_id = user_check.data[0]['id']
                                 else:
-                                    new_user = {
-                                        'email': row['email'],
-                                        'first_name': row['first_name'],
-                                        'last_name': row['last_name'],
-                                        'role': 'student',
-                                        'created_at': datetime.now().isoformat()
-                                    }
-                                    result = supabase.table('users').insert(new_user).execute()
-                                    student_id = result.data[0]['id']
+                                    st.warning(f"⚠️ Skipping {row['email']} - account not found. Student must register first.")
+                                    error_count += 1
+                                    continue
                                 
                                 # Encrypt password
                                 encrypted_pwd = encrypt_password(row['trac_password'])
