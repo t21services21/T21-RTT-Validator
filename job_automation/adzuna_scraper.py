@@ -42,36 +42,47 @@ def scrape_jobs_adzuna(keywords=None, location='London', max_results=20):
     
     discovered_jobs = []
     
-    # Build search query
-    search_query = ' '.join(keywords) if keywords else 'RTT Validation Administrator NHS'
+    # Build search query - use broader terms first
+    if keywords:
+        # Try each keyword separately, then combine
+        search_queries = [
+            'NHS ' + ' '.join(keywords[:2]),  # NHS + first 2 keywords
+            'NHS administrator',  # Broad NHS admin search
+            ' '.join(keywords),  # All keywords
+        ]
+    else:
+        search_queries = ['NHS administrator', 'NHS pathway', 'NHS validation']
     
-    # Adzuna API endpoint
-    url = f"https://api.adzuna.com/v1/api/jobs/gb/search/1"
+    # Try multiple search strategies
+    all_jobs = []
     
-    params = {
-        'app_id': ADZUNA_APP_ID,
-        'app_key': ADZUNA_API_KEY,
-        'results_per_page': max_results,
-        'what': search_query,
-        'where': location,
-        'category': 'healthcare-nursing-jobs',  # Filter for healthcare
-        'sort_by': 'date'
-    }
+    for search_query in search_queries:
+        # Adzuna API endpoint
+        url = f"https://api.adzuna.com/v1/api/jobs/gb/search/1"
+        
+        params = {
+            'app_id': ADZUNA_APP_ID,
+            'app_key': ADZUNA_API_KEY,
+            'results_per_page': max_results,
+            'what': search_query,
+            'where': location,
+            'category': 'healthcare-nursing-jobs',  # Filter for healthcare
+            'sort_by': 'date'
+        }
     
-    try:
-        print(f"🔍 Searching Adzuna for: {search_query} in {location}")
-        
-        response = requests.get(url, params=params, timeout=30)
-        
-        if response.status_code != 200:
-            print(f"❌ Adzuna API error: {response.status_code}")
-            print(f"Response: {response.text[:200]}")
-            return []
-        
-        data = response.json()
-        results = data.get('results', [])
-        
-        print(f"✅ Adzuna returned {len(results)} jobs")
+        try:
+            print(f"🔍 Searching Adzuna for: {search_query} in {location}")
+            
+            response = requests.get(url, params=params, timeout=30)
+            
+            if response.status_code != 200:
+                print(f"⚠️ Search '{search_query}' failed: {response.status_code}")
+                continue
+            
+            data = response.json()
+            results = data.get('results', [])
+            
+            print(f"✅ Found {len(results)} jobs for '{search_query}'")
         
         for job in results:
             try:
@@ -122,16 +133,24 @@ def scrape_jobs_adzuna(keywords=None, location='London', max_results=20):
                         discovered_jobs.append(result.data[0])
                         print(f"✅ Added: {title} at {company}")
             
-            except Exception as e:
-                print(f"⚠️ Error processing job: {str(e)}")
-                continue
+                except Exception as e:
+                    print(f"⚠️ Error processing job: {str(e)}")
+                    continue
+            
+            # Break if we found enough jobs
+            if len(discovered_jobs) >= max_results:
+                break
         
-        print(f"\n🎉 SUCCESS! Added {len(discovered_jobs)} jobs from Adzuna")
-        return discovered_jobs
+        except Exception as e:
+            print(f"⚠️ Search error for '{search_query}': {str(e)}")
+            continue
     
-    except Exception as e:
-        print(f"❌ Adzuna API error: {str(e)}")
-        return []
+    if discovered_jobs:
+        print(f"\n🎉 SUCCESS! Added {len(discovered_jobs)} jobs from Adzuna")
+    else:
+        print(f"\n❌ No jobs found. Tried {len(search_queries)} different searches.")
+    
+    return discovered_jobs
 
 if __name__ == "__main__":
     print("🚀 Adzuna Job Scraper")
