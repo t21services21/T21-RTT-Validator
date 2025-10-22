@@ -6020,12 +6020,17 @@ elif tool == "🔒 Information Governance":
 
 elif tool == "💼 Career Development":
     st.header("💼 Career Development")
-    st.info("Interview preparation and CV building - Use tabs below for full features")
+    st.info("Interview preparation, CV building, and automated job applications")
     
-    tabs = st.tabs(["💼 Interview Prep", "📄 CV Builder"])
+    tabs = st.tabs(["🤖 Job Automation", "💼 Interview Prep", "📄 CV Builder"])
     
     with tabs[0]:
-        # LOAD FULL INTERVIEW PREP FROM LINE 3210
+        # JOB AUTOMATION PORTAL
+        from job_automation_student_portal import job_automation_student_portal
+        job_automation_student_portal()
+    
+    with tabs[1]:
+        # INTERVIEW PREP
         st.markdown("**Career support for ALL T21 students!** Prepare for ANY job interview with AI-powered question generator!")
         
         st.info("""📋 **Supports ALL career paths:**
@@ -6327,7 +6332,7 @@ Just paste ANY job description here!"""
                     
                     st.success("💪 **You've got this! Good luck with your interview!**")
     
-    with tabs[1]:
+    with tabs[2]:
         # CV BUILDER - FULL VERSION
         st.subheader("📄 Professional CV Builder")
         st.markdown("**Create an ATS-optimized, professional CV in minutes!**")
@@ -6651,7 +6656,8 @@ elif tool == "⚙️ Administration" or tool == "⚙️ My Account":
         st.warning("🔴 **Super Admin Access:** You have full platform control including user termination and platform settings")
         tabs = st.tabs([
             "⚙️ My Account", 
-            "🔧 Admin Panel", 
+            "🔧 Admin Panel",
+            "💼 Job Automation Dashboard",
             "📊 Learning Analytics",
             "🏥 Trust AI Settings",
             "📋 Exam Management",
@@ -6665,6 +6671,7 @@ elif tool == "⚙️ Administration" or tool == "⚙️ My Account":
         tabs = st.tabs([
             "⚙️ My Account", 
             "🔧 Admin Panel",
+            "💼 Job Automation Dashboard",
             "📊 Learning Analytics",
             "📋 Exam Management"
         ])
@@ -6674,7 +6681,8 @@ elif tool == "⚙️ Administration" or tool == "⚙️ My Account":
         st.info("Account settings and limited admin tools")
         tabs = st.tabs([
             "⚙️ My Account", 
-            "🔧 Admin Panel", 
+            "🔧 Admin Panel",
+            "💼 Job Automation Dashboard",
             "📊 Learning Analytics"
         ])
     
@@ -6795,53 +6803,70 @@ elif tool == "⚙️ Administration" or tool == "⚙️ My Account":
                 st.error("⛔ Access Denied - Admin or Staff privileges required")
         
         with tabs[2]:
-            # NEW: LEARNING ANALYTICS DASHBOARD
-            st.subheader("📊 Learning Analytics Dashboard")
+            # JOB AUTOMATION DASHBOARD (Staff monitoring)
+            st.subheader("💼 Job Automation Dashboard")
             try:
-                from learning_analytics_dashboard import render_learning_analytics_dashboard
-                render_learning_analytics_dashboard()
+                from job_automation_staff_dashboard import job_automation_staff_dashboard
+                job_automation_staff_dashboard()
             except Exception as e:
-                st.error(f"Error loading Learning Analytics: {str(e)}")
-                st.info("💡 The learning analytics dashboard is being set up. Please try again later.")
+                st.error(f"Error loading Job Automation Dashboard: {str(e)}")
+                st.info("💡 The job automation dashboard is being set up. Please try again later.")
                 import traceback
                 with st.expander("🔍 Show Error Details"):
                     st.code(traceback.format_exc())
         
-        with tabs[3]:
-            # Trust AI Customization (Sigma-beating feature!)
-            st.subheader("🏥 Trust AI Customization")
-            try:
-                from trust_customization_ui import render_trust_customization
-                render_trust_customization()
-            except Exception as e:
-                st.error(f"Error loading Trust AI Customization: {str(e)}")
-                st.info("💡 This feature is being updated. Please try again later.")
+        if len(tabs) > 3:
+            with tabs[3]:
+                # LEARNING ANALYTICS DASHBOARD
+                st.subheader("📊 Learning Analytics Dashboard")
+                try:
+                    from learning_analytics_dashboard import render_learning_analytics_dashboard
+                    render_learning_analytics_dashboard()
+                except Exception as e:
+                    st.error(f"Error loading Learning Analytics: {str(e)}")
+                    st.info("💡 The learning analytics dashboard is being set up. Please try again later.")
+                    import traceback
+                    with st.expander("🔍 Show Error Details"):
+                        st.code(traceback.format_exc())
         
-        with tabs[4]:
-            # NEW: Exam Management for Tutors/Admin
-            st.subheader("📋 Exam Management")
-            
-            # Check if user has admin/tutor privileges
-            user_role_check = getattr(st.session_state.get('user_license'), 'role', 'student')
-            if user_role_check in ['admin', 'staff', 'tutor', 'tier2', 'tier3']:
-                from exam_management_admin import render_exam_management_admin
-                render_exam_management_admin()
-            else:
-                st.warning("⚠️ Exam Management is only available to tutors and administrators")
-                st.info("Contact your administrator if you need access to exam management features")
+        if len(tabs) > 4:
+            with tabs[4]:
+                # Trust AI Customization (Sigma-beating feature!)
+                st.subheader("🏥 Trust AI Customization")
+                try:
+                    from trust_customization_ui import render_trust_customization
+                    render_trust_customization()
+                except Exception as e:
+                    st.error(f"Error loading Trust AI Customization: {str(e)}")
+                    st.info("💡 This feature is being updated. Please try again later.")
         
-        with tabs[5]:
-            # AI Document Training System
-            st.subheader("🤖 AI Document Training")
-            
-            # Check if user has admin/staff privileges
-            user_role_check = getattr(st.session_state.get('user_license'), 'role', 'student')
-            if user_role_check in ['admin', 'staff', 'tutor', 'tier2', 'tier3']:
-                from ai_document_trainer import render_ai_document_trainer
-                render_ai_document_trainer()
-            else:
-                st.warning("⚠️ AI Document Training is only available to staff and administrators")
-                st.info("Upload RTT policies and procedures to train the AI on your Trust's specific content")
+        if len(tabs) > 5:
+            with tabs[5]:
+                # Exam Management for Tutors/Admin
+                st.subheader("📋 Exam Management")
+                
+                # Check if user has admin/tutor privileges
+                user_role_check = getattr(st.session_state.get('user_license'), 'role', 'student')
+                if user_role_check in ['admin', 'staff', 'tutor', 'tier2', 'tier3']:
+                    from exam_management_admin import render_exam_management_admin
+                    render_exam_management_admin()
+                else:
+                    st.warning("⚠️ Exam Management is only available to tutors and administrators")
+                    st.info("Contact your administrator if you need access to exam management features")
+        
+        if len(tabs) > 6:
+            with tabs[6]:
+                # AI Document Training System
+                st.subheader("🤖 AI Document Training")
+                
+                # Check if user has admin/staff privileges
+                user_role_check = getattr(st.session_state.get('user_license'), 'role', 'student')
+                if user_role_check in ['admin', 'staff', 'tutor', 'tier2', 'tier3']:
+                    from ai_document_trainer import render_ai_document_trainer
+                    render_ai_document_trainer()
+                else:
+                    st.warning("⚠️ AI Document Training is only available to staff and administrators")
+                    st.info("Upload RTT policies and procedures to train the AI on your Trust's specific content")
 
 elif tool == "✅ Task Management":
     st.header("✅ Task Management")
