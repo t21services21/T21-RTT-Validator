@@ -41,13 +41,14 @@ def job_automation_staff_control():
         st.info("👥 **STAFF ACCESS:** You can manage students and monitor job applications")
     
     # Main tabs
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
         "➕ Add Students",
         "👥 Manage Students",
         "📝 Application Queue",
         "🎤 Interviews",
         "📊 Analytics",
-        "⚙️ System Settings"
+        "⚙️ System Settings",
+        "🎮 Manual Runner"
     ])
     
     # ============================================================================
@@ -309,7 +310,7 @@ def job_automation_staff_control():
         
         try:
             # Get all students with automation
-            students = supabase.table('student_automation_settings').select('*, users(email, first_name, last_name)').execute()
+            students = supabase.table('student_automation_settings').select('*, users(email)').execute()
             
             if not students.data:
                 st.info("No students added yet. Go to 'Add Students' tab to get started!")
@@ -319,7 +320,7 @@ def job_automation_staff_control():
                 for student in students.data:
                     user = student.get('users', {})
                     
-                    with st.expander(f"👤 {user.get('first_name', '')} {user.get('last_name', '')} - {user.get('email', '')}"):
+                    with st.expander(f"👤 {user.get('email', 'Unknown Student')}"):
                         col1, col2, col3 = st.columns(3)
                         
                         with col1:
@@ -360,23 +361,295 @@ def job_automation_staff_control():
             st.error(f"Error loading students: {str(e)}")
     
     # ============================================================================
-    # TAB 3-6: Use existing staff dashboard functionality
+    # TAB 3: APPLICATION QUEUE
     # ============================================================================
     with tab3:
         st.header("📝 Application Queue")
-        st.info("Application monitoring - Coming from main staff dashboard")
+        
+        try:
+            # Get all queued and processing applications
+            apps = supabase.table('applications').select('*, users(email), discovered_jobs(*)').in_('status', ['queued', 'processing']).order('created_at', desc=True).execute()
+            
+            if not apps.data:
+                st.info("📭 No applications in queue. Applications will appear here once the backend scraper finds jobs!")
+                st.markdown("""
+                ### How it works:
+                1. Backend scraper finds matching NHS jobs (every 6 hours)
+                2. AI generates supporting information (every hour)
+                3. Applications appear here in "queued" status
+                4. Auto-submitter submits them to NHS Trac (every 30 minutes)
+                5. Status changes to "submitted"
+                
+                **Note:** Backend processes are not running yet. See documentation for setup.
+                """)
+            else:
+                st.success(f"📊 **{len(apps.data)}** applications in queue")
+                
+                for app in apps.data:
+                    user = app.get('users', {})
+                    job = app.get('discovered_jobs', {})
+                    
+                    status_emoji = {
+                        'queued': '⏳',
+                        'processing': '⚙️',
+                        'submitted': '✅',
+                        'failed': '❌'
+                    }.get(app.get('status', 'unknown'), '❓')
+                    
+                    with st.expander(f"{status_emoji} {user.get('email', 'Unknown')} → {job.get('title', 'Unknown Job')}"):
+                        col1, col2 = st.columns(2)
+                        
+                        with col1:
+                            st.write(f"**Student:** {user.get('email', 'Unknown')}")
+                            st.write(f"**Job:** {job.get('title', 'Unknown')}")
+                            st.write(f"**Trust:** {job.get('trust', 'Unknown')}")
+                            st.write(f"**Location:** {job.get('location', 'Unknown')}")
+                            st.write(f"**Status:** {app.get('status', 'Unknown').upper()}")
+                        
+                        with col2:
+                            st.write(f"**Created:** {app.get('created_at', 'Unknown')[:10]}")
+                            st.write(f"**Priority:** {app.get('priority', 'normal')}")
+                            st.write(f"**Attempts:** {app.get('attempts', 0)}")
+                            
+                            if job.get('closing_date'):
+                                st.write(f"**Closes:** {job.get('closing_date')[:10]}")
+                        
+                        if app.get('ai_supporting_information'):
+                            with st.expander("📄 View AI-Generated Content"):
+                                st.text_area("Supporting Information", app.get('ai_supporting_information'), height=200, disabled=True)
+        
+        except Exception as e:
+            st.error(f"Error loading application queue: {str(e)}")
     
+    # ============================================================================
+    # TAB 4: INTERVIEWS
+    # ============================================================================
     with tab4:
-        st.header("🎤 Interviews")
-        st.info("Interview calendar - Coming from main staff dashboard")
+        st.header("🎤 Interview Calendar")
+        
+        try:
+            # Get all interviews
+            interviews = supabase.table('interviews').select('*, users(email), discovered_jobs(*)').order('interview_date', desc=True).execute()
+            
+            if not interviews.data:
+                st.info("📭 No interviews scheduled yet. Once students get interview invitations, they'll appear here!")
+            else:
+                st.success(f"🎉 **{len(interviews.data)}** interview(s) scheduled!")
+                
+                # Group by status
+                scheduled = [i for i in interviews.data if i.get('status') in ['scheduled', 'confirmed']]
+                completed = [i for i in interviews.data if i.get('status') == 'completed']
+                
+                tab_upcoming, tab_completed = st.tabs([f"📅 Upcoming ({len(scheduled)})", f"✅ Completed ({len(completed)})"])
+                
+                with tab_upcoming:
+                    if scheduled:
+                        for interview in scheduled:
+                            user = interview.get('users', {})
+                            job = interview.get('discovered_jobs', {})
+                            
+                            with st.expander(f"🎤 {user.get('email', 'Unknown')} - {job.get('title', 'Unknown')}"):
+                                col1, col2 = st.columns(2)
+                                
+                                with col1:
+                                    st.write(f"**Student:** {user.get('email', 'Unknown')}")
+                                    st.write(f"**Job:** {job.get('title', 'Unknown')}")
+                                    st.write(f"**Trust:** {job.get('trust', 'Unknown')}")
+                                    st.write(f"**Date:** {interview.get('interview_date', 'TBC')[:10] if interview.get('interview_date') else 'TBC'}")
+                                    st.write(f"**Time:** {interview.get('interview_time', 'TBC')}")
+                                
+                                with col2:
+                                    st.write(f"**Format:** {interview.get('interview_format', 'Not specified')}")
+                                    st.write(f"**Location:** {interview.get('interview_location', 'TBC')}")
+                                    st.write(f"**Status:** {interview.get('status', 'Unknown').upper()}")
+                    else:
+                        st.info("No upcoming interviews")
+                
+                with tab_completed:
+                    if completed:
+                        for interview in completed:
+                            user = interview.get('users', {})
+                            job = interview.get('discovered_jobs', {})
+                            
+                            outcome = interview.get('outcome', 'pending')
+                            if outcome == 'offered':
+                                outcome_emoji = "🎉"
+                            elif outcome == 'rejected':
+                                outcome_emoji = "❌"
+                            else:
+                                outcome_emoji = "⏳"
+                            
+                            with st.expander(f"{outcome_emoji} {user.get('email', 'Unknown')} - {job.get('title', 'Unknown')}"):
+                                st.write(f"**Outcome:** {outcome.upper()}")
+                                st.write(f"**Date:** {interview.get('interview_date', 'Unknown')[:10] if interview.get('interview_date') else 'Unknown'}")
+                    else:
+                        st.info("No completed interviews yet")
+        
+        except Exception as e:
+            st.error(f"Error loading interviews: {str(e)}")
     
+    # ============================================================================
+    # TAB 5: ANALYTICS
+    # ============================================================================
     with tab5:
-        st.header("📊 Analytics")
-        st.info("Analytics and reporting - Coming from main staff dashboard")
+        st.header("📊 Analytics & Reporting")
+        
+        try:
+            # Get overview statistics
+            total_students = supabase.table('student_automation_settings').select('id', count='exact').execute()
+            total_apps = supabase.table('applications').select('id', count='exact').execute()
+            total_interviews = supabase.table('interviews').select('id', count='exact').execute()
+            
+            # Metrics
+            col1, col2, col3, col4 = st.columns(4)
+            
+            with col1:
+                st.metric("👥 Active Students", total_students.count if total_students else 0)
+            
+            with col2:
+                st.metric("📬 Total Applications", total_apps.count if total_apps else 0)
+            
+            with col3:
+                st.metric("🎤 Total Interviews", total_interviews.count if total_interviews else 0)
+            
+            with col4:
+                if total_apps.count and total_apps.count > 0:
+                    success_rate = (total_interviews.count / total_apps.count) * 100 if total_interviews else 0
+                    st.metric("📈 Success Rate", f"{success_rate:.1f}%")
+                else:
+                    st.metric("📈 Success Rate", "0.0%")
+            
+            st.markdown("---")
+            
+            st.info("""
+            ### 📊 Full Analytics Coming Soon
+            
+            This section will include:
+            - 📈 Application trends over time
+            - 🎯 Success rates by location/trust
+            - 📊 Student performance rankings
+            - 🏥 Most successful job types
+            - 📅 Interview conversion rates
+            - 💼 Offer acceptance rates
+            
+            **Note:** Analytics require historical data. Once applications start flowing, charts and insights will appear here!
+            """)
+        
+        except Exception as e:
+            st.error(f"Error loading analytics: {str(e)}")
     
+    # ============================================================================
+    # TAB 6: SYSTEM SETTINGS
+    # ============================================================================
     with tab6:
         st.header("⚙️ System Settings")
-        st.info("Global system configuration - Coming from main staff dashboard")
+        
+        st.warning("🔐 **Super Admin Only:** These settings affect the entire job automation system")
+        
+        try:
+            # Get current system config
+            config = supabase.table('system_config').select('*').execute()
+            
+            if config.data:
+                current_config = config.data[0]
+            else:
+                current_config = {
+                    'scraper_interval_hours': 6,
+                    'max_concurrent_applications': 10,
+                    'rate_limit_per_hour': 50,
+                    'ai_model': 'gpt-4',
+                    'enable_auto_submit': True,
+                    'enable_interview_detection': True
+                }
+            
+            st.subheader("🤖 Automation Settings")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                scraper_interval = st.number_input(
+                    "Scraper Interval (hours)",
+                    min_value=1,
+                    max_value=24,
+                    value=current_config.get('scraper_interval_hours', 6),
+                    help="How often to scrape NHS Jobs for new positions"
+                )
+                
+                max_concurrent = st.number_input(
+                    "Max Concurrent Applications",
+                    min_value=1,
+                    max_value=50,
+                    value=current_config.get('max_concurrent_applications', 10),
+                    help="Maximum applications to process simultaneously"
+                )
+            
+            with col2:
+                rate_limit = st.number_input(
+                    "Rate Limit (per hour)",
+                    min_value=10,
+                    max_value=200,
+                    value=current_config.get('rate_limit_per_hour', 50),
+                    help="Maximum requests to NHS Jobs per hour"
+                )
+                
+                ai_model = st.selectbox(
+                    "AI Model",
+                    ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"],
+                    index=0 if current_config.get('ai_model') == 'gpt-4' else 2
+                )
+            
+            st.markdown("---")
+            
+            st.subheader("🔧 Feature Toggles")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                enable_auto_submit = st.checkbox(
+                    "Enable Auto-Submit",
+                    value=current_config.get('enable_auto_submit', True),
+                    help="Automatically submit applications to NHS Trac"
+                )
+            
+            with col2:
+                enable_interview_detection = st.checkbox(
+                    "Enable Interview Detection",
+                    value=current_config.get('enable_interview_detection', True),
+                    help="Automatically detect interview invitations from emails"
+                )
+            
+            st.markdown("---")
+            
+            if st.button("💾 Save System Settings", type="primary"):
+                new_config = {
+                    'scraper_interval_hours': scraper_interval,
+                    'max_concurrent_applications': max_concurrent,
+                    'rate_limit_per_hour': rate_limit,
+                    'ai_model': ai_model,
+                    'enable_auto_submit': enable_auto_submit,
+                    'enable_interview_detection': enable_interview_detection,
+                    'updated_at': datetime.now().isoformat()
+                }
+                
+                if config.data:
+                    # Update existing
+                    supabase.table('system_config').update(new_config).eq('id', config.data[0]['id']).execute()
+                else:
+                    # Insert new
+                    supabase.table('system_config').insert(new_config).execute()
+                
+                st.success("✅ System settings saved!")
+                st.rerun()
+        
+        except Exception as e:
+            st.error(f"Error loading system settings: {str(e)}")
+    
+    # ============================================================================
+    # TAB 7: MANUAL RUNNER
+    # ============================================================================
+    with tab7:
+        from job_automation.manual_runner_ui import render_manual_runner
+        render_manual_runner()
 
 if __name__ == "__main__":
     job_automation_staff_control()
