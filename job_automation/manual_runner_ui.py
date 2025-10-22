@@ -39,12 +39,18 @@ def render_manual_runner():
         st.metric("👥 Active Students", students.count if students else 0)
     
     with col2:
+        # Refresh job count
+        jobs = supabase.table('discovered_jobs').select('id', count='exact').execute()
         st.metric("💼 Discovered Jobs", jobs.count if jobs else 0)
     
     with col3:
+        # Refresh app count
+        apps = supabase.table('applications').select('id', count='exact').execute()
         st.metric("📝 Total Applications", apps.count if apps else 0)
     
     with col4:
+        # Refresh submitted count
+        submitted = supabase.table('applications').select('id', count='exact').eq('status', 'submitted').execute()
         st.metric("✅ Submitted", submitted.count if submitted else 0)
     
     st.markdown("---")
@@ -84,34 +90,42 @@ def render_manual_runner():
         st.markdown("### 2️⃣ Generate Applications")
         st.info("Use AI to create supporting information")
         
+        # Check if there are jobs to apply for
+        jobs_count = supabase.table('discovered_jobs').select('id', count='exact').execute()
+        if jobs_count.count == 0:
+            st.warning("⚠️ No jobs in database. Add test jobs first!")
+        
         if st.button("🤖 RUN AI GENERATOR", use_container_width=True, type="primary"):
-            with st.spinner("Generating AI applications..."):
-                progress_container = st.empty()
-                
-                with progress_container.container():
-                    st.write("🤖 Generating applications with GPT-4...")
+            if jobs_count.count == 0:
+                st.error("❌ No jobs to apply for! Click 'ADD TEST JOBS' first.")
+            else:
+                with st.spinner("Generating AI applications..."):
+                    progress_container = st.empty()
                     
-                    try:
-                        # Check OpenAI key
-                        api_key = st.secrets.get("OPENAI_API_KEY")
-                        if not api_key:
-                            st.error("❌ OpenAI API key not configured!")
-                            st.info("Add OPENAI_API_KEY to Streamlit secrets")
-                            return
+                    with progress_container.container():
+                        st.write("🤖 Generating applications with GPT-4...")
                         
-                        # Run generator
-                        generate_applications_for_all_students()
+                        try:
+                            # Check OpenAI key
+                            api_key = st.secrets.get("OPENAI_API_KEY")
+                            if not api_key:
+                                st.error("❌ OpenAI API key not configured!")
+                                st.info("Add OPENAI_API_KEY to Streamlit secrets")
+                                return
+                            
+                            # Run generator
+                            generate_applications_for_all_students()
+                            
+                            # Refresh counts
+                            apps_after = supabase.table('applications').select('id', count='exact').execute()
+                            new_apps = (apps_after.count if apps_after else 0) - (apps.count if apps else 0)
+                            
+                            st.success(f"✅ Generation complete! Created {new_apps} applications")
+                            st.balloons()
+                            st.rerun()
                         
-                        # Refresh counts
-                        apps_after = supabase.table('applications').select('id', count='exact').execute()
-                        new_apps = (apps_after.count if apps_after else 0) - (apps.count if apps else 0)
-                        
-                        st.success(f"✅ Generation complete! Created {new_apps} applications")
-                        st.balloons()
-                        st.rerun()
-                    
-                    except Exception as e:
-                        st.error(f"❌ Generation failed: {str(e)}")
+                        except Exception as e:
+                            st.error(f"❌ Generation failed: {str(e)}")
     
     with col3:
         st.markdown("### 3️⃣ Submit to Trac")
@@ -131,15 +145,74 @@ def render_manual_runner():
     st.subheader("🧪 Test Data (For Demo/Testing)")
     st.info("Add fake NHS jobs to test the system without scraping")
     
+    # Show current job count
+    current_jobs = supabase.table('discovered_jobs').select('id', count='exact').execute()
+    st.info(f"Current jobs in database: {current_jobs.count if current_jobs else 0}")
+    
     if st.button("📦 ADD TEST JOBS", use_container_width=True):
         with st.spinner("Adding 5 test NHS jobs..."):
             try:
-                from job_automation.add_test_jobs import add_test_jobs
-                add_test_jobs()
-                st.success("✅ Added 5 test jobs! Now click 'RUN AI GENERATOR' to create applications.")
-                st.rerun()
+                # Add test jobs directly here
+                from datetime import datetime, timedelta
+                
+                test_jobs = [
+                    {
+                        'title': 'RTT Validation Officer',
+                        'trust': 'Royal London Hospital',
+                        'location': 'London',
+                        'band': 'Band 3',
+                        'salary_min': 24000,
+                        'salary_max': 28000,
+                        'closing_date': (datetime.now() + timedelta(days=14)).isoformat(),
+                        'nhs_jobs_url': 'https://www.jobs.nhs.uk/test-1',
+                        'job_reference': f'TEST-{datetime.now().timestamp()}-1',
+                        'discovered_at': datetime.now().isoformat(),
+                        'status': 'active'
+                    },
+                    {
+                        'title': 'Patient Pathway Coordinator',
+                        'trust': "Guy's Hospital",
+                        'location': 'London',
+                        'band': 'Band 4',
+                        'salary_min': 28000,
+                        'salary_max': 32000,
+                        'closing_date': (datetime.now() + timedelta(days=10)).isoformat(),
+                        'nhs_jobs_url': 'https://www.jobs.nhs.uk/test-2',
+                        'job_reference': f'TEST-{datetime.now().timestamp()}-2',
+                        'discovered_at': datetime.now().isoformat(),
+                        'status': 'active'
+                    },
+                    {
+                        'title': 'NHS Administrator - RTT',
+                        'trust': "King's College Hospital",
+                        'location': 'London',
+                        'band': 'Band 3',
+                        'salary_min': 24000,
+                        'salary_max': 27000,
+                        'closing_date': (datetime.now() + timedelta(days=7)).isoformat(),
+                        'nhs_jobs_url': 'https://www.jobs.nhs.uk/test-3',
+                        'job_reference': f'TEST-{datetime.now().timestamp()}-3',
+                        'discovered_at': datetime.now().isoformat(),
+                        'status': 'active'
+                    }
+                ]
+                
+                added = 0
+                for job in test_jobs:
+                    try:
+                        result = supabase.table('discovered_jobs').insert(job).execute()
+                        if result.data:
+                            added += 1
+                    except:
+                        pass
+                
+                if added > 0:
+                    st.success(f"✅ Added {added} test jobs! Now click 'RUN AI GENERATOR' to create applications.")
+                    st.rerun()
+                else:
+                    st.warning("⚠️ Test jobs may already exist. Try 'RUN AI GENERATOR' anyway.")
             except Exception as e:
-                st.error(f"❌ Error: {str(e)}")
+                st.error(f"❌ Error adding test jobs: {str(e)}")
     
     st.markdown("---")
     
