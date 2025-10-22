@@ -41,14 +41,15 @@ def job_automation_staff_control():
         st.info("👥 **STAFF ACCESS:** You can manage students and monitor job applications")
     
     # Main tabs
-    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
         "➕ Add Students",
         "👥 Manage Students",
         "📝 Application Queue",
         "🎤 Interviews",
         "📊 Analytics",
         "⚙️ System Settings",
-        "🎮 Manual Runner"
+        "🎮 Manual Runner",
+        "🧪 SIMPLE TEST"
     ])
     
     # ============================================================================
@@ -657,6 +658,13 @@ def job_automation_staff_control():
             st.info("Packages may still be installing. Refresh in 1 minute.")
         except Exception as e:
             st.error(f"Error loading Manual Runner: {str(e)}")
+    
+    # ============================================================================
+    # TAB 8: SIMPLE TEST
+    # ============================================================================
+    with tab8:
+        from job_automation.simple_test import simple_automation_test
+        simple_automation_test()
 
 if __name__ == "__main__":
     job_automation_staff_control()
