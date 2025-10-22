@@ -27,21 +27,28 @@ def search_patient(search_term, search_type="nhs_number"):
         clean_search = search_term.replace(' ', '').strip()
         
         if search_type == "nhs_number":
-            # Try multiple search strategies for NHS number
-            # 1. Search with cleaned number (no spaces)
-            result = supabase.table('patients').select('*').ilike('nhs_number', f'%{clean_search}%').execute()
+            # Format the search term with spaces (NHS format: XXX XXX XXXX)
+            if len(clean_search) == 10:
+                # Format as: 211 043 8788
+                formatted_nhs = f"{clean_search[0:3]} {clean_search[3:6]} {clean_search[6:10]}"
+            else:
+                formatted_nhs = search_term
             
-            # 2. If no results, try with original search term (might have spaces)
+            # Try multiple search strategies for NHS number
+            # 1. Search with formatted NHS number (with spaces)
+            result = supabase.table('patients').select('*').eq('nhs_number', formatted_nhs).execute()
+            
+            # 2. If no results, try partial match with formatted number
+            if not result.data:
+                result = supabase.table('patients').select('*').ilike('nhs_number', f'%{formatted_nhs}%').execute()
+            
+            # 3. If still no results, try with cleaned number (no spaces)
+            if not result.data:
+                result = supabase.table('patients').select('*').ilike('nhs_number', f'%{clean_search}%').execute()
+            
+            # 4. If still no results, try with original search term
             if not result.data:
                 result = supabase.table('patients').select('*').ilike('nhs_number', f'%{search_term}%').execute()
-            
-            # 3. If still no results, try exact match without wildcards
-            if not result.data:
-                result = supabase.table('patients').select('*').eq('nhs_number', search_term).execute()
-            
-            # 4. If still no results, try exact match with cleaned number
-            if not result.data:
-                result = supabase.table('patients').select('*').eq('nhs_number', clean_search).execute()
                 
         elif search_type == "name":
             # Search by name - try first name first, then last name if no results
