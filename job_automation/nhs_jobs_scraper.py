@@ -30,16 +30,17 @@ def scrape_nhs_jobs(locations=None, bands=None, requires_sponsorship=False, keyw
     
     discovered_jobs = []
     
-    # NHS Jobs search URL
-    base_url = "https://www.jobs.nhs.uk/candidate/search/results"
+    # NHS Jobs API endpoint (JSON response - easier to parse!)
+    base_url = "https://www.jobs.nhs.uk/api/v1/jobs"
     
-    # Build search parameters
+    # Build search parameters for API
+    search_keywords = keywords if keywords else ['RTT', 'Validation', 'Administrator', 'Pathway', 'Coordinator', 'Booking']
+    
     params = {
-        'keyword': ' OR '.join(keywords) if keywords else 'RTT Validation Administrator Patient Pathway Coordinator',
-        'location': ', '.join(locations) if locations else '',
-        'distance': '20',
-        'salary_from': '',
-        'salary_to': '',
+        'keyword': ' '.join(search_keywords),
+        'location': locations[0] if locations else 'London',
+        'distance': 20,
+        'pageSize': 50,
         'sort': 'publicationDateDesc'
     }
     
@@ -48,57 +49,52 @@ def scrape_nhs_jobs(locations=None, bands=None, requires_sponsorship=False, keyw
         print(f"📍 Locations: {', '.join(locations) if locations else 'All'}")
         print(f"🏥 Bands: {', '.join(bands) if bands else 'All'}")
         
-        # Make request to NHS Jobs
+        # Make request to NHS Jobs API
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept': 'application/json'
         }
         
         response = requests.get(base_url, params=params, headers=headers, timeout=30)
         
         if response.status_code != 200:
             print(f"❌ Failed to fetch NHS Jobs: {response.status_code}")
+            print(f"Response: {response.text[:200]}")
             return []
         
-        soup = BeautifulSoup(response.content, 'html.parser')
+        # Parse JSON response
+        try:
+            data = response.json()
+            job_listings = data.get('jobs', [])
+            print(f"📊 Found {len(job_listings)} potential jobs")
+        except Exception as e:
+            print(f"❌ Failed to parse JSON: {str(e)}")
+            return []
         
-        # Find all job listings
-        job_listings = soup.find_all('article', class_='search-result')
-        
-        print(f"📊 Found {len(job_listings)} potential jobs")
-        
-        for listing in job_listings:
+        for job in job_listings:
             try:
-                # Extract job details
-                title_elem = listing.find('h3', class_='search-result__heading')
-                title = title_elem.get_text(strip=True) if title_elem else 'Unknown'
+                # Extract job details from JSON
+                title = job.get('title', 'Unknown')
+                trust = job.get('employer', {}).get('name', 'Unknown')
+                location = job.get('location', {}).get('name', 'Unknown')
                 
-                trust_elem = listing.find('span', class_='search-result__employer')
-                trust = trust_elem.get_text(strip=True) if trust_elem else 'Unknown'
-                
-                location_elem = listing.find('span', class_='search-result__location')
-                location = location_elem.get_text(strip=True) if location_elem else 'Unknown'
-                
-                salary_elem = listing.find('span', class_='search-result__salary')
-                salary_text = salary_elem.get_text(strip=True) if salary_elem else ''
-                
-                # Parse salary
+                # Get salary
+                salary_text = job.get('salary', '')
                 salary_min, salary_max = parse_salary(salary_text)
                 
-                # Extract band from title or salary text
+                # Extract band
                 band = extract_band(title, salary_text)
                 
                 # Get job URL
-                link_elem = listing.find('a', class_='search-result__link')
-                job_url = 'https://www.jobs.nhs.uk' + link_elem['href'] if link_elem else ''
+                job_id = job.get('id', '')
+                job_url = f'https://www.jobs.nhs.uk/candidate/jobadvert/{job_id}' if job_id else ''
                 
                 # Get closing date
-                closing_elem = listing.find('span', class_='search-result__closing-date')
-                closing_text = closing_elem.get_text(strip=True) if closing_elem else ''
-                closing_date = parse_closing_date(closing_text)
+                closing_date_str = job.get('closingDate', '')
+                closing_date = closing_date_str if closing_date_str else (datetime.now() + timedelta(days=14)).isoformat()
                 
                 # Get job reference
-                ref_elem = listing.find('span', class_='search-result__reference')
-                job_reference = ref_elem.get_text(strip=True) if ref_elem else ''
+                job_reference = job.get('reference', f'NHS-{job_id}')
                 
                 # Check if requires sponsorship (look in job description)
                 sponsorship_available = check_sponsorship(job_url) if requires_sponsorship else True
@@ -108,7 +104,7 @@ def scrape_nhs_jobs(locations=None, bands=None, requires_sponsorship=False, keyw
                     continue
                 
                 # Create job dictionary
-                job = {
+                job_data = {
                     'title': title,
                     'trust': trust,
                     'location': location,
@@ -128,7 +124,7 @@ def scrape_nhs_jobs(locations=None, bands=None, requires_sponsorship=False, keyw
                 
                 if not existing.data:
                     # Insert into database
-                    result = supabase.table('discovered_jobs').insert(job).execute()
+                    result = supabase.table('discovered_jobs').insert(job_data).execute()
                     if result.data:
                         discovered_jobs.append(result.data[0])
                         print(f"✅ Added: {title} at {trust}")
