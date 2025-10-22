@@ -144,9 +144,9 @@ def render_book_appointment():
                     ✅ **APPOINTMENT BOOKED SUCCESSFULLY!**
                     
                     **Appointment ID:** {result['appointment_id']}  
-                    **Date:** {apt_date}  
-                    **Time:** {apt_time}  
-                    **Specialty:** {specialty}  
+                    **Date:** {appointment_date}  
+                    **Time:** {slot_time.strftime("%H:%M")}  
+                    **Type:** {appointment_type}  
                     
                     ✔️ {result['confirmation']}  
                     📧 Patient can be notified of appointment!
