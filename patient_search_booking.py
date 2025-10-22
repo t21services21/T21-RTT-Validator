@@ -323,6 +323,13 @@ def render_find_patient():
                     )
                     
                     if result.get('success'):
+                        storage_type = result.get('storage', 'unknown')
+                        storage_emoji = {
+                            'supabase': '☁️',
+                            'session': '💾',
+                            'file': '📁'
+                        }.get(storage_type, '💾')
+                        
                         st.success(f"""
                         ✅ **APPOINTMENT BOOKED SUCCESSFULLY!**
                         
@@ -335,12 +342,17 @@ def render_find_patient():
                         **Priority:** {priority}  
                         **Clinic:** {clinic_id}
                         
+                        {storage_emoji} **Saved to:** {storage_type}
+                        
                         ✔️ {result.get('confirmation', 'Appointment confirmed')}
                         """)
                         st.balloons()
                         
                         # Show link to view appointments
-                        st.info("💡 **To view this appointment:** Go to '⚙️ Manage Appointments' tab → 'View All Appointments'")
+                        if storage_type == 'supabase':
+                            st.info("💡 **To view this appointment:** Go to '⚙️ Manage Appointments' tab → 'View All Appointments'")
+                        else:
+                            st.warning(f"⚠️ **Saved to {storage_type} storage** - May not persist after page refresh. Check Supabase configuration.")
                         
                         # Store appointment ID for easy access
                         st.session_state['last_booked_appointment'] = result['appointment_id']

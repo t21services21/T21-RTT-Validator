@@ -314,13 +314,17 @@ def book_appointment(
     }
 
     if SUPABASE_ENABLED:
+        print(f"📊 Attempting to save appointment to Supabase...")
+        print(f"📋 Appointment data: {appointment_data}")
         success, result = supabase_create_appointment(user_email, appointment_data)
+        print(f"📊 Supabase save result: success={success}, result={result}")
         if success:
-            return {'success': True, 'appointment_id': appointment_id, 'confirmation': f"Appointment booked for {appointment_date} at {slot_time}", 'details': appointment_data}
+            print(f"✅ Appointment saved to Supabase successfully!")
+            return {'success': True, 'appointment_id': appointment_id, 'confirmation': f"Appointment booked for {appointment_date} at {slot_time}", 'details': appointment_data, 'storage': 'supabase'}
         else:
             error_msg = f"Supabase error: {result}" if result else "Unknown Supabase error"
-            print(f"ERROR saving appointment to Supabase: {error_msg}")
-            print(f"Falling back to session storage...")
+            print(f"❌ ERROR saving appointment to Supabase: {error_msg}")
+            print(f"⚠️ Falling back to session storage...")
             # Fall through to session storage
     
     # Use session storage (fallback or if Supabase disabled)
