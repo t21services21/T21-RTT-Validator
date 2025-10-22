@@ -127,6 +127,22 @@ def render_manual_runner():
     
     st.markdown("---")
     
+    # Test data section
+    st.subheader("🧪 Test Data (For Demo/Testing)")
+    st.info("Add fake NHS jobs to test the system without scraping")
+    
+    if st.button("📦 ADD TEST JOBS", use_container_width=True):
+        with st.spinner("Adding 5 test NHS jobs..."):
+            try:
+                from job_automation.add_test_jobs import add_test_jobs
+                add_test_jobs()
+                st.success("✅ Added 5 test jobs! Now click 'RUN AI GENERATOR' to create applications.")
+                st.rerun()
+            except Exception as e:
+                st.error(f"❌ Error: {str(e)}")
+    
+    st.markdown("---")
+    
     # Full cycle
     st.subheader("🚀 Run Full Cycle")
     st.info("Run all 3 steps in sequence: Scrape → Generate → Submit")
