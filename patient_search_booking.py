@@ -27,15 +27,15 @@ def search_patient(search_term, search_type="nhs_number"):
         clean_search = search_term.replace(' ', '').strip()
         
         if search_type == "nhs_number":
-            # Search by NHS number (try both with and without spaces)
-            result = supabase.table('patients').select('*').or_(
-                f'nhs_number.ilike.%{clean_search}%,nhs_number.ilike.%{search_term}%'
-            ).execute()
+            # Search by NHS number - use ilike for case-insensitive partial match
+            result = supabase.table('patients').select('*').ilike('nhs_number', f'%{clean_search}%').execute()
         elif search_type == "name":
-            # Search by name (first or last)
-            result = supabase.table('patients').select('*').or_(
-                f'first_name.ilike.%{search_term}%,last_name.ilike.%{search_term}%'
-            ).execute()
+            # Search by name - try first name first, then last name if no results
+            result = supabase.table('patients').select('*').ilike('first_name', f'%{search_term}%').execute()
+            
+            # If no results, try last name
+            if not result.data:
+                result = supabase.table('patients').select('*').ilike('last_name', f'%{search_term}%').execute()
         elif search_type == "dob":
             # Search by date of birth
             result = supabase.table('patients').select('*').eq('date_of_birth', search_term).execute()
