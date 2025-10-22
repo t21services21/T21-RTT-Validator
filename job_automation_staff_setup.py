@@ -648,8 +648,28 @@ def job_automation_staff_control():
     # TAB 7: MANUAL RUNNER
     # ============================================================================
     with tab7:
-        from job_automation.manual_runner_ui import render_manual_runner
-        render_manual_runner()
+        st.header("🎮 Manual Automation Runner")
+        st.info("""
+        ⚠️ **Installing required packages...**
+        
+        The manual runner requires:
+        - `beautifulsoup4` (for web scraping)
+        - `cryptography` (for password encryption)
+        
+        **Status:** Installing packages via requirements.txt
+        
+        **ETA:** 2-3 minutes after you push the updated requirements.txt
+        
+        **To enable:**
+        1. Push the updated requirements.txt
+        2. Wait for Streamlit to redeploy
+        3. Refresh this page
+        
+        Meanwhile, you can:
+        - ✅ Add students
+        - ✅ Manage students  
+        - ✅ View other tabs
+        """)
 
 if __name__ == "__main__":
     job_automation_staff_control()

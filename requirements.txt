@@ -16,5 +16,7 @@ fhirclient>=4.0.0
 requests>=2.31.0
 extra-streamlit-components>=0.1.56
 reportlab>=4.0.0
-# Updated 2025-10-19 - Persistent login + enhanced exports
-# Force redeploy 2025-10-19 14:35
+beautifulsoup4>=4.12.0
+cryptography>=41.0.0
+# Updated 2025-10-22 - Job automation backend + scraper
+# Force redeploy 2025-10-22 04:42
