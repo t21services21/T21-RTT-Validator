@@ -27,8 +27,22 @@ def search_patient(search_term, search_type="nhs_number"):
         clean_search = search_term.replace(' ', '').strip()
         
         if search_type == "nhs_number":
-            # Search by NHS number - use ilike for case-insensitive partial match
+            # Try multiple search strategies for NHS number
+            # 1. Search with cleaned number (no spaces)
             result = supabase.table('patients').select('*').ilike('nhs_number', f'%{clean_search}%').execute()
+            
+            # 2. If no results, try with original search term (might have spaces)
+            if not result.data:
+                result = supabase.table('patients').select('*').ilike('nhs_number', f'%{search_term}%').execute()
+            
+            # 3. If still no results, try exact match without wildcards
+            if not result.data:
+                result = supabase.table('patients').select('*').eq('nhs_number', search_term).execute()
+            
+            # 4. If still no results, try exact match with cleaned number
+            if not result.data:
+                result = supabase.table('patients').select('*').eq('nhs_number', clean_search).execute()
+                
         elif search_type == "name":
             # Search by name - try first name first, then last name if no results
             result = supabase.table('patients').select('*').ilike('first_name', f'%{search_term}%').execute()
@@ -99,6 +113,20 @@ def render_find_patient():
     
     st.subheader("🔍 Find Patient & Quick Book")
     st.info("Search for registered patients and book appointments directly")
+    
+    # Debug: Show all patients button
+    if st.button("🔍 Show All Patients (Debug)", type="secondary"):
+        if SUPABASE_AVAILABLE and supabase:
+            try:
+                all_patients = supabase.table('patients').select('*').limit(10).execute()
+                if all_patients.data:
+                    st.success(f"✅ Found {len(all_patients.data)} patients in database")
+                    for p in all_patients.data:
+                        st.write(f"**Name:** {p.get('first_name')} {p.get('last_name')} | **NHS:** {p.get('nhs_number')}")
+                else:
+                    st.warning("No patients in database")
+            except Exception as e:
+                st.error(f"Error: {str(e)}")
     
     # Search section
     st.markdown("### 🔎 Search Patient")
