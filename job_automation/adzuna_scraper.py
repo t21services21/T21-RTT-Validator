@@ -66,9 +66,12 @@ def scrape_jobs_adzuna(keywords=None, location='London', max_results=20):
             'results_per_page': max_results,
             'what': search_query,
             'where': location,
-            'category': 'healthcare-nursing-jobs',  # Filter for healthcare
+            # Removed category filter - might be blocking results
             'sort_by': 'date'
         }
+        
+        print(f"🔍 API URL: {url}")
+        print(f"📋 Params: {params}")
         
         try:
             print(f"🔍 Searching Adzuna for: {search_query} in {location}")
@@ -80,6 +83,11 @@ def scrape_jobs_adzuna(keywords=None, location='London', max_results=20):
                 continue
             
             data = response.json()
+            
+            # Debug: Show what we got back
+            print(f"📊 API Response keys: {data.keys()}")
+            print(f"📊 Total count: {data.get('count', 0)}")
+            
             results = data.get('results', [])
             
             print(f"✅ Found {len(results)} jobs for '{search_query}'")
