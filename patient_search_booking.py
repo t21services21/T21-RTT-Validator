@@ -173,48 +173,57 @@ def render_find_patient():
         st.markdown("### 📋 Search Results")
         
         for patient in st.session_state['search_results']:
-            with st.expander(f"👤 {patient.get('first_name', '')} {patient.get('last_name', '')} - NHS: {patient.get('nhs_number', 'N/A')}"):
+            # Get full name properly
+            first_name = patient.get('first_name') or patient.get('firstname') or ''
+            last_name = patient.get('last_name') or patient.get('lastname') or ''
+            title = patient.get('title') or ''
+            full_name = f"{title} {first_name} {last_name}".strip() or patient.get('full_name') or patient.get('name') or 'Unknown'
+            
+            with st.expander(f"👤 {full_name} - NHS: {patient.get('nhs_number', 'N/A')}"):
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    # Handle different possible field names
-                    first_name = patient.get('first_name') or patient.get('firstname') or ''
-                    last_name = patient.get('last_name') or patient.get('lastname') or ''
-                    full_name = patient.get('full_name') or patient.get('name') or f"{first_name} {last_name}"
-                    
-                    st.write(f"**Name:** {full_name}")
+                    st.write(f"**Full Name:** {full_name}")
                     st.write(f"**NHS Number:** {patient.get('nhs_number', 'N/A')}")
                     st.write(f"**DOB:** {patient.get('date_of_birth') or patient.get('dob', 'N/A')}")
+                    st.write(f"**Gender:** {patient.get('gender', 'N/A')}")
                 
                 with col2:
-                    st.write(f"**Contact:** {patient.get('contact_number', 'N/A')}")
+                    st.write(f"**Mobile:** {patient.get('mobile_number') or patient.get('contact_number', 'N/A')}")
+                    st.write(f"**Email:** {patient.get('email', 'N/A')}")
                     st.write(f"**Address:** {patient.get('address', 'N/A')}")
+                    st.write(f"**GP:** {patient.get('gp_name', 'N/A')}")
                 
-                # Quick book button
-                if st.button(f"📅 Quick Book Appointment", key=f"book_{patient.get('id')}"):
-                    st.session_state['selected_patient'] = patient
-                    st.session_state['show_quick_book'] = True
-                    st.rerun()
+                st.markdown("---")
                 
-                # View appointments
-                if st.button(f"📋 View Appointments", key=f"view_{patient.get('id')}"):
-                    appointments = get_patient_appointments(patient.get('id'))
-                    
-                    if appointments:
-                        st.markdown("#### 📅 Appointment History")
+                # Action buttons
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    if st.button(f"📅 Quick Book Appointment", key=f"book_{patient.get('id')}", use_container_width=True, type="primary"):
+                        st.session_state['selected_patient'] = patient
+                        st.session_state['show_quick_book'] = True
+                        st.rerun()
+                
+                with col2:
+                    if st.button(f"📋 View Appointments", key=f"view_{patient.get('id')}", use_container_width=True):
+                        appointments = get_patient_appointments(patient.get('id'))
                         
-                        for apt in appointments:
-                            status_emoji = {
-                                'Booked': '📅',
-                                'Attended': '✅',
-                                'DNA': '❌',
-                                'Cancelled': '🚫',
-                                'Rescheduled': '🔄'
-                            }.get(apt.get('status', ''), '📅')
+                        if appointments:
+                            st.markdown("#### 📅 Appointment History")
                             
-                            st.write(f"{status_emoji} **{apt.get('appointment_date')}** - {apt.get('appointment_type', 'N/A')} - {apt.get('status', 'N/A')}")
-                    else:
-                        st.info("No appointments found")
+                            for apt in appointments:
+                                status_emoji = {
+                                    'Booked': '📅',
+                                    'Attended': '✅',
+                                    'DNA': '❌',
+                                    'Cancelled': '🚫',
+                                    'Rescheduled': '🔄'
+                                }.get(apt.get('status', ''), '📅')
+                                
+                                st.write(f"{status_emoji} **{apt.get('appointment_date')}** - {apt.get('appointment_type', 'N/A')} - {apt.get('status', 'N/A')}")
+                        else:
+                            st.info("No appointments found")
     
     # Quick booking form
     if st.session_state.get('show_quick_book') and st.session_state.get('selected_patient'):
@@ -223,23 +232,53 @@ def render_find_patient():
         
         patient = st.session_state['selected_patient']
         
-        st.info(f"Booking for: **{patient.get('first_name')} {patient.get('last_name')}** (NHS: {patient.get('nhs_number')})")
+        # Get full name
+        first_name = patient.get('first_name') or patient.get('firstname') or ''
+        last_name = patient.get('last_name') or patient.get('lastname') or ''
+        title = patient.get('title') or ''
+        full_name = f"{title} {first_name} {last_name}".strip()
+        
+        st.info(f"📋 Booking for: **{full_name}** (NHS: {patient.get('nhs_number')})")
         
         with st.form("quick_book_form"):
             col1, col2 = st.columns(2)
             
             with col1:
+                # Specialty - CRITICAL for NHS pathways
+                specialty = st.selectbox("Specialty*", [
+                    "Cardiology",
+                    "Orthopaedics", 
+                    "Gastroenterology",
+                    "ENT (Ear, Nose & Throat)",
+                    "Dermatology",
+                    "Ophthalmology",
+                    "Urology",
+                    "Gynaecology",
+                    "Respiratory Medicine",
+                    "Neurology",
+                    "Rheumatology",
+                    "Endocrinology",
+                    "General Surgery",
+                    "Trauma & Orthopaedics",
+                    "Paediatrics",
+                    "Geriatrics",
+                    "Pain Management",
+                    "Diabetes",
+                    "Other"
+                ])
+                
                 appointment_type = st.selectbox("Appointment Type*", [
                     "New Patient", "Follow-up", "Review", "Procedure", 
                     "Consultation", "Diagnostic", "Treatment"
                 ])
+                
                 appointment_date = st.date_input("Date*", value=datetime.now() + timedelta(days=7))
             
             with col2:
                 clinic_id = st.text_input("Clinic ID*", placeholder="CLINIC_20250109")
                 slot_time = st.time_input("Time*", value=datetime.strptime("10:00", "%H:%M").time())
+                priority = st.selectbox("Priority", ["Routine", "Urgent", "2WW", "Emergency"])
             
-            priority = st.selectbox("Priority", ["Routine", "Urgent", "2WW", "Emergency"])
             special_requirements = st.text_area("Special Requirements", height=80)
             
             col1, col2 = st.columns(2)
@@ -259,9 +298,48 @@ def render_find_patient():
                 if not clinic_id:
                     st.error("❌ Please enter Clinic ID")
                 else:
-                    # Book appointment logic here
-                    st.success("✅ Appointment booked successfully!")
-                    st.balloons()
+                    # Book appointment using the advanced booking system
+                    from advanced_booking_system import book_appointment
+                    
+                    result = book_appointment(
+                        patient_name=full_name,
+                        nhs_number=patient.get('nhs_number'),
+                        clinic_id=clinic_id,
+                        appointment_date=str(appointment_date),
+                        slot_time=slot_time.strftime("%H:%M"),
+                        appointment_type=appointment_type,
+                        specialty=specialty,  # Add specialty for NHS pathway tracking
+                        priority=priority,
+                        special_requirements=special_requirements,
+                        contact_number=patient.get('mobile_number') or patient.get('contact_number', ''),
+                        transport_required=False
+                    )
+                    
+                    if result.get('success'):
+                        st.success(f"""
+                        ✅ **APPOINTMENT BOOKED SUCCESSFULLY!**
+                        
+                        **Appointment ID:** {result['appointment_id']}  
+                        **Patient:** {full_name}  
+                        **Specialty:** {specialty}  
+                        **Date:** {appointment_date}  
+                        **Time:** {slot_time.strftime("%H:%M")}  
+                        **Type:** {appointment_type}  
+                        **Priority:** {priority}  
+                        **Clinic:** {clinic_id}
+                        
+                        ✔️ {result.get('confirmation', 'Appointment confirmed')}
+                        """)
+                        st.balloons()
+                        
+                        # Show link to view appointments
+                        st.info("💡 **To view this appointment:** Go to '⚙️ Manage Appointments' tab → 'View All Appointments'")
+                        
+                        # Store appointment ID for easy access
+                        st.session_state['last_booked_appointment'] = result['appointment_id']
+                    else:
+                        st.error(f"❌ Failed to book appointment: {result.get('message', 'Unknown error')}")
+                    
                     st.session_state['show_quick_book'] = False
                     st.session_state['selected_patient'] = None
 
@@ -272,53 +350,82 @@ def render_manage_appointments():
     st.subheader("⚙️ Manage Appointments")
     st.info("View, outcome, and manage all appointments")
     
+    # Quick view all button
+    if st.button("📋 VIEW ALL APPOINTMENTS", type="primary", use_container_width=True):
+        st.session_state['load_all_appointments'] = True
+    
+    st.markdown("---")
+    st.markdown("### 🔍 Filter Appointments (Optional)")
+    
     # Filter options
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        filter_date = st.date_input("Filter by Date", value=datetime.now())
+        filter_date = st.date_input("Filter by Date (optional)", value=datetime.now())
     
     with col2:
         filter_status = st.selectbox("Filter by Status", ["All", "Booked", "Attended", "DNA", "Cancelled"])
     
     with col3:
-        filter_clinic = st.text_input("Filter by Clinic ID")
+        filter_clinic = st.text_input("Filter by Clinic ID (optional)")
     
-    if st.button("🔍 Load Appointments", type="primary"):
+    if st.button("🔍 Load Filtered Appointments", type="secondary") or st.session_state.get('load_all_appointments'):
         with st.spinner("Loading appointments..."):
             # Fetch appointments from database
             if SUPABASE_AVAILABLE and supabase:
                 try:
+                    # Load all appointments or filtered
                     query = supabase.table('appointments').select('*')
                     
+                    # Apply filters only if specified
                     if filter_status != "All":
                         query = query.eq('status', filter_status)
                     
                     if filter_clinic:
                         query = query.eq('clinic_id', filter_clinic)
                     
-                    result = query.order('appointment_date', desc=False).execute()
+                    # Order by most recent first
+                    result = query.order('created_at', desc=True).limit(50).execute()
                     appointments = result.data if result.data else []
+                    
+                    # Clear the load flag
+                    if 'load_all_appointments' in st.session_state:
+                        del st.session_state['load_all_appointments']
                     
                     if appointments:
                         st.success(f"✅ Found {len(appointments)} appointment(s)")
                         
                         # Display appointments
                         for apt in appointments:
-                            with st.expander(f"📅 {apt.get('appointment_date')} - {apt.get('patient_name', 'N/A')} - {apt.get('status', 'N/A')}"):
+                            # Get specialty for display
+                            specialty = apt.get('specialty', 'N/A')
+                            status = apt.get('status', 'N/A')
+                            
+                            # Status emoji
+                            status_emoji = {
+                                'Booked': '📅',
+                                'Attended': '✅',
+                                'DNA': '❌',
+                                'Cancelled': '🚫',
+                                'Rescheduled': '🔄'
+                            }.get(status, '📅')
+                            
+                            with st.expander(f"{status_emoji} {apt.get('appointment_date')} - {apt.get('patient_name', 'N/A')} - {specialty} - {status}"):
                                 col1, col2 = st.columns(2)
                                 
                                 with col1:
                                     st.write(f"**Patient:** {apt.get('patient_name', 'N/A')}")
                                     st.write(f"**NHS Number:** {apt.get('nhs_number', 'N/A')}")
+                                    st.write(f"**Specialty:** {specialty}")
                                     st.write(f"**Date:** {apt.get('appointment_date', 'N/A')}")
                                     st.write(f"**Time:** {apt.get('slot_time', 'N/A')}")
                                 
                                 with col2:
                                     st.write(f"**Type:** {apt.get('appointment_type', 'N/A')}")
                                     st.write(f"**Clinic:** {apt.get('clinic_id', 'N/A')}")
-                                    st.write(f"**Status:** {apt.get('status', 'N/A')}")
+                                    st.write(f"**Status:** {status}")
                                     st.write(f"**Priority:** {apt.get('priority', 'N/A')}")
+                                    st.write(f"**Appointment ID:** {apt.get('id', 'N/A')}")
                                 
                                 # Outcome section
                                 if apt.get('status') == 'Booked':
