@@ -91,9 +91,27 @@ def render_clean_landing_page():
     <div class="hero-section">
         <h1>Your NHS Career & Workforce Partner</h1>
         <h2>Training • Talent • Technology</h2>
-        <p><strong>COMPLETE NHS SOLUTION:</strong> Train individuals seeking NHS careers + Upskill existing NHS staff with TQUK-endorsed professional development • Supply qualified talent to NHS trusts • AI automation saving £2M+ per trust. 120x faster validation • 99.9% accuracy • Zero breaches. Training, talent supply, and technology transformation - your one-stop NHS workforce solution.</p>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Mobile-friendly description in columns
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown("### 🎓 Training")
+        st.write("Train individuals seeking NHS careers")
+        st.write("TQUK-endorsed professional development")
+    
+    with col2:
+        st.markdown("### 👥 Talent")
+        st.write("Supply qualified talent to NHS trusts")
+        st.write("Upskill existing NHS staff")
+    
+    with col3:
+        st.markdown("### 🤖 Technology")
+        st.write("AI automation saving £2M+ per trust")
+        st.write("120x faster • 99.9% accuracy")
+    
+    st.markdown("---")
     
     st.markdown('<div id="login"></div>', unsafe_allow_html=True)
     st.markdown("### 🔐 Login or Register")
