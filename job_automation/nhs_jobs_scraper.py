@@ -30,18 +30,18 @@ def scrape_nhs_jobs(locations=None, bands=None, requires_sponsorship=False, keyw
     
     discovered_jobs = []
     
-    # NHS Jobs API endpoint (JSON response - easier to parse!)
-    base_url = "https://www.jobs.nhs.uk/api/v1/jobs"
+    # NHS Jobs search URL - we'll scrape the actual website
+    base_url = "https://www.jobs.nhs.uk/xi/search_vacancy"
     
-    # Build search parameters for API
-    search_keywords = keywords if keywords else ['RTT', 'Validation', 'Administrator', 'Pathway', 'Coordinator', 'Booking']
+    # Build search parameters
+    search_keywords = keywords if keywords else ['RTT', 'Validation', 'Administrator', 'Pathway']
+    location = locations[0] if locations else 'London'
     
     params = {
+        'action': 'search',
         'keyword': ' '.join(search_keywords),
-        'location': locations[0] if locations else 'London',
-        'distance': 20,
-        'pageSize': 50,
-        'sort': 'publicationDateDesc'
+        'location': location,
+        'distanceFromLocation': '20'
     }
     
     try:
@@ -49,65 +49,92 @@ def scrape_nhs_jobs(locations=None, bands=None, requires_sponsorship=False, keyw
         print(f"📍 Locations: {', '.join(locations) if locations else 'All'}")
         print(f"🏥 Bands: {', '.join(bands) if bands else 'All'}")
         
-        # Make request to NHS Jobs API
+        # Make request to NHS Jobs website
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Accept': 'application/json'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-GB,en;q=0.9',
+            'Referer': 'https://www.jobs.nhs.uk/'
         }
         
         response = requests.get(base_url, params=params, headers=headers, timeout=30)
         
         if response.status_code != 200:
             print(f"❌ Failed to fetch NHS Jobs: {response.status_code}")
-            print(f"Response: {response.text[:200]}")
+            print(f"URL: {response.url}")
             return []
         
-        # Parse JSON response
-        try:
-            data = response.json()
-            job_listings = data.get('jobs', [])
-            print(f"📊 Found {len(job_listings)} potential jobs")
-        except Exception as e:
-            print(f"❌ Failed to parse JSON: {str(e)}")
-            return []
+        print(f"✅ Got response from NHS Jobs")
         
-        for job in job_listings:
+        # Parse HTML response
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Try multiple possible selectors for job listings
+        job_listings = (
+            soup.find_all('article', class_='vacancy') or
+            soup.find_all('div', class_='vacancy-result') or
+            soup.find_all('li', class_='search-result') or
+            soup.find_all('div', {'data-test': 'vacancy-item'})
+        )
+        
+        print(f"📊 Found {len(job_listings)} potential jobs")
+        
+        for listing in job_listings:
             try:
-                # Extract job details from JSON
-                title = job.get('title', 'Unknown')
-                trust = job.get('employer', {}).get('name', 'Unknown')
-                location = job.get('location', {}).get('name', 'Unknown')
+                # Extract job details from HTML - try multiple selectors
+                title_elem = (
+                    listing.find('h2', class_='vacancy__header') or
+                    listing.find('h3') or
+                    listing.find('a', class_='vacancy__link')
+                )
+                title = title_elem.get_text(strip=True) if title_elem else 'Unknown'
+                
+                # Get trust/employer
+                trust_elem = (
+                    listing.find('span', class_='vacancy__employer') or
+                    listing.find('p', class_='employer')
+                )
+                trust = trust_elem.get_text(strip=True) if trust_elem else 'Unknown'
+                
+                # Get location
+                location_elem = (
+                    listing.find('span', class_='vacancy__location') or
+                    listing.find('p', class_='location')
+                )
+                location_text = location_elem.get_text(strip=True) if location_elem else 'Unknown'
                 
                 # Get salary
-                salary_text = job.get('salary', '')
+                salary_elem = listing.find('span', class_='vacancy__salary')
+                salary_text = salary_elem.get_text(strip=True) if salary_elem else ''
                 salary_min, salary_max = parse_salary(salary_text)
                 
                 # Extract band
                 band = extract_band(title, salary_text)
                 
                 # Get job URL
-                job_id = job.get('id', '')
-                job_url = f'https://www.jobs.nhs.uk/candidate/jobadvert/{job_id}' if job_id else ''
+                link_elem = listing.find('a', href=True)
+                job_url = 'https://www.jobs.nhs.uk' + link_elem['href'] if link_elem and link_elem['href'].startswith('/') else (link_elem['href'] if link_elem else '')
+                
+                # Get job reference from URL or generate one
+                job_reference = job_url.split('/')[-1] if job_url else f'NHS-{datetime.now().timestamp()}'
                 
                 # Get closing date
-                closing_date_str = job.get('closingDate', '')
-                closing_date = closing_date_str if closing_date_str else (datetime.now() + timedelta(days=14)).isoformat()
-                
-                # Get job reference
-                job_reference = job.get('reference', f'NHS-{job_id}')
+                closing_elem = listing.find('span', class_='vacancy__closing')
+                closing_text = closing_elem.get_text(strip=True) if closing_elem else ''
+                closing_date = parse_closing_date(closing_text)
                 
                 # Check if requires sponsorship (look in job description)
                 sponsorship_available = check_sponsorship(job_url) if requires_sponsorship else True
                 
                 # Filter by criteria
-                if not matches_criteria(title, location, band, locations, bands, requires_sponsorship, sponsorship_available):
+                if not matches_criteria(title, location_text, band, locations, bands, requires_sponsorship, sponsorship_available):
                     continue
                 
                 # Create job dictionary
                 job_data = {
                     'title': title,
                     'trust': trust,
-                    'location': location,
+                    'location': location_text,
                     'band': band,
                     'salary_min': salary_min,
                     'salary_max': salary_max,
