@@ -159,6 +159,35 @@ USER_TYPES = {
         }
     },
     
+    # ========== TESTERS ==========
+    "tester": {
+        "type": "tester",
+        "name": "Module Tester",
+        "duration_days": 365,
+        "price": 0,
+        "max_logins_per_day": 500,
+        "features": {
+            # ALL FEATURES except user management/access control
+            "pathway_validator": True,
+            "clinic_letter_interpreter": True,
+            "training_library": True,
+            "interactive_learning": True,
+            "ai_tutor": True,
+            "certification_exam": True,
+            "cv_builder": True,
+            "job_interview_prep": True,
+            "pas_practice": True,
+            "breach_calculator": True,
+            "admin_panel": False,  # NO admin panel
+            "staff_tools": True,
+            "student_management": "view",  # Can view but not manage
+            "create_content": True,
+            "grade_exams": True,
+            "support_tickets": True,
+            "all_modules": True  # Access to all modules for testing
+        }
+    },
+    
     # ========== ADMINISTRATORS ==========
     "admin": {
         "type": "admin",
