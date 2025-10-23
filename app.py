@@ -5528,10 +5528,12 @@ elif tool == "🏥 Patient Administration Hub":
 
 elif tool == "🎓 Learning Portal":
     st.header("🎓 Learning Portal")
-    st.info("📚 Complete 8-Week RTT Training Programme - Learn Before You Test!")
+    st.info("📚 Complete Training Programmes - RTT & TQUK Qualifications!")
     
     tabs = st.tabs([
         "📖 Structured Learning",  # NEW - Main learning path!
+        "🎓 Level 3 Diploma",  # NEW - Level 3 Adult Care!
+        "💻 IT User Skills",  # NEW - Level 2 IT!
         "📚 Materials",
         "🎥 Videos",
         "📢 News",
@@ -5549,22 +5551,70 @@ elif tool == "🎓 Learning Portal":
             st.info("💡 The comprehensive learning system is being set up. Meanwhile, use other tabs for materials and videos.")
     
     with tabs[1]:
-        from lms_system import render_lms_feature
-        render_lms_feature("learning_materials")
+        # LEVEL 3 DIPLOMA IN ADULT CARE
+        st.subheader("🎓 Level 3 Diploma in Adult Care")
+        st.success("✅ **TQUK Approved Centre #36257481088** - Nationally Recognized Qualification")
+        
+        try:
+            from level3_adult_care_system import render_level3_adult_care
+            render_level3_adult_care()
+        except Exception as e:
+            st.error(f"Error loading Level 3 module: {str(e)}")
+            st.info("📚 Level 3 materials are available in your project folder")
+            
+            # Fallback - show materials list
+            st.markdown("### 📋 Available Materials:")
+            st.markdown("""
+            - ✅ Learner Handbook (50+ pages)
+            - ✅ Unit 1: Duty of Care (20 pages)
+            - ✅ Unit 2: Equality & Diversity (30 pages)
+            - ✅ Unit 3: Person-Centred Care (25 pages)
+            - ✅ Assessment Templates (8 templates)
+            - ✅ 10-Week Delivery Plan
+            - ✅ TQUK Submission Package
+            """)
     
     with tabs[2]:
-        from lms_system import render_lms_feature
-        render_lms_feature("video_library")
+        # IT USER SKILLS
+        st.subheader("💻 Level 2 Certificate in IT User Skills")
+        st.success("✅ **TQUK Approved** - Learn Using Real NHS Systems (RTT/PAS)")
+        
+        st.info("🚀 **UNIQUE:** Learn IT skills by using our RTT/PAS hospital system - Real-world training!")
+        
+        st.markdown("### 📚 Course Content:")
+        st.markdown("""
+        **Mandatory Units:**
+        1. ✅ Using IT Systems (5 credits)
+        2. ✅ IT Communication Fundamentals (4 credits)
+        3. ✅ IT Software Fundamentals (4 credits)
+        
+        **Optional Units:**
+        4. ✅ Using Collaborative Technologies (3 credits)
+        5. ✅ Using Databases (4 credits)
+        
+        **Total:** 20 credits | 10-12 weeks | £700
+        """)
+        
+        if st.button("📥 Download IT User Skills Materials"):
+            st.success("Materials available in project folder: LEVEL2_IT_USER_SKILLS_COMPLETE.md")
     
     with tabs[3]:
         from lms_system import render_lms_feature
-        render_lms_feature("announcements")
+        render_lms_feature("learning_materials")
     
     with tabs[4]:
         from lms_system import render_lms_feature
-        render_lms_feature("assignments")
+        render_lms_feature("video_library")
     
     with tabs[5]:
+        from lms_system import render_lms_feature
+        render_lms_feature("announcements")
+    
+    with tabs[6]:
+        from lms_system import render_lms_feature
+        render_lms_feature("assignments")
+    
+    with tabs[7]:
         # Practice quizzes AFTER learning
         from lms_system import render_lms_feature
         render_lms_feature("quizzes")
