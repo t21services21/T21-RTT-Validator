@@ -71,6 +71,39 @@ def render_it_user_skills_module():
     
     with tabs[0]:
         st.subheader("📚 Course Overview")
+        
+        # Welcome banner
+        st.success("""
+        # 💻 Welcome to Level 2 IT User Skills!
+        
+        **Congratulations on starting your journey to becoming IT proficient!**
+        """)
+        
+        # Quick start guide
+        st.info("""
+        ## 🚀 Quick Start Guide - Your Journey to Qualification:
+        
+        **Step 1:** 📖 Study the 6 units (Materials tab)
+        
+        **Step 2:** 💻 Practice with hospital IT systems (Practice tab)
+        
+        **Step 3:** 📝 Submit evidence for all units (Assessments tab)
+        
+        **Step 4:** 📊 Track your progress (Progress tab)
+        
+        **Step 5:** 🎓 Get your certificate when complete!
+        """)
+        
+        st.markdown("---")
+        
+        st.markdown("""
+        ### 🏥 Learn IT Skills in Healthcare!
+        
+        **Practice with real hospital IT systems**
+        
+        ### 📋 Course Structure:
+        """)
+        
         st.markdown("""
         ### What Makes This Course Unique?
         
@@ -92,6 +125,23 @@ def render_it_user_skills_module():
     
     with tabs[1]:
         st.subheader("📖 Learning Materials")
+        
+        st.success("""
+        **📚 Welcome to Your Learning Materials!**
+        
+        Study all 6 units to complete your qualification.
+        """)
+        
+        st.info("""
+        **💡 Quick Guide:**
+        - 📖 **Read** the content for each unit
+        - ✏️ **Complete** the activities
+        - 💻 **Practice** with hospital IT systems
+        - 📝 **Submit** evidence in Assessments tab
+        """)
+        
+        st.write("Materials available in TQUK_ALL_QUALIFICATIONS_SUMMARY.md")
+        
         selected_unit = st.selectbox(
             "Select Unit",
             options=list(UNITS.keys()),

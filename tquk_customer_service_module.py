@@ -70,12 +70,37 @@ def render_customer_service_module():
     
     with tabs[0]:
         st.subheader("📚 Course Overview")
+        
+        # Welcome banner
+        st.success("""
+        # 👥 Welcome to Level 2 Customer Service!
+        
+        **Congratulations on starting your journey to becoming a qualified customer service professional!**
+        """)
+        
+        # Quick start guide
+        st.info("""
+        ## 🚀 Quick Start Guide - Your Journey to Qualification:
+        
+        **Step 1:** 📖 Study the 7 units (Materials tab)
+        
+        **Step 2:** 👥 Practice with patient reception scenarios (Practice tab)
+        
+        **Step 3:** 📝 Submit evidence for all units (Assessments tab)
+        
+        **Step 4:** 📊 Track your progress (Progress tab)
+        
+        **Step 5:** 🎓 Get your certificate when complete!
+        """)
+        
+        st.markdown("---")
+        
         st.markdown("""
-        ### Learn Customer Service in Healthcare!
+        ### 🏥 Learn Customer Service in Healthcare!
         
-        🏥 **Practice with real patient reception scenarios**
+        **Practice with real patient reception scenarios**
         
-        ### Course Structure:
+        ### 📋 Course Structure:
         """)
         
         for unit_num, unit_data in UNITS.items():
@@ -85,7 +110,22 @@ def render_customer_service_module():
     
     with tabs[1]:
         st.subheader("📖 Learning Materials")
-        st.info("Materials available in TQUK_ALL_QUALIFICATIONS_SUMMARY.md")
+        
+        st.success("""
+        **📚 Welcome to Your Learning Materials!**
+        
+        Study all 7 units to complete your qualification.
+        """)
+        
+        st.info("""
+        **💡 Quick Guide:**
+        - 📖 **Read** the content for each unit
+        - ✏️ **Complete** the activities
+        - 👥 **Practice** with patient scenarios
+        - 📝 **Submit** evidence in Assessments tab
+        """)
+        
+        st.write("Materials available in TQUK_ALL_QUALIFICATIONS_SUMMARY.md")
     
     with tabs[2]:
         st.subheader("👥 Practice with Patient Reception")
