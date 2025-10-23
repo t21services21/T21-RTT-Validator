@@ -36,25 +36,25 @@ UNITS = {
     },
     4: {
         "name": "Safeguarding in Care Settings",
-        "file": "LEVEL3_COMPLETE_DELIVERY_PACKAGE.md",
+        "file": "LEVEL3_UNIT4_SAFEGUARDING_COMPLETE.md",
         "activities": 8,
         "learning_outcomes": 4
     },
     5: {
         "name": "Effective Communication",
-        "file": "LEVEL3_COMPLETE_DELIVERY_PACKAGE.md",
+        "file": "LEVEL3_UNIT5_COMMUNICATION_COMPLETE.md",
         "activities": 7,
         "learning_outcomes": 4
     },
     6: {
         "name": "Health & Wellbeing",
-        "file": "LEVEL3_COMPLETE_DELIVERY_PACKAGE.md",
+        "file": "LEVEL3_UNIT6_HEALTH_WELLBEING_COMPLETE.md",
         "activities": 8,
         "learning_outcomes": 5
     },
     7: {
         "name": "Continuous Professional Development",
-        "file": "LEVEL3_COMPLETE_DELIVERY_PACKAGE.md",
+        "file": "LEVEL3_UNIT7_PROFESSIONAL_DEVELOPMENT_COMPLETE.md",
         "activities": 6,
         "learning_outcomes": 3
     }
