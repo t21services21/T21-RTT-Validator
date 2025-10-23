@@ -793,16 +793,131 @@ def render_assignments():
     
     st.info("**Assignments System:** Create assignments, submit work, and grade submissions")
     
-    st.success("✅ Database tables ready! Full assignment system available")
+    # Check user role
+    user_email = st.session_state.get('user_email', '')
+    user_role = st.session_state.get('user_type', 'student')
+    is_teacher = user_role in ['admin', 'teacher', 'staff', 'tester']
     
-    st.markdown("""
-    **Features:**
-    - Create assignments with due dates
-    - Student submissions
-    - Teacher grading with feedback
-    - Track submission status
-    - View grades and statistics
-    """)
+    # Tabs for different views
+    if is_teacher:
+        tab1, tab2, tab3 = st.tabs(["📝 Create Assignment", "📊 View Submissions", "📋 All Assignments"])
+        
+        with tab1:
+            st.markdown("### ➕ Create New Assignment")
+            
+            with st.form("create_assignment"):
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    title = st.text_input("Assignment Title*", placeholder="e.g., RTT Code Analysis Exercise")
+                    week = st.number_input("Week Number*", min_value=1, max_value=52, value=1)
+                    module_name = st.selectbox("Module*", [
+                        "RTT Fundamentals",
+                        "Clock Management",
+                        "Cancer Pathways",
+                        "Patient Administration",
+                        "Clinical Workflows",
+                        "Information Governance"
+                    ])
+                
+                with col2:
+                    competency = st.selectbox("Competency Area*", [
+                        "RTT Code Knowledge",
+                        "Clock Management",
+                        "Patient Pathways",
+                        "Data Analysis",
+                        "Clinical Decision Making",
+                        "Communication Skills"
+                    ])
+                    due_date = st.date_input("Due Date*", min_value=date.today())
+                    total_marks = st.number_input("Total Marks*", min_value=1, max_value=200, value=100)
+                
+                description = st.text_area("Description*", 
+                    placeholder="Brief description of the assignment...",
+                    height=100)
+                
+                instructions = st.text_area("Instructions*",
+                    placeholder="Detailed instructions for students...\n\nExample:\n1. Review the clinic letters provided\n2. Identify the correct RTT codes\n3. Explain your reasoning\n4. Submit your answers by the due date",
+                    height=200)
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    pass_mark = st.number_input("Pass Mark (%)", min_value=0, max_value=100, value=50)
+                with col2:
+                    required = st.checkbox("Required Assignment", value=True)
+                with col3:
+                    allow_late = st.checkbox("Allow Late Submissions", value=False)
+                
+                submitted = st.form_submit_button("✅ Create Assignment", use_container_width=True, type="primary")
+                
+                if submitted:
+                    if not title or not description or not instructions:
+                        st.error("❌ Please fill in all required fields")
+                    else:
+                        from assignments_system import create_assignment
+                        result = create_assignment(
+                            title=title,
+                            description=description,
+                            instructions=instructions,
+                            week=week,
+                            module_name=module_name,
+                            competency=competency,
+                            due_date=due_date.isoformat(),
+                            total_marks=total_marks,
+                            pass_mark=pass_mark,
+                            required=required,
+                            allow_late_submission=allow_late
+                        )
+                        
+                        if result.get('success'):
+                            from success_message_component import show_huge_success
+                            show_huge_success(
+                                title="ASSIGNMENT CREATED!",
+                                subtitle=f"{title} - Due {due_date.strftime('%B %d, %Y')}",
+                                details={
+                                    "Module": module_name,
+                                    "Week": str(week),
+                                    "Total Marks": str(total_marks),
+                                    "Pass Mark": f"{pass_mark}%"
+                                },
+                                next_steps="Students can now view and submit this assignment."
+                            )
+                        else:
+                            st.error(f"❌ Failed to create assignment: {result.get('error', 'Unknown error')}")
+        
+        with tab2:
+            st.markdown("### 📊 View Submissions")
+            st.info("🚧 Submission viewing and grading interface coming soon!")
+            st.markdown("""
+            **Features in development:**
+            - View all student submissions
+            - Grade submissions
+            - Provide feedback
+            - Track completion rates
+            """)
+        
+        with tab3:
+            st.markdown("### 📋 All Assignments")
+            st.info("🚧 Assignment list view coming soon!")
+            st.markdown("""
+            **Features in development:**
+            - View all assignments
+            - Edit assignments
+            - Delete assignments
+            - View statistics
+            """)
+    
+    else:
+        # Student view
+        st.markdown("### 📚 My Assignments")
+        st.info("🚧 Student assignment view coming soon!")
+        st.markdown("""
+        **Features in development:**
+        - View assigned work
+        - Submit assignments
+        - View grades and feedback
+        - Track progress
+        """)
 
 
 # ============================================
