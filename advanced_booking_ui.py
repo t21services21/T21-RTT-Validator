@@ -82,19 +82,19 @@ def render_advanced_booking():
             Module temporarily unavailable.
             """)
     
-    with tab3:
+    with tab4:
         render_clinic_management()
     
-    with tab4:
+    with tab5:
         render_check_availability()
     
-    with tab5:
+    with tab6:
         render_capacity_analysis()
     
-    with tab6:
+    with tab7:
         render_manage_appointments()
     
-    with tab7:
+    with tab8:
         render_dna_analytics()
 
 

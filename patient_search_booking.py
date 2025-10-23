@@ -228,7 +228,24 @@ def render_find_patient():
                                     'Rescheduled': '🔄'
                                 }.get(apt.get('status', ''), '📅')
                                 
-                                st.write(f"{status_emoji} **{apt.get('appointment_date')}** - {apt.get('appointment_type', 'N/A')} - {apt.get('status', 'N/A')}")
+                                # Show full appointment details
+                                with st.expander(f"{status_emoji} {apt.get('appointment_date')} at {apt.get('appointment_time', 'N/A')} - {apt.get('specialty', 'N/A')} - {apt.get('status', 'N/A')}"):
+                                    col1, col2 = st.columns(2)
+                                    
+                                    with col1:
+                                        st.write(f"**Date:** {apt.get('appointment_date', 'N/A')}")
+                                        st.write(f"**Time:** {apt.get('appointment_time', 'N/A')}")
+                                        st.write(f"**Specialty:** {apt.get('specialty', 'N/A')}")
+                                        st.write(f"**Type:** {apt.get('appointment_type', 'N/A')}")
+                                    
+                                    with col2:
+                                        st.write(f"**Clinic:** {apt.get('clinic_location', 'N/A')}")
+                                        st.write(f"**Consultant:** {apt.get('consultant', 'N/A')}")
+                                        st.write(f"**Status:** {apt.get('status', 'N/A')}")
+                                        st.write(f"**Appointment ID:** {apt.get('appointment_id', 'N/A')}")
+                                    
+                                    if apt.get('notes'):
+                                        st.write(f"**Notes:** {apt.get('notes')}")
                         else:
                             st.info("No appointments found")
     
