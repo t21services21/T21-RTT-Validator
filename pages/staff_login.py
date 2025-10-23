@@ -197,7 +197,7 @@ else:
                             if supabase_user and supabase_user.get('password_hash') == password_hash:
                                 user_type = supabase_user.get('user_type', 'student')
                                 
-                                if user_type in ['admin', 'staff', 'partner']:
+                                if user_type in ['admin', 'staff', 'partner', 'tester']:
                                     # Check if 2FA is enabled
                                     if supabase_user.get('two_factor_enabled'):
                                         # Store for 2FA verification
@@ -265,8 +265,8 @@ else:
                                         else:
                                             local_user_type = 'student'
                                         
-                                        # Check if user is staff/admin
-                                        if local_user_type in ['admin', 'staff', 'partner']:
+                                        # Check if user is staff/admin/tester
+                                        if local_user_type in ['admin', 'staff', 'partner', 'tester']:
                                             st.session_state.logged_in = True
                                             st.session_state.user_license = user_data
                                             st.session_state.user_email = email
