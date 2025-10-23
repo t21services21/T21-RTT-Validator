@@ -347,28 +347,27 @@ def render_find_patient():
                             'file': '📁'
                         }.get(storage_type, '💾')
                         
-                        st.success(f"""
-                        ✅ **APPOINTMENT BOOKED SUCCESSFULLY!**
+                        # HUGE SUCCESS MESSAGE
+                        from success_message_component import show_huge_success
                         
-                        **Appointment ID:** {result['appointment_id']}  
-                        **Patient:** {full_name}  
-                        **Specialty:** {specialty}  
-                        **Date:** {appointment_date}  
-                        **Time:** {slot_time.strftime("%H:%M")}  
-                        **Type:** {appointment_type}  
-                        **Priority:** {priority}  
-                        **Clinic:** {clinic_id}
+                        show_huge_success(
+                            title="APPOINTMENT BOOKED!",
+                            subtitle=f"{storage_emoji} Saved to {storage_type}",
+                            details={
+                                "Appointment ID": result['appointment_id'],
+                                "Patient": full_name,
+                                "Specialty": specialty,
+                                "Date": appointment_date,
+                                "Time": slot_time.strftime("%H:%M"),
+                                "Type": appointment_type,
+                                "Priority": priority,
+                                "Clinic": clinic_id
+                            },
+                            next_steps="Go to '⚙️ Manage Appointments' tab → 'View All Appointments' to see this appointment." if storage_type == 'supabase' else None
+                        )
                         
-                        {storage_emoji} **Saved to:** {storage_type}
-                        
-                        ✔️ {result.get('confirmation', 'Appointment confirmed')}
-                        """)
-                        st.balloons()
-                        
-                        # Show link to view appointments
-                        if storage_type == 'supabase':
-                            st.info("💡 **To view this appointment:** Go to '⚙️ Manage Appointments' tab → 'View All Appointments'")
-                        else:
+                        # Show warning if not saved to Supabase
+                        if storage_type != 'supabase':
                             st.warning(f"⚠️ **Saved to {storage_type} storage** - May not persist after page refresh.")
                             st.error("""
                             **Supabase is not working!**

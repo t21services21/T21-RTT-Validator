@@ -19,7 +19,9 @@ from patient_registration_system import (
     get_patient_by_id,
     search_patients,
     get_all_patients,
-    get_registration_stats
+    get_registration_stats,
+    update_patient,
+    delete_patient
 )
 
 
@@ -69,19 +71,23 @@ def render_register_patient():
     # Show success message if patient was just registered - ENHANCED
     if 'patient_registered' in st.session_state:
         patient_info = st.session_state['patient_registered']
-        st.balloons()
-        st.success(f"""
-        ✅ **PATIENT REGISTERED SUCCESSFULLY!**
         
-        **Patient ID:** {patient_info['patient_id']}  
-        **NHS Number:** {patient_info.get('nhs_number', 'Not provided')}  
-        **NHS Status:** {patient_info['nhs_status']}  
-        **Name:** {patient_info['name']}  
+        # HUGE SUCCESS MESSAGE using component
+        from success_message_component import show_huge_success
         
-        ✔️ Patient has been saved to the database!  
-        📊 All demographic information recorded permanently!
-        """)
-        st.info("💡 **Next Steps:** You can now create pathways, book appointments, or register episodes for this patient.")
+        show_huge_success(
+            title="PATIENT REGISTERED!",
+            subtitle="Patient saved to database permanently",
+            details={
+                "Patient ID": patient_info['patient_id'],
+                "NHS Number": patient_info.get('nhs_number', 'Not provided'),
+                "NHS Status": patient_info['nhs_status'],
+                "Name": patient_info['name']
+            },
+            next_steps="You can now create pathways, book appointments, or register episodes for this patient."
+        )
+        
+        # Clear the flag
         del st.session_state['patient_registered']
     
     with st.form("register_patient"):
@@ -254,6 +260,46 @@ def render_patient_list():
     
     st.subheader("📋 Registered Patients")
     
+    # DELETE CONFIRMATION MODAL
+    if 'confirm_delete_patient' in st.session_state:
+        patient = st.session_state['confirm_delete_patient']
+        
+        from success_message_component import show_huge_warning
+        show_huge_warning(
+            title="DELETE PATIENT?",
+            warning_message=f"Are you sure you want to delete **{patient.get('full_name')}** (ID: {patient.get('patient_id')})?",
+            action_required="This action CANNOT be undone! All patient data will be permanently deleted."
+        )
+        
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col1:
+            if st.button("❌ Yes, Delete", key="confirm_delete_yes", use_container_width=True, type="primary"):
+                from patient_registration_system import delete_patient
+                success = delete_patient(patient.get('patient_id'))
+                if success:
+                    from success_message_component import show_huge_success
+                    show_huge_success(
+                        title="PATIENT DELETED!",
+                        subtitle=f"Patient {patient.get('full_name')} has been removed",
+                        next_steps="The patient record has been permanently deleted from the database."
+                    )
+                    del st.session_state['confirm_delete_patient']
+                    st.rerun()
+                else:
+                    st.error("❌ Failed to delete patient")
+        
+        with col2:
+            if st.button("✅ No, Cancel", key="confirm_delete_no", use_container_width=True):
+                del st.session_state['confirm_delete_patient']
+                st.rerun()
+        
+        return  # Don't show patient list while confirming delete
+    
+    # EDIT FORM MODAL
+    if st.session_state.get('show_edit_form') and 'editing_patient' in st.session_state:
+        render_edit_patient_form()
+        return  # Don't show patient list while editing
+    
     # Refresh button
     col1, col2 = st.columns([3, 1])
     with col2:
@@ -297,6 +343,21 @@ def render_patient_list():
             
             if patient.get('interpreter_required'):
                 st.warning(f"🌍 **Interpreter Required:** {patient.get('language', 'Unknown')}")
+            
+            # EDIT AND DELETE BUTTONS
+            st.markdown("---")
+            col_edit, col_delete = st.columns(2)
+            
+            with col_edit:
+                if st.button(f"✏️ Edit Patient", key=f"edit_{patient.get('patient_id')}", use_container_width=True):
+                    st.session_state['editing_patient'] = patient
+                    st.session_state['show_edit_form'] = True
+                    st.rerun()
+            
+            with col_delete:
+                if st.button(f"🗑️ Delete Patient", key=f"delete_{patient.get('patient_id')}", use_container_width=True, type="secondary"):
+                    st.session_state['confirm_delete_patient'] = patient
+                    st.rerun()
 
 
 def render_search_patients():
@@ -374,3 +435,124 @@ def render_registration_stats():
     
     if stats['pending_nhs_number'] > 0:
         st.warning(f"⚠️ {stats['pending_nhs_number']} patients awaiting NHS number assignment")
+
+
+def render_edit_patient_form():
+    """Render form to edit existing patient"""
+    patient = st.session_state['editing_patient']
+    
+    st.subheader(f"✏️ Edit Patient: {patient.get('full_name')}")
+    
+    # Cancel button at top
+    if st.button("❌ Cancel Edit", key="cancel_edit"):
+        del st.session_state['editing_patient']
+        del st.session_state['show_edit_form']
+        st.rerun()
+    
+    with st.form("edit_patient_form"):
+        st.markdown("### 📋 Patient Demographics")
+        
+        # Basic Information
+        col1, col2, col3 = st.columns([1, 2, 2])
+        with col1:
+            title = st.selectbox("Title*", ["Mr", "Mrs", "Miss", "Ms", "Dr", "Master", "Mx"], 
+                                index=["Mr", "Mrs", "Miss", "Ms", "Dr", "Master", "Mx"].index(patient.get('title', 'Mr')))
+        with col2:
+            first_name = st.text_input("First Name*", value=patient.get('first_name', ''))
+        with col3:
+            surname = st.text_input("Surname*", value=patient.get('surname', ''))
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            dob = st.date_input("Date of Birth*", value=datetime.fromisoformat(patient.get('date_of_birth', datetime.now().isoformat())).date() if patient.get('date_of_birth') else None)
+        with col2:
+            gender = st.selectbox("Gender*", ["Male", "Female", "Other", "Prefer not to say"], 
+                                 index=["Male", "Female", "Other", "Prefer not to say"].index(patient.get('gender', 'Male')))
+        with col3:
+            nhs_number = st.text_input("NHS Number", value=patient.get('nhs_number', ''), placeholder="XXX XXX XXXX")
+        
+        # Contact Information
+        st.markdown("### 📞 Contact Information")
+        col1, col2 = st.columns(2)
+        with col1:
+            phone_mobile = st.text_input("Mobile Phone*", value=patient.get('phone_mobile', ''))
+        with col2:
+            email = st.text_input("Email", value=patient.get('email', ''))
+        
+        address_line1 = st.text_input("Address Line 1*", value=patient.get('address_line1', ''))
+        address_line2 = st.text_input("Address Line 2", value=patient.get('address_line2', ''))
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            city = st.text_input("City*", value=patient.get('city', ''))
+        with col2:
+            county = st.text_input("County", value=patient.get('county', ''))
+        with col3:
+            postcode = st.text_input("Postcode*", value=patient.get('postcode', ''))
+        
+        # GP Information
+        st.markdown("### 🏥 GP Information")
+        col1, col2 = st.columns(2)
+        with col1:
+            gp_name = st.text_input("GP Name", value=patient.get('gp_name', ''))
+        with col2:
+            gp_practice = st.text_input("GP Practice", value=patient.get('gp_practice', ''))
+        
+        # Next of Kin
+        st.markdown("### 👥 Next of Kin")
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            nok_name = st.text_input("Next of Kin Name", value=patient.get('next_of_kin_name', ''))
+        with col2:
+            nok_relationship = st.text_input("Relationship", value=patient.get('next_of_kin_relationship', ''))
+        with col3:
+            nok_phone = st.text_input("NOK Phone", value=patient.get('next_of_kin_phone', ''))
+        
+        # Submit button
+        submitted = st.form_submit_button("💾 Save Changes", use_container_width=True, type="primary")
+        
+        if submitted:
+            # Prepare updated data
+            updated_data = {
+                'title': title,
+                'first_name': first_name,
+                'surname': surname,
+                'full_name': f"{title} {first_name} {surname}",
+                'date_of_birth': dob.isoformat() if dob else None,
+                'gender': gender,
+                'nhs_number': nhs_number if nhs_number else None,
+                'phone_mobile': phone_mobile,
+                'email': email,
+                'address_line1': address_line1,
+                'address_line2': address_line2,
+                'city': city,
+                'county': county,
+                'postcode': postcode,
+                'gp_name': gp_name,
+                'gp_practice': gp_practice,
+                'next_of_kin_name': nok_name,
+                'next_of_kin_relationship': nok_relationship,
+                'next_of_kin_phone': nok_phone
+            }
+            
+            # Update patient
+            result = update_patient(patient.get('patient_id'), updated_data)
+            
+            if result.get('success'):
+                from success_message_component import show_huge_success
+                show_huge_success(
+                    title="PATIENT UPDATED!",
+                    subtitle=f"Changes saved for {updated_data['full_name']}",
+                    details={
+                        "Patient ID": patient.get('patient_id'),
+                        "Name": updated_data['full_name'],
+                        "NHS Number": nhs_number or "Not provided",
+                        "Mobile": phone_mobile
+                    },
+                    next_steps="Patient record has been updated in the database."
+                )
+                del st.session_state['editing_patient']
+                del st.session_state['show_edit_form']
+                st.rerun()
+            else:
+                st.error(f"❌ Update failed: {result.get('error', 'Unknown error')}")

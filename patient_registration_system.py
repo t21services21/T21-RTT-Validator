@@ -512,3 +512,81 @@ def get_registration_stats() -> Dict:
         'registered_today': today_count,
         'nhs_verified_rate': (with_nhs / total * 100) if total > 0 else 0
     }
+
+
+# ============================================
+# UPDATE AND DELETE PATIENT
+# ============================================
+
+def update_patient(patient_id: str, updated_data: Dict) -> Dict:
+    """Update existing patient record"""
+    user_email = get_current_user_email()
+    
+    # Update in Supabase
+    if SUPABASE_ENABLED and supabase:
+        try:
+            result = supabase.table('patients').update(updated_data).eq('patient_id', patient_id).eq('user_email', user_email).execute()
+            if result.data:
+                return {'success': True, 'message': 'Patient updated successfully'}
+        except Exception as e:
+            print(f"❌ Supabase update error: {e}")
+    
+    # Update in local storage (fallback)
+    return update_patient_local(patient_id, updated_data)
+
+
+def update_patient_local(patient_id: str, updated_data: Dict):
+    """Update patient in local storage"""
+    patients_file = 'patients_registered.json'
+    
+    if os.path.exists(patients_file):
+        with open(patients_file, 'r') as f:
+            data = json.load(f)
+        
+        if patient_id in data:
+            # Update fields
+            data[patient_id].update(updated_data)
+            data[patient_id]['last_updated'] = datetime.now().isoformat()
+            
+            with open(patients_file, 'w') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+            
+            return {'success': True, 'message': 'Patient updated successfully'}
+    
+    return {'success': False, 'error': 'Patient not found'}
+
+
+def delete_patient(patient_id: str) -> bool:
+    """Delete patient record"""
+    user_email = get_current_user_email()
+    
+    # Delete from Supabase
+    if SUPABASE_ENABLED and supabase:
+        try:
+            result = supabase.table('patients').delete().eq('patient_id', patient_id).eq('user_email', user_email).execute()
+            if result.data:
+                return True
+        except Exception as e:
+            print(f"❌ Supabase delete error: {e}")
+    
+    # Delete from local storage (fallback)
+    return delete_patient_local(patient_id)
+
+
+def delete_patient_local(patient_id: str) -> bool:
+    """Delete patient from local storage"""
+    patients_file = 'patients_registered.json'
+    
+    if os.path.exists(patients_file):
+        with open(patients_file, 'r') as f:
+            data = json.load(f)
+        
+        if patient_id in data:
+            del data[patient_id]
+            
+            with open(patients_file, 'w') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+            
+            return True
+    
+    return False
