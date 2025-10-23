@@ -518,7 +518,7 @@ def render_add_patient():
         
         # Import patient search function
         try:
-            from patient_registration_system import search_patients, get_patient
+            from patient_registration_system import search_patients, get_patient_by_id as get_patient
             
             # Search box
             search_term = st.text_input("🔍 Search by Name or NHS Number", placeholder="Enter patient name or NHS number...")

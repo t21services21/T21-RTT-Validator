@@ -3935,13 +3935,13 @@ elif tool == "📄 CV Builder":
     st.info("""✨ **Features:**
     - ✅ Professional templates for all careers
     - ✅ ATS-optimized (beats applicant tracking systems)
-    - ✅ Auto-includes your T21 qualifications
+    - ✅ Add your qualifications and certifications
     - ✅ Career-specific keywords
-    - ✅ Download as HTML (convert to PDF)
-    - ✅ BONUS: LinkedIn profile optimizer!
+    - ✅ Download as PDF or Word
+    - ✅ Professional UK/USA standard CV format
     
-    💡 **Perfect for ALL T21 graduates:**
-    Healthcare Assistant | Care Worker | Teaching Assistant | Customer Service | Business Admin | RTT Validation
+    💡 **Perfect for everyone:**
+    Healthcare | Teaching | Business | Admin | Customer Service | Tech | All Careers
     """)
     
     # Career Path Selection
@@ -4071,8 +4071,22 @@ elif tool == "📄 CV Builder":
     
     st.markdown("---")
     
+    # Professional Summary
+    st.subheader("Step 3: Professional Summary")
+    st.markdown("Write a brief summary of your professional background and career goals (2-4 sentences)")
+    
+    professional_summary = st.text_area(
+        "Professional Summary*",
+        height=150,
+        placeholder="""Example:
+Dedicated Healthcare Assistant with 2+ years of experience providing compassionate patient care in busy NHS hospital settings. Skilled in monitoring vital signs, assisting with personal care, and maintaining patient dignity. Committed to delivering high-quality care and working collaboratively with multidisciplinary teams. Seeking to advance my career in healthcare and make a positive difference to patient outcomes.""",
+        key="professional_summary"
+    )
+    
+    st.markdown("---")
+    
     # Work Experience
-    st.subheader("Step 3: Work Experience")
+    st.subheader("Step 4: Work Experience")
     st.markdown("Add your most recent jobs (most recent first)")
     
     num_jobs = st.number_input("How many jobs to add?", min_value=1, max_value=5, value=2)
@@ -4110,41 +4124,53 @@ Followed strict infection control and safeguarding procedures"""
     st.markdown("---")
     
     # Qualifications
-    st.subheader("Step 4: Qualifications")
-    st.markdown("✨ **Your T21 qualifications will be auto-added!**")
+    st.subheader("Step 5: Qualifications & Certifications (Optional)")
+    st.markdown("Add your professional qualifications, certifications, and training")
     
-    # Get T21 qualifications
-    t21_quals = get_t21_qualifications()
-    
-    st.markdown("**Select your T21 qualifications:**")
     selected_quals = []
     
-    for qual in t21_quals:
-        if st.checkbox(qual['title'], key=f"qual_{qual['title']}"):
-            year = st.text_input(f"Year completed:", key=f"year_{qual['title']}", placeholder="2024")
-            selected_quals.append({
-                'title': qual['title'],
-                'institution': qual['institution'],
-                'date': year if year else "2024"
-            })
+    # Check if user has T21 qualifications
+    user_email = st.session_state.get('user_email', '')
+    show_t21 = st.checkbox("📚 I have T21 qualifications", key="has_t21_quals")
     
-    # Additional qualifications
-    st.markdown("**Add other qualifications (optional):**")
-    additional_qual = st.text_input("Additional Qualification", placeholder="e.g., GCSE English & Maths")
-    additional_inst = st.text_input("Institution", placeholder="e.g., Local College")
-    additional_year = st.text_input("Year", placeholder="2020")
+    if show_t21:
+        # Get T21 qualifications
+        t21_quals = get_t21_qualifications()
+        
+        st.markdown("**Select your T21 qualifications:**")
+        
+        for qual in t21_quals:
+            if st.checkbox(qual['title'], key=f"qual_{qual['title']}"):
+                year = st.text_input(f"Year completed:", key=f"year_{qual['title']}", placeholder="2024")
+                selected_quals.append({
+                    'title': qual['title'],
+                    'institution': qual['institution'],
+                    'date': year if year else "2024"
+                })
     
-    if additional_qual and additional_inst and additional_year:
-        selected_quals.append({
-            'title': additional_qual,
-            'institution': additional_inst,
-            'date': additional_year
-        })
+    # Other qualifications (for everyone)
+    st.markdown("**Add your qualifications:**")
+    st.markdown("*Examples: Degrees, Diplomas, GCSEs, A-Levels, Professional Certifications, etc.*")
+    
+    num_quals = st.number_input("How many qualifications to add?", min_value=0, max_value=10, value=2, key="num_quals")
+    
+    for i in range(num_quals):
+        with st.expander(f"Qualification #{i+1}", expanded=(i==0)):
+            qual_title = st.text_input("Qualification Title", key=f"qual_title_{i}", placeholder="e.g., GCSE English & Maths, BSc Nursing, Care Certificate")
+            qual_inst = st.text_input("Institution", key=f"qual_inst_{i}", placeholder="e.g., University of London, Local College")
+            qual_year = st.text_input("Year", key=f"qual_year_{i}", placeholder="2020")
+            
+            if qual_title and qual_inst and qual_year:
+                selected_quals.append({
+                    'title': qual_title,
+                    'institution': qual_inst,
+                    'date': qual_year
+                })
     
     st.markdown("---")
     
     # Skills
-    st.subheader("Step 5: Key Skills")
+    st.subheader("Step 6: Key Skills")
     
     # Get career-specific ATS keywords
     suggested_skills = get_ats_keywords(career_code)
@@ -4172,7 +4198,7 @@ Followed strict infection control and safeguarding procedures"""
     st.markdown("---")
     
     # Achievements & Awards
-    st.subheader("Step 6: Achievements & Awards (Optional)")
+    st.subheader("Step 7: Achievements & Awards (Optional)")
     st.markdown("Add your key achievements, awards, and accomplishments")
     
     achievements_text = st.text_area(
@@ -4206,12 +4232,14 @@ Achieved 98% attendance record over 2 years"""
             errors.append("❌ Phone Number is required (scroll to Step 2)")
         if not location or location.strip() == "":
             errors.append("❌ Location is required (scroll to Step 2)")
+        if not professional_summary or professional_summary.strip() == "":
+            errors.append("❌ Professional Summary is required (scroll to Step 3)")
         if not work_history:
-            errors.append("❌ Please add at least one work experience (scroll to Step 3)")
+            errors.append("❌ Please add at least one work experience (scroll to Step 4)")
         if not selected_quals:
-            errors.append("❌ Please select at least one qualification (scroll to Step 4)")
+            errors.append("❌ Please select at least one qualification (scroll to Step 5)")
         if len(selected_skills) < 5:
-            errors.append(f"❌ Please select at least 5 skills (you have {len(selected_skills)} - scroll to Step 5)")
+            errors.append(f"❌ Please select at least 5 skills (you have {len(selected_skills)} - scroll to Step 6)")
         
         if errors:
             st.error("**Please fix the following issues:**")
@@ -4220,8 +4248,8 @@ Achieved 98% attendance record over 2 years"""
         else:
             with st.spinner("✨ Generating your professional CV..."):
                 
-                # Generate professional summary
-                summary = generate_professional_summary(career_code, years_exp, selected_skills)
+                # Use user's professional summary
+                # (No longer auto-generating - user writes their own)
                 
                 # Create student info
                 student_info = {
@@ -4230,7 +4258,7 @@ Achieved 98% attendance record over 2 years"""
                     'phone': phone,
                     'location': location,
                     'linkedin': linkedin,
-                    'summary': summary
+                    'summary': professional_summary
                 }
                 
                 # Generate CV data with achievements
@@ -4254,10 +4282,10 @@ Achieved 98% attendance record over 2 years"""
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    # PDF Download
+                    # PDF Download - ENHANCED (captures ALL data)
                     try:
-                        from cv_builder import export_cv_to_pdf
-                        pdf_buffer = export_cv_to_pdf(cv_html)
+                        from cv_export_enhanced import export_cv_to_pdf_enhanced
+                        pdf_buffer = export_cv_to_pdf_enhanced(cv_data)
                         if pdf_buffer:
                             st.download_button(
                                 label="📄 Download as PDF",
@@ -4273,10 +4301,10 @@ Achieved 98% attendance record over 2 years"""
                         st.error(f"❌ PDF export error: {str(e)}")
                 
                 with col2:
-                    # Word Download
+                    # Word Download - ENHANCED (captures ALL data)
                     try:
-                        from cv_builder import export_cv_to_word
-                        word_buffer = export_cv_to_word(cv_html)
+                        from cv_export_enhanced import export_cv_to_word_enhanced
+                        word_buffer = export_cv_to_word_enhanced(cv_data)
                         if word_buffer:
                             st.download_button(
                                 label="📝 Download as Word",
@@ -6535,7 +6563,7 @@ Just paste ANY job description here!"""
            - ✅ Professional Summary
            - ✅ Work Experience
            - ✅ Education
-           - ✅ Professional Qualifications (T21 certs)
+           - ✅ Professional Qualifications & Certifications (optional)
            - ✅ Key Skills (with suggestions)
            - ✅ Achievements & Awards
            - ✅ **Download as PDF or Word** (not HTML!)
