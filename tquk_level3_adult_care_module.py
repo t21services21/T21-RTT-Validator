@@ -57,6 +57,167 @@ UNITS = {
         "file": "LEVEL3_UNIT7_PROFESSIONAL_DEVELOPMENT_COMPLETE.md",
         "activities": 6,
         "learning_outcomes": 3
+    },
+    # Optional Units (8-27)
+    8: {
+        "name": "Dementia Care",
+        "file": "LEVEL3_UNIT8_DEMENTIA_CARE_COMPLETE.md",
+        "activities": 10,
+        "learning_outcomes": 6,
+        "optional": True,
+        "credits": 5
+    },
+    9: {
+        "name": "Mental Health Awareness",
+        "file": "LEVEL3_UNIT9_MENTAL_HEALTH_COMPLETE.md",
+        "activities": 8,
+        "learning_outcomes": 5,
+        "optional": True,
+        "credits": 4
+    },
+    10: {
+        "name": "End of Life Care",
+        "file": "LEVEL3_UNIT10_END_OF_LIFE_CARE_COMPLETE.md",
+        "activities": 9,
+        "learning_outcomes": 6,
+        "optional": True,
+        "credits": 5
+    },
+    11: {
+        "name": "Medication Management",
+        "file": "LEVEL3_UNIT11_MEDICATION_MANAGEMENT_COMPLETE.md",
+        "activities": 8,
+        "learning_outcomes": 5,
+        "optional": True,
+        "credits": 4
+    },
+    12: {
+        "name": "Moving and Handling",
+        "file": "LEVEL3_UNIT12_MOVING_HANDLING_COMPLETE.md",
+        "activities": 6,
+        "learning_outcomes": 4,
+        "optional": True,
+        "credits": 3
+    },
+    13: {
+        "name": "Infection Prevention and Control",
+        "file": "LEVEL3_UNIT13_INFECTION_CONTROL_COMPLETE.md",
+        "activities": 7,
+        "learning_outcomes": 4,
+        "optional": True,
+        "credits": 3
+    },
+    14: {
+        "name": "Nutrition and Hydration",
+        "file": "LEVEL3_UNIT14_NUTRITION_HYDRATION_COMPLETE.md",
+        "activities": 8,
+        "learning_outcomes": 4,
+        "optional": True,
+        "credits": 3
+    },
+    15: {
+        "name": "Personal Care",
+        "file": "LEVEL3_UNIT15_PERSONAL_CARE_COMPLETE.md",
+        "activities": 9,
+        "learning_outcomes": 5,
+        "optional": True,
+        "credits": 4
+    },
+    16: {
+        "name": "Supporting Independence",
+        "file": "LEVEL3_UNIT16_SUPPORTING_INDEPENDENCE_COMPLETE.md",
+        "activities": 8,
+        "learning_outcomes": 5,
+        "optional": True,
+        "credits": 4
+    },
+    17: {
+        "name": "Working in Partnership",
+        "file": "LEVEL3_UNIT17_WORKING_PARTNERSHIP_COMPLETE.md",
+        "activities": 6,
+        "learning_outcomes": 4,
+        "optional": True,
+        "credits": 3
+    },
+    18: {
+        "name": "Dignity and Privacy",
+        "file": "LEVEL3_UNIT18_DIGNITY_PRIVACY_COMPLETE.md",
+        "activities": 6,
+        "learning_outcomes": 4,
+        "optional": True,
+        "credits": 3
+    },
+    19: {
+        "name": "Safeguarding Vulnerable Adults",
+        "file": "LEVEL3_UNIT19_SAFEGUARDING_VULNERABLE_ADULTS_COMPLETE.md",
+        "activities": 8,
+        "learning_outcomes": 5,
+        "optional": True,
+        "credits": 4
+    },
+    20: {
+        "name": "Learning Disabilities Support",
+        "file": "LEVEL3_UNIT20_LEARNING_DISABILITIES_COMPLETE.md",
+        "activities": 8,
+        "learning_outcomes": 5,
+        "optional": True,
+        "credits": 4
+    },
+    21: {
+        "name": "Autism Awareness",
+        "file": "LEVEL3_UNIT21_AUTISM_AWARENESS_COMPLETE.md",
+        "activities": 6,
+        "learning_outcomes": 4,
+        "optional": True,
+        "credits": 3
+    },
+    22: {
+        "name": "Stroke Care",
+        "file": "LEVEL3_UNIT22_STROKE_CARE_COMPLETE.md",
+        "activities": 8,
+        "learning_outcomes": 5,
+        "optional": True,
+        "credits": 4
+    },
+    23: {
+        "name": "Diabetes Care",
+        "file": "LEVEL3_UNIT23_DIABETES_CARE_COMPLETE.md",
+        "activities": 6,
+        "learning_outcomes": 4,
+        "optional": True,
+        "credits": 3
+    },
+    24: {
+        "name": "Continence Care",
+        "file": "LEVEL3_UNIT24_CONTINENCE_CARE_COMPLETE.md",
+        "activities": 6,
+        "learning_outcomes": 4,
+        "optional": True,
+        "credits": 3
+    },
+    25: {
+        "name": "Falls Prevention",
+        "file": "LEVEL3_UNIT25_FALLS_PREVENTION_COMPLETE.md",
+        "activities": 6,
+        "learning_outcomes": 4,
+        "optional": True,
+        "credits": 3
+    },
+    26: {
+        "name": "Pressure Area Care",
+        "file": "LEVEL3_UNIT26_PRESSURE_AREA_CARE_COMPLETE.md",
+        "activities": 6,
+        "learning_outcomes": 4,
+        "optional": True,
+        "credits": 3
+    },
+    27: {
+        "name": "Sensory Loss Support",
+        "file": "LEVEL3_UNIT27_SENSORY_LOSS_COMPLETE.md",
+        "activities": 6,
+        "learning_outcomes": 4,
+        "optional": True,
+        "credits": 3
     }
 }
 
@@ -234,15 +395,23 @@ def render_learning_materials(enrollment):
     
     # Progress indicator
     if enrollment:
-        progress_text = f"Overall Progress: {enrollment['progress']}% | Units: {enrollment['units_completed']}/7"
+        progress_text = f"Overall Progress: {enrollment['progress']}% | Units: {enrollment['units_completed']}/27"
         st.progress(enrollment['progress'] / 100, text=progress_text)
         st.markdown("---")
     
-    # Unit navigation with tabs
-    unit_tabs = st.tabs([f"Unit {i}: {UNITS[i]['name']}" for i in UNITS.keys()])
+    # Separate mandatory and optional units
+    mandatory_units = {k: v for k, v in UNITS.items() if k <= 7}
+    optional_units = {k: v for k, v in UNITS.items() if k > 7}
     
-    for idx, (unit_num, unit_data) in enumerate(UNITS.items()):
-        with unit_tabs[idx]:
+    # Create two sections
+    st.markdown("### 📚 Mandatory Units (1-7)")
+    st.info("These units are required for all students.")
+    
+    # Mandatory unit tabs
+    mandatory_tabs = st.tabs([f"Unit {i}: {UNITS[i]['name']}" for i in mandatory_units.keys()])
+    
+    for idx, (unit_num, unit_data) in enumerate(mandatory_units.items()):
+        with mandatory_tabs[idx]:
             # Unit header
             st.markdown(f"## 📚 Unit {unit_num}: {unit_data['name']}")
             
@@ -319,6 +488,88 @@ def render_learning_materials(enrollment):
                     Full materials will be available soon!
                     """)
                     
+            except Exception as e:
+                st.error(f"Error loading materials: {str(e)}")
+                st.info("Please contact your teacher if this persists.")
+    
+    # Optional Units Section
+    st.markdown("---")
+    st.markdown("### 🎯 Optional Units (8-27)")
+    st.success("✅ All 20 optional units available! Select units in the 'Optional Units' tab, then view materials here.")
+    
+    # Optional unit tabs
+    optional_tabs = st.tabs([f"Unit {i}: {UNITS[i]['name']}" for i in optional_units.keys()])
+    
+    for idx, (unit_num, unit_data) in enumerate(optional_units.items()):
+        with optional_tabs[idx]:
+            # Unit header with optional badge
+            st.markdown(f"## 🎯 Unit {unit_num}: {unit_data['name']}")
+            st.caption(f"Optional Unit • {unit_data.get('credits', 3)} Credits")
+            
+            # Unit info cards
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Learning Outcomes", unit_data['learning_outcomes'])
+            with col2:
+                st.metric("Activities", unit_data['activities'])
+            with col3:
+                st.metric("Credits", unit_data.get('credits', 3))
+            
+            st.markdown("---")
+            
+            # Load and display content
+            try:
+                content = load_markdown_file(unit_data['file'])
+                
+                if content and not content.startswith("Error"):
+                    with st.container():
+                        st.markdown(content, unsafe_allow_html=True)
+                    
+                    st.markdown("---")
+                    
+                    # Interactive elements
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        if st.button(f"✅ Mark Unit {unit_num} Complete", key=f"complete_{unit_num}", type="primary"):
+                            st.success(f"✅ Unit {unit_num} marked as complete!")
+                    
+                    with col2:
+                        if st.button(f"📝 Go to Assessment", key=f"assess_{unit_num}"):
+                            st.info("Switch to the 'Assessments' tab to submit your evidence!")
+                    
+                    # Download option
+                    try:
+                        pdf_buffer = create_unit_pdf(unit_num, unit_data['name'], content)
+                        st.download_button(
+                            label=f"📥 Download Unit {unit_num} as PDF",
+                            data=pdf_buffer,
+                            file_name=f"Level3_Unit{unit_num}_{unit_data['name'].replace(' ', '_')}.pdf",
+                            mime="application/pdf",
+                            help="Download professional PDF document",
+                            key=f"download_{unit_num}",
+                            type="primary"
+                        )
+                    except Exception as e:
+                        st.error(f"PDF generation error: {str(e)}")
+                        st.download_button(
+                            label=f"📥 Download Unit {unit_num} (Markdown)",
+                            data=content,
+                            file_name=f"Level3_Unit{unit_num}_{unit_data['name'].replace(' ', '_')}.md",
+                            mime="text/markdown",
+                            key=f"download_md_{unit_num}"
+                        )
+                else:
+                    st.warning(f"⚠️ Materials for Unit {unit_num} are being prepared.")
+                    st.info("""
+                    **What's included in this unit:**
+                    - Learning outcomes and assessment criteria
+                    - Real-world scenarios and case studies
+                    - Activities and reflective exercises
+                    - Assessment guidance
+                    
+                    Full materials will be available soon!
+                    """)
             except Exception as e:
                 st.error(f"Error loading materials: {str(e)}")
                 st.info("Please contact your teacher if this persists.")
