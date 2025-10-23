@@ -16,6 +16,7 @@ fhirclient>=4.0.0
 requests>=2.31.0
 extra-streamlit-components>=0.1.56
 reportlab>=4.0.0
+markdown2>=2.4.0
 beautifulsoup4>=4.12.0
 cryptography>=41.0.0
 selenium>=4.15.0

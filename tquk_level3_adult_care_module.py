@@ -4,7 +4,9 @@ Standalone module for learners to access materials, track progress, and submit e
 """
 
 import streamlit as st
+import os
 from tquk_course_assignment import get_learner_enrollments, update_learner_progress
+from tquk_pdf_converter import create_unit_pdf
 from datetime import datetime
 
 COURSE_ID = "level3_adult_care"
@@ -270,14 +272,28 @@ def render_learning_materials(enrollment):
                         if st.button(f"📝 Go to Assessment", key=f"assess_{unit_num}"):
                             st.info("Switch to the 'Assessments' tab to submit your evidence!")
                     
-                    # Download option
-                    st.download_button(
-                        label=f"📥 Download Unit {unit_num} Materials (PDF)",
-                        data=content,
-                        file_name=f"Level3_Unit{unit_num}_{unit_data['name'].replace(' ', '_')}.md",
-                        mime="text/markdown",
-                        key=f"download_{unit_num}"
-                    )
+                    # Download option - Convert to PDF
+                    try:
+                        pdf_buffer = create_unit_pdf(unit_num, unit_data['name'], content)
+                        st.download_button(
+                            label=f"📥 Download Unit {unit_num} as PDF",
+                            data=pdf_buffer,
+                            file_name=f"Level3_Unit{unit_num}_{unit_data['name'].replace(' ', '_')}.pdf",
+                            mime="application/pdf",
+                            help="Download professional PDF document",
+                            key=f"download_{unit_num}",
+                            type="primary"
+                        )
+                    except Exception as e:
+                        st.error(f"PDF generation error: {str(e)}")
+                        # Fallback to markdown
+                        st.download_button(
+                            label=f"📥 Download Unit {unit_num} (Markdown)",
+                            data=content,
+                            file_name=f"Level3_Unit{unit_num}_{unit_data['name'].replace(' ', '_')}.md",
+                            mime="text/markdown",
+                            key=f"download_md_{unit_num}"
+                        )
                     
                 else:
                     st.warning(f"⚠️ Materials for Unit {unit_num} are being prepared.")
