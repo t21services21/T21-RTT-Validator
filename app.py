@@ -1565,21 +1565,23 @@ elif user_role in ['teacher', 'instructor', 'trainer']:
         "📧 Contact & Support"
     ]
 elif user_role == 'tester':
-    # TESTER: Everything except super admin controls (for testing all modules)
+    # TESTER: EVERYTHING except ⚙️ Administration (super admin user management/access control)
+    # This role is for staff testing ALL modules before deployment
     accessible_modules = [
-        "🏥 Patient Administration Hub",
-        "🎓 Learning Portal",
-        "👨‍🏫 Teaching & Assessment",
-        "🏥 Clinical Workflows",
-        "✅ Task Management",
-        "🤖 AI & Automation",
-        "📊 Reports & Analytics",
-        "🎓 Training & Certification",
-        "🔒 Information Governance",
-        "💼 Career Development",
-        "ℹ️ Help & Information",
-        "📧 Contact & Support"
+        "🏥 Patient Administration Hub",      # Patient registration, search, management
+        "🎓 Learning Portal",                 # All training courses and materials
+        "👨‍🏫 Teaching & Assessment",          # Interview prep, certification, teaching tools
+        "🏥 Clinical Workflows",              # Booking, PTL, pathways, episodes, MDT
+        "✅ Task Management",                 # Task tracking and management
+        "🤖 AI & Automation",                 # AI tools, job automation, AI validators
+        "📊 Reports & Analytics",             # Dashboards, analytics, reporting
+        "🎓 Training & Certification",        # Certification exams, training modules
+        "🔒 Information Governance",          # IG training and compliance
+        "💼 Career Development",              # Career tools and development
+        "ℹ️ Help & Information",              # Help pages and documentation
+        "📧 Contact & Support"                # Support and contact pages
     ]
+    # NOTE: Does NOT include "⚙️ Administration" - only super_admin can manage users/access
 elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
     # SUPER ADMIN: Absolute everything (including admin management)
     accessible_modules = [
