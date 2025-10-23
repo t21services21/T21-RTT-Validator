@@ -525,9 +525,12 @@ def update_patient(patient_id: str, updated_data: Dict) -> Dict:
     # Update in Supabase
     if SUPABASE_ENABLED and supabase:
         try:
-            result = supabase.table('patients').update(updated_data).eq('patient_id', patient_id).eq('user_email', user_email).execute()
-            if result.data:
+            # Try to update by patient_id only (don't filter by user_email to allow cross-user updates)
+            result = supabase.table('patients').update(updated_data).eq('patient_id', patient_id).execute()
+            if result.data and len(result.data) > 0:
                 return {'success': True, 'message': 'Patient updated successfully'}
+            else:
+                print(f"⚠️ No patient found in Supabase with ID: {patient_id}")
         except Exception as e:
             print(f"❌ Supabase update error: {e}")
     
@@ -563,9 +566,12 @@ def delete_patient(patient_id: str) -> bool:
     # Delete from Supabase
     if SUPABASE_ENABLED and supabase:
         try:
-            result = supabase.table('patients').delete().eq('patient_id', patient_id).eq('user_email', user_email).execute()
-            if result.data:
+            # Delete by patient_id only (don't filter by user_email to allow cross-user deletes)
+            result = supabase.table('patients').delete().eq('patient_id', patient_id).execute()
+            if result.data and len(result.data) > 0:
                 return True
+            else:
+                print(f"⚠️ No patient found in Supabase with ID: {patient_id}")
         except Exception as e:
             print(f"❌ Supabase delete error: {e}")
     

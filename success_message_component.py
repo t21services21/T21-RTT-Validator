@@ -20,7 +20,79 @@ def show_huge_success(title, subtitle="", details=None, next_steps=None):
     # Balloons animation
     st.balloons()
     
-    # HUGE animated banner
+    # AUTO-SCROLL TO TOP
+    st.markdown("""
+    <script>
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    </script>
+    """, unsafe_allow_html=True)
+    
+    # HUGE FIXED POSITION OVERLAY (IMPOSSIBLE TO MISS!)
+    st.markdown(f"""
+    <div id="success-overlay" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s;
+    ">
+        <div style="
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 60px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: bounceIn 0.5s;
+        ">
+            <h1 style="color: white; font-size: 72px; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">✅ SUCCESS!</h1>
+            <h2 style="color: white; font-size: 42px; margin: 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">{title}</h2>
+            {f'<p style="color: white; font-size: 24px; margin: 10px 0;">{subtitle}</p>' if subtitle else ''}
+            <p style="color: white; font-size: 16px; margin-top: 30px; opacity: 0.9;">This message will disappear in 3 seconds...</p>
+        </div>
+    </div>
+    
+    <style>
+    @keyframes fadeIn {{
+        from {{ opacity: 0; }}
+        to {{ opacity: 1; }}
+    }}
+    
+    @keyframes bounceIn {{
+        0% {{ transform: scale(0.3); opacity: 0; }}
+        50% {{ transform: scale(1.05); }}
+        70% {{ transform: scale(0.9); }}
+        100% {{ transform: scale(1); opacity: 1; }}
+    }}
+    
+    @keyframes pulse {{
+        0%, 100% {{ transform: scale(1); }}
+        50% {{ transform: scale(1.05); }}
+    }}
+    </style>
+    
+    <script>
+        // Auto-hide after 3 seconds
+        setTimeout(function() {{
+            var overlay = document.getElementById('success-overlay');
+            if (overlay) {{
+                overlay.style.animation = 'fadeOut 0.5s';
+                overlay.style.opacity = '0';
+                setTimeout(function() {{
+                    overlay.style.display = 'none';
+                }}, 500);
+            }}
+        }}, 3000);
+    </script>
+    """, unsafe_allow_html=True)
+    
+    # ALSO show normal banner below (for after overlay disappears)
     st.markdown(f"""
     <div style="
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -35,13 +107,6 @@ def show_huge_success(title, subtitle="", details=None, next_steps=None):
         <h2 style="color: white; font-size: 32px; margin: 20px 0;">{title}</h2>
         {f'<p style="color: white; font-size: 20px; margin: 10px 0;">{subtitle}</p>' if subtitle else ''}
     </div>
-    
-    <style>
-    @keyframes pulse {{
-        0%, 100% {{ transform: scale(1); }}
-        50% {{ transform: scale(1.05); }}
-    }}
-    </style>
     """, unsafe_allow_html=True)
     
     # Details in a prominent box

@@ -2672,8 +2672,26 @@ elif tool == "🎓 Training Library":
             
             if has_access:
                 # User has access - show full content
-                st.markdown("**Letter:**")
-                st.text_area("Clinic Letter", scenario['letter'], height=200, key=f"letter_{scenario['id']}", disabled=True)
+                st.markdown("**Clinical Scenario:**")
+                # READABLE BLACK TEXT ON WHITE BACKGROUND
+                st.markdown(f"""
+                <div style="
+                    background-color: #ffffff;
+                    border: 2px solid #0066cc;
+                    border-radius: 10px;
+                    padding: 20px;
+                    margin: 10px 0;
+                    font-family: 'Courier New', monospace;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    color: #000000;
+                    white-space: pre-wrap;
+                    max-height: 400px;
+                    overflow-y: auto;
+                ">
+{scenario['letter']}
+                </div>
+                """, unsafe_allow_html=True)
                 
                 st.markdown("---")
                 st.markdown("**Your Answer:**")
@@ -3601,10 +3619,27 @@ elif tool == "💼 Job Interview Prep":
                         st.error("Word support not available. Please install python-docx: pip install python-docx")
                         st.info("Or paste the job description text below instead.")
                 
-                # Show extracted text
+                # Show extracted text - READABLE
                 if job_description:
                     with st.expander("📄 View Extracted Text", expanded=False):
-                        st.text_area("Extracted Job Description", job_description, height=200, disabled=True)
+                        st.markdown(f"""
+                        <div style="
+                            background-color: #ffffff;
+                            border: 2px solid #0066cc;
+                            border-radius: 10px;
+                            padding: 20px;
+                            margin: 10px 0;
+                            font-family: 'Courier New', monospace;
+                            font-size: 16px;
+                            line-height: 1.6;
+                            color: #000000;
+                            white-space: pre-wrap;
+                            max-height: 400px;
+                            overflow-y: auto;
+                        ">
+{job_description}
+                        </div>
+                        """, unsafe_allow_html=True)
             
             except Exception as e:
                 st.error(f"Error reading file: {str(e)}")
@@ -5669,8 +5704,26 @@ elif tool == "🎓 Training & Certification":
                 
                 if has_access:
                     # User has access - show full content
-                    st.markdown("**Letter:**")
-                    st.text_area("Clinic Letter", scenario['letter'], height=200, key=f"letter_train_{unique_key}", disabled=True)
+                    st.markdown("**Clinical Scenario:**")
+                    # READABLE BLACK TEXT ON WHITE BACKGROUND
+                    st.markdown(f"""
+                    <div style="
+                        background-color: #ffffff;
+                        border: 2px solid #0066cc;
+                        border-radius: 10px;
+                        padding: 20px;
+                        margin: 10px 0;
+                        font-family: 'Courier New', monospace;
+                        font-size: 16px;
+                        line-height: 1.6;
+                        color: #000000;
+                        white-space: pre-wrap;
+                        max-height: 400px;
+                        overflow-y: auto;
+                    ">
+{scenario['letter']}
+                    </div>
+                    """, unsafe_allow_html=True)
                     
                     st.markdown("---")
                     st.markdown("**Your Answer:**")
@@ -5773,7 +5826,25 @@ elif tool == "🎓 Training & Certification":
                 st.markdown(f"### Question {st.session_state['quiz_current_question'] + 1}")
                 st.markdown(f"**Difficulty:** {scenario.get('difficulty', 'Medium')}")
                 
-                st.text_area("Clinical Letter:", scenario.get('letter', ''), height=200, disabled=True, key=f"quiz_letter_{st.session_state['quiz_current_question']}")
+                # READABLE BLACK TEXT ON WHITE BACKGROUND
+                st.markdown(f"""
+                <div style="
+                    background-color: #ffffff;
+                    border: 2px solid #0066cc;
+                    border-radius: 10px;
+                    padding: 20px;
+                    margin: 10px 0;
+                    font-family: 'Courier New', monospace;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    color: #000000;
+                    white-space: pre-wrap;
+                    max-height: 400px;
+                    overflow-y: auto;
+                ">
+{scenario.get('letter', '')}
+                </div>
+                """, unsafe_allow_html=True)
                 
                 st.markdown("**What RTT code should be used?**")
                 
@@ -5925,7 +5996,25 @@ elif tool == "🎓 Training & Certification":
                 st.progress(progress)
                 
                 st.markdown(f"**Difficulty:** {scenario.get('difficulty', 'Medium')}")
-                st.text_area("Clinical Scenario:", scenario.get('letter', ''), height=250, disabled=True, key=f"exam_q_{st.session_state['exam_question_num']}")
+                # READABLE BLACK TEXT ON WHITE BACKGROUND
+                st.markdown(f"""
+                <div style="
+                    background-color: #ffffff;
+                    border: 2px solid #0066cc;
+                    border-radius: 10px;
+                    padding: 20px;
+                    margin: 10px 0;
+                    font-family: 'Courier New', monospace;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    color: #000000;
+                    white-space: pre-wrap;
+                    max-height: 400px;
+                    overflow-y: auto;
+                ">
+{scenario.get('letter', '')}
+                </div>
+                """, unsafe_allow_html=True)
                 
                 st.markdown("### What RTT code should be used?")
                 
@@ -6139,10 +6228,27 @@ elif tool == "💼 Career Development":
                             st.error("Word support not available. Please install python-docx: pip install python-docx")
                             st.info("Or paste the job description text below instead.")
                     
-                    # Show extracted text
+                    # Show extracted text - READABLE
                     if job_description:
                         with st.expander("📄 View Extracted Text", expanded=False):
-                            st.text_area("Extracted Job Description", job_description, height=200, disabled=True, key="career_dev_extracted")
+                            st.markdown(f"""
+                            <div style="
+                                background-color: #ffffff;
+                                border: 2px solid #0066cc;
+                                border-radius: 10px;
+                                padding: 20px;
+                                margin: 10px 0;
+                                font-family: 'Courier New', monospace;
+                                font-size: 16px;
+                                line-height: 1.6;
+                                color: #000000;
+                                white-space: pre-wrap;
+                                max-height: 400px;
+                                overflow-y: auto;
+                            ">
+{job_description}
+                            </div>
+                            """, unsafe_allow_html=True)
                 
                 except Exception as e:
                     st.error(f"Error reading file: {str(e)}")

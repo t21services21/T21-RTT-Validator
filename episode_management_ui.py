@@ -18,6 +18,7 @@ from episode_management_system import (
     move_episode_to_pathway,
     get_episode_by_id
 )
+from success_message_component import show_huge_success
 from patient_selector_component import render_patient_selector, render_pathway_selector
 
 
@@ -91,17 +92,13 @@ def render_add_consultant_episode():
     # Success message - ENHANCED
     if 'consultant_episode_added' in st.session_state:
         episode_id = st.session_state['consultant_episode_added']
-        st.balloons()
-        st.success(f"""
-        ✅ **CONSULTANT EPISODE CREATED SUCCESSFULLY!**
         
-        **Episode ID:** {episode_id}  
-        **Type:** Consultant Episode  
-        
-        ✔️ Episode has been saved and linked to pathway!  
-        📊 Patient care tracking is now active!
-        """)
-        st.info("💡 **Next Steps:** You can now add treatment or diagnostic episodes, or update this episode as care progresses.")
+        show_huge_success(
+            title="CONSULTANT EPISODE CREATED!",
+            subtitle="Episode saved to database",
+            details={"Episode ID": episode_id, "Status": "Active"},
+            next_steps="You can now add treatments and diagnostics to this episode."
+        )
         del st.session_state['consultant_episode_added']
     
     # SMART PATIENT SELECTOR (with search!)
@@ -191,17 +188,13 @@ def render_add_treatment_episode():
     # Success message - ENHANCED
     if 'treatment_episode_added' in st.session_state:
         episode_id = st.session_state['treatment_episode_added']
-        st.balloons()
-        st.success(f"""
-        ✅ **TREATMENT EPISODE CREATED SUCCESSFULLY!**
         
-        **Episode ID:** {episode_id}  
-        **Type:** Treatment Episode  
-        
-        ✔️ Treatment has been recorded!  
-        📊 Episode saved and linked to pathway!
-        """)
-        st.info("💡 **Next Steps:** Continue tracking treatment progress or add follow-up episodes.")
+        show_huge_success(
+            title="TREATMENT EPISODE CREATED!",
+            subtitle="Treatment details recorded permanently",
+            details={"Episode ID": episode_id, "Status": "Active"},
+            next_steps="Treatment episode has been saved to the database."
+        )
         del st.session_state['treatment_episode_added']
     
     with st.form("add_treatment_episode"):
@@ -278,17 +271,13 @@ def render_add_diagnostic_episode():
     # Success message - ENHANCED
     if 'diagnostic_episode_added' in st.session_state:
         episode_id = st.session_state['diagnostic_episode_added']
-        st.balloons()
-        st.success(f"""
-        ✅ **DIAGNOSTIC EPISODE CREATED SUCCESSFULLY!**
         
-        **Episode ID:** {episode_id}  
-        **Type:** Diagnostic Episode  
-        
-        ✔️ Diagnostic test has been recorded!  
-        📊 Episode saved and linked to pathway!
-        """)
-        st.info("💡 **Next Steps:** Update episode with test results when available.")
+        show_huge_success(
+            title="DIAGNOSTIC EPISODE CREATED!",
+            subtitle="Diagnostic details recorded permanently",
+            details={"Episode ID": episode_id, "Status": "Active"},
+            next_steps="Diagnostic episode has been saved to the database."
+        )
         del st.session_state['diagnostic_episode_added']
     
     with st.form("add_diagnostic_episode"):
@@ -734,7 +723,11 @@ def render_manage_episodes():
             result = delete_episode(selected_episode.get('episode_id'))
             
             if result['success']:
-                st.success("✅ Episode deleted successfully!")
+                show_huge_success(
+                    title="EPISODE DELETED!",
+                    subtitle="Episode removed from database",
+                    next_steps="The episode has been permanently deleted."
+                )
                 st.rerun()
             else:
                 st.error(f"❌ Delete failed: {result.get('error')}")

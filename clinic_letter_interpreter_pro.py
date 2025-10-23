@@ -328,9 +328,26 @@ def render_clinic_letter_interpreter():
                     st.success(f"✅ File uploaded: {uploaded_file.name}")
                     st.success(f"✅ Text extracted successfully! ({len(letter_text)} characters)")
                     
-                    # Show preview
+                    # Show preview - READABLE BLACK TEXT
                     with st.expander("📄 Preview extracted text"):
-                        st.text_area("Extracted text", letter_text, height=200, disabled=True, key="letter_preview_extracted")
+                        st.markdown(f"""
+                        <div style="
+                            background-color: #ffffff;
+                            border: 2px solid #0066cc;
+                            border-radius: 10px;
+                            padding: 20px;
+                            margin: 10px 0;
+                            font-family: 'Courier New', monospace;
+                            font-size: 16px;
+                            line-height: 1.6;
+                            color: #000000;
+                            white-space: pre-wrap;
+                            max-height: 400px;
+                            overflow-y: auto;
+                        ">
+{letter_text}
+                        </div>
+                        """, unsafe_allow_html=True)
                 else:
                     st.error(f"❌ {result}")
     

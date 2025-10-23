@@ -167,24 +167,34 @@ USER_TYPES = {
         "price": 0,
         "max_logins_per_day": 500,
         "features": {
-            # ALL FEATURES except user management/access control
+            # ALL FEATURES - SAME AS SUPER ADMIN except admin panel controls
+            "all_access": True,  # FULL ACCESS TO EVERYTHING
             "pathway_validator": True,
             "clinic_letter_interpreter": True,
             "training_library": True,
             "interactive_learning": True,
             "ai_tutor": True,
-            "certification_exam": True,
+            "certification_exam": True,  # UNLOCKED
             "cv_builder": True,
             "job_interview_prep": True,
             "pas_practice": True,
             "breach_calculator": True,
-            "admin_panel": False,  # NO admin panel
+            "admin_panel": False,  # NO admin panel (only restriction)
             "staff_tools": True,
-            "student_management": "view",  # Can view but not manage
+            "student_management": "full",  # FULL access for testing
+            "staff_management": False,  # Cannot manage staff
+            "admin_management": False,  # Cannot manage admins
             "create_content": True,
             "grade_exams": True,
+            "system_settings": False,  # Cannot change system settings
+            "revenue_reports": True,  # Can view reports
+            "audit_logs": True,  # Can view audit logs
+            "license_management": False,  # Cannot manage licenses
+            "database_access": True,  # Can access database for testing
+            "terminate_accounts": False,  # Cannot terminate accounts
             "support_tickets": True,
-            "all_modules": True  # Access to all modules for testing
+            "all_modules": True,  # Access to all modules for testing
+            "priority_support": True
         }
     },
     
