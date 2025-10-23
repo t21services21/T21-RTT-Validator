@@ -308,8 +308,15 @@ def render_level3_adult_care_module():
         render_learning_materials(enrollment)
     
     with tabs[2]:
-        # Optional Units Selection
+        # Optional Units Selection and Content
         render_optional_units_selector(learner_email, COURSE_ID, required_credits=58, mandatory_credits=24)
+        
+        st.markdown("---")
+        st.markdown("---")
+        
+        # Show learning materials for selected optional units
+        from tquk_optional_units import render_optional_units_content
+        render_optional_units_content(learner_email, COURSE_ID, UNITS)
     
     with tabs[3]:
         render_assessments(learner_email)
@@ -496,94 +503,6 @@ def render_learning_materials(enrollment):
                 st.error(f"Error loading materials: {str(e)}")
                 st.info("Please contact your teacher if this persists.")
     
-    # Optional Units Section
-    st.markdown("---")
-    st.markdown("### 🎯 Optional Units (8-27)")
-    st.success(f"✅ All {len(optional_units)} optional units available with full learning materials!")
-    
-    # Use dropdown selector instead of tabs (better UX for 20 units)
-    selected_optional_unit = st.selectbox(
-        "Select Optional Unit to View:",
-        options=list(optional_units.keys()),
-        format_func=lambda x: f"Unit {x}: {UNITS[x]['name']} ({UNITS[x].get('credits', 3)} credits)",
-        key="optional_unit_selector"
-    )
-    
-    if selected_optional_unit:
-        unit_num = selected_optional_unit
-        unit_data = UNITS[unit_num]
-        
-        # Unit header with optional badge
-        st.markdown(f"## 🎯 Unit {unit_num}: {unit_data['name']}")
-        st.caption(f"Optional Unit • {unit_data.get('credits', 3)} Credits")
-        
-        # Unit info cards
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("Learning Outcomes", unit_data['learning_outcomes'])
-        with col2:
-            st.metric("Activities", unit_data['activities'])
-        with col3:
-            st.metric("Credits", unit_data.get('credits', 3))
-        
-        st.markdown("---")
-        
-        # Load and display content
-        try:
-            content = load_markdown_file(unit_data['file'])
-            
-            if content and not content.startswith("Error"):
-                with st.container():
-                    st.markdown(content, unsafe_allow_html=True)
-                
-                st.markdown("---")
-                
-                # Interactive elements
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    if st.button(f"✅ Mark Unit {unit_num} Complete", key=f"complete_opt_{unit_num}", type="primary"):
-                        st.success(f"✅ Unit {unit_num} marked as complete!")
-                
-                with col2:
-                    if st.button(f"📝 Go to Assessment", key=f"assess_opt_{unit_num}"):
-                        st.info("Switch to the 'Assessments' tab to submit your evidence!")
-                
-                # Download option
-                try:
-                    pdf_buffer = create_unit_pdf(unit_num, unit_data['name'], content)
-                    st.download_button(
-                        label=f"📥 Download Unit {unit_num} as PDF",
-                        data=pdf_buffer,
-                        file_name=f"Level3_Unit{unit_num}_{unit_data['name'].replace(' ', '_')}.pdf",
-                        mime="application/pdf",
-                        help="Download professional PDF document",
-                        key=f"download_opt_{unit_num}",
-                        type="primary"
-                    )
-                except Exception as e:
-                    st.error(f"PDF generation error: {str(e)}")
-                    st.download_button(
-                        label=f"📥 Download Unit {unit_num} (Markdown)",
-                        data=content,
-                        file_name=f"Level3_Unit{unit_num}_{unit_data['name'].replace(' ', '_')}.md",
-                        mime="text/markdown",
-                        key=f"download_md_opt_{unit_num}"
-                    )
-            else:
-                st.warning(f"⚠️ Materials for Unit {unit_num} are being prepared.")
-                st.info("""
-                **What's included in this unit:**
-                - Learning outcomes and assessment criteria
-                - Real-world scenarios and case studies
-                - Activities and reflective exercises
-                - Assessment guidance
-                
-                Full materials will be available soon!
-                """)
-        except Exception as e:
-            st.error(f"Error loading materials: {str(e)}")
-            st.info("Please contact your teacher if this persists.")
 
 
 def render_assessments(learner_email):
