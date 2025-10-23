@@ -1547,6 +1547,10 @@ if user_role in ['student', 'student_basic', 'student_standard', 'student_premiu
         "🏥 Clinical Workflows",  # PRACTICE: PTL, booking, MDT workflows
         "🎓 Learning Portal",  # Their courses and materials
         "🎓 Training & Certification",  # Training, AI Tutor, Certification
+        "📚 Level 3 Adult Care",  # TQUK Qualification
+        "💻 IT User Skills",  # TQUK Qualification
+        "🤝 Customer Service",  # TQUK Qualification
+        "📊 Business Administration",  # TQUK Qualification
         "🔒 Information Governance",  # Mandatory NHS training
         "💼 Career Development",  # Interview prep, job automation
         "📄 CV Builder",  # FULL Professional CV Builder
@@ -1560,6 +1564,10 @@ elif user_role in ['teacher', 'instructor', 'trainer']:
         "👨‍🏫 Teaching & Assessment",  # Teacher tools, student management
         "🎓 Learning Portal",
         "🎓 Training & Certification",
+        "📚 Level 3 Adult Care",  # TQUK Qualification
+        "💻 IT User Skills",  # TQUK Qualification
+        "🤝 Customer Service",  # TQUK Qualification
+        "📊 Business Administration",  # TQUK Qualification
         "📊 Reports & Analytics",
         "📄 CV Builder",  # FULL Professional CV Builder
         "⚙️ Administration",
@@ -1578,6 +1586,10 @@ elif user_role == 'tester':
         "🤖 AI & Automation",                 # AI tools, job automation, AI validators
         "📊 Reports & Analytics",             # Dashboards, analytics, reporting
         "🎓 Training & Certification",        # Certification exams, training modules
+        "📚 Level 3 Adult Care",              # TQUK Qualification
+        "💻 IT User Skills",                  # TQUK Qualification
+        "🤝 Customer Service",                # TQUK Qualification
+        "📊 Business Administration",         # TQUK Qualification
         "🔒 Information Governance",          # IG training and compliance
         "💼 Career Development",              # Career tools and development
         "📄 CV Builder",                      # FULL Professional CV Builder
@@ -1596,6 +1608,10 @@ elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
         "🤖 AI & Automation",
         "📊 Reports & Analytics",
         "🎓 Training & Certification",
+        "📚 Level 3 Adult Care",  # TQUK Qualification
+        "💻 IT User Skills",  # TQUK Qualification
+        "🤝 Customer Service",  # TQUK Qualification
+        "📊 Business Administration",  # TQUK Qualification
         "🔒 Information Governance",
         "💼 Career Development",
         "📄 CV Builder",  # FULL Professional CV Builder
@@ -1614,6 +1630,10 @@ elif user_role == 'admin':
         "🤖 AI & Automation",
         "📊 Reports & Analytics",
         "🎓 Training & Certification",
+        "📚 Level 3 Adult Care",  # TQUK Qualification
+        "💻 IT User Skills",  # TQUK Qualification
+        "🤝 Customer Service",  # TQUK Qualification
+        "📊 Business Administration",  # TQUK Qualification
         "🔒 Information Governance",
         "💼 Career Development",
         "📄 CV Builder",  # FULL Professional CV Builder
@@ -5626,6 +5646,7 @@ elif tool == "👨‍🏫 Teaching & Assessment":
     tabs = st.tabs([
         "👨‍🏫 Teacher Dashboard",
         "👥 Student Management",
+        "📚 TQUK Course Assignment",
         "📚 Student Portfolio",
         "📊 Progress Reports"
     ])
@@ -5639,10 +5660,14 @@ elif tool == "👨‍🏫 Teaching & Assessment":
         render_student_access_management()
     
     with tabs[2]:
+        from tquk_course_assignment import render_course_assignment_ui
+        render_course_assignment_ui()
+    
+    with tabs[3]:
         from student_portfolio_ui import render_student_portfolio
         render_student_portfolio()
     
-    with tabs[3]:
+    with tabs[4]:
         st.info("📊 Progress reports coming soon - integrated with TQUK tracking")
 
 # ============================================
@@ -7284,6 +7309,30 @@ elif tool == "👨‍🏫 Student Progress Monitor":
         navigate_with_history("Student Progress Monitor", "/student_progress_monitor", "pages/student_progress_monitor.py")
     else:
         st.switch_page("pages/student_progress_monitor.py")
+
+# ============================================
+# TQUK QUALIFICATION MODULES
+# ============================================
+
+elif tool == "📚 Level 3 Adult Care":
+    from tquk_level3_adult_care_module import render_level3_adult_care_module
+    render_level3_adult_care_module()
+
+elif tool == "💻 IT User Skills":
+    from tquk_it_user_skills_module import render_it_user_skills_module
+    render_it_user_skills_module()
+
+elif tool == "🤝 Customer Service":
+    from tquk_customer_service_module import render_customer_service_module
+    render_customer_service_module()
+
+elif tool == "📊 Business Administration":
+    from tquk_business_admin_module import render_business_admin_module
+    render_business_admin_module()
+
+# ============================================
+# CONTACT & SUPPORT
+# ============================================
 
 elif tool == "📧 Contact Us":
     st.header("📧 Contact Us")

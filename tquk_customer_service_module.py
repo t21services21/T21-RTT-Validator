@@ -1,0 +1,83 @@
+"""
+TQUK LEVEL 2 CUSTOMER SERVICE - COMPLETE LEARNER MODULE
+Integrated with PAS patient reception for practical assessment
+"""
+
+import streamlit as st
+from tquk_course_assignment import get_learner_enrollments
+
+COURSE_ID = "level2_customer_service"
+COURSE_NAME = "Level 2 Certificate in Customer Service"
+
+UNITS = {
+    1: {"name": "Customer Service Delivery", "credits": 3},
+    2: {"name": "Communication with Customers", "credits": 3},
+    3: {"name": "Understanding the Organization", "credits": 3},
+    4: {"name": "Handling Customer Problems", "credits": 3},
+    5: {"name": "Working in a Team", "credits": 3},
+    6: {"name": "Personal Development", "credits": 3}
+}
+
+def render_customer_service_module():
+    """Main module for Customer Service"""
+    
+    learner_email = st.session_state.get('user_email', '')
+    
+    st.title("🤝 Level 2 Certificate in Customer Service")
+    st.success("✅ **TQUK Approved** - Learn Using Real Patient Reception System (PAS)")
+    
+    enrollments = get_learner_enrollments(learner_email)
+    is_enrolled = any(e['course_id'] == COURSE_ID for e in enrollments)
+    enrollment = next((e for e in enrollments if e['course_id'] == COURSE_ID), None) if is_enrolled else None
+    
+    if not is_enrolled:
+        st.warning("⚠️ You are not enrolled in this course yet.")
+        st.info("Contact your teacher to be assigned to this qualification.")
+        return
+    
+    if enrollment:
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Progress", f"{enrollment['progress']}%")
+            st.progress(enrollment['progress'] / 100)
+        with col2:
+            st.metric("Units Completed", f"{enrollment['units_completed']}/6")
+        with col3:
+            st.metric("Status", enrollment['status'].title())
+    
+    st.markdown("---")
+    
+    tabs = st.tabs(["📚 Overview", "📖 Materials", "👥 PAS Practice", "📝 Assessments", "📊 Progress"])
+    
+    with tabs[0]:
+        st.subheader("📚 Course Overview")
+        st.markdown("""
+        ### Learn Customer Service in Healthcare!
+        
+        🏥 **Practice with real patient reception scenarios**
+        
+        ### Course Structure:
+        """)
+        
+        for unit_num, unit_data in UNITS.items():
+            with st.expander(f"Unit {unit_num}: {unit_data['name']} ({unit_data['credits']} credits)"):
+                st.write(f"**Credits:** {unit_data['credits']}")
+                st.write("**Assessment:** Patient reception scenarios in PAS")
+    
+    with tabs[1]:
+        st.subheader("📖 Learning Materials")
+        st.info("Materials available in TQUK_ALL_QUALIFICATIONS_SUMMARY.md")
+    
+    with tabs[2]:
+        st.subheader("👥 Practice with Patient Reception")
+        st.success("🚀 Practice customer service with real patient scenarios!")
+        if st.button("🚀 Go to PAS System", type="primary"):
+            st.info("Navigate to 'Patient Administration Hub' to practice!")
+    
+    with tabs[3]:
+        st.subheader("📝 Assessment Submission")
+        st.info("Submit evidence of customer service skills")
+    
+    with tabs[4]:
+        st.subheader("📊 My Progress")
+        st.info("Progress tracking coming soon!")

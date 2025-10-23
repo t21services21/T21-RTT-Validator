@@ -14,7 +14,7 @@ try:
     COOKIES_AVAILABLE = True
 except ImportError:
     COOKIES_AVAILABLE = False
-    print("⚠️ Install extra-streamlit-components for persistent login: pip install extra-streamlit-components")
+    print("WARNING: Install extra-streamlit-components for persistent login: pip install extra-streamlit-components")
 
 
 def get_cookie_manager():
