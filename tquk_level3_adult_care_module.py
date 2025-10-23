@@ -545,15 +545,21 @@ def render_assessments(learner_email):
     """Assessment submission interface"""
     st.subheader("📝 Assessment & Evidence Submission")
     
+    st.success("""
+    **📚 Welcome to Assessments!**
+    
+    Submit evidence for each unit to demonstrate you've met the learning outcomes.
+    """)
+    
     st.info("""
-    ### How to Submit Evidence:
+    **💡 Types of Evidence You Can Submit:**
     
-    For each unit, you need to provide evidence that you've met the learning outcomes. Evidence can include:
-    
-    - 📸 **Observations** - Your assessor watches you work
-    - 📝 **Witness Statements** - Colleagues confirm your competence
-    - 💭 **Reflective Accounts** - You reflect on your practice
+    - 📸 **Observation** - Your assessor watches you work
+    - 📝 **Witness Statement** - Colleagues confirm your competence
+    - 💭 **Reflective Account** - You reflect on your practice
     - 📄 **Product Evidence** - Documents you've created (care plans, reports, etc.)
+    - 💬 **Professional Discussion** - Discussion with your assessor
+    - 📋 **Case Study** - Analysis of a real situation
     """)
     
     st.markdown("---")
@@ -567,37 +573,8 @@ def render_assessments(learner_email):
     )
     
     if selected_unit:
-        st.markdown(f"### Submit Evidence for Unit {selected_unit}: {UNITS[selected_unit]['name']}")
-        
-        evidence_type = st.selectbox(
-            "Evidence Type",
-            ["Observation Record", "Witness Statement", "Reflective Account", "Product Evidence", "Professional Discussion"]
-        )
-        
-        description = st.text_area(
-            "Description",
-            placeholder="Describe what this evidence demonstrates...",
-            height=100
-        )
-        
-        uploaded_file = st.file_uploader(
-            "Upload Evidence (PDF, Word, Image)",
-            type=['pdf', 'docx', 'doc', 'jpg', 'jpeg', 'png']
-        )
-        
-        if st.button("📤 Submit Evidence", type="primary"):
-            if description and uploaded_file:
-                st.success("✅ Evidence submitted successfully!")
-                st.balloons()
-                st.info("Your assessor will review this and provide feedback soon.")
-            else:
-                st.warning("Please provide both a description and upload a file.")
-    
-    st.markdown("---")
-    
-    # Show submitted evidence
-    st.subheader("📋 My Submitted Evidence")
-    st.info("Evidence tracking coming soon! You'll see all your submissions here.")
+        # Use the proper evidence submission form
+        render_evidence_submission_form(learner_email, COURSE_ID, selected_unit)
 
 
 def render_progress_tracker(enrollment):
