@@ -352,7 +352,17 @@ def render_find_patient():
                         if storage_type == 'supabase':
                             st.info("💡 **To view this appointment:** Go to '⚙️ Manage Appointments' tab → 'View All Appointments'")
                         else:
-                            st.warning(f"⚠️ **Saved to {storage_type} storage** - May not persist after page refresh. Check Supabase configuration.")
+                            st.warning(f"⚠️ **Saved to {storage_type} storage** - May not persist after page refresh.")
+                            st.error("""
+                            **Supabase is not working!**
+                            
+                            Possible causes:
+                            1. Supabase credentials not configured
+                            2. Database table schema mismatch
+                            3. Network/connection issue
+                            
+                            Check the server logs for detailed error messages.
+                            """)
                         
                         # Store appointment ID for easy access
                         st.session_state['last_booked_appointment'] = result['appointment_id']

@@ -392,9 +392,13 @@ def create_appointment(user_email, appointment_data):
     """Create a new appointment for a specific user."""
     try:
         appointment_data['user_email'] = user_email
+        print(f"🔍 Attempting to insert appointment: {appointment_data}")
         result = supabase.table('appointments').insert(appointment_data).execute()
+        print(f"✅ Insert successful: {result.data}")
         return True, result.data[0] if result.data else None
     except Exception as e:
+        print(f"❌ Insert failed: {str(e)}")
+        print(f"📋 Appointment data that failed: {appointment_data}")
         return False, str(e)
 
 def get_appointments_for_user(user_email):
