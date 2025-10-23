@@ -127,19 +127,24 @@ def render_find_patient():
     st.subheader("🔍 Find Patient & Quick Book")
     st.info("Search for registered patients and book appointments directly")
     
-    # Debug: Show all patients button
-    if st.button("🔍 Show All Patients (Debug)", type="secondary"):
-        if SUPABASE_AVAILABLE and supabase:
-            try:
-                all_patients = supabase.table('patients').select('*').limit(10).execute()
-                if all_patients.data:
-                    st.success(f"✅ Found {len(all_patients.data)} patients in database")
-                    for p in all_patients.data:
-                        st.write(f"**Name:** {p.get('first_name')} {p.get('last_name')} | **NHS:** {p.get('nhs_number')}")
-                else:
-                    st.warning("No patients in database")
-            except Exception as e:
-                st.error(f"Error: {str(e)}")
+    # Debug: Show all patients button (SUPER ADMIN ONLY)
+    user_email = st.session_state.get('user_email', '')
+    user_role = st.session_state.get('user_type', 'student')
+    is_super_admin = (user_role == 'super_admin' or 'admin@t21services' in user_email.lower())
+    
+    if is_super_admin:
+        if st.button("🔍 Show All Patients (Debug)", type="secondary"):
+            if SUPABASE_AVAILABLE and supabase:
+                try:
+                    all_patients = supabase.table('patients').select('*').limit(10).execute()
+                    if all_patients.data:
+                        st.success(f"✅ Found {len(all_patients.data)} patients in database")
+                        for p in all_patients.data:
+                            st.write(f"**Name:** {p.get('first_name')} {p.get('last_name')} | **NHS:** {p.get('nhs_number')}")
+                    else:
+                        st.warning("No patients in database")
+                except Exception as e:
+                    st.error(f"Error: {str(e)}")
     
     # Search section
     st.markdown("### 🔎 Search Patient")
