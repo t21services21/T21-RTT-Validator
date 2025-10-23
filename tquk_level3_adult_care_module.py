@@ -206,47 +206,82 @@ def render_learning_materials(enrollment):
     """Display learning materials for each unit"""
     st.subheader("📖 Learning Materials")
     
-    # Unit selector
-    selected_unit = st.selectbox(
-        "Select Unit",
-        options=list(UNITS.keys()),
-        format_func=lambda x: f"Unit {x}: {UNITS[x]['name']}"
-    )
+    # Progress indicator
+    if enrollment:
+        progress_text = f"Overall Progress: {enrollment['progress']}% | Units: {enrollment['units_completed']}/7"
+        st.progress(enrollment['progress'] / 100, text=progress_text)
+        st.markdown("---")
     
-    if selected_unit:
-        unit = UNITS[selected_unit]
-        
-        st.markdown(f"### Unit {selected_unit}: {unit['name']}")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            st.info(f"📚 Learning Outcomes: {unit['learning_outcomes']}")
-        with col2:
-            st.info(f"✏️ Activities: {unit['activities']}")
-        
-        st.markdown("---")
-        
-        # Load and display content
-        with st.spinner("Loading materials..."):
-            content = load_markdown_file(unit['file'])
+    # Unit navigation with tabs
+    unit_tabs = st.tabs([f"Unit {i}: {UNITS[i]['name']}" for i in UNITS.keys()])
+    
+    for idx, (unit_num, unit_data) in enumerate(UNITS.items()):
+        with unit_tabs[idx]:
+            # Unit header
+            st.markdown(f"## 📚 Unit {unit_num}: {unit_data['name']}")
             
-            # Display in expandable sections
-            if "Unit {selected_unit}" in content or unit['name'] in content:
-                st.markdown(content)
-            else:
-                # Show handbook first for units 4-7
-                if selected_unit >= 4:
-                    st.info(f"📘 This unit is covered in the Complete Delivery Package. Full materials coming soon!")
-                    st.markdown(content[:2000] + "...")  # Show preview
+            # Unit info cards
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Learning Outcomes", unit_data['learning_outcomes'])
+            with col2:
+                st.metric("Activities", unit_data['activities'])
+            with col3:
+                # Check if unit is completed
+                status = "✅ Complete" if enrollment and enrollment['units_completed'] >= unit_num else "📖 In Progress"
+                st.metric("Status", status)
+            
+            st.markdown("---")
+            
+            # Load and display content beautifully
+            try:
+                content = load_markdown_file(unit_data['file'])
+                
+                if content and not content.startswith("Error"):
+                    # Create a container for better formatting
+                    with st.container():
+                        # Display content with proper markdown rendering
+                        st.markdown(content, unsafe_allow_html=True)
+                    
+                    st.markdown("---")
+                    
+                    # Interactive elements
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        if st.button(f"✅ Mark Unit {unit_num} Complete", key=f"complete_{unit_num}", type="primary"):
+                            st.success(f"✅ Unit {unit_num} marked as complete!")
+                            st.balloons()
+                            # TODO: Update database
+                    
+                    with col2:
+                        if st.button(f"📝 Go to Assessment", key=f"assess_{unit_num}"):
+                            st.info("Switch to the 'Assessments' tab to submit your evidence!")
+                    
+                    # Download option
+                    st.download_button(
+                        label=f"📥 Download Unit {unit_num} Materials (PDF)",
+                        data=content,
+                        file_name=f"Level3_Unit{unit_num}_{unit_data['name'].replace(' ', '_')}.md",
+                        mime="text/markdown",
+                        key=f"download_{unit_num}"
+                    )
+                    
                 else:
-                    st.markdown(content)
-        
-        st.markdown("---")
-        
-        # Mark as read button
-        if st.button(f"✅ Mark Unit {selected_unit} as Read", key=f"mark_read_{selected_unit}"):
-            st.success(f"Unit {selected_unit} marked as read! Progress updated.")
-            # TODO: Update progress in database
+                    st.warning(f"⚠️ Materials for Unit {unit_num} are being prepared.")
+                    st.info("""
+                    **What's included in this unit:**
+                    - Learning outcomes and assessment criteria
+                    - Real-world scenarios and case studies
+                    - Activities and reflective exercises
+                    - Assessment guidance
+                    
+                    Full materials will be available soon!
+                    """)
+                    
+            except Exception as e:
+                st.error(f"Error loading materials: {str(e)}")
+                st.info("Please contact your teacher if this persists.")
 
 
 def render_assessments(learner_email):
