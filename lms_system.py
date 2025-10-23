@@ -43,7 +43,14 @@ def render_learning_materials():
     
     # Check user role
     user_email = st.session_state.get('user_email', '')
-    is_teacher = 'admin' in user_email or 'teacher' in user_email
+    user_type = st.session_state.get('user_type', 'student')
+    user_license = st.session_state.get('user_license')
+    user_role = getattr(user_license, 'role', 'student') if user_license else 'student'
+    
+    # Teachers, staff, testers, and admins get teacher view
+    is_teacher = (user_type in ['admin', 'teacher', 'staff', 'tester', 'super_admin'] or 
+                  user_role in ['admin', 'teacher', 'staff', 'tester', 'super_admin'] or
+                  'admin' in user_email or 'teacher' in user_email)
     
     if is_teacher:
         render_materials_teacher(user_email)
