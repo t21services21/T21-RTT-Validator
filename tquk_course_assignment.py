@@ -6,7 +6,17 @@ Allows teachers to assign TQUK qualifications to learners and track enrollments
 import streamlit as st
 import json
 from datetime import datetime
-from supabase_database import get_supabase_client
+
+# Import Supabase client
+try:
+    from supabase_client import get_supabase_client
+except ImportError:
+    def get_supabase_client():
+        try:
+            from supabase_database import supabase
+            return supabase
+        except:
+            return None
 
 # Available TQUK Qualifications
 TQUK_QUALIFICATIONS = {
