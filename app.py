@@ -4217,19 +4217,13 @@ Followed strict infection control and safeguarding procedures"""
                 
                 st.success("✅ **Your Professional CV is Ready!**")
                 
-                # Display CV preview
+                # Download buttons - PROFESSIONAL FORMATS ONLY
                 st.markdown("---")
-                st.subheader("📄 Your CV Preview")
+                st.subheader("📥 Download Your Professional CV")
                 
-                # Show HTML preview in expandable section
-                with st.expander("👁️ View CV Preview", expanded=True):
-                    st.markdown(cv_html, unsafe_allow_html=True)
+                st.success("✅ Your CV is ready! Download in your preferred format:")
                 
-                # Download buttons
-                st.markdown("---")
-                st.subheader("📥 Download Your CV")
-                
-                col1, col2, col3 = st.columns(3)
+                col1, col2 = st.columns(2)
                 
                 with col1:
                     # PDF Download
@@ -4238,16 +4232,17 @@ Followed strict infection control and safeguarding procedures"""
                         pdf_buffer = export_cv_to_pdf(cv_html)
                         if pdf_buffer:
                             st.download_button(
-                                label="📄 Download PDF",
+                                label="📄 Download as PDF",
                                 data=pdf_buffer,
                                 file_name=f"CV_{full_name.replace(' ', '_')}.pdf",
                                 mime="application/pdf",
-                                use_container_width=True
+                                use_container_width=True,
+                                type="primary"
                             )
                         else:
-                            st.info("📄 PDF export requires reportlab package")
+                            st.error("❌ PDF export requires reportlab package")
                     except Exception as e:
-                        st.info("📄 PDF export not available")
+                        st.error(f"❌ PDF export error: {str(e)}")
                 
                 with col2:
                     # Word Download
@@ -4256,26 +4251,19 @@ Followed strict infection control and safeguarding procedures"""
                         word_buffer = export_cv_to_word(cv_html)
                         if word_buffer:
                             st.download_button(
-                                label="📝 Download Word",
+                                label="📝 Download as Word",
                                 data=word_buffer,
                                 file_name=f"CV_{full_name.replace(' ', '_')}.docx",
                                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                                use_container_width=True
+                                use_container_width=True,
+                                type="primary"
                             )
                         else:
-                            st.info("📝 Word export requires python-docx package")
+                            st.error("❌ Word export requires python-docx package")
                     except Exception as e:
-                        st.info("📝 Word export not available")
+                        st.error(f"❌ Word export error: {str(e)}")
                 
-                with col3:
-                    # HTML Download (fallback)
-                    st.download_button(
-                        label="🌐 Download HTML",
-                        data=cv_html,
-                        file_name=f"CV_{full_name.replace(' ', '_')}.html",
-                        mime="text/html",
-                        use_container_width=True
-                    )
+                st.info("💡 **Tip:** Download as Word (.docx) if you want to edit your CV further. Download as PDF for final submission.")
                 
                 # LinkedIn Profile
                 st.markdown("---")
@@ -6781,18 +6769,13 @@ Just paste ANY job description here!"""
                 </html>
 """
                 
-                # Display CV preview
+                # Download buttons - PROFESSIONAL FORMATS ONLY
                 st.markdown("---")
-                st.subheader("📄 Your CV Preview")
+                st.subheader("📥 Download Your Professional CV")
                 
-                with st.expander("👁️ View CV Preview", expanded=True):
-                    st.markdown(cv_html, unsafe_allow_html=True)
+                st.success("✅ Your CV is ready! Download in your preferred format:")
                 
-                # Download buttons
-                st.markdown("---")
-                st.subheader("📥 Download Your CV")
-                
-                col1, col2, col3 = st.columns(3)
+                col1, col2 = st.columns(2)
                 
                 with col1:
                     # PDF Download
@@ -6801,16 +6784,17 @@ Just paste ANY job description here!"""
                         pdf_buffer = export_cv_to_pdf(cv_html)
                         if pdf_buffer:
                             st.download_button(
-                                label="📄 Download PDF",
+                                label="📄 Download as PDF",
                                 data=pdf_buffer,
                                 file_name=f"CV_{full_name.replace(' ', '_')}.pdf",
                                 mime="application/pdf",
-                                use_container_width=True
+                                use_container_width=True,
+                                type="primary"
                             )
                         else:
-                            st.info("📄 PDF export requires reportlab package")
+                            st.error("❌ PDF export requires reportlab package")
                     except Exception as e:
-                        st.info("📄 PDF export not available")
+                        st.error(f"❌ PDF export error: {str(e)}")
                 
                 with col2:
                     # Word Download
@@ -6819,28 +6803,19 @@ Just paste ANY job description here!"""
                         word_buffer = export_cv_to_word(cv_html)
                         if word_buffer:
                             st.download_button(
-                                label="📝 Download Word",
+                                label="📝 Download as Word",
                                 data=word_buffer,
                                 file_name=f"CV_{full_name.replace(' ', '_')}.docx",
                                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                                use_container_width=True
+                                use_container_width=True,
+                                type="primary"
                             )
                         else:
-                            st.info("📝 Word export requires python-docx package")
+                            st.error("❌ Word export requires python-docx package")
                     except Exception as e:
-                        st.info("📝 Word export not available")
+                        st.error(f"❌ Word export error: {str(e)}")
                 
-                with col3:
-                    # HTML Download (fallback)
-                    st.download_button(
-                        label="🌐 Download HTML",
-                        data=cv_html,
-                        file_name=f"CV_{full_name.replace(' ', '_')}.html",
-                        mime="text/html",
-                        use_container_width=True
-                    )
-                
-                st.success("🎉 **CV Generated Successfully!**")
+                st.info("💡 **Tip:** Download as Word (.docx) if you want to edit your CV further. Download as PDF for final submission.")
 
 elif tool == "⚙️ Administration" or tool == "⚙️ My Account":
     # SECURITY: Role-based administration access
