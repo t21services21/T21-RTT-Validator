@@ -1548,7 +1548,8 @@ if user_role in ['student', 'student_basic', 'student_standard', 'student_premiu
         "🎓 Learning Portal",  # Their courses and materials
         "🎓 Training & Certification",  # Training, AI Tutor, Certification
         "🔒 Information Governance",  # Mandatory NHS training
-        "💼 Career Development",  # Interview prep, CV builder
+        "💼 Career Development",  # Interview prep, job automation
+        "📄 CV Builder",  # FULL Professional CV Builder
         "⚙️ My Account",  # Personal settings ONLY (not admin tools)
         "ℹ️ Help & Information",
         "📧 Contact & Support"
@@ -1560,6 +1561,7 @@ elif user_role in ['teacher', 'instructor', 'trainer']:
         "🎓 Learning Portal",
         "🎓 Training & Certification",
         "📊 Reports & Analytics",
+        "📄 CV Builder",  # FULL Professional CV Builder
         "⚙️ Administration",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
@@ -1578,6 +1580,7 @@ elif user_role == 'tester':
         "🎓 Training & Certification",        # Certification exams, training modules
         "🔒 Information Governance",          # IG training and compliance
         "💼 Career Development",              # Career tools and development
+        "📄 CV Builder",                      # FULL Professional CV Builder
         "ℹ️ Help & Information",              # Help pages and documentation
         "📧 Contact & Support"                # Support and contact pages
     ]
@@ -1595,6 +1598,7 @@ elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
         "🎓 Training & Certification",
         "🔒 Information Governance",
         "💼 Career Development",
+        "📄 CV Builder",  # FULL Professional CV Builder
         "⚙️ Administration",  # FULL admin tools + platform config
         "ℹ️ Help & Information",
         "📧 Contact & Support"
@@ -1612,6 +1616,7 @@ elif user_role == 'admin':
         "🎓 Training & Certification",
         "🔒 Information Governance",
         "💼 Career Development",
+        "📄 CV Builder",  # FULL Professional CV Builder
         "⚙️ Administration",  # LIMITED admin tools (no super admin features)
         "ℹ️ Help & Information",
         "📧 Contact & Support"
