@@ -500,78 +500,197 @@ def render_add_patient():
         # Clear the flag
         del st.session_state['patient_added']
     
-    with st.form("add_patient_ptl"):
-        col1, col2 = st.columns(2)
+    # TWO OPTIONS: Search existing OR Add new
+    st.markdown("### Choose how to add patient:")
+    
+    option = st.radio(
+        "Select option:",
+        ["🔍 Search Existing Patients", "➕ Add New Patient"],
+        horizontal=True
+    )
+    
+    st.markdown("---")
+    
+    if option == "🔍 Search Existing Patients":
+        # SEARCH EXISTING PATIENTS FROM REGISTRATION
+        st.markdown("### 🔍 Search Registered Patients")
+        st.info("Search for patients already registered in the Patient Administration Hub")
         
-        with col1:
-            patient_name = st.text_input("Patient Name*", placeholder="John Smith")
-            nhs_number = st.text_input("NHS Number*", placeholder="123 456 7890")
-            referral_date = st.date_input("Referral Date*", value=datetime.now())
-            specialty = st.selectbox("Specialty*", [
-                "Orthopaedics", "Cardiology", "General Surgery", "ENT",
-                "Ophthalmology", "Urology", "Gastroenterology", "Neurology",
-                "Dermatology", "Rheumatology", "Other"
-            ])
-        
-        with col2:
-            referral_source = st.selectbox("Referral Source*", [
-                "GP", "Consultant", "A&E", "Dentist", "Optician", "Other"
-            ])
-            priority = st.selectbox("Priority*", [
-                "Routine", "Urgent", "2WW", "Cancer 62-day"
-            ])
-            consultant = st.text_input("Consultant", placeholder="Dr. Jones")
-            contact_number = st.text_input("Contact Number", placeholder="07123456789")
-        
-        current_status = st.selectbox("Current Status", [
-            "Awaiting First Appointment",
-            "First Appointment Booked",
-            "Seen - Diagnostics Pending",
-            "Diagnostics Complete - Awaiting Decision",
-            "Decision Made - Awaiting Treatment",
-            "On Waiting List for Treatment"
-        ])
-        
-        notes = st.text_area("Notes", height=100)
-        
-        submit = st.form_submit_button("➕ Add to PTL", type="primary")
-        
-        if submit:
-            if not patient_name or not nhs_number:
-                st.error("❌ Please provide patient name and NHS number!")
+        # Import patient search function
+        try:
+            from patient_registration_system import search_patients, get_patient
+            
+            # Search box
+            search_term = st.text_input("🔍 Search by Name or NHS Number", placeholder="Enter patient name or NHS number...")
+            
+            if search_term and len(search_term) >= 2:
+                # Search for patients
+                results = search_patients(search_term)
+                
+                if results:
+                    st.success(f"✅ Found {len(results)} patient(s)")
+                    
+                    # Display results
+                    for patient in results:
+                        with st.expander(f"👤 {patient.get('full_name', 'Unknown')} - NHS: {patient.get('nhs_number', 'N/A')}"):
+                            col1, col2 = st.columns([3, 1])
+                            
+                            with col1:
+                                st.markdown(f"**Name:** {patient.get('full_name', 'N/A')}")
+                                st.markdown(f"**NHS Number:** {patient.get('nhs_number', 'N/A')}")
+                                st.markdown(f"**DOB:** {patient.get('date_of_birth', 'N/A')}")
+                                st.markdown(f"**Contact:** {patient.get('contact_number', 'N/A')}")
+                            
+                            with col2:
+                                # Add to PTL button
+                                if st.button(f"➕ Add to PTL", key=f"add_{patient.get('patient_id')}"):
+                                    # Add patient to PTL with their existing details
+                                    with st.form(f"ptl_details_{patient.get('patient_id')}"):
+                                        st.markdown("**PTL Details:**")
+                                        
+                                        specialty = st.selectbox("Specialty*", [
+                                            "Orthopaedics", "Cardiology", "General Surgery", "ENT",
+                                            "Ophthalmology", "Urology", "Gastroenterology", "Neurology",
+                                            "Dermatology", "Rheumatology", "Other"
+                                        ], key=f"spec_{patient.get('patient_id')}")
+                                        
+                                        referral_date = st.date_input("Referral Date*", value=datetime.now(), key=f"ref_{patient.get('patient_id')}")
+                                        
+                                        priority = st.selectbox("Priority*", [
+                                            "Routine", "Urgent", "2WW", "Cancer 62-day"
+                                        ], key=f"pri_{patient.get('patient_id')}")
+                                        
+                                        consultant = st.text_input("Consultant", placeholder="Dr. Jones", key=f"con_{patient.get('patient_id')}")
+                                        
+                                        current_status = st.selectbox("Current Status", [
+                                            "Awaiting First Appointment",
+                                            "First Appointment Booked",
+                                            "Seen - Diagnostics Pending",
+                                            "Diagnostics Complete - Awaiting Decision",
+                                            "Decision Made - Awaiting Treatment",
+                                            "On Waiting List for Treatment"
+                                        ], key=f"stat_{patient.get('patient_id')}")
+                                        
+                                        notes = st.text_area("Notes", height=100, key=f"notes_{patient.get('patient_id')}")
+                                        
+                                        submit_ptl = st.form_submit_button("✅ Add to PTL", type="primary")
+                                        
+                                        if submit_ptl:
+                                            pathway_type = "routine"
+                                            if priority == "2WW":
+                                                pathway_type = "2ww"
+                                            elif priority == "Cancer 62-day":
+                                                pathway_type = "62day"
+                                            
+                                            patient_id = add_patient_to_ptl(
+                                                patient_name=patient.get('full_name'),
+                                                nhs_number=patient.get('nhs_number'),
+                                                specialty=specialty,
+                                                referral_date=str(referral_date),
+                                                referral_source="GP",
+                                                pathway_type=pathway_type,
+                                                priority=priority,
+                                                current_status=current_status,
+                                                consultant=consultant,
+                                                contact_number=patient.get('contact_number', ''),
+                                                notes=notes
+                                            )
+                                            
+                                            # Clear cache
+                                            if 'ptl_data' in st.session_state:
+                                                del st.session_state['ptl_data']
+                                            
+                                            # Set success message
+                                            st.session_state['patient_added'] = {
+                                                'patient_id': patient_id,
+                                                'patient_name': patient.get('full_name')
+                                            }
+                                            
+                                            st.rerun()
+                else:
+                    st.warning("⚠️ No patients found. Try a different search term or add a new patient.")
             else:
-                pathway_type = "routine"
-                if priority == "2WW":
-                    pathway_type = "2ww"
-                elif priority == "Cancer 62-day":
-                    pathway_type = "62day"
-                
-                patient_id = add_patient_to_ptl(
-                    patient_name=patient_name,
-                    nhs_number=nhs_number,
-                    specialty=specialty,
-                    referral_date=str(referral_date),
-                    referral_source=referral_source,
-                    pathway_type=pathway_type,
-                    priority=priority,
-                    current_status=current_status,
-                    consultant=consultant,
-                    contact_number=contact_number,
-                    notes=notes
-                )
-                
-                # Clear any cached data to force refresh
-                if 'ptl_data' in st.session_state:
-                    del st.session_state['ptl_data']
-                
-                # Set success message in session state so it persists after rerun
-                st.session_state['patient_added'] = {
-                    'patient_id': patient_id,
-                    'patient_name': patient_name
-                }
-                
-                # Force a rerun to refresh the data
-                st.rerun()
+                st.info("💡 Enter at least 2 characters to search")
+        
+        except ImportError:
+            st.error("❌ Patient search not available. Please add new patient manually.")
+    
+    else:
+        # ADD NEW PATIENT (ORIGINAL FORM)
+        st.markdown("### ➕ Add New Patient")
+        
+        with st.form("add_patient_ptl"):
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                patient_name = st.text_input("Patient Name*", placeholder="John Smith")
+                nhs_number = st.text_input("NHS Number*", placeholder="123 456 7890")
+                referral_date = st.date_input("Referral Date*", value=datetime.now())
+                specialty = st.selectbox("Specialty*", [
+                    "Orthopaedics", "Cardiology", "General Surgery", "ENT",
+                    "Ophthalmology", "Urology", "Gastroenterology", "Neurology",
+                    "Dermatology", "Rheumatology", "Other"
+                ])
+            
+            with col2:
+                referral_source = st.selectbox("Referral Source*", [
+                    "GP", "Consultant", "A&E", "Dentist", "Optician", "Other"
+                ])
+                priority = st.selectbox("Priority*", [
+                    "Routine", "Urgent", "2WW", "Cancer 62-day"
+                ])
+                consultant = st.text_input("Consultant", placeholder="Dr. Jones")
+                contact_number = st.text_input("Contact Number", placeholder="07123456789")
+            
+            current_status = st.selectbox("Current Status", [
+                "Awaiting First Appointment",
+                "First Appointment Booked",
+                "Seen - Diagnostics Pending",
+                "Diagnostics Complete - Awaiting Decision",
+                "Decision Made - Awaiting Treatment",
+                "On Waiting List for Treatment"
+            ])
+            
+            notes = st.text_area("Notes", height=100)
+            
+            submit = st.form_submit_button("➕ Add to PTL", type="primary")
+            
+            if submit:
+                if not patient_name or not nhs_number:
+                    st.error("❌ Please provide patient name and NHS number!")
+                else:
+                    pathway_type = "routine"
+                    if priority == "2WW":
+                        pathway_type = "2ww"
+                    elif priority == "Cancer 62-day":
+                        pathway_type = "62day"
+                    
+                    patient_id = add_patient_to_ptl(
+                        patient_name=patient_name,
+                        nhs_number=nhs_number,
+                        specialty=specialty,
+                        referral_date=str(referral_date),
+                        referral_source=referral_source,
+                        pathway_type=pathway_type,
+                        priority=priority,
+                        current_status=current_status,
+                        consultant=consultant,
+                        contact_number=contact_number,
+                        notes=notes
+                    )
+                    
+                    # Clear any cached data to force refresh
+                    if 'ptl_data' in st.session_state:
+                        del st.session_state['ptl_data']
+                    
+                    # Set success message in session state so it persists after rerun
+                    st.session_state['patient_added'] = {
+                        'patient_id': patient_id,
+                        'patient_name': patient_name
+                    }
+                    
+                    # Force a rerun to refresh the data
+                    st.rerun()
 
 
 def render_breach_alerts():
