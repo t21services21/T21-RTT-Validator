@@ -136,6 +136,7 @@ else:
                                 st.session_state.logged_in = True
                                 st.session_state.user_license = user_obj
                                 st.session_state.user_email = email
+                                st.session_state.user_type = pending_user.get('user_type', 'staff')  # SET USER TYPE!
                                 st.session_state.session_email = email
                                 
                                 # Save to cookie for persistent login (non-blocking)
@@ -223,6 +224,7 @@ else:
                                         st.session_state.logged_in = True
                                         st.session_state.user_license = user_account
                                         st.session_state.user_email = email
+                                        st.session_state.user_type = user_type  # SET USER TYPE!
                                         st.session_state.session_email = email
                                         st.session_state.auth_source = "supabase"
                                         
@@ -270,6 +272,7 @@ else:
                                             st.session_state.logged_in = True
                                             st.session_state.user_license = user_data
                                             st.session_state.user_email = email
+                                            st.session_state.user_type = local_user_type  # SET USER TYPE!
                                             st.session_state.auth_source = "local_json"
                                             
                                             # Save to cookie for persistent login
