@@ -165,10 +165,28 @@ def create_user(email, password, full_name, role, created_by_email, custom_expir
     
     save_users_db(users)
     
+    # ALSO SAVE TO SUPABASE for login to work
+    try:
+        from supabase_database import create_user as supabase_create_user
+        password_hash = user_dict["password_hash"]
+        user_type = USER_TYPES[role]["type"]
+        supabase_success, supabase_msg = supabase_create_user(email, password_hash, full_name, role, user_type)
+        if not supabase_success:
+            print(f"⚠️ Warning: User created locally but Supabase save failed: {supabase_msg}")
+    except Exception as e:
+        print(f"⚠️ Warning: Could not save to Supabase: {e}")
+    
+    # SEND WELCOME EMAIL
+    try:
+        from email_system import send_welcome_email
+        send_welcome_email(email, full_name, password, role)
+    except Exception as e:
+        print(f"⚠️ Warning: Could not send welcome email: {e}")
+    
     expiry_info = f" (Expires: {custom_expiry.strftime('%d/%m/%Y %H:%M')})" if custom_expiry else ""
     log_audit("CREATE_USER", created_by_email, email, f"Role: {role}{expiry_info}")
     
-    return True, f"User created successfully: {email}{expiry_info}"
+    return True, f"User created successfully: {email}{expiry_info}\n✉️ Welcome email sent to {email}"
 
 
 def suspend_user(target_email, reason, suspended_by_email):
