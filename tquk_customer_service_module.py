@@ -26,14 +26,23 @@ def render_customer_service_module():
     st.title("🤝 Level 2 Certificate in Customer Service")
     st.success("✅ **TQUK Approved** - Learn Using Real Patient Reception System (PAS)")
     
+    # Check enrollment (bypass for admins, teachers, testers, staff)
+    admin_roles = ['super_admin', 'admin', 'teacher', 'tester', 'staff', 'instructor', 'trainer']
+    user_role = st.session_state.get('user_role', 'student')
+    
     enrollments = get_learner_enrollments(learner_email)
     is_enrolled = any(e['course_id'] == COURSE_ID for e in enrollments)
     enrollment = next((e for e in enrollments if e['course_id'] == COURSE_ID), None) if is_enrolled else None
     
-    if not is_enrolled:
+    # Only students need to be enrolled
+    if not is_enrolled and user_role not in admin_roles:
         st.warning("⚠️ You are not enrolled in this course yet.")
         st.info("Contact your teacher to be assigned to this qualification.")
         return
+    
+    # For admins/staff viewing without enrollment
+    if not is_enrolled and user_role in admin_roles:
+        st.info("👨‍💼 **Admin/Staff View** - Full access to preview. Students must be enrolled.")
     
     if enrollment:
         col1, col2, col3 = st.columns(3)

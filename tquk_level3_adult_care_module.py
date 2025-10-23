@@ -76,14 +76,21 @@ def render_level3_adult_care_module():
     st.title("🎓 Level 3 Diploma in Adult Care")
     st.success("✅ **TQUK Approved Centre #36257481088** - Nationally Recognized Qualification")
     
-    # Check enrollment
+    # Check enrollment (bypass for admins, teachers, testers, staff)
+    admin_roles = ['super_admin', 'admin', 'teacher', 'tester', 'staff', 'instructor', 'trainer']
+    
     enrollments = get_learner_enrollments(learner_email)
     is_enrolled = any(e['course_id'] == COURSE_ID for e in enrollments)
     
-    if not is_enrolled and user_role == 'student':
+    # Only students need to be enrolled
+    if not is_enrolled and user_role not in admin_roles:
         st.warning("⚠️ You are not enrolled in this course yet.")
         st.info("Please contact your teacher to be assigned to this qualification.")
         return
+    
+    # For admins/staff viewing without enrollment, show info message
+    if not is_enrolled and user_role in admin_roles:
+        st.info("👨‍💼 **Admin/Staff View** - You have full access to preview this course. Students must be enrolled to access.")
     
     # Get enrollment data
     enrollment = next((e for e in enrollments if e['course_id'] == COURSE_ID), None) if is_enrolled else None

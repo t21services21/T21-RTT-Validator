@@ -26,15 +26,23 @@ def render_it_user_skills_module():
     st.title("💻 Level 2 Certificate in IT User Skills")
     st.success("✅ **TQUK Approved** - Learn Using Real NHS Systems (RTT/PAS)")
     
-    # Check enrollment
+    # Check enrollment (bypass for admins, teachers, testers, staff)
+    admin_roles = ['super_admin', 'admin', 'teacher', 'tester', 'staff', 'instructor', 'trainer']
+    user_role = st.session_state.get('user_role', 'student')
+    
     enrollments = get_learner_enrollments(learner_email)
     is_enrolled = any(e['course_id'] == COURSE_ID for e in enrollments)
     enrollment = next((e for e in enrollments if e['course_id'] == COURSE_ID), None) if is_enrolled else None
     
-    if not is_enrolled:
+    # Only students need to be enrolled
+    if not is_enrolled and user_role not in admin_roles:
         st.warning("⚠️ You are not enrolled in this course yet.")
         st.info("Contact your teacher to be assigned to this qualification.")
         return
+    
+    # For admins/staff viewing without enrollment
+    if not is_enrolled and user_role in admin_roles:
+        st.info("👨‍💼 **Admin/Staff View** - Full access to preview. Students must be enrolled.")
     
     # Progress overview
     if enrollment:
