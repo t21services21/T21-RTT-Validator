@@ -1564,6 +1564,22 @@ elif user_role in ['teacher', 'instructor', 'trainer']:
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
+elif user_role == 'tester':
+    # TESTER: Everything except super admin controls (for testing all modules)
+    accessible_modules = [
+        "🏥 Patient Administration Hub",
+        "🎓 Learning Portal",
+        "👨‍🏫 Teaching & Assessment",
+        "🏥 Clinical Workflows",
+        "✅ Task Management",
+        "🤖 AI & Automation",
+        "📊 Reports & Analytics",
+        "🎓 Training & Certification",
+        "🔒 Information Governance",
+        "💼 Career Development",
+        "ℹ️ Help & Information",
+        "📧 Contact & Support"
+    ]
 elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
     # SUPER ADMIN: Absolute everything (including admin management)
     accessible_modules = [
