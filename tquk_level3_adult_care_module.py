@@ -413,7 +413,7 @@ def render_course_overview():
     1. **Learning Materials** - Read each unit's content and complete activities
     2. **Assessments** - Submit evidence for each learning outcome
     3. **My Progress** - Track your completion and get feedback
-    4. **Certificate** - Download your certificate when you complete all units
+    4. **Certificate** - TQUK will issue your certificate after verification
     
     **Ready to start? Go to the Learning Materials tab!** 🚀
     """)
@@ -621,30 +621,74 @@ def render_progress_tracker(enrollment):
 
 
 def render_certificate(enrollment):
-    """Certificate download interface"""
-    st.subheader("🎓 Certificate")
+    """TQUK Certificate Information"""
+    st.subheader("🎓 TQUK Certificate")
+    
+    st.info("""
+    **📜 About Your TQUK Certificate**
+    
+    This is a **regulated qualification** awarded by TQUK (Training Qualifications UK).
+    
+    Your certificate will be issued by TQUK after:
+    - ✅ All units completed
+    - ✅ All evidence submitted and approved
+    - ✅ Internal verification by your centre
+    - ✅ External verification by TQUK
+    """)
     
     if not enrollment:
-        st.info("Complete your enrollment to access certificate.")
+        st.warning("Complete your enrollment to track certification progress.")
         return
     
-    if enrollment['status'] == 'completed':
-        st.success("🎉 Congratulations! You've completed the Level 3 Diploma in Adult Care!")
+    if enrollment['progress'] >= 100:
+        st.success("🎉 **Congratulations! You've completed all units!**")
         
         st.markdown(f"""
-        **Certificate Details:**
-        - Qualification: {COURSE_NAME}
-        - Learner: {enrollment['learner_email']}
-        - Completion Date: {enrollment.get('completion_date', 'N/A')[:10]}
-        - TQUK Centre: #36257481088
+        ### 📋 Your Completion Details:
+        
+        - **Qualification:** {COURSE_NAME}
+        - **Learner:** {enrollment['learner_email']}
+        - **Completion Date:** {enrollment.get('completion_date', 'N/A')[:10]}
+        - **TQUK Centre:** #36257481088
+        - **Total Credits:** 58
         """)
         
-        if st.button("📥 Download Certificate (PDF)", type="primary"):
-            st.info("Certificate generation coming soon! Your certificate will be available for download here.")
+        st.markdown("---")
+        
+        st.info("""
+        ### 🎓 Next Steps for Your TQUK Certificate:
+        
+        **1. Internal Verification** (1-2 weeks)
+        - Your centre will verify all your evidence
+        - Quality checks completed
+        - Portfolio reviewed
+        
+        **2. External Verification** (2-4 weeks)
+        - TQUK external verifier reviews your work
+        - Quality assurance check
+        - Final approval
+        
+        **3. Certificate Issued** (1-2 weeks after approval)
+        - TQUK issues your official certificate
+        - Posted to your registered address
+        - Digital copy available
+        
+        **Total Time:** Approximately 4-8 weeks from completion
+        
+        ⏳ **Your certificate is being processed!**
+        """)
+        
+        st.success("""
+        **📧 You will be notified by email when:**
+        - Internal verification is complete
+        - External verification is complete
+        - Your certificate is ready
+        - Your certificate has been posted
+        """)
     
     else:
-        st.info(f"""
-        ### Certificate Not Yet Available
+        st.warning(f"""
+        ### 📊 Certificate Not Yet Available
         
         **Current Progress:** {enrollment['progress']}%
         
