@@ -4166,6 +4166,28 @@ Followed strict infection control and safeguarding procedures"""
     
     st.markdown("---")
     
+    # Achievements & Awards
+    st.subheader("Step 6: Achievements & Awards (Optional)")
+    st.markdown("Add your key achievements, awards, and accomplishments")
+    
+    achievements_text = st.text_area(
+        "Achievements & Awards (one per line)",
+        height=150,
+        placeholder="""Example achievements:
+Employee of the Month - Royal London Hospital (March 2024)
+Successfully reduced patient waiting times by 15% through improved scheduling
+Completed 500+ hours of patient care with zero incidents
+Received commendation for exceptional patient feedback scores
+Led training sessions for 10+ new healthcare assistants
+Achieved 98% attendance record over 2 years"""
+    )
+    
+    achievements_list = []
+    if achievements_text:
+        achievements_list = [a.strip() for a in achievements_text.split('\n') if a.strip()]
+    
+    st.markdown("---")
+    
     # Generate CV Button
     if st.button("🎯 Generate Professional CV", type="primary"):
         # Better validation with specific messages
@@ -4206,8 +4228,9 @@ Followed strict infection control and safeguarding procedures"""
                     'summary': summary
                 }
                 
-                # Generate CV data
+                # Generate CV data with achievements
                 cv_data = generate_cv_data(student_info, work_history, selected_quals, selected_skills, career_code)
+                cv_data['achievements'] = achievements_list  # Add user's achievements
                 
                 # Generate HTML CV
                 cv_html = format_cv_html(cv_data)
