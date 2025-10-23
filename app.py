@@ -1413,7 +1413,7 @@ if st.session_state.user_license:
         st.sidebar.success(f"✅ {full_name}")
         st.sidebar.markdown(f"**Role:** {role.replace('_', ' ').title()}")
         
-        if user_type in ['admin', 'staff', 'super_admin']:
+        if user_type in ['admin', 'staff', 'super_admin', 'tester', 'teacher', 'partner']:
             st.sidebar.markdown(f"**Type:** {user_type.replace('_', ' ').title()}")
         else:
             st.sidebar.markdown(f"**Type:** Student")
@@ -6517,26 +6517,29 @@ Just paste ANY job description here!"""
                     st.success("💪 **You've got this! Good luck with your interview!**")
     
     with tabs[2]:
-        # CV BUILDER - FULL VERSION
+        # CV BUILDER - REDIRECT TO FULL VERSION
         st.subheader("📄 Professional CV Builder")
-        st.markdown("**Create an ATS-optimized, professional CV in minutes!**")
         
-        st.info("""✨ **Features:**
-        - ✅ Professional templates for all careers
-        - ✅ ATS-optimized (beats applicant tracking systems)
-        - ✅ Auto-includes your T21 qualifications
-        - ✅ Career-specific keywords
-        - ✅ Download as HTML (convert to PDF)
-        - ✅ BONUS: LinkedIn profile optimizer!
+        st.warning("⚠️ **Please use the FULL CV Builder from the main menu!**")
         
-        💡 **Perfect for ALL T21 graduates:**
-        Healthcare Assistant | Care Worker | Teaching Assistant | Customer Service | Business Admin | RTT Validation
+        st.info("""
+        📄 **To create your professional CV:**
+        
+        1. Click **"📄 CV Builder"** in the left sidebar (main menu)
+        2. You'll get the COMPLETE version with:
+           - ✅ Professional Summary
+           - ✅ Work Experience
+           - ✅ Education
+           - ✅ Professional Qualifications (T21 certs)
+           - ✅ Key Skills (with suggestions)
+           - ✅ Achievements & Awards
+           - ✅ **Download as PDF or Word** (not HTML!)
+        
+        The full CV Builder has everything you need for a professional UK/USA standard CV!
         """)
         
-        # Career Path Selection
-        st.markdown("### Step 1: Select Your Career Path")
-        
-        st.markdown("**👥 Select the job role you're applying for:**")
+        # Stop here - don't show old CV builder code
+        st.stop()
         
         career_category = st.radio("Career Category:", [
             "🏥 NHS Pathway & Admin Jobs (RTT, Cancer, Waiting List)",
