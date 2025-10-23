@@ -176,10 +176,58 @@ def create_user(email, password, full_name, role, created_by_email, custom_expir
     except Exception as e:
         print(f"⚠️ Warning: Could not save to Supabase: {e}")
     
-    # SEND WELCOME EMAIL
+    # SEND WELCOME EMAIL WITH CREDENTIALS
     try:
-        from email_system import send_welcome_email
-        send_welcome_email(email, full_name, password, role)
+        from email_service import send_email
+        
+        role_name = USER_TYPES[role]["name"]
+        duration_days = USER_TYPES[role]["duration_days"]
+        
+        subject = f"🎉 Welcome to T21 Services - {role_name} Account Created!"
+        
+        html_content = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+                <h1 style="color: #0066cc;">Welcome to T21 Services! 🎉</h1>
+                
+                <p>Hi {full_name},</p>
+                
+                <p>Your account has been created successfully!</p>
+                
+                <div style="background-color: #f0f8ff; padding: 15px; border-left: 4px solid #0066cc; margin: 20px 0;">
+                    <h3 style="margin-top: 0;">🔐 Your Login Credentials</h3>
+                    <p><strong>Email:</strong> {email}</p>
+                    <p><strong>Password:</strong> {password}</p>
+                    <p><strong>Role:</strong> {role_name}</p>
+                    <p><strong>Access Duration:</strong> {duration_days} days</p>
+                </div>
+                
+                <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0;">
+                    <p><strong>⚠️ IMPORTANT:</strong> Please change your password after first login for security.</p>
+                </div>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://t21-healthcare-platform.streamlit.app/staff_login" 
+                       style="background-color: #0066cc; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+                        LOGIN NOW →
+                    </a>
+                </div>
+                
+                <p>If you have any questions, please contact us at <a href="mailto:admin@t21services.co.uk">admin@t21services.co.uk</a></p>
+                
+                <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 30px 0;">
+                <p style="font-size: 12px; color: #666;">
+                    T21 Services Limited | Company No: 13091053 | Liverpool, England<br>
+                    <a href="https://www.t21services.co.uk">www.t21services.co.uk</a>
+                </p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        send_email(email, subject, html_content)
+        print(f"✅ Welcome email with credentials sent to {email}")
     except Exception as e:
         print(f"⚠️ Warning: Could not send welcome email: {e}")
     
