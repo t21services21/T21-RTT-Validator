@@ -524,29 +524,30 @@ def render_add_patient():
             search_term = st.text_input("🔍 Search by Name or NHS Number", placeholder="Enter patient name or NHS number...")
             
             if search_term and len(search_term) >= 2:
-                # Search for patients
-                results = search_patients(search_term)
-                
-                if results:
-                    st.success(f"✅ Found {len(results)} patient(s)")
+                try:
+                    # Search for patients
+                    results = search_patients(search_term)
                     
-                    # Display results
-                    for patient in results:
-                        with st.expander(f"👤 {patient.get('full_name', 'Unknown')} - NHS: {patient.get('nhs_number', 'N/A')}"):
-                            col1, col2 = st.columns([3, 1])
-                            
-                            with col1:
-                                st.markdown(f"**Name:** {patient.get('full_name', 'N/A')}")
-                                st.markdown(f"**NHS Number:** {patient.get('nhs_number', 'N/A')}")
-                                st.markdown(f"**DOB:** {patient.get('date_of_birth', 'N/A')}")
-                                st.markdown(f"**Contact:** {patient.get('contact_number', 'N/A')}")
-                            
-                            with col2:
-                                # Add to PTL button
-                                if st.button(f"➕ Add to PTL", key=f"add_{patient.get('patient_id')}"):
-                                    # Add patient to PTL with their existing details
-                                    with st.form(f"ptl_details_{patient.get('patient_id')}"):
-                                        st.markdown("**PTL Details:**")
+                    if results:
+                        st.success(f"✅ Found {len(results)} patient(s)")
+                        
+                        # Display results
+                        for patient in results:
+                            with st.expander(f"👤 {patient.get('full_name', 'Unknown')} - NHS: {patient.get('nhs_number', 'N/A')}"):
+                                col1, col2 = st.columns([3, 1])
+                                
+                                with col1:
+                                    st.markdown(f"**Name:** {patient.get('full_name', 'N/A')}")
+                                    st.markdown(f"**NHS Number:** {patient.get('nhs_number', 'N/A')}")
+                                    st.markdown(f"**DOB:** {patient.get('date_of_birth', 'N/A')}")
+                                    st.markdown(f"**Contact:** {patient.get('contact_number', 'N/A')}")
+                                
+                                with col2:
+                                    # Add to PTL button
+                                    if st.button(f"➕ Add to PTL", key=f"add_{patient.get('patient_id')}"):
+                                        # Add patient to PTL with their existing details
+                                        with st.form(f"ptl_details_{patient.get('patient_id')}"):
+                                            st.markdown("**PTL Details:**")
                                         
                                         specialty = st.selectbox("Specialty*", [
                                             "Orthopaedics", "Cardiology", "General Surgery", "ENT",
@@ -607,13 +608,17 @@ def render_add_patient():
                                             }
                                             
                                             st.rerun()
-                else:
-                    st.warning("⚠️ No patients found. Try a different search term or add a new patient.")
+                    else:
+                        st.warning("⚠️ No patients found. Try a different search term or add a new patient.")
+                except Exception as e:
+                    st.error(f"❌ Search error: {str(e)}")
+                    st.info("Please try again or add a new patient manually.")
             else:
                 st.info("💡 Enter at least 2 characters to search")
         
-        except ImportError:
-            st.error("❌ Patient search not available. Please add new patient manually.")
+        except ImportError as e:
+            st.error(f"❌ Patient search not available: {str(e)}")
+            st.info("Please add new patient manually.")
     
     else:
         # ADD NEW PATIENT (ORIGINAL FORM)
