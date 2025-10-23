@@ -18,6 +18,25 @@ def generate_cv_data(student_info, work_history, qualifications, skills, templat
     Generate structured CV data from student information
     """
     
+    # Ensure qualifications have description field
+    enhanced_quals = []
+    for qual in qualifications:
+        enhanced_qual = qual.copy()
+        if 'description' not in enhanced_qual:
+            # Add description based on title
+            title_lower = qual.get('title', '').lower()
+            if 'rtt' in title_lower:
+                enhanced_qual['description'] = 'RTT pathway management, clock management, NHS performance standards'
+            elif 'information governance' in title_lower or 'ig' in title_lower:
+                enhanced_qual['description'] = 'GDPR compliance, data protection, NHS Caldicott principles, cyber security'
+            elif 'hospital administration' in title_lower:
+                enhanced_qual['description'] = 'Patient administration, PAS systems, appointment booking, waiting list management'
+            elif 'cancer' in title_lower:
+                enhanced_qual['description'] = '62-day target, 2-week wait, cancer pathway tracking, MDT coordination'
+            else:
+                enhanced_qual['description'] = ''
+        enhanced_quals.append(enhanced_qual)
+    
     # Ensure all required fields
     cv_data = {
         'personal_info': {
@@ -29,10 +48,11 @@ def generate_cv_data(student_info, work_history, qualifications, skills, templat
             'summary': student_info.get('summary', '')
         },
         'work_history': work_history,
-        'qualifications': qualifications,
+        'qualifications': enhanced_quals,
         'skills': skills,
         'template': template,
-        'generated_date': datetime.now().strftime('%d/%m/%Y')
+        'generated_date': datetime.now().strftime('%d/%m/%Y'),
+        'achievements': []  # Will be populated with default achievements
     }
     
     return cv_data
