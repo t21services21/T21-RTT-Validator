@@ -26,9 +26,19 @@ def render_customer_service_module():
     st.title("🤝 Level 2 Certificate in Customer Service")
     st.success("✅ **TQUK Approved** - Learn Using Real Patient Reception System (PAS)")
     
+    # Get user role
+    user_role = 'student'
+    if hasattr(st.session_state, 'user_license') and hasattr(st.session_state.user_license, 'role'):
+        user_role = st.session_state.user_license.role
+    elif 'user_role' in st.session_state:
+        user_role = st.session_state.user_role
+    elif 'user_type' in st.session_state:
+        user_role = st.session_state.user_type
+    if learner_email and 'admin@t21services' in learner_email.lower():
+        user_role = 'super_admin'
+    
     # Check enrollment (bypass for admins, teachers, testers, staff)
     admin_roles = ['super_admin', 'admin', 'teacher', 'tester', 'staff', 'instructor', 'trainer']
-    user_role = st.session_state.get('user_role', 'student')
     
     enrollments = get_learner_enrollments(learner_email)
     is_enrolled = any(e['course_id'] == COURSE_ID for e in enrollments)

@@ -71,7 +71,19 @@ def render_level3_adult_care_module():
     
     # Check if learner is enrolled
     learner_email = st.session_state.get('user_email', '')
-    user_role = st.session_state.get('user_role', 'student')
+    
+    # Get user role - check multiple possible locations
+    user_role = 'student'  # Default
+    if hasattr(st.session_state, 'user_license') and hasattr(st.session_state.user_license, 'role'):
+        user_role = st.session_state.user_license.role
+    elif 'user_role' in st.session_state:
+        user_role = st.session_state.user_role
+    elif 'user_type' in st.session_state:
+        user_role = st.session_state.user_type
+    
+    # Check if admin email
+    if learner_email and 'admin@t21services' in learner_email.lower():
+        user_role = 'super_admin'
     
     st.title("🎓 Level 3 Diploma in Adult Care")
     st.success("✅ **TQUK Approved Centre #36257481088** - Nationally Recognized Qualification")
