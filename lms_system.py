@@ -41,18 +41,11 @@ def render_learning_materials():
     
     st.subheader("📚 Learning Materials")
     
-    # Check user role
+    # Check user role using centralized helper
+    from user_role_helper import is_privileged_user
     user_email = st.session_state.get('user_email', '')
-    user_type = st.session_state.get('user_type', 'student')
-    user_license = st.session_state.get('user_license')
-    user_role = getattr(user_license, 'role', 'student') if user_license else 'student'
     
-    # Teachers, staff, testers, and admins get teacher view
-    is_teacher = (user_type in ['admin', 'teacher', 'staff', 'tester', 'super_admin'] or 
-                  user_role in ['admin', 'teacher', 'staff', 'tester', 'super_admin'] or
-                  'admin' in user_email or 'teacher' in user_email)
-    
-    if is_teacher:
+    if is_privileged_user():
         render_materials_teacher(user_email)
     else:
         render_materials_student(user_email)
@@ -798,15 +791,32 @@ def render_assignments():
     
     st.subheader("📝 Assignments & Submissions")
     
+    # Show success message if assignment was just created
+    if 'assignment_created' in st.session_state:
+        info = st.session_state['assignment_created']
+        st.success(f"✅ **Assignment Created Successfully!**")
+        st.balloons()
+        st.info(f"""
+        **{info['title']}**
+        - Module: {info['module']}
+        - Week: {info['week']}
+        - Due Date: {info['due_date']}
+        - Total Marks: {info['marks']}
+        - Pass Mark: {info['pass_mark']}%
+        
+        Students can now view and submit this assignment.
+        """)
+        # Clear the flag
+        del st.session_state['assignment_created']
+    
     st.info("**Assignments System:** Create assignments, submit work, and grade submissions")
     
-    # Check user role
+    # Check user role using centralized helper
+    from user_role_helper import is_privileged_user
     user_email = st.session_state.get('user_email', '')
-    user_role = st.session_state.get('user_type', 'student')
-    is_teacher = user_role in ['admin', 'teacher', 'staff', 'tester']
     
     # Tabs for different views
-    if is_teacher:
+    if is_privileged_user():
         tab1, tab2, tab3 = st.tabs(["📝 Create Assignment", "📊 View Submissions", "📋 All Assignments"])
         
         with tab1:
@@ -877,18 +887,17 @@ def render_assignments():
                         )
                         
                         if result.get('success'):
-                            from success_message_component import show_huge_success
-                            show_huge_success(
-                                title="ASSIGNMENT CREATED!",
-                                subtitle=f"{title} - Due {due_date.strftime('%B %d, %Y')}",
-                                details={
-                                    "Module": module_name,
-                                    "Week": str(week),
-                                    "Total Marks": str(total_marks),
-                                    "Pass Mark": f"{pass_mark}%"
-                                },
-                                next_steps="Students can now view and submit this assignment."
-                            )
+                            # Store success message in session state
+                            st.session_state['assignment_created'] = {
+                                'title': title,
+                                'module': module_name,
+                                'week': week,
+                                'due_date': due_date.strftime('%B %d, %Y'),
+                                'marks': total_marks,
+                                'pass_mark': pass_mark
+                            }
+                            # Immediate rerun to clear form and show success
+                            st.rerun()
                         else:
                             st.error(f"❌ Failed to create assignment: {result.get('error', 'Unknown error')}")
         
