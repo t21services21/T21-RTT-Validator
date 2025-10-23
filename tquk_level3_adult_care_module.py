@@ -355,7 +355,7 @@ def render_course_overview():
     
     **Step 4:** 📊 Track your progress (My Progress tab)
     
-    **Step 5:** 🎓 Download your certificate when complete!
+    **Step 5:** 🎓 TQUK will issue your certificate after verification!
     """)
     
     st.markdown("---")

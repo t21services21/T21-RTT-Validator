@@ -90,7 +90,7 @@ def render_customer_service_module():
         
         **Step 4:** 📊 Track your progress (Progress tab)
         
-        **Step 5:** 🎓 Get your certificate when complete!
+        **Step 5:** 🎓 TQUK will issue your certificate after verification!
         """)
         
         st.markdown("---")

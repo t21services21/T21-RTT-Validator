@@ -57,7 +57,7 @@ Every module shows clear 5 steps:
 **Step 2:** 🏥 Practice with real systems (Practice tab)
 **Step 3:** 📝 Submit evidence (Assessments tab)
 **Step 4:** 📊 Track your progress (Progress tab)
-**Step 5:** 🎓 Get your certificate!
+**Step 5:** 🎓 TQUK will issue your certificate after verification!
 ```
 
 ### **3. Learning Materials Instructions**

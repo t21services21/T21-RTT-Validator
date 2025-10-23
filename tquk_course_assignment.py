@@ -256,8 +256,7 @@ def render_learner_courses_ui(learner_email):
             
             if enrollment['status'] == 'completed':
                 st.success(f"✅ Completed on {enrollment.get('completion_date', 'N/A')[:10]}")
-                if st.button(f"📥 Download Certificate - {enrollment['course_id']}", key=f"cert_{enrollment['course_id']}"):
-                    st.info("Certificate generation coming soon!")
+                st.info("🎓 Your TQUK certificate will be issued after internal and external verification (6-8 weeks)")
             
             st.markdown("---")
     
