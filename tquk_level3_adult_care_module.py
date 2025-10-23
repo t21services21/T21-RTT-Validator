@@ -7,6 +7,8 @@ import streamlit as st
 import os
 from tquk_course_assignment import get_learner_enrollments, update_learner_progress
 from tquk_pdf_converter import create_unit_pdf
+from tquk_optional_units import render_optional_units_selector, calculate_total_credits
+from tquk_evidence_tracking import render_evidence_tracking, render_evidence_submission_form
 from datetime import datetime
 
 COURSE_ID = "level3_adult_care"
@@ -130,7 +132,9 @@ def render_level3_adult_care_module():
     tabs = st.tabs([
         "📚 Course Overview",
         "📖 Learning Materials",
+        "🎯 Optional Units",
         "📝 Assessments",
+        "📋 Evidence Tracking",
         "📊 My Progress",
         "🎓 Certificate"
     ])
@@ -142,12 +146,20 @@ def render_level3_adult_care_module():
         render_learning_materials(enrollment)
     
     with tabs[2]:
-        render_assessments(learner_email)
+        # Optional Units Selection
+        render_optional_units_selector(learner_email, COURSE_ID, required_credits=58, mandatory_credits=24)
     
     with tabs[3]:
-        render_progress_tracker(enrollment)
+        render_assessments(learner_email)
     
     with tabs[4]:
+        # Evidence Tracking
+        render_evidence_tracking(learner_email, COURSE_ID)
+    
+    with tabs[5]:
+        render_progress_tracker(enrollment)
+    
+    with tabs[6]:
         render_certificate(enrollment)
 
 
