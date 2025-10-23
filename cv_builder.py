@@ -703,3 +703,203 @@ def get_t21_qualifications():
             'description': 'Risk assessment, COSHH, fire safety, incident reporting'
         }
     ]
+
+
+# ============================================
+# PDF AND WORD EXPORT FUNCTIONS
+# ============================================
+
+def export_cv_to_pdf(cv_html, filename="CV.pdf"):
+    """
+    Convert HTML CV to PDF using reportlab
+    Returns BytesIO object for download
+    """
+    try:
+        from reportlab.lib.pagesizes import letter, A4
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import inch
+        from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_JUSTIFY
+        from reportlab.lib.colors import HexColor
+        from io import BytesIO
+        from html.parser import HTMLParser
+        
+        # Create PDF buffer
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=A4, 
+                              rightMargin=72, leftMargin=72,
+                              topMargin=72, bottomMargin=18)
+        
+        # Container for PDF elements
+        story = []
+        
+        # Define styles
+        styles = getSampleStyleSheet()
+        
+        # Custom styles
+        title_style = ParagraphStyle(
+            'CustomTitle',
+            parent=styles['Heading1'],
+            fontSize=24,
+            textColor=HexColor('#2c3e50'),
+            spaceAfter=12,
+            alignment=TA_CENTER
+        )
+        
+        heading_style = ParagraphStyle(
+            'CustomHeading',
+            parent=styles['Heading2'],
+            fontSize=14,
+            textColor=HexColor('#3498db'),
+            spaceAfter=6,
+            spaceBefore=12
+        )
+        
+        body_style = ParagraphStyle(
+            'CustomBody',
+            parent=styles['BodyText'],
+            fontSize=10,
+            alignment=TA_JUSTIFY,
+            spaceAfter=6
+        )
+        
+        # Simple HTML parser to extract text
+        class HTMLTextExtractor(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.text_parts = []
+                self.in_h1 = False
+                self.in_h2 = False
+                self.in_p = False
+                
+            def handle_starttag(self, tag, attrs):
+                if tag == 'h1':
+                    self.in_h1 = True
+                elif tag == 'h2':
+                    self.in_h2 = True
+                elif tag == 'p':
+                    self.in_p = True
+                    
+            def handle_endtag(self, tag):
+                if tag == 'h1':
+                    self.in_h1 = False
+                    self.text_parts.append(('h1_end', ''))
+                elif tag == 'h2':
+                    self.in_h2 = False
+                    self.text_parts.append(('h2_end', ''))
+                elif tag == 'p':
+                    self.in_p = False
+                    self.text_parts.append(('p_end', ''))
+                    
+            def handle_data(self, data):
+                data = data.strip()
+                if data:
+                    if self.in_h1:
+                        self.text_parts.append(('h1', data))
+                    elif self.in_h2:
+                        self.text_parts.append(('h2', data))
+                    elif self.in_p:
+                        self.text_parts.append(('p', data))
+        
+        # Parse HTML
+        parser = HTMLTextExtractor()
+        parser.feed(cv_html)
+        
+        # Build PDF
+        for tag, text in parser.text_parts:
+            if tag == 'h1':
+                story.append(Paragraph(text, title_style))
+            elif tag == 'h2':
+                story.append(Paragraph(text, heading_style))
+            elif tag == 'p' and text:
+                story.append(Paragraph(text, body_style))
+            elif tag in ['h1_end', 'h2_end', 'p_end']:
+                story.append(Spacer(1, 0.1*inch))
+        
+        # Build PDF
+        doc.build(story)
+        buffer.seek(0)
+        return buffer
+        
+    except ImportError:
+        return None  # reportlab not installed
+
+
+def export_cv_to_word(cv_html, filename="CV.docx"):
+    """
+    Convert HTML CV to Word document using python-docx
+    Returns BytesIO object for download
+    """
+    try:
+        from docx import Document
+        from docx.shared import Inches, Pt, RGBColor
+        from docx.enum.text import WD_ALIGN_PARAGRAPH
+        from io import BytesIO
+        from html.parser import HTMLParser
+        
+        # Create Word document
+        doc = Document()
+        
+        # Set margins
+        sections = doc.sections
+        for section in sections:
+            section.top_margin = Inches(1)
+            section.bottom_margin = Inches(1)
+            section.left_margin = Inches(1)
+            section.right_margin = Inches(1)
+        
+        # Simple HTML parser
+        class HTMLToWordParser(HTMLParser):
+            def __init__(self, doc):
+                super().__init__()
+                self.doc = doc
+                self.in_h1 = False
+                self.in_h2 = False
+                self.in_p = False
+                
+            def handle_starttag(self, tag, attrs):
+                if tag == 'h1':
+                    self.in_h1 = True
+                elif tag == 'h2':
+                    self.in_h2 = True
+                elif tag == 'p':
+                    self.in_p = True
+                    
+            def handle_endtag(self, tag):
+                self.in_h1 = False
+                self.in_h2 = False
+                self.in_p = False
+                    
+            def handle_data(self, data):
+                data = data.strip()
+                if data:
+                    if self.in_h1:
+                        p = self.doc.add_paragraph(data)
+                        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                        run = p.runs[0]
+                        run.font.size = Pt(24)
+                        run.font.bold = True
+                        run.font.color.rgb = RGBColor(44, 62, 80)
+                    elif self.in_h2:
+                        p = self.doc.add_paragraph(data)
+                        run = p.runs[0]
+                        run.font.size = Pt(14)
+                        run.font.bold = True
+                        run.font.color.rgb = RGBColor(52, 152, 219)
+                    elif self.in_p:
+                        p = self.doc.add_paragraph(data)
+                        run = p.runs[0]
+                        run.font.size = Pt(10)
+        
+        # Parse HTML and build Word doc
+        parser = HTMLToWordParser(doc)
+        parser.feed(cv_html)
+        
+        # Save to buffer
+        buffer = BytesIO()
+        doc.save(buffer)
+        buffer.seek(0)
+        return buffer
+        
+    except ImportError:
+        return None  # python-docx not installed

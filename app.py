@@ -4225,25 +4225,57 @@ Followed strict infection control and safeguarding procedures"""
                 with st.expander("👁️ View CV Preview", expanded=True):
                     st.markdown(cv_html, unsafe_allow_html=True)
                 
-                # Download button
+                # Download buttons
                 st.markdown("---")
                 st.subheader("📥 Download Your CV")
                 
-                st.download_button(
-                    label="⬇️ Download CV (HTML)",
-                    data=cv_html,
-                    file_name=f"CV_{full_name.replace(' ', '_')}.html",
-                    mime="text/html"
-                )
+                col1, col2, col3 = st.columns(3)
                 
-                st.info("""💡 **How to convert to PDF:**
-                1. Download the HTML file
-                2. Open it in your web browser
-                3. Press Ctrl+P (Print)
-                4. Select "Save as PDF"
-                5. Done! You now have a PDF CV!
+                with col1:
+                    # PDF Download
+                    try:
+                        from cv_builder import export_cv_to_pdf
+                        pdf_buffer = export_cv_to_pdf(cv_html)
+                        if pdf_buffer:
+                            st.download_button(
+                                label="📄 Download PDF",
+                                data=pdf_buffer,
+                                file_name=f"CV_{full_name.replace(' ', '_')}.pdf",
+                                mime="application/pdf",
+                                use_container_width=True
+                            )
+                        else:
+                            st.info("📄 PDF export requires reportlab package")
+                    except Exception as e:
+                        st.info("📄 PDF export not available")
                 
-                Or use an online converter: html-to-pdf.net""")
+                with col2:
+                    # Word Download
+                    try:
+                        from cv_builder import export_cv_to_word
+                        word_buffer = export_cv_to_word(cv_html)
+                        if word_buffer:
+                            st.download_button(
+                                label="📝 Download Word",
+                                data=word_buffer,
+                                file_name=f"CV_{full_name.replace(' ', '_')}.docx",
+                                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                use_container_width=True
+                            )
+                        else:
+                            st.info("📝 Word export requires python-docx package")
+                    except Exception as e:
+                        st.info("📝 Word export not available")
+                
+                with col3:
+                    # HTML Download (fallback)
+                    st.download_button(
+                        label="🌐 Download HTML",
+                        data=cv_html,
+                        file_name=f"CV_{full_name.replace(' ', '_')}.html",
+                        mime="text/html",
+                        use_container_width=True
+                    )
                 
                 # LinkedIn Profile
                 st.markdown("---")
@@ -6756,24 +6788,57 @@ Just paste ANY job description here!"""
                 with st.expander("👁️ View CV Preview", expanded=True):
                     st.markdown(cv_html, unsafe_allow_html=True)
                 
-                # Download button
+                # Download buttons
                 st.markdown("---")
                 st.subheader("📥 Download Your CV")
                 
-                st.download_button(
-                    label="⬇️ Download CV (HTML)",
-                    data=cv_html,
-                    file_name=f"CV_{full_name.replace(' ', '_')}.html",
-                    mime="text/html",
-                    key="cv_download"
-                )
+                col1, col2, col3 = st.columns(3)
                 
-                st.info("""💡 **How to convert to PDF:**
-                1. Download the HTML file
-                2. Open it in your web browser
-                3. Press Ctrl+P (Print)
-                4. Select "Save as PDF"
-                5. Done! You now have a PDF CV!""")
+                with col1:
+                    # PDF Download
+                    try:
+                        from cv_builder import export_cv_to_pdf
+                        pdf_buffer = export_cv_to_pdf(cv_html)
+                        if pdf_buffer:
+                            st.download_button(
+                                label="📄 Download PDF",
+                                data=pdf_buffer,
+                                file_name=f"CV_{full_name.replace(' ', '_')}.pdf",
+                                mime="application/pdf",
+                                use_container_width=True
+                            )
+                        else:
+                            st.info("📄 PDF export requires reportlab package")
+                    except Exception as e:
+                        st.info("📄 PDF export not available")
+                
+                with col2:
+                    # Word Download
+                    try:
+                        from cv_builder import export_cv_to_word
+                        word_buffer = export_cv_to_word(cv_html)
+                        if word_buffer:
+                            st.download_button(
+                                label="📝 Download Word",
+                                data=word_buffer,
+                                file_name=f"CV_{full_name.replace(' ', '_')}.docx",
+                                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                use_container_width=True
+                            )
+                        else:
+                            st.info("📝 Word export requires python-docx package")
+                    except Exception as e:
+                        st.info("📝 Word export not available")
+                
+                with col3:
+                    # HTML Download (fallback)
+                    st.download_button(
+                        label="🌐 Download HTML",
+                        data=cv_html,
+                        file_name=f"CV_{full_name.replace(' ', '_')}.html",
+                        mime="text/html",
+                        use_container_width=True
+                    )
                 
                 st.success("🎉 **CV Generated Successfully!**")
 
