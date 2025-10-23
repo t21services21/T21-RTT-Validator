@@ -2615,8 +2615,8 @@ elif tool == "🎓 Training Library":
     user_email = st.session_state.user_email
     user_role = st.session_state.get('user_type', 'student')
     
-    # ADMIN, TEACHERS, and STAFF get ALL scenarios unlocked!
-    is_privileged = user_role in ['super_admin', 'admin', 'teacher', 'staff']
+    # ADMIN, TEACHERS, STAFF, and TESTERS get ALL scenarios unlocked!
+    is_privileged = user_role in ['super_admin', 'admin', 'teacher', 'staff', 'tester']
     
     # STUDENT ACCESS BY TIER:
     if user_role == 'student_ultimate':
@@ -5644,8 +5644,8 @@ elif tool == "🎓 Training & Certification":
         user_email = st.session_state.user_email
         user_role = st.session_state.get('user_type', 'student')
         
-        # ADMIN, TEACHERS, and STAFF get ALL scenarios unlocked!
-        is_privileged = user_role in ['admin', 'teacher', 'staff'] or 'admin' in user_email.lower() or 'teacher' in user_email.lower()
+        # ADMIN, TEACHERS, STAFF, and TESTERS get ALL scenarios unlocked!
+        is_privileged = user_role in ['admin', 'teacher', 'staff', 'tester'] or 'admin' in user_email.lower() or 'teacher' in user_email.lower()
         
         # Check if user has full training library access
         has_full_access = is_privileged or user_has_module_access(user_email, "training_library")

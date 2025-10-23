@@ -1683,7 +1683,9 @@ def render_lesson_view():
             
             # Get all scenarios from training library
             all_scenarios = get_all_scenarios()
-            scenario = next((s for s in all_scenarios if s['id'] == scenario_id), None)
+            # Extract number from scenario_id (e.g., "scenario_1" -> 1)
+            scenario_num = int(scenario_id.split('_')[1]) if '_' in scenario_id else int(scenario_id)
+            scenario = next((s for s in all_scenarios if s['id'] == scenario_num), None)
             
             if scenario:
                 st.markdown(f"### 📖 {scenario['title']}")
