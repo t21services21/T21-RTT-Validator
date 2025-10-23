@@ -1677,11 +1677,71 @@ def render_lesson_view():
         st.subheader("🎯 Practice with Real Scenarios")
         st.info(f"Apply what you learned with {len(lesson['practice_scenarios'])} real RTT scenarios")
         
-        for scenario_id in lesson['practice_scenarios']:
-            if st.button(f"📖 Practice: {scenario_id}", key=f"practice_{scenario_id}"):
-                # Show scenario from training library
-                st.session_state['practice_scenario'] = scenario_id
-                st.rerun()
+        # Check if a scenario is being viewed
+        if 'practice_scenario' in st.session_state:
+            scenario_id = st.session_state['practice_scenario']
+            
+            # Get all scenarios from training library
+            all_scenarios = get_all_scenarios()
+            scenario = next((s for s in all_scenarios if s['id'] == scenario_id), None)
+            
+            if scenario:
+                st.markdown(f"### 📖 {scenario['title']}")
+                st.markdown(f"**Difficulty:** {scenario['difficulty']}")
+                
+                # Display scenario with readable styling
+                st.markdown("**Clinical Scenario:**")
+                st.markdown(f"""
+                <div style="
+                    background-color: #ffffff;
+                    border: 2px solid #0066cc;
+                    border-radius: 10px;
+                    padding: 20px;
+                    margin: 10px 0;
+                    font-family: 'Courier New', monospace;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    color: #000000;
+                    white-space: pre-wrap;
+                    max-height: 400px;
+                    overflow-y: auto;
+                ">
+{scenario['letter']}
+                </div>
+                """, unsafe_allow_html=True)
+                
+                st.markdown("---")
+                st.markdown("**Your Answer:**")
+                
+                user_answer = st.selectbox(
+                    "What RTT code should this letter get?",
+                    ["Select...", "10", "11", "12", "20", "21", "30", "31", "32", "33", "34", "35", "36", "90", "91", "92", "98"],
+                    key=f"practice_answer_{scenario_id}"
+                )
+                
+                if st.button("✅ Submit Answer", key=f"submit_{scenario_id}"):
+                    if user_answer == "Select...":
+                        st.warning("⚠️ Please select an answer")
+                    elif user_answer == scenario['correct_code']:
+                        st.success(f"✅ **Correct!**\n\n{scenario['explanation']}")
+                        st.balloons()
+                    else:
+                        st.error(f"❌ **Incorrect**\n\nThe correct answer is **Code {scenario['correct_code']}**\n\n{scenario['explanation']}")
+                
+                if st.button("← Back to Lesson"):
+                    del st.session_state['practice_scenario']
+                    st.rerun()
+            else:
+                st.error(f"❌ Scenario '{scenario_id}' not found")
+                if st.button("← Back to Lesson"):
+                    del st.session_state['practice_scenario']
+                    st.rerun()
+        else:
+            # Show scenario buttons
+            for scenario_id in lesson['practice_scenarios']:
+                if st.button(f"📄 Practice: {scenario_id}", key=f"practice_{scenario_id}"):
+                    st.session_state['practice_scenario'] = scenario_id
+                    st.rerun()
     
     # Quiz questions
     if 'quiz_questions' in lesson:
