@@ -37,9 +37,13 @@ try:
         update_appointment as supabase_update_appointment
     )
     SUPABASE_ENABLED = True
-except ImportError:
+    print("✅ Supabase functions imported successfully - SUPABASE_ENABLED = True")
+except ImportError as e:
     SUPABASE_ENABLED = False
-    print("⚠️ Supabase not available for Booking Module - using fallback storage")
+    print(f"⚠️ Supabase not available for Booking Module - using fallback storage. Error: {e}")
+except Exception as e:
+    SUPABASE_ENABLED = False
+    print(f"❌ Error importing Supabase: {e}")
 
 
 def get_current_user_email():
@@ -291,28 +295,27 @@ def book_appointment(
         return {'success': False, 'message': 'Slot not available', 'alternatives': alternatives, 'ai_recommendation': alternatives[0] if alternatives else None}
 
     appointment_id = f"APPT_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    
+    # Map to database schema fields - EXACT match to MASTER_DATABASE_SCHEMA.py
     appointment_data = {
         'appointment_id': appointment_id,
         'user_email': user_email,
+        'patient_id': nhs_number,  # Use NHS number as patient_id
         'patient_name': patient_name,
         'nhs_number': nhs_number,
-        'clinic_id': clinic_id,
         'appointment_date': appointment_date,
-        'slot_time': slot_time,
-        'appointment_type': appointment_type,
+        'appointment_time': slot_time,
         'specialty': specialty,
-        'priority': priority,
+        'clinic_location': clinic_id,
+        'appointment_type': appointment_type,
+        'consultant': 'TBC',  # Add consultant field
         'status': 'Booked',
-        'special_requirements': special_requirements,
-        'contact_number': contact_number,
-        'transport_required': transport_required,
-        'booked_date': datetime.now().isoformat(),
-        'booked_by': 'System',
-        'confirmed': False,
-        'attendance_status': 'PENDING',
-        'dna_risk_score': calculate_dna_risk(patient_data={'nhs_number': nhs_number, 'appointment_type': appointment_type, 'priority': priority})
+        'notes': f"Priority: {priority}. Special requirements: {special_requirements}. Contact: {contact_number}. Transport: {transport_required}"
     }
 
+    print(f"🔍 SUPABASE_ENABLED = {SUPABASE_ENABLED}")
+    print(f"🔍 User email: {user_email}")
+    
     if SUPABASE_ENABLED:
         print(f"📊 Attempting to save appointment to Supabase...")
         print(f"📋 Appointment data: {appointment_data}")
