@@ -333,17 +333,39 @@ def render_level3_adult_care_module():
 
 
 def render_course_overview():
-    """Course overview and introduction"""
+    """Display course overview and structure"""
     st.subheader("📚 Course Overview")
     
-    st.markdown("""
-    ### Welcome to Level 3 Diploma in Adult Care!
+    # Welcome banner
+    st.success("""
+    # 🎓 Welcome to Level 3 Diploma in Adult Care!
     
-    **Qualification Details:**
+    **Congratulations on starting your journey to becoming a qualified adult care professional!**
+    """)
+    
+    # Quick start guide
+    st.info("""
+    ## 🚀 Quick Start Guide - Your Journey to Qualification:
+    
+    **Step 1:** 📖 Study the 7 mandatory units (Learning Materials tab)
+    
+    **Step 2:** 🎯 Choose 34 credits from 20 optional units (Optional Units tab)
+    
+    **Step 3:** 📝 Submit evidence for all units (Assessments tab)
+    
+    **Step 4:** 📊 Track your progress (My Progress tab)
+    
+    **Step 5:** 🎓 Download your certificate when complete!
+    """)
+    
+    st.markdown("---")
+    
+    st.markdown("""
+    ## 📋 Qualification Details:
     - **Code:** 610/0103/6
     - **Level:** 3
-    - **Total Credits:** 58
-    - **Duration:** 12-18 weeks (or 10 weeks accelerated)
+    - **Total Credits:** 58 (24 mandatory + 34 optional)
+    - **Duration:** 12-18 months
     - **Assessment:** Portfolio of evidence
     
     ---
@@ -399,10 +421,24 @@ def render_course_overview():
 
 def render_learning_materials(enrollment):
     """Display learning materials for each unit"""
-    st.subheader("📖 Learning Materials")
+    st.subheader("📖 Learning Materials - Mandatory Units")
     
-    # Debug info
-    st.info(f"✅ **System Status:** {len(UNITS)} units loaded (7 mandatory + {len(UNITS) - 7} optional)")
+    st.success("""
+    **📚 Welcome to Your Learning Materials!**
+    
+    This tab contains the **7 mandatory units** that all students must complete.
+    Click through the tabs below to study each unit.
+    """)
+    
+    st.info("""
+    **💡 Quick Guide:**
+    - 📖 **Read** the full content for each unit
+    - ✏️ **Complete** the activities and case studies
+    - 📥 **Download** as PDF to study offline
+    - 📝 **Submit** evidence in the Assessments tab
+    
+    **For optional units:** Go to the "🎯 Optional Units" tab!
+    """)
     
     # Progress indicator
     if enrollment:

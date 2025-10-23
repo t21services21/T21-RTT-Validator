@@ -94,7 +94,16 @@ def calculate_total_credits(learner_email, course_id, mandatory_credits=24):
 def render_optional_units_selector(learner_email, course_id, required_credits=58, mandatory_credits=24):
     """Render the optional units selection interface"""
     
-    st.subheader("📚 Select Your Optional Units")
+    st.subheader("🎯 Step 1: Choose Your Optional Units")
+    
+    st.info("""
+    **📋 How to Complete This Qualification:**
+    - ✅ You've already completed 7 mandatory units (24 credits)
+    - 🎯 Now choose **34 credits** from the optional units below
+    - 📚 Study the materials for your chosen units
+    - 📝 Submit evidence for each unit
+    - 🎓 Get your certificate when complete!
+    """)
     
     # Calculate current credits
     selected_units = get_student_selected_units(learner_email, course_id)
@@ -181,17 +190,26 @@ def render_optional_units_content(learner_email, course_id, UNITS):
     """Render learning materials for selected optional units"""
     from tquk_pdf_converter import create_unit_pdf
     
-    st.subheader("📖 Optional Units - Learning Materials")
+    st.markdown("---")
+    st.markdown("---")
+    
+    st.subheader("📖 Step 2: Study Your Selected Units")
     
     # Get selected units
     selected_units = get_student_selected_units(learner_email, course_id)
     
     if not selected_units:
-        st.info("👉 **No optional units selected yet!**")
-        st.write("Go back to the unit selection above to choose your optional units.")
+        st.info("👆 **First, select your optional units above!**")
+        st.write("""
+        **How it works:**
+        1. ✅ Choose units from the list above
+        2. 📚 Come back here to study them
+        3. 📝 Submit evidence in the Assessments tab
+        """)
         return
     
-    st.success(f"✅ **Viewing materials for {len(selected_units)} selected optional units**")
+    st.success(f"🎓 **You have {len(selected_units)} units ready to study!**")
+    st.write("Select any unit below to view full learning materials, activities, and assessment guidance.")
     st.markdown("---")
     
     # Dropdown to select which unit to view
