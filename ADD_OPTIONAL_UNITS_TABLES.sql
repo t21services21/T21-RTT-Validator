@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS tquk_student_optional_units (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Insert Optional Units for Level 3 Adult Care
+-- Insert Optional Units for Level 3 Adult Care (20 units total)
 INSERT INTO tquk_optional_units (course_id, unit_number, unit_name, credits, category, learning_outcomes) VALUES
 ('level3_adult_care', 8, 'Dementia Care', 5, 'dementia_care', 6),
 ('level3_adult_care', 9, 'Mental Health Awareness', 4, 'mental_health', 5),
@@ -40,7 +40,15 @@ INSERT INTO tquk_optional_units (course_id, unit_number, unit_name, credits, cat
 ('level3_adult_care', 16, 'Supporting Independence', 4, 'independence', 5),
 ('level3_adult_care', 17, 'Working in Partnership', 3, 'partnership', 4),
 ('level3_adult_care', 18, 'Dignity and Privacy', 3, 'dignity', 4),
-('level3_adult_care', 19, 'Safeguarding Vulnerable Adults', 4, 'safeguarding', 5);
+('level3_adult_care', 19, 'Safeguarding Vulnerable Adults', 4, 'safeguarding', 5),
+('level3_adult_care', 20, 'Learning Disabilities Support', 4, 'learning_disabilities', 5),
+('level3_adult_care', 21, 'Autism Awareness', 3, 'autism', 4),
+('level3_adult_care', 22, 'Stroke Care', 4, 'stroke', 5),
+('level3_adult_care', 23, 'Diabetes Care', 3, 'diabetes', 4),
+('level3_adult_care', 24, 'Continence Care', 3, 'continence', 4),
+('level3_adult_care', 25, 'Falls Prevention', 3, 'falls', 4),
+('level3_adult_care', 26, 'Pressure Area Care', 3, 'pressure_care', 4),
+('level3_adult_care', 27, 'Sensory Loss Support', 3, 'sensory_loss', 4);
 
 -- Create indexes
 CREATE INDEX IF NOT EXISTS idx_optional_units_course ON tquk_optional_units(course_id);
