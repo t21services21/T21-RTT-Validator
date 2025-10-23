@@ -1,6 +1,7 @@
 """
 TQUK LEVEL 3 DIPLOMA IN ADULT CARE - COMPLETE LEARNER MODULE
 Standalone module for learners to access materials, track progress, and submit evidence
+VERSION: 2.0 - ALL 27 UNITS WITH FULL MATERIALS
 """
 
 import streamlit as st
@@ -392,6 +393,9 @@ def render_course_overview():
 def render_learning_materials(enrollment):
     """Display learning materials for each unit"""
     st.subheader("📖 Learning Materials")
+    
+    # Debug info
+    st.info(f"✅ **System Status:** {len(UNITS)} units loaded (7 mandatory + {len(UNITS) - 7} optional)")
     
     # Progress indicator
     if enrollment:
