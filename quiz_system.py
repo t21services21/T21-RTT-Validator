@@ -38,11 +38,10 @@ def render_quiz_system():
     **Coming soon:** Full quiz creation and management interface
     """)
     
-    # Check user role
-    user_email = st.session_state.get('user_email', '')
-    is_teacher = 'admin' in user_email or 'teacher' in user_email
+    # Check user role using centralized helper
+    from user_role_helper import is_privileged_user
     
-    if is_teacher:
+    if is_privileged_user():
         st.markdown("### 👨‍🏫 Teacher Features")
         st.write("- Create quizzes with multiple choice questions")
         st.write("- Set time limits and pass percentages")

@@ -290,11 +290,10 @@ def render_assignments_system():
     
     st.subheader("📝 Assignments System")
     
-    # Check user role
-    user_email = st.session_state.get('user_email', '')
-    is_teacher = 'admin' in user_email or 'teacher' in user_email
+    # Check user role using centralized helper
+    from user_role_helper import is_privileged_user
     
-    if is_teacher:
+    if is_privileged_user():
         render_teacher_assignments()
     else:
         render_student_assignments()

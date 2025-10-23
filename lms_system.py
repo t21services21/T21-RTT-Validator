@@ -399,10 +399,10 @@ def render_video_library():
     
     st.subheader("🎥 Video Library")
     
-    user_email = st.session_state.get('user_email', '')
-    is_teacher = 'admin' in user_email or 'teacher' in user_email
+    # Check user role using centralized helper
+    from user_role_helper import is_privileged_user
     
-    if is_teacher:
+    if is_privileged_user():
         render_videos_teacher()
     else:
         render_videos_student()
@@ -672,10 +672,10 @@ def render_announcements():
     
     st.subheader("📢 Announcements")
     
-    user_email = st.session_state.get('user_email', '')
-    is_teacher = 'admin' in user_email or 'teacher' in user_email
+    # Check user role using centralized helper
+    from user_role_helper import is_privileged_user
     
-    if is_teacher:
+    if is_privileged_user():
         render_announcements_teacher()
     else:
         render_announcements_student()
