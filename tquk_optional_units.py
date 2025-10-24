@@ -131,14 +131,15 @@ def render_optional_units_selector(learner_email, course_id, required_credits=58
     if selected_units:
         st.success(f"✅ **You've selected {len(selected_units)} optional units:**")
         
-        for unit in selected_units:
+        for idx, unit in enumerate(selected_units):
             col1, col2, col3 = st.columns([3, 1, 1])
             with col1:
                 st.write(f"**Unit {unit['unit_number']}: {unit['unit_name']}**")
             with col2:
                 st.write(f"{unit['credits']} credits")
             with col3:
-                if st.button("Remove", key=f"remove_{unit['unit_number']}"):
+                # Use idx to ensure unique keys for remove buttons
+                if st.button("Remove", key=f"remove_{unit['unit_number']}_{idx}"):
                     if remove_optional_unit(learner_email, course_id, unit['unit_number']):
                         st.success("Unit removed!")
                         st.rerun()
@@ -167,7 +168,7 @@ def render_optional_units_selector(learner_email, course_id, required_credits=58
             # Display by category
             for category, units in categories.items():
                 with st.expander(f"📂 {category.replace('_', ' ').title()} ({len(units)} units)"):
-                    for unit in units:
+                    for idx, unit in enumerate(units):
                         col1, col2, col3 = st.columns([3, 1, 1])
                         with col1:
                             st.write(f"**Unit {unit['unit_number']}: {unit['unit_name']}**")
@@ -177,7 +178,8 @@ def render_optional_units_selector(learner_email, course_id, required_credits=58
                             st.write(f"{unit['credits']} credits")
                             st.caption(f"{unit.get('learning_outcomes', 0)} outcomes")
                         with col3:
-                            if st.button("Select", key=f"select_{unit['unit_number']}", type="primary"):
+                            # Use category + idx to ensure unique keys
+                            if st.button("Select", key=f"select_{category}_{unit['unit_number']}_{idx}", type="primary"):
                                 if select_optional_unit(learner_email, course_id, unit['unit_number'], unit['unit_name'], unit['credits']):
                                     st.success(f"✅ Added {unit['unit_name']}!")
                                     st.rerun()
