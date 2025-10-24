@@ -170,30 +170,28 @@ def create_pdf_from_markdown(content, title="TQUK Document"):
 
 def clean_markdown(text):
     """Remove markdown formatting for PDF"""
-    # Remove bold/italic markers
-    text = re.sub(r'\*\*\*(.+?)\*\*\*', r'<b><i>\1</i></b>', text)
-    text = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', text)
-    text = re.sub(r'\*(.+?)\*', r'<i>\1</i>', text)
-    text = re.sub(r'__(.+?)__', r'<b>\1</b>', text)
-    text = re.sub(r'_(.+?)_', r'<i>\1</i>', text)
+    # First, escape special XML characters
+    text = text.replace('&', '&amp;')
+    
+    # Remove all markdown formatting - keep text only
+    # Remove bold/italic markers (don't convert to HTML, just remove)
+    text = re.sub(r'\*\*\*(.+?)\*\*\*', r'\1', text)  # Bold+Italic
+    text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)      # Bold
+    text = re.sub(r'__(.+?)__', r'\1', text)          # Bold (underscore)
+    text = re.sub(r'\*(.+?)\*', r'\1', text)          # Italic
+    text = re.sub(r'_(.+?)_', r'\1', text)            # Italic (underscore)
     
     # Remove inline code markers
-    text = re.sub(r'`(.+?)`', r'<font name="Courier">\1</font>', text)
+    text = re.sub(r'`(.+?)`', r'\1', text)
     
     # Remove links but keep text
     text = re.sub(r'\[(.+?)\]\(.+?\)', r'\1', text)
     
-    # Remove emojis (they don't render well in PDFs)
-    # Keep them for now as they add visual appeal
-    
-    # Escape special XML characters
-    text = text.replace('&', '&amp;')
+    # Remove remaining special characters that cause issues
     text = text.replace('<', '&lt;').replace('>', '&gt;')
     
-    # Re-add our formatting tags
-    text = text.replace('&lt;b&gt;', '<b>').replace('&lt;/b&gt;', '</b>')
-    text = text.replace('&lt;i&gt;', '<i>').replace('&lt;/i&gt;', '</i>')
-    text = text.replace('&lt;font name="Courier"&gt;', '<font name="Courier">').replace('&lt;/font&gt;', '</font>')
+    # Remove underscores used for blanks (they cause issues)
+    text = re.sub(r'_{2,}', '[blank]', text)
     
     return text
 
@@ -209,4 +207,56 @@ def generate_tquk_pdf(markdown_content, document_title="TQUK Document"):
     Returns:
         BytesIO object containing the PDF
     """
-    return create_pdf_from_markdown(markdown_content, document_title)
+    try:
+        return create_pdf_from_markdown(markdown_content, document_title)
+    except Exception as e:
+        # If PDF generation fails, create a simple text-based PDF
+        print(f"PDF generation error: {str(e)}")
+        return create_simple_pdf(markdown_content, document_title)
+
+
+def create_simple_pdf(content, title="TQUK Document"):
+    """
+    Create a simple PDF without complex formatting (fallback)
+    """
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=72,
+        leftMargin=72,
+        topMargin=72,
+        bottomMargin=72,
+        title=title
+    )
+    
+    story = []
+    styles = getSampleStyleSheet()
+    
+    # Simple body style
+    body_style = ParagraphStyle(
+        'SimpleBody',
+        parent=styles['BodyText'],
+        fontSize=10,
+        spaceAfter=6,
+        fontName='Helvetica'
+    )
+    
+    # Split content into lines and add as simple paragraphs
+    lines = content.split('\n')
+    for line in lines:
+        line = line.strip()
+        if line:
+            # Remove ALL special characters
+            line = line.replace('*', '').replace('_', '').replace('#', '')
+            line = line.replace('&', 'and').replace('<', '').replace('>', '')
+            
+            try:
+                story.append(Paragraph(line, body_style))
+            except:
+                # If even this fails, skip the line
+                pass
+    
+    doc.build(story)
+    buffer.seek(0)
+    return buffer
