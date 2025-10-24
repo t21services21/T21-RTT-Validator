@@ -26,7 +26,10 @@ TQUK_QUALIFICATIONS = {
         "duration": "12-18 weeks",
         "price": "£1,500",
         "credits": 58,
-        "units": 7
+        "units": 7,
+        "mandatory_units": 3,
+        "optional_units": 4,
+        "unit_structure": "3 Mandatory + 4 Optional (from 20+ choices)"
     },
     "level2_it_skills": {
         "name": "Level 2 Certificate in IT User Skills",
@@ -187,13 +190,19 @@ def render_course_assignment_ui():
     # Show course details
     if selected_course:
         course = TQUK_QUALIFICATIONS[selected_course]
+        
+        # Build unit info
+        unit_info = f"- Units: {course['units']}"
+        if 'unit_structure' in course:
+            unit_info = f"- Units: {course['unit_structure']}"
+        
         st.info(f"""
         **{course['name']}**
         - Code: {course['code']}
         - Duration: {course['duration']}
         - Price: {course['price']}
         - Credits: {course['credits']}
-        - Units: {course['units']}
+        {unit_info}
         """)
     
     if st.button("✅ Assign Course", type="primary"):
