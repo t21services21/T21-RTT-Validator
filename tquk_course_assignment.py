@@ -80,7 +80,22 @@ def assign_course_to_learner(learner_email, course_id, assigned_by):
         }
         
         result = supabase.table('tquk_enrollments').insert(enrollment_data).execute()
-        return True, "Course assigned successfully!"
+        
+        # Send welcome email to learner
+        try:
+            send_tquk_enrollment_email(
+                learner_email=learner_email,
+                course_name=TQUK_QUALIFICATIONS[course_id]['name'],
+                course_code=TQUK_QUALIFICATIONS[course_id]['code'],
+                duration=TQUK_QUALIFICATIONS[course_id]['duration'],
+                credits=TQUK_QUALIFICATIONS[course_id]['credits'],
+                units=TQUK_QUALIFICATIONS[course_id]['units']
+            )
+        except Exception as email_error:
+            print(f"Email notification failed: {email_error}")
+            # Don't fail enrollment if email fails
+        
+        return True, "Course assigned successfully! Welcome email sent to learner."
         
     except Exception as e:
         return False, f"Error: {str(e)}"
@@ -261,3 +276,117 @@ def render_learner_courses_ui(learner_email):
             st.markdown("---")
     
     return enrollments
+
+
+def send_tquk_enrollment_email(learner_email, course_name, course_code, duration, credits, units):
+    """Send welcome email when learner is enrolled in TQUK course"""
+    try:
+        from email_service import send_email
+        
+        # Get learner name from email
+        learner_name = learner_email.split('@')[0].replace('.', ' ').title()
+        
+        # Determine module link based on course
+        if "Level 3" in course_name:
+            module_name = "📚 Level 3 Adult Care"
+        elif "IT User Skills" in course_name:
+            module_name = "💻 IT User Skills"
+        elif "Customer Service" in course_name:
+            module_name = "🤝 Customer Service"
+        elif "Business Administration" in course_name:
+            module_name = "📊 Business Administration"
+        else:
+            module_name = "your course module"
+        
+        subject = f"Welcome to {course_name} - T21 Services UK"
+        
+        body = f"""
+Dear {learner_name},
+
+Welcome to T21 Services UK!
+
+You have been enrolled in:
+
+📚 {course_name}
+TQUK Qualification Code: {course_code}
+Duration: {duration}
+Credits: {credits}
+Total Units: {units}
+
+═══════════════════════════════════════════════════════════════
+
+GETTING STARTED:
+
+1. Login to platform: https://t21-healthcare-platform.streamlit.app
+2. Use your email: {learner_email}
+3. Click on "{module_name}" in the sidebar
+4. Start with "Course Overview" tab
+
+═══════════════════════════════════════════════════════════════
+
+WHAT YOU'LL FIND:
+
+✅ Learning Materials (all units)
+✅ Assessment guidance
+✅ Evidence tracking
+✅ Progress monitoring
+✅ TQUK Documents
+
+═══════════════════════════════════════════════════════════════
+
+YOUR ASSESSOR:
+
+Name: Tosin Owonifari
+Email: t.owonifari@t21services.co.uk
+Phone: 07447459420
+
+Your assessor will contact you within 48 hours to schedule your first assessment session.
+
+═══════════════════════════════════════════════════════════════
+
+QUALIFICATION DETAILS:
+
+This is a TQUK (Training Qualifications UK) nationally recognized qualification.
+
+Centre Number: 36257481088
+Centre: T21 Services Limited
+Registered Office: 64 Upper Parliament Street, Liverpool, L8 7LF
+
+═══════════════════════════════════════════════════════════════
+
+NEED HELP?
+
+If you have any questions:
+📧 Email: t.owonifari@t21services.co.uk
+📞 Phone: 07447459420
+🌐 Website: www.t21services.co.uk
+
+═══════════════════════════════════════════════════════════════
+
+Good luck with your studies!
+
+Best regards,
+
+Tosin Michael Owonifari
+Centre Manager
+T21 Services UK
+TQUK Approved Centre #36257481088
+
+═══════════════════════════════════════════════════════════════
+
+© 2025 T21 SERVICES LIMITED. All Rights Reserved.
+Company Number: 13091053
+"""
+        
+        # Send email
+        send_email(
+            to_email=learner_email,
+            subject=subject,
+            body=body
+        )
+        
+        return True
+        
+    except Exception as e:
+        print(f"Failed to send enrollment email: {str(e)}")
+        return False

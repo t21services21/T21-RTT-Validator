@@ -1645,6 +1645,29 @@ elif user_role == 'admin':
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
+elif user_role == 'staff':
+    # STAFF: Similar to admin but focused on teaching and operations
+    accessible_modules = [
+        "🏥 Patient Administration Hub",
+        "🎓 Learning Portal",
+        "👨‍🏫 Teaching & Assessment",  # Can enroll learners
+        "📚 TQUK Document Library",
+        "🏥 Clinical Workflows",
+        "✅ Task Management",
+        "🤖 AI & Automation",
+        "📊 Reports & Analytics",
+        "🎓 Training & Certification",
+        "📚 Level 3 Adult Care",
+        "💻 IT User Skills",
+        "🤝 Customer Service",
+        "📊 Business Administration",
+        "🔒 Information Governance",
+        "💼 Career Development",
+        "📄 CV Builder",
+        "⚙️ Administration",  # LIMITED admin tools
+        "ℹ️ Help & Information",
+        "📧 Contact & Support"
+    ]
 else:
     # DEFAULT: Basic access for NHS staff
     accessible_modules = [
