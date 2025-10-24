@@ -92,13 +92,13 @@ DOCUMENTS = {
             "files": [
                 {
                     "name": "CDA Submission Package",
-                    "file": "TQUK_CDA_SUBMISSION_PACKAGE.md",
+                    "file": "TQUK_CDA_SUBMISSION_OFFICIAL.md",
                     "description": "Complete submission with mapping matrix",
                     "required": True
                 },
                 {
                     "name": "Email Template to TQUK",
-                    "file": "EMAIL_TO_TQUK_CDA_APPROVAL.md",
+                    "file": "EMAIL_TO_TQUK_OFFICIAL.md",
                     "description": "Copy-paste email for TQUK submission",
                     "required": True
                 },

@@ -1,104 +1,95 @@
-# 📋 TQUK CENTRE-DEVISED ASSESSMENT (CDA) SUBMISSION
-## **T21 Services UK - Centre Number: 36257481088**
+# TQUK CENTRE-DEVISED ASSESSMENT (CDA) SUBMISSION
+
+## T21 Services UK - Centre Number: 36257481088
 
 ---
 
-## **SUBMISSION DETAILS:**
+## SUBMISSION DETAILS:
 
 **Date:** October 24, 2025  
 **Centre Name:** T21 Services Limited  
 **Centre Number:** 36257481088  
 **Qualification:** TQUK Level 3 Diploma in Adult Care (RQF) - 610/0103/6  
 **Contact:** H.E. Ambassador Tosin Michael Owonifari  
-**Email:** t.owonifari@t21services.co.uk
+**Email:** t.owonifari@t21services.co.uk  
+**Phone:** 07447459420
 
 ---
 
-## **PURPOSE OF SUBMISSION:**
+## PURPOSE OF SUBMISSION:
 
 T21 Services UK is submitting Centre-Devised Assessment (CDA) materials for approval before use with learners enrolled on the Level 3 Diploma in Adult Care.
 
 These materials have been developed to:
-- ✅ Map to all Learning Outcomes and Assessment Criteria
-- ✅ Provide comprehensive learning content
-- ✅ Support workplace assessment
-- ✅ Ensure TQUK compliance
+- Map to all Learning Outcomes and Assessment Criteria
+- Provide comprehensive learning content
+- Support workplace assessment
+- Ensure TQUK compliance
 
 ---
 
-## **MATERIALS SUBMITTED:**
+## MATERIALS SUBMITTED:
 
-### **1. UNIT LEARNING MATERIALS:**
+### 1. UNIT LEARNING MATERIALS:
 
-#### **Unit 1: Duty of Care (D/650/2301)**
-- **File:** LEVEL3_UNIT1_DUTY_OF_CARE_COMPLETE.md
-- **Pages:** 20
-- **Mapped to:** All Learning Outcomes 1.1-3.2
+**Unit 1: Duty of Care (D/650/2301)**
+- File: LEVEL3_UNIT1_DUTY_OF_CARE_COMPLETE.md
+- Pages: 20
+- Mapped to: All Learning Outcomes 1.1-3.2
 
-#### **Unit 2: Equality, Diversity & Inclusion (M/650/2307)**
-- **File:** LEVEL3_UNIT2_EQUALITY_DIVERSITY_COMPLETE.md
-- **Pages:** 30
-- **Mapped to:** All Learning Outcomes 1.1-3.2
+**Unit 2: Equality, Diversity and Inclusion (M/650/2307)**
+- File: LEVEL3_UNIT2_EQUALITY_DIVERSITY_COMPLETE.md
+- Pages: 30
+- Mapped to: All Learning Outcomes 1.1-3.2
 
-#### **Unit 3: Person-Centred Practice (J/650/2304)**
-- **File:** LEVEL3_UNIT3_PERSON_CENTRED_CARE_COMPLETE.md
-- **Pages:** 25
-- **Mapped to:** All Learning Outcomes 1.1-4.4
+**Unit 3: Person-Centred Practice (J/650/2304)**
+- File: LEVEL3_UNIT3_PERSON_CENTRED_CARE_COMPLETE.md
+- Pages: 25
+- Mapped to: All Learning Outcomes 1.1-4.4
 
-### **2. ASSESSMENT TEMPLATES:**
+### 2. ASSESSMENT TEMPLATES:
 
-#### **Observation Record**
-- **File:** LEVEL3_ASSESSMENT_PACK_TEMPLATES.md (Template 1)
-- **Purpose:** Record workplace observations
-- **Maps to:** Practical assessment criteria across all units
+**Observation Record**
+- Purpose: Record workplace observations
+- Maps to: Practical assessment criteria across all units
 
-#### **Witness Statement**
-- **File:** LEVEL3_ASSESSMENT_PACK_TEMPLATES.md (Template 2)
-- **Purpose:** Workplace supervisor/colleague verification
-- **Maps to:** Competence confirmation
+**Witness Statement**
+- Purpose: Workplace supervisor/colleague verification
+- Maps to: Competence confirmation
 
-#### **Professional Discussion Record**
-- **File:** LEVEL3_ASSESSMENT_PACK_TEMPLATES.md (Template 3)
-- **Purpose:** Assess knowledge and understanding
-- **Maps to:** Knowledge-based criteria
+**Professional Discussion Record**
+- Purpose: Assess knowledge and understanding
+- Maps to: Knowledge-based criteria
 
-#### **Reflective Account Template**
-- **File:** LEVEL3_ASSESSMENT_PACK_TEMPLATES.md (Template 4)
-- **Purpose:** Learner reflection on practice
-- **Maps to:** Understanding and application criteria
+**Reflective Account Template**
+- Purpose: Learner reflection on practice
+- Maps to: Understanding and application criteria
 
-### **3. QUALITY ASSURANCE TOOLS:**
+**Assessment Plan**
+- Purpose: Plan assessment schedule
 
-#### **Assessment Plan**
-- **File:** LEVEL3_ASSESSMENT_PACK_TEMPLATES.md (Template 5)
-- **Purpose:** Plan assessment schedule
+**Progress Tracker**
+- Purpose: Monitor unit completion
 
-#### **Progress Tracker**
-- **File:** LEVEL3_ASSESSMENT_PACK_TEMPLATES.md (Template 6)
-- **Purpose:** Monitor unit completion
-
-#### **IQA Sampling Record**
-- **File:** LEVEL3_ASSESSMENT_PACK_TEMPLATES.md (Template 7)
-- **Purpose:** Internal quality assurance
+**IQA Sampling Record**
+- Purpose: Internal quality assurance
 
 ---
 
-## **ASSESSMENT MAPPING MATRIX:**
+## ASSESSMENT MAPPING MATRIX:
 
-### **UNIT 1: DUTY OF CARE (D/650/2301)**
+### UNIT 1: DUTY OF CARE (D/650/2301)
 
 | Learning Outcome | Assessment Criteria | Learning Material Section | Assessment Method | Evidence Type |
 |-----------------|-------------------|------------------------|------------------|--------------|
 | LO1: Understand duty of care | 1.1 Explain duty of care | Section 1: What is Duty of Care | Professional Discussion | PD Record |
-| | 1.2 Explain contribution to safeguarding | Section 2: Duty of Care & Safeguarding | Professional Discussion | PD Record |
+| | 1.2 Explain contribution to safeguarding | Section 2: Duty of Care and Safeguarding | Professional Discussion | PD Record |
 | LO2: Know how to address dilemmas | 2.1 Describe potential dilemmas | Section 3: Dilemmas in Duty of Care | Reflective Account | Written |
 | | 2.2 Explain where to get support | Section 4: Where to Get Support | Professional Discussion | PD Record |
 | LO3: Know how to respond to complaints | 3.1 Describe how to respond | Section 5: Responding to Complaints | Observation | Obs Record |
 | | 3.2 Explain complaints procedures | Section 6: Complaints Procedures | Professional Discussion | PD Record |
 
----
-
-### **UNIT 2: EQUALITY, DIVERSITY & INCLUSION (M/650/2307)**
+### UNIT 2: EQUALITY, DIVERSITY AND INCLUSION (M/650/2307)
 
 | Learning Outcome | Assessment Criteria | Learning Material Section | Assessment Method | Evidence Type |
 |-----------------|-------------------|------------------------|------------------|--------------|
@@ -111,9 +102,7 @@ These materials have been developed to:
 | LO3: Know how to access support | 3.1 Identify sources of support | Section 7: Sources of Support | Professional Discussion | PD Record |
 | | 3.2 Describe when to access | Section 8: When to Access Support | Professional Discussion | PD Record |
 
----
-
-### **UNIT 3: PERSON-CENTRED PRACTICE (J/650/2304)**
+### UNIT 3: PERSON-CENTRED PRACTICE (J/650/2304)
 
 | Learning Outcome | Assessment Criteria | Learning Material Section | Assessment Method | Evidence Type |
 |-----------------|-------------------|------------------------|------------------|--------------|
@@ -133,30 +122,30 @@ These materials have been developed to:
 
 ---
 
-## **ASSESSMENT STRATEGY:**
+## ASSESSMENT STRATEGY:
 
-### **Knowledge Assessment:**
-- **Professional Discussions:** 30-45 minutes per unit
-- **Written Assignments:** 1500-2000 words
-- **Reflective Accounts:** 500-1000 words
+### Knowledge Assessment:
+- Professional Discussions: 30-45 minutes per unit
+- Written Assignments: 1500-2000 words
+- Reflective Accounts: 500-1000 words
 
-### **Competence Assessment:**
-- **Direct Observations:** Minimum 2-3 per unit in workplace
-- **Witness Statements:** From qualified colleagues (Level 3+)
-- **Work Products:** Care plans, risk assessments, records
+### Competence Assessment:
+- Direct Observations: Minimum 2-3 per unit in workplace
+- Witness Statements: From qualified colleagues (Level 3+)
+- Work Products: Care plans, risk assessments, records
 
-### **Quality Assurance:**
-- **IQA Sampling:** 10% of all assessments
-- **Regular Reviews:** Monthly progress reviews
-- **Feedback:** Within 5 working days
+### Quality Assurance:
+- IQA Sampling: 10% of all assessments
+- Regular Reviews: Monthly progress reviews
+- Feedback: Within 5 working days
 
 ---
 
-## **WORKPLACE ASSESSMENT:**
+## WORKPLACE ASSESSMENT:
 
 All learners are employed in adult care settings (care homes, hospitals, domiciliary care) working as Healthcare Assistants.
 
-**Assessment opportunities include:**
+Assessment opportunities include:
 - Personal care provision
 - Communication with service users
 - Safeguarding situations
@@ -167,63 +156,50 @@ All learners are employed in adult care settings (care homes, hospitals, domicil
 
 ---
 
-## **STAFF QUALIFICATIONS:**
+## STAFF QUALIFICATIONS:
 
-### **Assessor:**
-- **Name:** Tosin Owonifari
-- **Qualification:** Level 3 Award in Assessing Vocational Achievement (TAQA)
-- **Status:** TQUK Approved ✅
+**Assessor:**
+- Name: Tosin Owonifari
+- Qualification: Level 3 Award in Assessing Vocational Achievement (TAQA)
+- Status: TQUK Approved
 
-### **Internal Quality Assurer:**
-- **Name:** Divine Yangni
-- **Qualification:** Level 4 Award in Internal Quality Assurance
-- **Status:** TQUK Approved ✅
+**Internal Quality Assurer:**
+- Name: Divine Yangni
+- Qualification: Level 4 Award in Internal Quality Assurance
+- Status: TQUK Approved
 
 ---
 
-## **REQUEST FOR APPROVAL:**
+## REQUEST FOR APPROVAL:
 
 T21 Services UK requests TQUK approval for the above Centre-Devised Assessment materials to be used with learners enrolled on the Level 3 Diploma in Adult Care (RQF).
 
 We confirm that:
-- ✅ All materials map to Learning Outcomes and Assessment Criteria
-- ✅ Assessment methods are appropriate and valid
-- ✅ Quality assurance processes are in place
-- ✅ Staff are appropriately qualified
-- ✅ Workplace assessment opportunities are available
+- All materials map to Learning Outcomes and Assessment Criteria
+- Assessment methods are appropriate and valid
+- Quality assurance processes are in place
+- Staff are appropriately qualified
+- Workplace assessment opportunities are available
 
 ---
 
-## **SUBMISSION METHOD:**
+## CONTACT FOR QUERIES:
 
-**Email to:** support@tquk.org
-**Subject:** CDA Approval Request - T21 Services UK - Level 3 Adult Care
-**Attachments:**
-1. This submission document
-2. All learning materials (Units 1-3)
-3. All assessment templates
-4. Mapping matrix
-5. Staff qualification certificates
-
----
-
-## **CONTACT FOR QUERIES:**
-
-**Centre Contact:** H.E. Ambassador Tosin Michael Owonifari
-**Email:** t.owonifari@t21services.co.uk
-**Phone:** 07447459420
+**Centre Contact:** H.E. Ambassador Tosin Michael Owonifari  
+**Email:** t.owonifari@t21services.co.uk  
+**Phone:** 07447459420  
 **Centre Number:** 36257481088
 
 ---
 
-## **DECLARATION:**
+## DECLARATION:
 
 I confirm that all information provided in this submission is accurate and that the materials submitted meet TQUK requirements for Centre-Devised Assessment.
 
 **Submitted by:** H.E. Ambassador Tosin Michael Owonifari  
 **Position:** Centre Manager  
-**Centre:** T21 Services Limited (Centre #36257481088)  
-**Date:** October 24, 2025  
+**Centre:** T21 Services Limited (Centre Number: 36257481088)  
+**Date:** October 24, 2025
 
 ---
 
