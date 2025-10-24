@@ -5,11 +5,11 @@
 
 ## **SUBMISSION DETAILS:**
 
-**Date:** October 23, 2025
-**Centre Name:** T21 Services Limited
-**Centre Number:** 36257481088
-**Qualification:** TQUK Level 3 Diploma in Adult Care (RQF) - 610/0103/6
-**Contact:** H.E. Ambassador Tosin Michael Owonifari
+**Date:** October 24, 2025  
+**Centre Name:** T21 Services Limited  
+**Centre Number:** 36257481088  
+**Qualification:** TQUK Level 3 Diploma in Adult Care (RQF) - 610/0103/6  
+**Contact:** H.E. Ambassador Tosin Michael Owonifari  
 **Email:** t.owonifari@t21services.co.uk
 
 ---
@@ -221,18 +221,15 @@ We confirm that:
 
 ---
 
-**Date of Submission:** October 23, 2025
+## **DECLARATION:**
 
-**Signature:** _________________________
-**Name:** Tosin Michael Owonifari
-**Position:** Centre Manager, T21 Services UK
+I confirm that all information provided in this submission is accurate and that the materials submitted meet TQUK requirements for Centre-Devised Assessment.
+
+**Submitted by:** H.E. Ambassador Tosin Michael Owonifari  
+**Position:** Centre Manager  
+**Centre:** T21 Services Limited (Centre #36257481088)  
+**Date:** October 24, 2025  
 
 ---
 
-**FOR TQUK USE ONLY:**
-
-**Reviewed by:** _________________________
-**Date:** _________________________
-**Decision:** ☐ Approved  ☐ Approved with amendments  ☐ Not approved
-**Comments:** _________________________
-**Approval Reference:** _________________________
+**End of Submission Document**
