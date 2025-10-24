@@ -6,6 +6,82 @@ Complete document management for Admin, Tutors, and Assessors
 import streamlit as st
 import os
 from pathlib import Path
+from datetime import datetime
+
+# Company branding information
+COMPANY_INFO = {
+    "name": "T21 SERVICES LIMITED",
+    "company_number": "13091053",
+    "centre_number": "36257481088",
+    "address_line1": "64 Upper Parliament Street",
+    "address_line2": "Liverpool",
+    "postcode": "L8 7LF",
+    "country": "United Kingdom",
+    "email": "t.owonifari@t21services.co.uk",
+    "phone": "07447459420",
+    "website": "www.t21services.co.uk",
+    "centre_manager": "H.E. Ambassador Tosin Michael Owonifari",
+    "qualification": "Level 3 Diploma in Adult Care (RQF)",
+    "qualification_code": "610/0103/6"
+}
+
+
+def get_document_header():
+    """Generate professional document header with company branding"""
+    header = f"""
+{'='*80}
+
+                            {COMPANY_INFO['name']}
+                    Company Number: {COMPANY_INFO['company_number']}
+                    TQUK Approved Centre #{COMPANY_INFO['centre_number']}
+                {COMPANY_INFO['qualification']} - {COMPANY_INFO['qualification_code']}
+
+{'='*80}
+
+REGISTERED OFFICE:
+{COMPANY_INFO['name']}
+{COMPANY_INFO['address_line1']}
+{COMPANY_INFO['address_line2']}
+{COMPANY_INFO['postcode']}
+{COMPANY_INFO['country']}
+
+CONTACT DETAILS:
+📧 Email: {COMPANY_INFO['email']}
+📞 Phone: {COMPANY_INFO['phone']}
+🌐 Website: {COMPANY_INFO['website']}
+
+CENTRE INFORMATION:
+Centre Number: {COMPANY_INFO['centre_number']}
+Centre Manager: {COMPANY_INFO['centre_manager']}
+Awarding Organization: TQUK (Training Qualifications UK)
+Qualification: {COMPANY_INFO['qualification']}
+Qualification Code: {COMPANY_INFO['qualification_code']}
+
+{'='*80}
+
+"""
+    return header
+
+
+def get_document_footer():
+    """Generate professional document footer"""
+    footer = f"""
+
+{'='*80}
+
+{COMPANY_INFO['name']} | TQUK Centre #{COMPANY_INFO['centre_number']}
+📧 {COMPANY_INFO['email']} | 📞 {COMPANY_INFO['phone']}
+{COMPANY_INFO['qualification']} - {COMPANY_INFO['qualification_code']}
+
+© {datetime.now().year} {COMPANY_INFO['name']}. All Rights Reserved.
+Company Number: {COMPANY_INFO['company_number']}
+This document is the property of {COMPANY_INFO['name']} and may not be 
+reproduced without permission.
+
+{'='*80}
+"""
+    return footer
+
 
 # Document categories and files
 DOCUMENTS = {
@@ -188,17 +264,33 @@ def file_exists(filename):
     return get_file_path(filename).exists()
 
 
-def read_file_content(filename):
-    """Read the content of a file"""
+def read_file_content(filename, add_branding=False):
+    """Read the content of a file, optionally with company branding"""
     try:
         file_path = get_file_path(filename)
         if file_path.exists():
             with open(file_path, 'r', encoding='utf-8') as f:
-                return f.read()
+                content = f.read()
+            
+            # Add company branding if requested
+            if add_branding:
+                content = get_document_header() + content + get_document_footer()
+            
+            return content
         return None
     except Exception as e:
         st.error(f"Error reading file: {str(e)}")
         return None
+
+
+def get_branded_content(filename):
+    """Get file content with full company branding for official use"""
+    content = read_file_content(filename, add_branding=False)
+    if content:
+        # Add header and footer
+        branded_content = get_document_header() + "\n" + content + "\n" + get_document_footer()
+        return branded_content
+    return None
 
 
 def render_document_library(user_role):
@@ -251,15 +343,20 @@ def render_document_library(user_role):
                         if st.button("👁️ View", key=f"view_{doc['file']}"):
                             st.session_state[f'viewing_{doc["file"]}'] = True
                         
-                        # Download button
-                        content = read_file_content(doc['file'])
-                        if content:
+                        # Download WITH BRANDING button (for official use)
+                        branded_content = get_branded_content(doc['file'])
+                        if branded_content:
+                            # Create filename with branding indicator
+                            base_name = doc['file'].replace('.md', '')
+                            branded_filename = f"{base_name}_OFFICIAL.txt"
+                            
                             st.download_button(
-                                label="📥 Download",
-                                data=content,
-                                file_name=doc['file'],
-                                mime="text/markdown",
-                                key=f"download_{doc['file']}"
+                                label="📥 Official",
+                                data=branded_content,
+                                file_name=branded_filename,
+                                mime="text/plain",
+                                key=f"download_branded_{doc['file']}",
+                                help="Download with T21 Services branding for official use"
                             )
                 
                 # Show content if viewing
@@ -280,6 +377,21 @@ def render_document_library(user_role):
 
 def render_admin_document_library():
     """Admin-specific document library"""
+    
+    # Important instructions at the top
+    st.info("""
+    ### 📥 **How to Download for TQUK Submission:**
+    
+    1. Click "📥 Official" button to download with T21 Services branding
+    2. Files download as .txt format with full company details
+    3. **To convert to PDF:**
+       - **Option 1:** Open in Word → Save As PDF
+       - **Option 2:** Use online converter: https://www.markdowntopdf.com/
+       - **Option 3:** Copy content to Google Docs → Download as PDF
+    
+    ✅ All downloads include your registered office address and company details!
+    """)
+    
     render_document_library("admin")
     
     st.markdown("---")
