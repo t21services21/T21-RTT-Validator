@@ -297,6 +297,7 @@ def render_level3_adult_care_module():
         "🎯 Optional Units",
         "📝 Assessments",
         "📋 Evidence Tracking",
+        "📥 TQUK Documents",
         "📊 My Progress",
         "🎓 Certificate"
     ])
@@ -326,9 +327,13 @@ def render_level3_adult_care_module():
         render_evidence_tracking(learner_email, COURSE_ID)
     
     with tabs[5]:
-        render_progress_tracker(enrollment)
+        # TQUK Documents - Download submission materials
+        render_tquk_documents_tab()
     
     with tabs[6]:
+        render_progress_tracker(enrollment)
+    
+    with tabs[7]:
         render_certificate(enrollment)
 
 
@@ -711,5 +716,158 @@ def render_certificate(enrollment):
         
         **Units Remaining:** {7 - enrollment['units_completed']}
         """)
+
+
+def render_tquk_documents_tab():
+    """Render TQUK Documents tab with downloadable submission materials"""
+    st.subheader("📥 TQUK Submission Documents")
+    
+    st.success("""
+    ### 📋 Download Official Documents for TQUK Submission
+    
+    All documents include T21 Services branding and your registered office details.
+    
+    **How to use:**
+    1. Click "📥 PDF" button to download documents
+    2. Files download as **PDF format** with full company branding
+    3. **Ready to send immediately** - No conversion needed!
+    4. Email PDFs directly to TQUK for approval
+    
+    ✅ Professional PDF format with headers and footers!
+    """)
+    
+    st.markdown("---")
+    
+    # Import the document library function
+    from tquk_document_library import (
+        DOCUMENTS, 
+        get_branded_content, 
+        file_exists,
+        COMPANY_INFO
+    )
+    from tquk_pdf_generator import generate_tquk_pdf
+    
+    # Show company info
+    st.success(f"""
+    **📍 Your Documents Include:**
+    
+    **Company:** {COMPANY_INFO['name']}  
+    **Company Number:** {COMPANY_INFO['company_number']}  
+    **Centre Number:** {COMPANY_INFO['centre_number']}  
+    **Address:** {COMPANY_INFO['address_line1']}, {COMPANY_INFO['address_line2']}, {COMPANY_INFO['postcode']}
+    """)
+    
+    st.markdown("---")
+    
+    # Show admin documents (submission materials)
+    st.subheader("📂 TQUK Submission Documents")
+    
+    admin_docs = DOCUMENTS.get('admin', {})
+    
+    for category_name, category_data in admin_docs.items():
+        with st.expander(f"📁 {category_name}", expanded=True):
+            st.markdown(f"*{category_data['description']}*")
+            st.markdown("")
+            
+            for doc in category_data['files']:
+                col1, col2, col3 = st.columns([3, 1, 1])
+                
+                with col1:
+                    required_badge = "🔴 **REQUIRED**" if doc.get('required', False) else "⚪ Optional"
+                    st.markdown(f"**{doc['name']}** {required_badge}")
+                    st.caption(doc['description'])
+                
+                with col2:
+                    if file_exists(doc['file']):
+                        st.success("✅ Available")
+                    else:
+                        st.error("❌ Missing")
+                
+                with col3:
+                    if file_exists(doc['file']):
+                        # Download AS PDF button
+                        branded_content = get_branded_content(doc['file'])
+                        if branded_content:
+                            try:
+                                pdf_buffer = generate_tquk_pdf(branded_content, doc['name'])
+                                base_name = doc['file'].replace('.md', '')
+                                pdf_filename = f"{base_name}_OFFICIAL.pdf"
+                                
+                                st.download_button(
+                                    label="📥 PDF",
+                                    data=pdf_buffer,
+                                    file_name=pdf_filename,
+                                    mime="application/pdf",
+                                    key=f"level3_download_{doc['file']}",
+                                    help="Download as PDF with T21 Services branding"
+                                )
+                            except Exception as e:
+                                st.error(f"PDF error: {str(e)}")
+                
+                st.markdown("---")
+    
+    # Conversion instructions
+    st.markdown("---")
+    st.subheader("🔄 How to Convert to PDF")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.info("""
+        **Option 1: Microsoft Word**
+        
+        1. Open .txt file in Word
+        2. File → Save As
+        3. Choose PDF format
+        4. Save!
+        
+        ⭐ **Recommended**
+        """)
+    
+    with col2:
+        st.info("""
+        **Option 2: Online Converter**
+        
+        1. Go to markdowntopdf.com
+        2. Upload .txt file
+        3. Click Convert
+        4. Download PDF
+        
+        🌐 **Quick & Easy**
+        """)
+    
+    with col3:
+        st.info("""
+        **Option 3: Google Docs**
+        
+        1. Upload to Google Drive
+        2. Open with Google Docs
+        3. File → Download → PDF
+        4. Done!
+        
+        ☁️ **Cloud-based**
+        """)
+    
+    st.markdown("---")
+    
+    # What to send to TQUK
+    st.subheader("📧 What to Send to TQUK")
+    
+    st.warning("""
+    **Email to:** support@tquk.org
+    
+    **Subject:** CDA Approval Request - T21 Services UK (36257481088) - Level 3 Diploma in Adult Care
+    
+    **Attachments (as PDF):**
+    1. ✅ CDA Submission Package
+    2. ✅ Unit 1 Learning Materials
+    3. ✅ Unit 2 Learning Materials
+    4. ✅ Unit 3 Learning Materials
+    5. ✅ Assessment Pack Templates
+    6. ✅ Your Assessor Certificate
+    7. ✅ Your IQA Certificate
+    
+    **Expected Response Time:** 2-3 weeks
+    """)
         
         st.progress(enrollment['progress'] / 100)

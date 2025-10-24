@@ -7,6 +7,7 @@ import streamlit as st
 import os
 from pathlib import Path
 from datetime import datetime
+from tquk_pdf_generator import generate_tquk_pdf
 
 # Company branding information
 COMPANY_INFO = {
@@ -343,21 +344,25 @@ def render_document_library(user_role):
                         if st.button("👁️ View", key=f"view_{doc['file']}"):
                             st.session_state[f'viewing_{doc["file"]}'] = True
                         
-                        # Download WITH BRANDING button (for official use)
+                        # Download AS PDF button (official use)
                         branded_content = get_branded_content(doc['file'])
                         if branded_content:
-                            # Create filename with branding indicator
-                            base_name = doc['file'].replace('.md', '')
-                            branded_filename = f"{base_name}_OFFICIAL.txt"
-                            
-                            st.download_button(
-                                label="📥 Official",
-                                data=branded_content,
-                                file_name=branded_filename,
-                                mime="text/plain",
-                                key=f"download_branded_{doc['file']}",
-                                help="Download with T21 Services branding for official use"
-                            )
+                            # Generate PDF
+                            try:
+                                pdf_buffer = generate_tquk_pdf(branded_content, doc['name'])
+                                base_name = doc['file'].replace('.md', '')
+                                pdf_filename = f"{base_name}_OFFICIAL.pdf"
+                                
+                                st.download_button(
+                                    label="📥 PDF",
+                                    data=pdf_buffer,
+                                    file_name=pdf_filename,
+                                    mime="application/pdf",
+                                    key=f"download_pdf_{doc['file']}",
+                                    help="Download as PDF with T21 Services branding"
+                                )
+                            except Exception as e:
+                                st.error(f"PDF generation error: {str(e)}")
                 
                 # Show content if viewing
                 if st.session_state.get(f'viewing_{doc["file"]}', False):
@@ -379,17 +384,16 @@ def render_admin_document_library():
     """Admin-specific document library"""
     
     # Important instructions at the top
-    st.info("""
+    st.success("""
     ### 📥 **How to Download for TQUK Submission:**
     
-    1. Click "📥 Official" button to download with T21 Services branding
-    2. Files download as .txt format with full company details
-    3. **To convert to PDF:**
-       - **Option 1:** Open in Word → Save As PDF
-       - **Option 2:** Use online converter: https://www.markdowntopdf.com/
-       - **Option 3:** Copy content to Google Docs → Download as PDF
+    1. Click "📥 PDF" button to download documents
+    2. Files download as **PDF format** with full T21 Services branding
+    3. **Ready to send immediately** - No conversion needed!
     
-    ✅ All downloads include your registered office address and company details!
+    ✅ All PDFs include your registered office address and company details!
+    ✅ Professional formatting with headers and footers!
+    ✅ Ready for TQUK submission!
     """)
     
     render_document_library("admin")
