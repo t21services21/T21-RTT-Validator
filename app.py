@@ -1601,70 +1601,106 @@ elif user_role == 'tester':
     # NOTE: Does NOT include "⚙️ Administration" - only super_admin can manage users/access
 elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
     # SUPER ADMIN: Absolute everything (including admin management)
+    # ORGANIZED BY WORKFLOW: NHS/RTT → Training → Teaching → TQUK Qualifications → Professional Dev → System
     accessible_modules = [
+        # NHS/RTT WORKFLOW MODULES (used together)
         "🏥 Patient Administration Hub",
-        "🎓 Learning Portal",
-        "👨‍🏫 Teaching & Assessment",
-        "📚 TQUK Document Library",  # TQUK documents for admin/tutors/assessors
         "🏥 Clinical Workflows",
         "✅ Task Management",
         "🤖 AI & Automation",
         "📊 Reports & Analytics",
+        
+        # RTT TRAINING & CERTIFICATION (PDLC-01-039)
+        "🎓 Learning Portal",
         "🎓 Training & Certification",
-        "📚 Level 3 Adult Care",  # TQUK Qualification
-        "💻 IT User Skills",  # TQUK Qualification
-        "🤝 Customer Service",  # TQUK Qualification
-        "📊 Business Administration",  # TQUK Qualification
+        
+        # TEACHING & ASSESSMENT
+        "👨‍🏫 Teaching & Assessment",
+        "📚 TQUK Document Library",
+        
+        # TQUK QUALIFICATIONS (used together)
+        "📚 Level 3 Adult Care",
+        "💻 IT User Skills",
+        "🤝 Customer Service",
+        "📊 Business Administration",
+        
+        # PROFESSIONAL DEVELOPMENT
         "🔒 Information Governance",
         "💼 Career Development",
-        "📄 CV Builder",  # FULL Professional CV Builder
-        "⚙️ Administration",  # FULL admin tools + platform config
+        "📄 CV Builder",
+        
+        # SYSTEM
+        "⚙️ Administration",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
 elif user_role == 'admin':
     # REGULAR ADMIN: Everything except super admin features
+    # ORGANIZED BY WORKFLOW: NHS/RTT → Training → Teaching → TQUK Qualifications → Professional Dev → System
     accessible_modules = [
+        # NHS/RTT WORKFLOW MODULES (used together)
         "🏥 Patient Administration Hub",
-        "🎓 Learning Portal",
-        "👨‍🏫 Teaching & Assessment",
-        "📚 TQUK Document Library",  # TQUK documents for admin/tutors/assessors
         "🏥 Clinical Workflows",
         "✅ Task Management",
         "🤖 AI & Automation",
         "📊 Reports & Analytics",
+        
+        # RTT TRAINING & CERTIFICATION (PDLC-01-039)
+        "🎓 Learning Portal",
         "🎓 Training & Certification",
-        "📚 Level 3 Adult Care",  # TQUK Qualification
-        "💻 IT User Skills",  # TQUK Qualification
-        "🤝 Customer Service",  # TQUK Qualification
-        "📊 Business Administration",  # TQUK Qualification
+        
+        # TEACHING & ASSESSMENT
+        "👨‍🏫 Teaching & Assessment",
+        "📚 TQUK Document Library",
+        
+        # TQUK QUALIFICATIONS (used together)
+        "📚 Level 3 Adult Care",
+        "💻 IT User Skills",
+        "🤝 Customer Service",
+        "📊 Business Administration",
+        
+        # PROFESSIONAL DEVELOPMENT
         "🔒 Information Governance",
         "💼 Career Development",
-        "📄 CV Builder",  # FULL Professional CV Builder
-        "⚙️ Administration",  # LIMITED admin tools (no super admin features)
+        "📄 CV Builder",
+        
+        # SYSTEM
+        "⚙️ Administration",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
 elif user_role == 'staff':
     # STAFF: Similar to admin but focused on teaching and operations
+    # ORGANIZED BY WORKFLOW: NHS/RTT → Training → Teaching → TQUK Qualifications → Professional Dev → System
     accessible_modules = [
+        # NHS/RTT WORKFLOW MODULES (used together)
         "🏥 Patient Administration Hub",
-        "🎓 Learning Portal",
-        "👨‍🏫 Teaching & Assessment",  # Can enroll learners
-        "📚 TQUK Document Library",
         "🏥 Clinical Workflows",
         "✅ Task Management",
         "🤖 AI & Automation",
         "📊 Reports & Analytics",
+        
+        # RTT TRAINING & CERTIFICATION (PDLC-01-039)
+        "🎓 Learning Portal",
         "🎓 Training & Certification",
+        
+        # TEACHING & ASSESSMENT
+        "👨‍🏫 Teaching & Assessment",
+        "📚 TQUK Document Library",
+        
+        # TQUK QUALIFICATIONS (used together)
         "📚 Level 3 Adult Care",
         "💻 IT User Skills",
         "🤝 Customer Service",
         "📊 Business Administration",
+        
+        # PROFESSIONAL DEVELOPMENT
         "🔒 Information Governance",
         "💼 Career Development",
         "📄 CV Builder",
-        "⚙️ Administration",  # LIMITED admin tools
+        
+        # SYSTEM
+        "⚙️ Administration",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
