@@ -869,5 +869,3 @@ def render_tquk_documents_tab():
     
     **Expected Response Time:** 2-3 weeks
     """)
-        
-        st.progress(enrollment['progress'] / 100)
