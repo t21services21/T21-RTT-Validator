@@ -1562,6 +1562,7 @@ elif user_role in ['teacher', 'instructor', 'trainer']:
     # TEACHERS: Student management + learning tools
     accessible_modules = [
         "👨‍🏫 Teaching & Assessment",  # Teacher tools, student management
+        "📚 TQUK Document Library",  # TQUK documents for tutors
         "🎓 Learning Portal",
         "🎓 Training & Certification",
         "📚 Level 3 Adult Care",  # TQUK Qualification
@@ -1581,6 +1582,7 @@ elif user_role == 'tester':
         "🏥 Patient Administration Hub",      # Patient registration, search, management
         "🎓 Learning Portal",                 # All training courses and materials
         "👨‍🏫 Teaching & Assessment",          # Interview prep, certification, teaching tools
+        "📚 TQUK Document Library",           # TQUK documents for admin/tutors/assessors
         "🏥 Clinical Workflows",              # Booking, PTL, pathways, episodes, MDT
         "✅ Task Management",                 # Task tracking and management
         "🤖 AI & Automation",                 # AI tools, job automation, AI validators
@@ -1603,6 +1605,7 @@ elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
         "🏥 Patient Administration Hub",
         "🎓 Learning Portal",
         "👨‍🏫 Teaching & Assessment",
+        "📚 TQUK Document Library",  # TQUK documents for admin/tutors/assessors
         "🏥 Clinical Workflows",
         "✅ Task Management",
         "🤖 AI & Automation",
@@ -1625,6 +1628,7 @@ elif user_role == 'admin':
         "🏥 Patient Administration Hub",
         "🎓 Learning Portal",
         "👨‍🏫 Teaching & Assessment",
+        "📚 TQUK Document Library",  # TQUK documents for admin/tutors/assessors
         "🏥 Clinical Workflows",
         "✅ Task Management",
         "🤖 AI & Automation",
@@ -7309,6 +7313,14 @@ elif tool == "👨‍🏫 Student Progress Monitor":
         navigate_with_history("Student Progress Monitor", "/student_progress_monitor", "pages/student_progress_monitor.py")
     else:
         st.switch_page("pages/student_progress_monitor.py")
+
+# ============================================
+# TQUK DOCUMENT LIBRARY
+# ============================================
+
+elif tool == "📚 TQUK Document Library":
+    from tquk_document_library import render_tquk_documents
+    render_tquk_documents()
 
 # ============================================
 # TQUK QUALIFICATION MODULES
