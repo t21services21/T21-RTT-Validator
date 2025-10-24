@@ -454,13 +454,21 @@ def render_learning_materials(enrollment):
     st.markdown("### 📚 Mandatory Units (1-7)")
     st.info("These units are required for all students.")
     
-    # Debug: Show how many units we have
-    st.caption(f"📊 Debug: Found {len(mandatory_units)} mandatory units: {list(mandatory_units.keys())}")
-    
-    # Mandatory unit tabs - explicitly sort to ensure all 7 units appear
+    # Mandatory unit tabs - use SHORT names so all 7 fit on screen
     mandatory_unit_keys = sorted(mandatory_units.keys())
-    tab_labels = [f"Unit {i}: {UNITS[i]['name']}" for i in mandatory_unit_keys]
-    st.caption(f"📊 Creating {len(tab_labels)} tabs: {tab_labels}")
+    
+    # Short tab labels to fit all 7 tabs
+    short_labels = {
+        1: "Unit 1: Duty of Care",
+        2: "Unit 2: Equality & Diversity",
+        3: "Unit 3: Person-Centred",
+        4: "Unit 4: Safeguarding",
+        5: "Unit 5: Communication",
+        6: "Unit 6: Health & Wellbeing",
+        7: "Unit 7: CPD"
+    }
+    
+    tab_labels = [short_labels[i] for i in mandatory_unit_keys]
     mandatory_tabs = st.tabs(tab_labels)
     
     for idx, unit_num in enumerate(mandatory_unit_keys):
