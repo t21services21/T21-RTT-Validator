@@ -151,11 +151,14 @@ def render_course_assignment_ui():
     """Teacher interface for assigning courses"""
     st.subheader("📚 Assign TQUK Qualifications to Learners")
     
-    # Get list of students
+    # Get list of students (all student types)
     try:
         supabase = get_supabase_client()
-        students = supabase.table('users').select('email, full_name, role').eq('role', 'student').execute()
-        student_list = students.data if students.data else []
+        # Get all users and filter for student roles
+        all_users = supabase.table('users').select('email, full_name, role').execute()
+        # Include all student types: student, student_basic, student_professional, student_ultimate
+        student_list = [u for u in (all_users.data if all_users.data else []) 
+                       if 'student' in u.get('role', '').lower()]
     except:
         student_list = []
     
