@@ -457,15 +457,15 @@ def render_learning_materials(enrollment):
     # Mandatory unit tabs - use SHORT names so all 7 fit on screen
     mandatory_unit_keys = sorted(mandatory_units.keys())
     
-    # Short tab labels to fit all 7 tabs
+    # Very short tab labels to fit all 7 tabs on screen
     short_labels = {
-        1: "Unit 1: Duty of Care",
-        2: "Unit 2: Equality & Diversity",
-        3: "Unit 3: Person-Centred",
-        4: "Unit 4: Safeguarding",
-        5: "Unit 5: Communication",
-        6: "Unit 6: Health & Wellbeing",
-        7: "Unit 7: CPD"
+        1: "1️⃣ Duty of Care",
+        2: "2️⃣ Equality",
+        3: "3️⃣ Person-Centred",
+        4: "4️⃣ Safeguarding",
+        5: "5️⃣ Communication",
+        6: "6️⃣ Health",
+        7: "7️⃣ CPD"
     }
     
     tab_labels = [short_labels[i] for i in mandatory_unit_keys]
