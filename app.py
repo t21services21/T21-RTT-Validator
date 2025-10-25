@@ -1541,23 +1541,32 @@ user_email = st.session_state.user_email if 'user_email' in st.session_state els
 
 # Define modules based on role
 if user_role in ['student', 'student_basic', 'student_standard', 'student_premium', 'student_ultimate', 'trial']:
-    # STUDENTS: Learning + Hands-on NHS Practice
-    accessible_modules = [
-        "🏥 Patient Administration Hub",  # PRACTICE: Register patients, pathways, waiting lists
-        "🏥 Clinical Workflows",  # PRACTICE: PTL, booking, MDT workflows
-        "🎓 Learning Portal",  # Their courses and materials
-        "🎓 Training & Certification",  # Training, AI Tutor, Certification
-        "📚 Level 3 Adult Care",  # TQUK Qualification
-        "💻 IT User Skills",  # TQUK Qualification
-        "🤝 Customer Service",  # TQUK Qualification
-        "📊 Business Administration",  # TQUK Qualification
-        "🔒 Information Governance",  # Mandatory NHS training
-        "💼 Career Development",  # Interview prep, job automation
-        "📄 CV Builder",  # FULL Professional CV Builder
-        "⚙️ My Account",  # Personal settings ONLY (not admin tools)
-        "ℹ️ Help & Information",
-        "📧 Contact & Support"
-    ]
+    # STUDENTS: Check database for actual module access
+    try:
+        from supabase_database import get_user_modules
+        user_modules = get_user_modules(user_email) if user_email else []
+        
+        # Always include these basic modules
+        accessible_modules = [
+            "⚙️ My Account",
+            "ℹ️ Help & Information",
+            "📧 Contact & Support"
+        ]
+        
+        # Add modules from database
+        if user_modules:
+            accessible_modules = user_modules + accessible_modules
+        else:
+            # Fallback if no modules in database - show Learning Portal only
+            accessible_modules = ["🎓 Learning Portal"] + accessible_modules
+    except Exception as e:
+        # Fallback to basic access if database check fails
+        accessible_modules = [
+            "🎓 Learning Portal",
+            "⚙️ My Account",
+            "ℹ️ Help & Information",
+            "📧 Contact & Support"
+        ]
 elif user_role in ['teacher', 'instructor', 'trainer']:
     # TEACHERS: Student management + learning tools
     accessible_modules = [
