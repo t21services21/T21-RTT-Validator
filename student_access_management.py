@@ -404,7 +404,149 @@ def render_add_student():
         - Admin: Full system access
         """)
         
-        grant_all = st.checkbox("Grant access to ALL modules", value=True, help="Recommended for most students")
+        # Module access presets
+        access_option = st.selectbox(
+            "Module Access Preset:",
+            [
+                "📚 TQUK Level 3 Adult Care Student",
+                "💻 TQUK Other Qualifications (IT/Customer Service/Business)",
+                "🏥 RTT & Hospital Administration Training",
+                "💼 Career Development Only (CV/Interview)",
+                "🔓 Full Access (Staff/Teachers)",
+                "🎯 Custom Selection"
+            ],
+            help="""
+            Choose the appropriate access level for this student:
+            
+            📚 Level 3 Adult Care: Only Level 3 course + basic tools
+            💻 Other TQUK: IT/Customer Service/Business + basic tools
+            🏥 RTT Training: NHS workflows + RTT training (NO TQUK)
+            💼 Career Only: CV Builder + Interview Prep only
+            🔓 Full Access: Everything (for staff/teachers)
+            🎯 Custom: Select exactly which modules
+            """
+        )
+        
+        selected_modules = []
+        
+        # Show what each preset includes
+        if access_option == "📚 TQUK Level 3 Adult Care Student":
+            st.info("""
+            **Will grant access to:**
+            - 🎓 Learning Portal
+            - 💼 Career Development
+            - 📄 CV Builder
+            - ℹ️ Help & Information
+            
+            **Level 3 Adult Care module will be added when you enroll them in the course**
+            """)
+        
+        elif access_option == "💻 TQUK Other Qualifications (IT/Customer Service/Business)":
+            st.info("""
+            **Will grant access to:**
+            - 🎓 Learning Portal
+            - 💼 Career Development
+            - 📄 CV Builder
+            - ℹ️ Help & Information
+            
+            **Their specific TQUK course will be added when you enroll them**
+            """)
+        
+        elif access_option == "🏥 RTT & Hospital Administration Training":
+            st.info("""
+            **Will grant access to:**
+            - 🎓 Learning Portal (RTT materials)
+            - 🎓 Training & Certification (RTT exam)
+            - 🏥 Patient Administration Hub (PRACTICE mode)
+            - 🏥 Clinical Workflows (PRACTICE mode)
+            - ✅ Task Management
+            - 📊 Reports & Analytics
+            - 💼 Career Development
+            - 📄 CV Builder
+            
+            **Perfect for RTT training students - NO TQUK courses**
+            """)
+        
+        elif access_option == "💼 Career Development Only (CV/Interview)":
+            st.info("""
+            **Will grant access to:**
+            - 💼 Career Development
+            - 📄 CV Builder
+            - 💼 Job Interview Prep
+            - ℹ️ Help & Information
+            
+            **Perfect for job seekers - NO courses, NO NHS systems**
+            """)
+        
+        elif access_option == "🔓 Full Access (Staff/Teachers)":
+            st.warning("""
+            **Will grant access to ALL 43 modules**
+            
+            Use this for:
+            - Staff members
+            - Teachers/Assessors
+            - Admin users
+            
+            **NOT for students!**
+            """)
+        
+        elif access_option == "🎯 Custom Selection":
+            st.markdown("**Select exactly which modules to grant:**")
+            
+            # All available modules organized by category
+            col_a, col_b = st.columns(2)
+            
+            with col_a:
+                st.markdown("**TQUK Qualifications:**")
+                tquk_modules = st.multiselect(
+                    "TQUK Courses:",
+                    [
+                        "📚 Level 3 Adult Care",
+                        "💻 IT User Skills",
+                        "🤝 Customer Service",
+                        "📊 Business Administration"
+                    ],
+                    key="tquk_custom"
+                )
+                
+                st.markdown("**NHS/RTT Training:**")
+                nhs_modules = st.multiselect(
+                    "NHS Modules:",
+                    [
+                        "🎓 Learning Portal",
+                        "🎓 Training & Certification",
+                        "🏥 Patient Administration Hub",
+                        "🏥 Clinical Workflows",
+                        "✅ Task Management",
+                        "📊 Reports & Analytics"
+                    ],
+                    key="nhs_custom"
+                )
+            
+            with col_b:
+                st.markdown("**Career Development:**")
+                career_modules = st.multiselect(
+                    "Career Tools:",
+                    [
+                        "💼 Career Development",
+                        "📄 CV Builder",
+                        "💼 Job Interview Prep"
+                    ],
+                    key="career_custom"
+                )
+                
+                st.markdown("**Support:**")
+                support_modules = st.multiselect(
+                    "Support Modules:",
+                    [
+                        "ℹ️ Help & Information",
+                        "📧 Contact & Support"
+                    ],
+                    key="support_custom"
+                )
+            
+            selected_modules = tquk_modules + nhs_modules + career_modules + support_modules
+        
         send_email = st.checkbox("📧 Send welcome email with login details", value=True, help="Highly recommended!")
     
     if st.button("➕ Add Student", type="primary"):
@@ -422,15 +564,65 @@ def render_add_student():
         if result.get('success'):
             st.success(f"✅ {result.get('message')}")
             
-            # Grant access if requested
-            if grant_all:
-                admin_email = st.session_state.get('user_email', 'admin@example.com')
+            # Grant access based on selected preset
+            admin_email = st.session_state.get('user_email', 'admin@example.com')
+            modules_to_grant = []
+            
+            if access_option == "📚 TQUK Level 3 Adult Care Student":
+                modules_to_grant = [
+                    "🎓 Learning Portal",
+                    "💼 Career Development",
+                    "📄 CV Builder",
+                    "ℹ️ Help & Information"
+                ]
+            
+            elif access_option == "💻 TQUK Other Qualifications (IT/Customer Service/Business)":
+                modules_to_grant = [
+                    "🎓 Learning Portal",
+                    "💼 Career Development",
+                    "📄 CV Builder",
+                    "ℹ️ Help & Information"
+                ]
+            
+            elif access_option == "🏥 RTT & Hospital Administration Training":
+                modules_to_grant = [
+                    "🎓 Learning Portal",
+                    "🎓 Training & Certification",
+                    "🏥 Patient Administration Hub",
+                    "🏥 Clinical Workflows",
+                    "✅ Task Management",
+                    "📊 Reports & Analytics",
+                    "💼 Career Development",
+                    "📄 CV Builder"
+                ]
+            
+            elif access_option == "💼 Career Development Only (CV/Interview)":
+                modules_to_grant = [
+                    "💼 Career Development",
+                    "📄 CV Builder",
+                    "💼 Job Interview Prep",
+                    "ℹ️ Help & Information"
+                ]
+            
+            elif access_option == "🔓 Full Access (Staff/Teachers)":
+                # Grant all modules
                 access_result = grant_all_access(email, admin_email)
-                
                 if access_result.get('success'):
                     st.success(f"✅ {access_result.get('message')}")
                 else:
                     st.warning(f"Student added but access grant failed: {access_result.get('error')}")
+            
+            elif access_option == "🎯 Custom Selection" and selected_modules:
+                modules_to_grant = selected_modules
+            
+            # Grant the selected modules
+            if modules_to_grant:
+                successful = 0
+                for module in modules_to_grant:
+                    mod_result = grant_access_to_student(email, module, admin_email)
+                    if mod_result.get('success'):
+                        successful += 1
+                st.success(f"✅ Granted access to {successful} modules")
             
             # Send welcome email if requested
             if send_email:
