@@ -390,11 +390,12 @@ TQUK Approved Centre #36257481088
 Company Number: 13091053
 """
         
-        # Send email
+        # Send email (convert plain text to HTML)
+        html_body = f"<html><body><pre style='font-family: monospace; white-space: pre-wrap;'>{body}</pre></body></html>"
         send_email(
             to_email=learner_email,
             subject=subject,
-            body=body
+            html_content=html_body
         )
         
         return True
