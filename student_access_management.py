@@ -1133,7 +1133,6 @@ def render_manage_access():
                 with col_revoke2:
                     if st.button("🗑️ Revoke Access", type="secondary", key=f"revoke_btn_{student_email}"):
                         try:
-                            supabase = get_supabase_client()
                             successful = 0
                             
                             for module in modules_to_revoke:
@@ -1233,7 +1232,6 @@ def render_manage_access():
         
         if st.button("🎯 Apply Preset", type="primary", key=f"preset_btn_{student_email}"):
             try:
-                supabase = get_supabase_client()
                 admin_email = st.session_state.get('user_email', 'admin@example.com')
                 
                 # First, remove all current access
@@ -1269,8 +1267,6 @@ def render_manage_access():
             if confirm_text == "REMOVE ALL":
                 if st.button("🔥 Remove All Access", type="secondary", key=f"remove_all_btn_{student_email}"):
                     try:
-                        supabase = get_supabase_client()
-                        
                         for module in current_access:
                             supabase.table('module_access').delete().eq('user_email', student_email).eq('module_name', module).execute()
                         
