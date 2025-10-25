@@ -200,7 +200,8 @@ def add_student(
     full_name: str,
     password: str,
     role: str = "student_basic",
-    user_type: str = "student"
+    user_type: str = "student",
+    expiry_date: str = None
 ) -> Dict:
     """Add a new student"""
     
@@ -209,7 +210,7 @@ def add_student(
         password_hash = hashlib.sha256(password.encode()).hexdigest()
         
         # Create user
-        success, message = create_user(email, password_hash, full_name, role, user_type)
+        success, message = create_user(email, password_hash, full_name, role, user_type, expiry_date)
         
         if success:
             return {
@@ -404,6 +405,35 @@ def render_add_student():
         - Admin: Full system access
         """)
         
+        # Expiry date based on role
+        import datetime
+        if role == "student_basic":
+            default_expiry = datetime.date.today() + datetime.timedelta(days=90)
+            st.info("⏰ Access expires in: **90 days** (Basic)")
+        elif role == "student_professional":
+            default_expiry = datetime.date.today() + datetime.timedelta(days=180)
+            st.info("⏰ Access expires in: **180 days** (Professional)")
+        elif role == "student_ultimate":
+            default_expiry = datetime.date.today() + datetime.timedelta(days=365)
+            st.info("⏰ Access expires in: **365 days** (Ultimate)")
+        else:
+            default_expiry = datetime.date.today() + datetime.timedelta(days=365)
+            st.info("⏰ Access expires in: **365 days** (Staff)")
+        
+        # Option to customize expiry
+        customize_expiry = st.checkbox("🔧 Customize expiry date", help="Set a custom expiry date instead of default")
+        
+        if customize_expiry:
+            custom_expiry = st.date_input(
+                "Custom expiry date:",
+                value=default_expiry,
+                min_value=datetime.date.today(),
+                help="Choose when access should expire"
+            )
+            final_expiry = custom_expiry
+        else:
+            final_expiry = default_expiry
+        
         # Module access presets
         access_option = st.selectbox(
             "Module Access Preset:",
@@ -559,7 +589,7 @@ def render_add_student():
             return
         
         # Add student
-        result = add_student(email, full_name, password, role)
+        result = add_student(email, full_name, password, role, "student", final_expiry.isoformat())
         
         if result.get('success'):
             st.success(f"✅ {result.get('message')}")
@@ -923,6 +953,38 @@ def render_edit_student_form():
             new_status = st.selectbox("Status", ["active", "suspended", "expired"], 
                                      index=["active", "suspended", "expired"].index(student.get('status', 'active')))
             
+            # Expiry date management
+            import datetime
+            current_expiry = student.get('expiry_date')
+            if current_expiry:
+                try:
+                    current_expiry_date = datetime.datetime.fromisoformat(current_expiry.replace('Z', '+00:00')).date()
+                except:
+                    current_expiry_date = datetime.date.today() + datetime.timedelta(days=90)
+            else:
+                current_expiry_date = datetime.date.today() + datetime.timedelta(days=90)
+            
+            new_expiry = st.date_input(
+                "⏰ Access Expiry Date",
+                value=current_expiry_date,
+                min_value=datetime.date.today(),
+                help="Set when student's access will expire"
+            )
+            
+            # Quick expiry options
+            expiry_preset = st.selectbox(
+                "Or choose preset:",
+                ["Keep current", "90 days (Basic)", "180 days (Professional)", "365 days (Ultimate)", "Custom (use date above)"],
+                help="Quick options to set expiry date"
+            )
+            
+            if expiry_preset == "90 days (Basic)":
+                new_expiry = datetime.date.today() + datetime.timedelta(days=90)
+            elif expiry_preset == "180 days (Professional)":
+                new_expiry = datetime.date.today() + datetime.timedelta(days=180)
+            elif expiry_preset == "365 days (Ultimate)":
+                new_expiry = datetime.date.today() + datetime.timedelta(days=365)
+            
             reset_password = st.checkbox("🔐 Reset Password", help="Generate new password and send to student")
         
         send_email_check = False
@@ -943,7 +1005,8 @@ def render_edit_student_form():
                 update_data = {
                     'full_name': new_name,
                     'role': new_role,
-                    'status': new_status
+                    'status': new_status,
+                    'expiry_date': new_expiry.isoformat()
                 }
                 
                 if reset_password and new_password:
