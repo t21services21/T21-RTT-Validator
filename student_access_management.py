@@ -745,7 +745,7 @@ def render_all_students():
         students = [s for s in students if search.lower() in s.get('full_name', '').lower() or search.lower() in s.get('email', '').lower()]
     
     # Display students
-    for student in students:
+    for idx, student in enumerate(students):
         with st.expander(f"👤 {student.get('full_name')} - {student.get('email')}"):
             col1, col2 = st.columns(2)
             
@@ -781,23 +781,23 @@ def render_all_students():
             col1, col2, col3 = st.columns(3)
             
             with col1:
-                if st.button(f"🔐 Manage Access", key=f"access_{student.get('email')}"):
+                if st.button(f"🔐 Manage Access", key=f"access_{idx}_{student.get('email')}"):
                     # Toggle access management display
-                    if st.session_state.get(f'show_access_{student.get("email")}'):
-                        st.session_state[f'show_access_{student.get("email")}'] = False
+                    if st.session_state.get(f'show_access_{idx}_{student.get("email")}'):
+                        st.session_state[f'show_access_{idx}_{student.get("email")}'] = False
                     else:
-                        st.session_state[f'show_access_{student.get("email")}'] = True
+                        st.session_state[f'show_access_{idx}_{student.get("email")}'] = True
                     st.rerun()
             
             # Show access management if toggled
-            if st.session_state.get(f'show_access_{student.get("email")}'):
+            if st.session_state.get(f'show_access_{idx}_{student.get("email")}'):
                 st.markdown("---")
                 st.markdown("### 🔐 Grant Module Access")
                 
                 col_a, col_b = st.columns([2, 1])
                 
                 with col_a:
-                    if st.button("✅ Grant ALL Module Access", key=f"grant_all_inline_{student.get('email')}", type="primary"):
+                    if st.button("✅ Grant ALL Module Access", key=f"grant_all_inline_{idx}_{student.get('email')}", type="primary"):
                         admin_email = st.session_state.get('user_email', 'admin@example.com')
                         result = grant_all_access(student.get('email'), admin_email)
                         if result.get('success'):
@@ -808,8 +808,8 @@ def render_all_students():
                             st.error(f"❌ {result.get('error')}")
                 
                 with col_b:
-                    if st.button("❌ Close", key=f"close_access_{student.get('email')}"):
-                        st.session_state[f'show_access_{student.get("email")}'] = False
+                    if st.button("❌ Close", key=f"close_access_{idx}_{student.get('email')}"):
+                        st.session_state[f'show_access_{idx}_{student.get("email")}'] = False
                         st.rerun()
                 
                 st.markdown("**Or select individual modules:**")
@@ -822,7 +822,7 @@ def render_all_students():
                     nhs_selected = st.multiselect(
                         "NHS Modules",
                         NHS_MODULES,
-                        key=f"nhs_modules_{student.get('email')}",
+                        key=f"nhs_modules_{idx}_{student.get('email')}",
                         label_visibility="collapsed"
                     )
                 
@@ -831,11 +831,11 @@ def render_all_students():
                     learning_selected = st.multiselect(
                         "Learning Modules",
                         LEARNING_MODULES,
-                        key=f"learning_modules_{student.get('email')}",
+                        key=f"learning_modules_{idx}_{student.get('email')}",
                         label_visibility="collapsed"
                     )
                 
-                if st.button("💾 Grant Selected Modules", key=f"grant_selected_inline_{student.get('email')}"):
+                if st.button("💾 Grant Selected Modules", key=f"grant_selected_inline_{idx}_{student.get('email')}"):
                     selected_modules = nhs_selected + learning_selected
                     if selected_modules:
                         admin_email = st.session_state.get('user_email', 'admin@example.com')
@@ -853,7 +853,7 @@ def render_all_students():
                 st.markdown("---")
             
             with col2:
-                if st.button(f"📊 View Progress", key=f"progress_{student.get('email')}"):
+                if st.button(f"📊 View Progress", key=f"progress_{idx}_{student.get('email')}"):
                     # Show student progress
                     st.markdown("### 📊 Student Progress")
                     
@@ -895,7 +895,7 @@ def render_all_students():
                         st.warning("No module access granted yet")
             
             with col3:
-                if st.button(f"✏️ Edit", key=f"edit_{student.get('email')}"):
+                if st.button(f"✏️ Edit", key=f"edit_{idx}_{student.get('email')}"):
                     # Set student to edit in session state
                     st.session_state['edit_student_email'] = student.get('email')
                     st.rerun()
