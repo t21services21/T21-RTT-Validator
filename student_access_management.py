@@ -464,11 +464,9 @@ def render_add_student():
             st.info("""
             **Will grant access to:**
             - 🎓 Learning Portal
-            - 💼 Career Development
-            - 📄 CV Builder
             - ℹ️ Help & Information
             
-            **Level 3 Adult Care module will be added when you enroll them in the course**
+            (Career tools like CV Builder are optional - assign separately)
             """)
         
         elif access_option == "💻 TQUK Other Qualifications (IT/Customer Service/Business)":
@@ -601,8 +599,6 @@ def render_add_student():
             if access_option == "📚 TQUK Level 3 Adult Care Student":
                 modules_to_grant = [
                     "🎓 Learning Portal",
-                    "💼 Career Development",
-                    "📄 CV Builder",
                     "ℹ️ Help & Information"
                 ]
             
@@ -1213,8 +1209,8 @@ def render_manage_access():
         # Show what preset includes
         preset_modules = []
         if preset_option == "📚 TQUK Level 3 Adult Care Student":
-            preset_modules = ["🎓 Learning Portal", "💼 Career Development", "📄 CV Builder", "ℹ️ Help & Information"]
-            st.info("**Will grant:** Learning Portal, Career Development, CV Builder, Help")
+            preset_modules = ["🎓 Learning Portal", "ℹ️ Help & Information"]
+            st.info("**Will grant:** Learning Portal, Help & Information (Career tools are optional - assign separately)")
         elif preset_option == "💻 TQUK Other Qualifications":
             preset_modules = ["🎓 Learning Portal", "💼 Career Development", "📄 CV Builder", "ℹ️ Help & Information"]
             st.info("**Will grant:** Learning Portal, Career Development, CV Builder, Help")
