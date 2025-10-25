@@ -5723,8 +5723,8 @@ elif tool == "👨‍🏫 Teaching & Assessment":
         render_student_access_management()
     
     with tabs[2]:
-        from tquk_course_assignment import render_course_assignment_ui
-        render_course_assignment_ui()
+        from simple_course_assignment import render_simple_course_assignment
+        render_simple_course_assignment()
     
     with tabs[3]:
         from student_portfolio_ui import render_student_portfolio
