@@ -1035,8 +1035,194 @@ def render_manage_access():
     
     st.markdown("---")
     
+    # COMPLETE ACCESS MANAGEMENT
+    st.markdown("#### 🔧 Complete Access Management")
+    
+    # Create tabs for different actions
+    action_tab1, action_tab2, action_tab3, action_tab4 = st.tabs([
+        "🗑️ Remove Modules",
+        "➕ Add Modules", 
+        "🎯 Apply Preset",
+        "🔥 Remove All Access"
+    ])
+    
+    # TAB 1: REMOVE MODULES
+    with action_tab1:
+        if current_access:
+            st.info("**Select modules to REMOVE from this student:**")
+            
+            modules_to_revoke = st.multiselect(
+                "Select modules to revoke:",
+                current_access,
+                key=f"revoke_{student_email}",
+                help="Select one or more modules to remove"
+            )
+            
+            if modules_to_revoke:
+                col_revoke1, col_revoke2 = st.columns([3, 1])
+                
+                with col_revoke1:
+                    st.warning(f"⚠️ Will remove access to {len(modules_to_revoke)} modules")
+                    with st.expander("Modules to remove:"):
+                        for mod in modules_to_revoke:
+                            st.write(f"❌ {mod}")
+                
+                with col_revoke2:
+                    if st.button("🗑️ Revoke Access", type="secondary", key=f"revoke_btn_{student_email}"):
+                        try:
+                            supabase = get_supabase_client()
+                            successful = 0
+                            
+                            for module in modules_to_revoke:
+                                result = supabase.table('module_access').delete().eq('user_email', student_email).eq('module_name', module).execute()
+                                successful += 1
+                            
+                            st.success(f"✅ Revoked access to {successful} modules!")
+                            st.balloons()
+                            st.rerun()
+                        
+                        except Exception as e:
+                            st.error(f"❌ Error revoking access: {str(e)}")
+        else:
+            st.info("No modules to revoke - student has no access yet")
+    
+    # TAB 2: ADD MODULES
+    with action_tab2:
+        st.info("**Select modules to ADD to this student:**")
+        
+        # Get all available modules
+        all_modules = NHS_MODULES + LEARNING_MODULES
+        available_modules = [m for m in all_modules if m not in current_access]
+        
+        if available_modules:
+            modules_to_add = st.multiselect(
+                "Select modules to grant:",
+                available_modules,
+                key=f"add_{student_email}",
+                help="Select one or more modules to add"
+            )
+            
+            if modules_to_add:
+                col_add1, col_add2 = st.columns([3, 1])
+                
+                with col_add1:
+                    st.success(f"✅ Will grant access to {len(modules_to_add)} modules")
+                    with st.expander("Modules to add:"):
+                        for mod in modules_to_add:
+                            st.write(f"✅ {mod}")
+                
+                with col_add2:
+                    if st.button("➕ Grant Access", type="primary", key=f"add_btn_{student_email}"):
+                        try:
+                            admin_email = st.session_state.get('user_email', 'admin@example.com')
+                            successful = 0
+                            
+                            for module in modules_to_add:
+                                result = grant_access_to_student(student_email, module, admin_email)
+                                if result.get('success'):
+                                    successful += 1
+                            
+                            st.success(f"✅ Granted access to {successful} modules!")
+                            st.balloons()
+                            st.rerun()
+                        
+                        except Exception as e:
+                            st.error(f"❌ Error granting access: {str(e)}")
+        else:
+            st.success("✅ Student already has access to all available modules!")
+    
+    # TAB 3: APPLY PRESET
+    with action_tab3:
+        st.info("**Apply an access preset to this student:**")
+        st.warning("⚠️ This will REPLACE all current access with the preset")
+        
+        preset_option = st.selectbox(
+            "Choose preset:",
+            [
+                "📚 TQUK Level 3 Adult Care Student",
+                "💻 TQUK Other Qualifications",
+                "🏥 RTT & Hospital Administration Training",
+                "💼 Career Development Only",
+                "🔓 Full Access (All Modules)"
+            ],
+            key=f"preset_{student_email}"
+        )
+        
+        # Show what preset includes
+        preset_modules = []
+        if preset_option == "📚 TQUK Level 3 Adult Care Student":
+            preset_modules = ["🎓 Learning Portal", "💼 Career Development", "📄 CV Builder", "ℹ️ Help & Information"]
+            st.info("**Will grant:** Learning Portal, Career Development, CV Builder, Help")
+        elif preset_option == "💻 TQUK Other Qualifications":
+            preset_modules = ["🎓 Learning Portal", "💼 Career Development", "📄 CV Builder", "ℹ️ Help & Information"]
+            st.info("**Will grant:** Learning Portal, Career Development, CV Builder, Help")
+        elif preset_option == "🏥 RTT & Hospital Administration Training":
+            preset_modules = ["🎓 Learning Portal", "🎓 Training & Certification", "🏥 Patient Administration Hub", 
+                            "🏥 Clinical Workflows", "✅ Task Management", "📊 Reports & Analytics", 
+                            "💼 Career Development", "📄 CV Builder"]
+            st.info("**Will grant:** 8 modules including NHS workflows + RTT training")
+        elif preset_option == "💼 Career Development Only":
+            preset_modules = ["💼 Career Development", "📄 CV Builder", "💼 Job Interview Prep", "ℹ️ Help & Information"]
+            st.info("**Will grant:** Career tools only (no courses, no NHS)")
+        elif preset_option == "🔓 Full Access (All Modules)":
+            preset_modules = NHS_MODULES + LEARNING_MODULES
+            st.warning("**Will grant:** ALL 43 modules (for staff/teachers only!)")
+        
+        if st.button("🎯 Apply Preset", type="primary", key=f"preset_btn_{student_email}"):
+            try:
+                supabase = get_supabase_client()
+                admin_email = st.session_state.get('user_email', 'admin@example.com')
+                
+                # First, remove all current access
+                if current_access:
+                    for module in current_access:
+                        supabase.table('module_access').delete().eq('user_email', student_email).eq('module_name', module).execute()
+                
+                # Then, grant preset modules
+                successful = 0
+                for module in preset_modules:
+                    result = grant_access_to_student(student_email, module, admin_email)
+                    if result.get('success'):
+                        successful += 1
+                
+                st.success(f"✅ Applied preset! Granted access to {successful} modules")
+                st.balloons()
+                st.rerun()
+            
+            except Exception as e:
+                st.error(f"❌ Error applying preset: {str(e)}")
+    
+    # TAB 4: REMOVE ALL ACCESS
+    with action_tab4:
+        if current_access:
+            st.error("**⚠️ DANGER ZONE: Remove ALL Access**")
+            st.warning(f"This will remove access to ALL {len(current_access)} modules")
+            
+            confirm_text = st.text_input(
+                "Type 'REMOVE ALL' to confirm:",
+                key=f"confirm_remove_{student_email}"
+            )
+            
+            if confirm_text == "REMOVE ALL":
+                if st.button("🔥 Remove All Access", type="secondary", key=f"remove_all_btn_{student_email}"):
+                    try:
+                        supabase = get_supabase_client()
+                        
+                        for module in current_access:
+                            supabase.table('module_access').delete().eq('user_email', student_email).eq('module_name', module).execute()
+                        
+                        st.success("✅ Removed all access!")
+                        st.rerun()
+                    
+                    except Exception as e:
+                        st.error(f"❌ Error removing access: {str(e)}")
+        else:
+            st.info("Student has no access to remove")
+    
+    st.markdown("---")
+    
     # Grant new access
-    st.markdown("#### Grant New Access")
+    st.markdown("#### ✅ Grant New Access")
     
     col1, col2 = st.columns(2)
     
