@@ -5716,6 +5716,7 @@ elif tool == "👨‍🏫 Teaching & Assessment":
     st.info("All teaching and assessment tools")
     
     tabs = st.tabs([
+        "👁️ Access Overview",
         "👨‍🏫 Teacher Dashboard",
         "👥 Student Management",
         "📚 TQUK Course Assignment",
@@ -5724,22 +5725,26 @@ elif tool == "👨‍🏫 Teaching & Assessment":
     ])
     
     with tabs[0]:
+        from student_access_overview import render_student_access_overview
+        render_student_access_overview()
+    
+    with tabs[1]:
         from teacher_dashboard import render_teacher_dashboard
         render_teacher_dashboard()
     
-    with tabs[1]:
+    with tabs[2]:
         from student_access_management import render_student_access_management
         render_student_access_management()
     
-    with tabs[2]:
+    with tabs[3]:
         from simple_course_assignment import render_simple_course_assignment
         render_simple_course_assignment()
     
-    with tabs[3]:
+    with tabs[4]:
         from student_portfolio_ui import render_student_portfolio
         render_student_portfolio()
     
-    with tabs[4]:
+    with tabs[5]:
         st.info("📊 Progress reports coming soon - integrated with TQUK tracking")
 
 # ============================================
