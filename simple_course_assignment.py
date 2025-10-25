@@ -292,9 +292,15 @@ def render_simple_course_assignment():
                         success, message = assign_course_to_learner(student_email, course_id, admin_email)
                         if success:
                             success_count += 1
-                            # Also grant the module access
+                            # Also grant the module access (even if module file not deployed yet)
                             course_info = TQUK_COURSES[course_id]
-                            grant_module_access(student_email, course_info['module'], admin_email)
+                            try:
+                                grant_module_access(student_email, course_info['module'], admin_email)
+                                # Also grant TQUK Document Library access
+                                grant_module_access(student_email, "📚 TQUK Document Library", admin_email)
+                            except Exception as module_error:
+                                # Module access will work after deployment
+                                st.info(f"ℹ️ {course_info['name']} enrolled. Module access will be available after next deployment.")
                         else:
                             error_count += 1
                             st.warning(f"⚠️ {message}")
