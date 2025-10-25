@@ -146,23 +146,31 @@ def get_ptl_stats_for_user(user_email):
         }
 
 
-def create_user(email, password_hash, full_name, role="trial", user_type="student"):
+def create_user(email, password_hash, full_name, role="trial", user_type="student", expiry_date=None):
     """Create new user in Supabase"""
     try:
         from datetime import timedelta
         
-        # Calculate expiry date based on role
-        expiry_days = {
-            "trial": 2,
-            "student_basic": 90,
-            "student_professional": 180,
-            "student_ultimate": 365,
-            "staff": 3650,
-            "admin": 3650,
-            "super_admin": 3650
-        }
-        
-        expiry_date = datetime.now() + timedelta(days=expiry_days.get(role, 2))
+        # Use provided expiry_date or calculate based on role
+        if expiry_date is None:
+            # Calculate expiry date based on role
+            expiry_days = {
+                "trial": 2,
+                "student_basic": 90,
+                "student_professional": 180,
+                "student_ultimate": 365,
+                "staff": 365,
+                "admin": 365,
+                "super_admin": 365,
+                "teacher": 365
+            }
+            
+            expiry_date = datetime.now() + timedelta(days=expiry_days.get(role, 90))
+        else:
+            # Convert string to datetime if needed
+            if isinstance(expiry_date, str):
+                from datetime import datetime as dt
+                expiry_date = dt.fromisoformat(expiry_date)
         
         data = {
             "email": email,
