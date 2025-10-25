@@ -1556,13 +1556,12 @@ if user_role in ['student', 'student_basic', 'student_standard', 'student_premiu
         # Add modules from database
         if user_modules:
             accessible_modules = user_modules + accessible_modules
-        else:
-            # Fallback if no modules in database - show Learning Portal only
-            accessible_modules = ["🎓 Learning Portal"] + accessible_modules
+        # If no modules assigned, they only see basic modules (My Account, Help, Contact)
+        # NO automatic Learning Portal - they only see what you assign!
     except Exception as e:
         # Fallback to basic access if database check fails
+        # Only show basic modules - NO automatic content
         accessible_modules = [
-            "🎓 Learning Portal",
             "⚙️ My Account",
             "ℹ️ Help & Information",
             "📧 Contact & Support"

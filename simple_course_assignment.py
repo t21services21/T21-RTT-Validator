@@ -71,9 +71,10 @@ CAREER_TOOLS = {
 }
 
 BASIC_ACCESS = {
-    "learning_portal": "🎓 Learning Portal",
     "help": "ℹ️ Help & Information"
 }
+# NOTE: Learning Portal removed from basic access
+# Students only get modules you explicitly assign them!
 
 
 # ============================================
