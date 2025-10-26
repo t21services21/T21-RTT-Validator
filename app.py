@@ -1578,6 +1578,7 @@ elif user_role in ['teacher', 'instructor', 'trainer']:
         "🤝 Customer Service",  # TQUK Qualification
         "📊 Business Administration",  # TQUK Qualification
         "🏥 Adult Social Care",  # TQUK Qualification
+        "👨‍🏫 Teaching & Learning",  # TQUK Qualification
         "📊 Reports & Analytics",
         "📄 CV Builder",  # FULL Professional CV Builder
         "⚙️ Administration",
@@ -1602,6 +1603,7 @@ elif user_role == 'tester':
         "🤝 Customer Service",                # TQUK Qualification
         "📊 Business Administration",         # TQUK Qualification
         "🏥 Adult Social Care",               # TQUK Qualification
+        "👨‍🏫 Teaching & Learning",            # TQUK Qualification
         "🔒 Information Governance",          # IG training and compliance
         "💼 Career Development",              # Career tools and development
         "📄 CV Builder",                      # FULL Professional CV Builder
@@ -7420,6 +7422,10 @@ elif tool == "📊 Business Administration":
 elif tool == "🏥 Adult Social Care":
     from tquk_adult_social_care_module import render_adult_social_care_module
     render_adult_social_care_module()
+
+elif tool == "👨‍🏫 Teaching & Learning":
+    from tquk_teaching_learning_module import render_teaching_learning_module
+    render_teaching_learning_module()
 
 # ============================================
 # CONTACT & SUPPORT
