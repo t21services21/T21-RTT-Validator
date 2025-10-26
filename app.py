@@ -1600,6 +1600,7 @@ elif user_role == 'tester':
         "💻 IT User Skills",                  # TQUK Qualification
         "🤝 Customer Service",                # TQUK Qualification
         "📊 Business Administration",         # TQUK Qualification
+        "🏥 Adult Social Care",               # TQUK Qualification
         "🔒 Information Governance",          # IG training and compliance
         "💼 Career Development",              # Career tools and development
         "📄 CV Builder",                      # FULL Professional CV Builder
