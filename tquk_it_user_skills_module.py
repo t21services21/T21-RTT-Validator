@@ -16,7 +16,7 @@ UNITS = {
         "credits": 4,
         "glh": 30,
         "level": 2,
-        "file": "LEVEL2_IT_USER_SKILLS_COMPLETE.md",
+        "file": "IT_USER_SKILLS_ALL_UNITS_COMPLETE.md",
         "learning_outcomes": 5,
         "activities": 10
     },
@@ -26,7 +26,7 @@ UNITS = {
         "credits": 3,
         "glh": 20,
         "level": 2,
-        "file": "TQUK_ALL_QUALIFICATIONS_SUMMARY.md",
+        "file": "IT_USER_SKILLS_ALL_UNITS_COMPLETE.md",
         "learning_outcomes": 4,
         "activities": 8
     },
@@ -36,7 +36,7 @@ UNITS = {
         "credits": 1,
         "glh": 10,
         "level": 1,
-        "file": "TQUK_ALL_QUALIFICATIONS_SUMMARY.md",
+        "file": "IT_USER_SKILLS_ALL_UNITS_COMPLETE.md",
         "learning_outcomes": 1,
         "activities": 5
     },
@@ -46,7 +46,7 @@ UNITS = {
         "credits": 4,
         "glh": 30,
         "level": 2,
-        "file": "TQUK_ALL_QUALIFICATIONS_SUMMARY.md",
+        "file": "IT_USER_SKILLS_ALL_UNITS_COMPLETE.md",
         "learning_outcomes": 3,
         "activities": 8
     },
@@ -56,7 +56,7 @@ UNITS = {
         "credits": 4,
         "glh": 30,
         "level": 2,
-        "file": "TQUK_ALL_QUALIFICATIONS_SUMMARY.md",
+        "file": "IT_USER_SKILLS_ALL_UNITS_COMPLETE.md",
         "learning_outcomes": 3,
         "activities": 8
     }
