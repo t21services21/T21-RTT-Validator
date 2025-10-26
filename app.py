@@ -1701,6 +1701,7 @@ elif user_role == 'staff':
         "💻 IT User Skills",
         "🤝 Customer Service",
         "📊 Business Administration",
+        "🏥 Adult Social Care",
         
         # PROFESSIONAL DEVELOPMENT
         "🔒 Information Governance",
@@ -7413,6 +7414,10 @@ elif tool == "🤝 Customer Service":
 elif tool == "📊 Business Administration":
     from tquk_business_admin_module import render_business_admin_module
     render_business_admin_module()
+
+elif tool == "🏥 Adult Social Care":
+    from tquk_adult_social_care_module import render_adult_social_care_module
+    render_adult_social_care_module()
 
 # ============================================
 # CONTACT & SUPPORT
