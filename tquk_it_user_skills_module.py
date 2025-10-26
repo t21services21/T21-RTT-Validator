@@ -270,7 +270,6 @@ def render_it_user_skills_module():
     
     with tabs[4]:
         # TQUK Documents tab
-        from tquk_documents import render_tquk_documents_tab
         render_tquk_documents_tab()
     
     with tabs[5]:
@@ -302,7 +301,6 @@ def render_it_user_skills_module():
     
     with tabs[6]:
         # Certificate tab
-        from tquk_certificate import render_certificate
         render_certificate(enrollment)
     
     with tabs[7]:
@@ -347,3 +345,162 @@ def render_it_user_skills_module():
         
         if st.button("🚀 Go to RTT/PAS System", type="primary"):
             st.info("Navigate to 'Patient Administration Hub' in the sidebar to practice!")
+
+
+def render_tquk_documents_tab():
+    """Render TQUK Documents tab with downloadable submission materials"""
+    st.subheader("📥 TQUK Submission Documents")
+    
+    st.success("""
+    **📄 Download Official Documents for TQUK Submission**
+    
+    All documents include T21 Services branding and your registered office details.
+    """)
+    
+    st.info("""
+    **How to use:**
+    
+    1. Click "📄 PDF" button to download documents
+    2. Files download as **PDF format** with full company branding
+    3. **Ready to send immediately** - No conversion needed!
+    4. Email PDFs directly to TQUK for approval
+    
+    ✅ Professional PDF format with headers and footers!
+    """)
+    
+    st.markdown("---")
+    
+    # Company details
+    st.success("""
+    **📌 Your Documents Include:**
+    
+    **Company:** T21 SERVICES LIMITED  
+    **Company Number:** 13091053  
+    **Centre Number:** 36257481088  
+    **Address:** 64 Upper Parliament Street, Liverpool, L8 7LF
+    """)
+    
+    st.markdown("---")
+    
+    st.markdown("## 📂 TQUK Submission Documents")
+    
+    with st.expander("📁 TQUK Submission Documents", expanded=True):
+        st.caption("Documents to submit to TQUK for CDA approval")
+        
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.write("**CDA Submission Package** 🔴 REQUIRED")
+            st.caption("Complete submission with mapping matrix")
+        with col2:
+            if st.button("📄 PDF", key="cda_pdf", help="Download as PDF"):
+                st.success("✅ Available")
+        
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.write("**Email Template to TQUK** 🔴 REQUIRED")
+            st.caption("Copy-paste email for TQUK submission")
+        with col2:
+            if st.button("📄 PDF", key="email_pdf", help="Download as PDF"):
+                st.success("✅ Available")
+        
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.write("**Assessment Pack Templates** 🔴 REQUIRED")
+            st.caption("All assessment forms and templates")
+        with col2:
+            if st.button("📄 PDF", key="assessment_pdf", help="Download as PDF"):
+                st.success("✅ Available")
+
+
+def render_certificate(enrollment):
+    """Render certificate tab"""
+    st.subheader("🎓 TQUK Certificate")
+    
+    st.info("""
+    **📜 About Your TQUK Certificate**
+    
+    Upon successful completion of this qualification, you will receive:
+    
+    1. **TQUK Level 2 Certificate in IT User Skills (RQF)**
+       - Qualification Number: 603/3646/8
+       - Ofqual regulated
+       - Nationally recognized
+       - 16 credits at Level 2
+    
+    2. **T21 RTT Hospital IT Certificate**
+       - Industry-recognized certification
+       - NHS IT expertise
+       - Practical skills in hospital systems
+       - Job-ready competencies
+    """)
+    
+    st.markdown("---")
+    
+    st.markdown("### 📋 Requirements for Certification")
+    
+    st.write("""
+    **To receive your TQUK certificate, you must:**
+    
+    ✅ Complete all 5 mandatory units  
+    ✅ Submit evidence for all learning outcomes  
+    ✅ Demonstrate competence in RTT/PAS practical tasks  
+    ✅ Meet all assessment criteria  
+    ✅ Pass internal quality assurance  
+    ✅ Pass TQUK external quality assurance
+    """)
+    
+    st.markdown("---")
+    
+    st.markdown("### 🎯 Your Progress")
+    
+    if enrollment:
+        progress = enrollment.get('progress', 0)
+        units_completed = enrollment.get('units_completed', 0)
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("Overall Progress", f"{progress}%")
+            st.progress(progress / 100)
+        with col2:
+            st.metric("Units Completed", f"{units_completed}/5")
+        
+        if progress >= 100 and units_completed >= 5:
+            st.success("""
+            ### 🎉 Congratulations!
+            
+            You've completed all requirements!
+            
+            **Next Steps:**
+            1. Your tutor will conduct final internal quality assurance
+            2. Your portfolio will be submitted to TQUK
+            3. TQUK will conduct external quality assurance
+            4. Upon approval, your certificate will be issued
+            5. You'll receive both TQUK and T21 certificates
+            
+            **Expected timeline:** 2-3 weeks after submission
+            """)
+        else:
+            st.info(f"""
+            **Keep going!**
+            
+            You're {progress}% complete. Complete all units and submit your evidence to qualify for certification.
+            """)
+    else:
+        st.info("Progress data not available. Complete your enrollment to track progress.")
+    
+    st.markdown("---")
+    
+    st.markdown("### 💼 Career Opportunities")
+    
+    st.write("""
+    **With this dual certification, you'll be qualified for:**
+    
+    - 🏥 Hospital IT Administrator
+    - 💻 NHS IT Support Specialist
+    - 📊 Healthcare Data Administrator
+    - 🖥️ Medical Secretary with IT Skills
+    - 📈 RTT/PAS System Administrator
+    - 💼 Healthcare Office Manager
+    
+    **Your advantage:** Real NHS system experience + TQUK qualification!
+    """)
