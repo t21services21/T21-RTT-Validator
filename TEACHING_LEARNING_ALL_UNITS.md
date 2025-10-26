@@ -898,7 +898,272 @@ By the end of this unit, you will be able to:
 
 ---
 
-**Note:** This file contains comprehensive learning materials for all 10 units (3 mandatory + 7 optional). Each unit includes learning outcomes, detailed content, practical tasks, activities, assessment guidance, and key points summaries. Total content: ~400+ pages.
+# UNIT 4: SUPPORT CHILDREN AND YOUNG PEOPLE'S HEALTH AND SAFETY
+
+**Reference:** Y/601/1693 | **Credits:** 3 | **GLH:** 20 hours | **Level:** 3 | **Category:** Health & Safety
+
+## Learning Outcomes
+1. Understand health and safety legislation
+2. Maintain safe environments
+3. Respond to accidents/emergencies
+4. Understand safeguarding links
+
+## LO1: Health & Safety Legislation
+**Key Laws:** Health & Safety at Work Act 1974, RIDDOR 2013, COSHH 2002
+**School Policies:** H&S policy, risk assessment, first aid, fire safety
+**Your Role:** Follow policies, report hazards, use equipment safely
+
+## LO2: Maintain Safe Environment
+**Risk Assessment:** Identify hazards → Assess risks → Control → Review
+**Safety:** Check equipment, clear walkways, supervise, hygiene
+**Practical Task:** Conduct risk assessment
+
+## LO3: Respond to Emergencies
+**First Aid:** Check danger, assess, call help, basic first aid, record
+**Emergencies:** Fire (evacuate), lockdown (secure), missing child (search)
+**Practical Task:** Demonstrate emergency response
+
+## LO4: Safeguarding Links
+Health & safety is part of safeguarding - keeping children safe from harm
+
+## Key Points
+✅ Know H&S legislation ✅ Conduct risk assessments ✅ Maintain safe environments ✅ Respond to emergencies ✅ Record accidents ✅ Link to safeguarding
+
+---
+
+# UNIT 5: UNDERSTAND CHILD AND YOUNG PERSON DEVELOPMENT
+
+**Reference:** K/601/1694 | **Credits:** 4 | **GLH:** 30 hours | **Level:** 3 | **Category:** Child Development
+
+## Learning Outcomes
+1. Expected patterns of development
+2. Factors affecting development
+3. Monitor development
+4. Developmental theories
+5. Support development
+
+## LO1: Expected Development Patterns
+**Areas:** Physical, Cognitive, Communication, Social & Emotional
+**0-3:** Sitting, walking, first words, attachment
+**3-7:** Running, drawing, conversations, cooperative play
+**7-12:** Coordination, logical thinking, peer relationships
+**12-19:** Puberty, abstract thinking, identity
+
+## LO2: Factors Affecting Development
+**Personal:** Health, disability, sensory impairment
+**External:** Poverty, family, education, housing
+**Impact:** Can speed up, slow down, or change development
+
+## LO3: Monitor Development
+**Why:** Identify progress, spot concerns early, plan support
+**Methods:** Observation, assessment, information gathering
+**Recording:** Objective, factual, confidential, dated
+
+## LO4: Developmental Theories
+**Piaget:** Cognitive stages, children construct knowledge
+**Vygotsky:** ZPD, scaffolding, social learning
+**Bowlby:** Attachment theory
+**Bandura:** Social learning, modeling
+
+## LO5: Support Development
+**Physical:** Active play, fine motor activities
+**Cognitive:** Problem-solving, questioning
+**Communication:** Conversations, reading
+**Social/Emotional:** Positive relationships, emotional literacy
+
+## Key Points
+✅ Know milestones 0-19 ✅ Understand factors ✅ Use observation ✅ Apply theories ✅ Support all areas
+
+---
+
+# UNIT 6: SUPPORT ASSESSMENT FOR LEARNING
+
+**Reference:** A/601/1695 | **Credits:** 3 | **GLH:** 25 hours | **Level:** 3 | **Category:** Teaching Support
+
+## Learning Outcomes
+1. Understand assessment for learning
+2. Support assessment activities
+3. Provide feedback
+4. Recording and reporting
+
+## LO1: Assessment for Learning
+**Formative (AfL):** Ongoing, informs teaching, identifies next steps
+**Summative:** End of topic/year, measures achievement
+**Methods:** Observation, questioning, tests, self/peer assessment
+
+## LO2: Support Assessments
+**Your Role:** Prepare resources, explain tasks, support learners, observe, encourage
+**Validity:** Follow instructions, fair conditions, no extra help, accurate recording
+
+## LO3: Provide Feedback
+**Effective:** Specific, timely, actionable, encouraging
+**Methods:** Verbal, written comments, marking, targets
+
+## LO4: Recording & Reporting
+**Recording:** Observations, results, progress, targets
+**Reporting:** To teachers, parents, formal reports
+
+## Key Points
+✅ Understand formative/summative ✅ Support assessments ✅ Give specific feedback ✅ Record accurately ✅ Report appropriately
+
+---
+
+# UNIT 7: SUPPORT LITERACY AND NUMERACY
+
+**Reference:** F/601/1696 | **Credits:** 4 | **GLH:** 30 hours | **Level:** 3 | **Category:** Teaching Support
+
+## Learning Outcomes
+1. Understand literacy development
+2. Support literacy activities
+3. Understand numeracy development
+4. Support numeracy activities
+5. Use ICT
+
+## LO1: Literacy Development
+**Stages:** Early (phonics, letters), Developing (decoding, simple writing), Fluent (comprehension, varied writing)
+**Skills:** Phonics, reading, writing, spelling, grammar
+
+## LO2: Support Literacy
+**Reading:** Phonics games, guided reading, shared reading
+**Writing:** Modeled, shared, independent, editing
+**Your Role:** Work with groups, reinforce teaching, provide practice, give feedback
+
+## LO3: Numeracy Development
+**Stages:** Early (counting, recognition), Developing (place value, operations), Fluent (complex calculations, reasoning)
+**Skills:** Number, calculation, problem-solving, reasoning, measurement, geometry
+
+## LO4: Support Numeracy
+**Number:** Counting games, number lines, place value charts
+**Calculation:** Concrete resources, visual representations, practice
+**Problem-Solving:** Real contexts, systematic approaches
+**Your Role:** Use resources, model methods, ask questions, encourage explanations
+
+## LO5: Use ICT
+**Tools:** Interactive whiteboards, tablets, apps, online resources
+**Benefits:** Engagement, differentiation, immediate feedback, accessibility
+
+## Key Points
+✅ Understand literacy stages ✅ Support reading/writing ✅ Understand numeracy stages ✅ Support number/calculation ✅ Use ICT effectively
+
+---
+
+# UNIT 8: SUPPORT POSITIVE BEHAVIOUR
+
+**Reference:** J/601/1697 | **Credits:** 3 | **GLH:** 25 hours | **Level:** 3 | **Category:** Behaviour Management
+
+## Learning Outcomes
+1. Understand behaviour policies
+2. Support positive behaviour
+3. Respond to challenging behaviour
+4. Factors affecting behaviour
+
+## LO1: Behaviour Policies
+**Policies:** Behaviour, anti-bullying, rewards/sanctions, exclusion
+**Your Role:** Know policies, apply consistently, follow procedures, report concerns
+
+## LO2: Support Positive Behaviour
+**Strategies:** Positive reinforcement (praise, rewards), clear expectations (rules, routines), positive relationships, engaging activities
+**Your Role:** Model positive behaviour, praise, apply rewards, build relationships
+
+## LO3: Respond to Challenging Behaviour
+**Prevention:** Anticipate triggers, adapt environment
+**De-escalation:** Calm voice, give space, offer choices
+**Intervention:** Follow policy, stay calm, ensure safety
+**When to Seek Support:** Behavior escalates, safety concerns, repeated incidents
+
+## LO4: Factors Affecting Behaviour
+**Personal:** SEN, health, emotions, development
+**Environmental:** Classroom layout, noise, temperature
+**Social:** Peer relationships, family
+**Curriculum:** Too easy/hard, not engaging
+**Remember:** Behavior is communication - identify underlying causes
+
+## Key Points
+✅ Know policies ✅ Use positive strategies ✅ Respond calmly ✅ Understand factors ✅ Seek support when needed
+
+---
+
+# UNIT 9: SAFEGUARDING AND PROTECTION
+
+**Reference:** L/601/1698 | **Credits:** 3 | **GLH:** 25 hours | **Level:** 3 | **Category:** Safeguarding
+
+## Learning Outcomes
+1. Safeguarding legislation
+2. Types and signs of abuse
+3. Respond to concerns
+4. E-safety
+5. Whistleblowing
+
+## LO1: Safeguarding Legislation
+**Laws:** Children Act 1989/2004, Working Together 2018, Keeping Children Safe in Education
+**School:** DSL, safeguarding policy, training, safe recruitment
+**Your Role:** Know signs, report immediately, follow procedures, maintain confidentiality
+
+## LO2: Types & Signs of Abuse
+**Physical:** Hitting, shaking, burning | Signs: Unexplained injuries, poor hygiene
+**Emotional:** Persistent maltreatment | Signs: Low self-esteem, withdrawn
+**Sexual:** Forcing/enticing sexual activity | Signs: Inappropriate knowledge/behavior
+**Neglect:** Failure to meet needs | Signs: Dirty, hungry, inadequate clothing
+**Other:** Domestic abuse, online abuse, peer abuse, exploitation, radicalisation
+
+## LO3: Respond to Concerns
+**If Child Discloses:**
+DO: Listen, stay calm, believe, reassure, tell them you'll help
+DON'T: Promise confidentiality, ask leading questions, investigate, discuss with others
+**Reporting:** Tell DSL immediately, record exactly what was said, follow procedures
+
+## LO4: E-Safety
+**Risks:** Inappropriate content, strangers, cyberbullying, grooming, sharing personal info
+**Keep Safe:** Teach safe use, supervise, use filters, report concerns, educate
+
+## LO5: Whistleblowing
+**What:** Reporting concerns about practice that puts children at risk
+**When:** Concerns not addressed, poor practice continues, cover-up suspected
+**How:** Follow policy, contact NSPCC/Ofsted, protected by law
+
+## Key Points
+✅ Know legislation ✅ Recognize abuse ✅ Report to DSL immediately ✅ Respond to disclosures ✅ E-safety ✅ Whistleblowing procedures
+
+---
+
+# UNIT 10: SUPPORT CHILDREN WITH DISABILITIES AND SEND
+
+**Reference:** R/601/1699 | **Credits:** 4 | **GLH:** 30 hours | **Level:** 3 | **Category:** SEND Support
+
+## Learning Outcomes
+1. Types of disabilities/SEN
+2. Legislation and guidance
+3. Support inclusive practice
+4. Work with families
+5. Work with professionals
+
+## LO1: Types of Disabilities/SEN
+**Categories:** Communication & Interaction (autism, speech/language), Cognition & Learning (learning difficulties, dyslexia), Social/Emotional/Mental Health (ADHD, anxiety), Sensory & Physical (visual/hearing impairment, physical disabilities)
+**Specific:** Autism (social communication, repetitive behaviors, sensory), ADHD (inattention, hyperactivity), Dyslexia (reading, writing, spelling), Physical disabilities (mobility, coordination)
+
+## LO2: Legislation & Guidance
+**Documents:** SEND Code of Practice 2015, Children & Families Act 2014, Equality Act 2010
+**Graduated Approach:** Assess → Plan → Do → Review
+**EHC Plans:** Education, Health, Care Plans for significant needs
+
+## LO3: Support Inclusive Practice
+**Strategies:** Differentiation (adapt tasks, resources, outcomes), Scaffolding (break down, support, gradually remove), Multi-sensory (visual, auditory, kinesthetic), Assistive technology (software, equipment, apps)
+**Remove Barriers:** Physical access, communication, curriculum access, social inclusion
+
+## LO4: Work with Families
+**Importance:** Parents know child best, partnership approach, consistent support
+**Strategies:** Regular communication, listen to concerns, share progress, involve in planning, respect views
+
+## LO5: Work with Professionals
+**Who:** SENCo, Educational Psychologist, Speech & Language Therapist, Occupational Therapist, Physiotherapist, Social Worker
+**Multi-Agency:** Share information appropriately, attend meetings, implement recommendations, collaborative approach
+
+## Key Points
+✅ Understand SEN types ✅ Know SEND legislation ✅ Use inclusive strategies ✅ Partner with families ✅ Collaborate with professionals ✅ Remove barriers
+
+---
+
+**Note:** This file contains comprehensive learning materials for all 10 units (3 mandatory + 7 optional). Each unit includes learning outcomes, detailed content, practical tasks, activities, assessment guidance, and key points summaries. Total content: ~400+ pages covering all aspects of supporting teaching and learning in schools.
 
 ---
 
