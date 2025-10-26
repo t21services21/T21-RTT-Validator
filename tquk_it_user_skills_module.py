@@ -10,11 +10,56 @@ COURSE_ID = "level2_it_skills"
 COURSE_NAME = "Level 2 Certificate in IT User Skills"
 
 UNITS = {
-    1: {"name": "Using IT Systems", "credits": 5, "file": "LEVEL2_IT_USER_SKILLS_COMPLETE.md"},
-    2: {"name": "IT Communication Fundamentals", "credits": 4, "file": "TQUK_ALL_QUALIFICATIONS_SUMMARY.md"},
-    3: {"name": "IT Software Fundamentals", "credits": 4, "file": "TQUK_ALL_QUALIFICATIONS_SUMMARY.md"},
-    4: {"name": "Using Collaborative Technologies", "credits": 3, "file": "TQUK_ALL_QUALIFICATIONS_SUMMARY.md"},
-    5: {"name": "Using Databases", "credits": 4, "file": "TQUK_ALL_QUALIFICATIONS_SUMMARY.md"}
+    1: {
+        "name": "Using IT to increase productivity",
+        "ref": "J/617/2480",
+        "credits": 4,
+        "glh": 30,
+        "level": 2,
+        "file": "LEVEL2_IT_USER_SKILLS_COMPLETE.md",
+        "learning_outcomes": 5,
+        "activities": 10
+    },
+    2: {
+        "name": "IT software fundamentals",
+        "ref": "F/617/2428",
+        "credits": 3,
+        "glh": 20,
+        "level": 2,
+        "file": "TQUK_ALL_QUALIFICATIONS_SUMMARY.md",
+        "learning_outcomes": 4,
+        "activities": 8
+    },
+    3: {
+        "name": "IT security for users",
+        "ref": "H/617/2423",
+        "credits": 1,
+        "glh": 10,
+        "level": 1,
+        "file": "TQUK_ALL_QUALIFICATIONS_SUMMARY.md",
+        "learning_outcomes": 1,
+        "activities": 5
+    },
+    4: {
+        "name": "Presentation software",
+        "ref": "J/617/2429",
+        "credits": 4,
+        "glh": 30,
+        "level": 2,
+        "file": "TQUK_ALL_QUALIFICATIONS_SUMMARY.md",
+        "learning_outcomes": 3,
+        "activities": 8
+    },
+    5: {
+        "name": "Spreadsheet software",
+        "ref": "A/617/2430",
+        "credits": 4,
+        "glh": 30,
+        "level": 2,
+        "file": "TQUK_ALL_QUALIFICATIONS_SUMMARY.md",
+        "learning_outcomes": 3,
+        "activities": 8
+    }
 }
 
 
@@ -67,7 +112,17 @@ def render_it_user_skills_module():
     
     st.markdown("---")
     
-    tabs = st.tabs(["📚 Overview", "📖 Materials", "🖥️ RTT/PAS Practice", "📝 Assessments", "📊 Progress"])
+    # 8 tabs like Level 3 and Level 2 Business Admin
+    tabs = st.tabs([
+        "📚 Course Overview",
+        "📖 Learning Materials", 
+        "📝 Assessments",
+        "📋 Evidence Tracking",
+        "📥 TQUK Documents",
+        "📊 My Progress",
+        "🎓 Certificate",
+        "🖥️ RTT Practice"
+    ])
     
     with tabs[0]:
         st.subheader("📚 Course Overview")
@@ -172,6 +227,86 @@ def render_it_user_skills_module():
                 st.error("Error loading materials. Please contact your teacher.")
     
     with tabs[2]:
+        # Assessments tab (EXACTLY like Level 3)
+        from tquk_evidence_tracking import render_evidence_submission_form
+        
+        st.subheader("📝 Assessment & Evidence Submission")
+        
+        st.success("""
+        **📚 Welcome to Assessments!**
+        
+        Submit evidence for each unit to demonstrate you've met the learning outcomes.
+        """)
+        
+        st.info("""
+        **💡 Types of Evidence You Can Submit:**
+        
+        - 📸 **Observation** - Your assessor watches you work
+        - 📝 **Witness Statement** - Colleagues confirm your competence
+        - 💭 **Reflective Account** - You reflect on your practice
+        - 📄 **Product Evidence** - Documents you've created (reports, spreadsheets, etc.)
+        - 💬 **Professional Discussion** - Discussion with your assessor
+        - 📋 **Case Study** - Analysis of a real situation
+        """)
+        
+        st.markdown("---")
+        
+        # Unit selector for assessment
+        selected_unit = st.selectbox(
+            "Select Unit for Assessment",
+            options=list(UNITS.keys()),
+            format_func=lambda x: f"Unit {x}: {UNITS[x]['name']}",
+            key="assessment_unit"
+        )
+        
+        if selected_unit:
+            # Use the proper evidence submission form
+            render_evidence_submission_form(learner_email, COURSE_ID, selected_unit)
+    
+    with tabs[3]:
+        # Evidence Tracking tab (EXACTLY like Level 3)
+        from tquk_evidence_tracking import render_evidence_tracking
+        render_evidence_tracking(learner_email, COURSE_ID)
+    
+    with tabs[4]:
+        # TQUK Documents tab
+        from tquk_documents import render_tquk_documents_tab
+        render_tquk_documents_tab()
+    
+    with tabs[5]:
+        # My Progress tab
+        st.subheader("📊 My Progress")
+        if enrollment:
+            st.markdown("### Overall Progress")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.metric("Completion", f"{enrollment['progress']}%")
+                st.progress(enrollment['progress'] / 100)
+            with col2:
+                st.metric("Units Completed", f"{enrollment['units_completed']}/5")
+            
+            st.markdown("---")
+            st.markdown("### Unit-by-Unit Progress")
+            
+            for unit_num, unit_data in UNITS.items():
+                with st.expander(f"Unit {unit_num}: {unit_data['name']}"):
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.metric("Progress", "0%")
+                        st.progress(0)
+                    with col2:
+                        st.metric("Status", "Not Started")
+        else:
+            st.info("Enrollment data not available.")
+    
+    with tabs[6]:
+        # Certificate tab
+        from tquk_certificate import render_certificate
+        render_certificate(enrollment)
+    
+    with tabs[7]:
+        # RTT Practice tab (moved from tab 2)
         st.subheader("🖥️ Practice with RTT/PAS System")
         st.success("🚀 **UNIQUE FEATURE:** Practice IT skills using real hospital software!")
         
@@ -212,41 +347,3 @@ def render_it_user_skills_module():
         
         if st.button("🚀 Go to RTT/PAS System", type="primary"):
             st.info("Navigate to 'Patient Administration Hub' in the sidebar to practice!")
-    
-    with tabs[3]:
-        st.subheader("📝 Assessment Submission")
-        st.info("Submit evidence of your IT skills using the RTT/PAS system")
-        
-        selected_unit = st.selectbox(
-            "Unit",
-            options=list(UNITS.keys()),
-            format_func=lambda x: f"Unit {x}: {UNITS[x]['name']}",
-            key="assess_unit"
-        )
-        
-        evidence_type = st.selectbox(
-            "Evidence Type",
-            ["Screenshot", "Document Created", "Report Generated", "Email Sent", "Database Query"]
-        )
-        
-        description = st.text_area("Description", placeholder="Describe what you did...")
-        uploaded_file = st.file_uploader("Upload Evidence", type=['pdf', 'docx', 'png', 'jpg'])
-        
-        if st.button("📤 Submit Evidence"):
-            if description and uploaded_file:
-                st.success("✅ Evidence submitted!")
-                st.balloons()
-            else:
-                st.warning("Please provide description and file")
-    
-    with tabs[4]:
-        st.subheader("📊 My Progress")
-        if enrollment:
-            for unit_num, unit_data in UNITS.items():
-                with st.expander(f"Unit {unit_num}: {unit_data['name']}"):
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.metric("Progress", "0%")
-                        st.progress(0)
-                    with col2:
-                        st.metric("Status", "Not Started")

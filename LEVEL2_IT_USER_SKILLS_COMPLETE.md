@@ -1,16 +1,17 @@
-# 📚 LEVEL 2 CERTIFICATE IN IT USER SKILLS
-## **TQUK Qualification - 603/0646/8**
+# 💻 LEVEL 2 CERTIFICATE IN IT USER SKILLS
+## **TQUK Qualification - 603/3646/8**
 
 ---
 
 ## **📋 QUALIFICATION OVERVIEW:**
 
 **Qualification Title:** TQUK Level 2 Certificate in IT User Skills (RQF)
-**Qualification Number:** 603/0646/8
+**Qualification Number:** 603/3646/8
+**Version:** 2.1 (May 2025)
 **Level:** 2
-**Total Credits:** 13-37 credits (learner choice)
-**Guided Learning Hours (GLH):** Variable based on units chosen
-**Total Qualification Time (TQT):** 130-370 hours
+**Total Credits:** 16 credits (5 mandatory units)
+**Guided Learning Hours (GLH):** 120 hours
+**Total Qualification Time (TQT):** 160 hours
 
 ---
 
