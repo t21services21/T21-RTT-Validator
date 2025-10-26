@@ -261,7 +261,17 @@ def render_business_admin_module():
     
     st.markdown("---")
     
-    tabs = st.tabs(["📚 Overview", "📖 Materials", "🏥 RTT Practice", "📝 Assessments", "📊 Progress"])
+    # Main tabs (matches Level 3 structure)
+    tabs = st.tabs([
+        "📚 Course Overview",
+        "📖 Learning Materials",
+        "🎯 Optional Units",
+        "📝 Assessments",
+        "📋 Evidence Tracking",
+        "📥 TQUK Documents",
+        "📊 My Progress",
+        "🎓 Certificate"
+    ])
     
     with tabs[0]:
         st.subheader("📚 Course Overview")
@@ -465,6 +475,33 @@ def render_business_admin_module():
                 st.warning("📚 Full learning materials are being finalized for this unit. Use the RTT Practice tab to start collecting evidence!")
     
     with tabs[2]:
+        # Optional Units tab
+        st.subheader("🎯 Optional Units Selection")
+        
+        st.info("""
+        **Choose at least 2 optional units (minimum 4 credits) to complete your qualification.**
+        
+        Recommended units for healthcare roles are marked with ⭐
+        """)
+        
+        st.markdown("### 📋 Available Optional Units (13 to choose from)")
+        
+        for unit_num, unit in OPTIONAL_UNITS.items():
+            recommended = "⭐ " if unit.get('recommended') else ""
+            with st.expander(f"{recommended}Unit {unit_num}: {unit['name']} ({unit['credits']} credits)"):
+                st.write(f"**Reference:** {unit['ref']}")
+                st.write(f"**Credits:** {unit['credits']} | **GLH:** {unit['glh']} hours")
+                if unit.get('recommended'):
+                    st.success("⭐ **Recommended** - Highly relevant for NHS roles")
+                st.write("**🏥 RTT Practical Tasks:**")
+                for task in unit['rtt_tasks']:
+                    st.write(f"- {task}")
+                
+                # View materials button
+                if st.button(f"📖 View Unit {unit_num} Materials", key=f"view_opt_{unit_num}"):
+                    st.info("Switch to the 'Learning Materials' tab and select 'Optional Units' to view full content!")
+    
+    with tabs[3]:
         st.subheader("🏥 RTT Practice - Real Hospital Administration")
         st.success("🚀 Practice business admin with actual NHS RTT workflows!")
         
@@ -534,8 +571,8 @@ def render_business_admin_module():
         if st.button("🚀 Go to RTT Training System", type="primary", use_container_width=True):
             st.success("✅ Navigate to '🎓 Training & Certification' in the sidebar to start practicing!")
     
-    with tabs[3]:
-        st.subheader("📝 Evidence & Assessment Submission")
+    with tabs[4]:
+        st.subheader("📝 Assessments")
         
         st.info("""
         ### 📋 Assessment Requirements
@@ -595,7 +632,85 @@ def render_business_admin_module():
         **Your tutor will review and submit to TQUK for final assessment.**
         """)
     
-    with tabs[4]:
+    with tabs[5]:
+        # Evidence Tracking tab
+        st.subheader("📋 Evidence Tracking")
+        
+        st.success("📊 Track your evidence submission progress for each unit")
+        
+        st.markdown("### 📝 Evidence Status by Unit")
+        
+        st.markdown("#### Mandatory Units")
+        for unit_num, unit in MANDATORY_UNITS.items():
+            with st.expander(f"Unit {unit_num}: {unit['name']}"):
+                col1, col2 = st.columns([3, 1])
+                with col1:
+                    st.write(f"**Learning Outcomes:** {unit.get('learning_outcomes', 0)}")
+                    st.write(f"**Evidence Required:** Portfolio of work")
+                with col2:
+                    status = st.selectbox(
+                        "Status",
+                        ["Not Started", "In Progress", "Submitted", "Approved"],
+                        key=f"evidence_status_m{unit_num}"
+                    )
+                
+                if st.button(f"📤 Upload Evidence for Unit {unit_num}", key=f"upload_m{unit_num}"):
+                    st.info("Go to Assessments tab to submit evidence!")
+        
+        st.markdown("#### Optional Units")
+        for unit_num, unit in OPTIONAL_UNITS.items():
+            with st.expander(f"Unit {unit_num}: {unit['name']}"):
+                col1, col2 = st.columns([3, 1])
+                with col1:
+                    st.write(f"**Learning Outcomes:** {unit.get('learning_outcomes', 0)}")
+                    st.write(f"**Evidence Required:** Portfolio of work")
+                with col2:
+                    status = st.selectbox(
+                        "Status",
+                        ["Not Started", "In Progress", "Submitted", "Approved"],
+                        key=f"evidence_status_o{unit_num}"
+                    )
+                
+                if st.button(f"📤 Upload Evidence for Unit {unit_num}", key=f"upload_o{unit_num}"):
+                    st.info("Go to Assessments tab to submit evidence!")
+    
+    with tabs[6]:
+        # TQUK Documents tab
+        st.subheader("📥 TQUK Documents")
+        
+        st.info("""
+        **Official TQUK qualification documents and resources**
+        
+        Download important documents for your qualification.
+        """)
+        
+        st.markdown("### 📄 Available Documents")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("#### Qualification Documents")
+            st.write("- 📘 Qualification Handbook")
+            st.write("- 📋 Assessment Criteria")
+            st.write("- 📝 Evidence Guide")
+            st.write("- ✅ Unit Specifications")
+        
+        with col2:
+            st.markdown("#### Support Materials")
+            st.write("- 💡 Study Tips")
+            st.write("- 📊 Progress Tracker")
+            st.write("- 🎯 Assessment Checklist")
+            st.write("- 📚 Additional Resources")
+        
+        st.markdown("---")
+        
+        st.success("""
+        **📥 Download All Documents**
+        
+        Contact your tutor to access the complete TQUK document library.
+        """)
+    
+    with tabs[7]:
         st.subheader("📊 My Progress")
         
         if enrollment:
@@ -640,3 +755,85 @@ def render_business_admin_module():
         
         **Questions?** Contact your tutor for support.
         """)
+    
+    with tabs[8]:
+        # Certificate tab (matches Level 3)
+        st.subheader("🎓 Certificate")
+        
+        st.success("""
+        ### 🎉 Your TQUK Level 2 Certificate in Business Administration
+        
+        **Upon successful completion, you will receive:**
+        """)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.info("""
+            #### 🎓 TQUK Certificate
+            - **Qualification:** Level 2 Certificate in Business Administration
+            - **Awarding Body:** TQUK
+            - **Regulation:** Ofqual (603/2949/X)
+            - **Level:** 2 RQF
+            - **Credits:** 20+
+            - **Status:** Nationally Recognized
+            """)
+        
+        with col2:
+            st.info("""
+            #### 🏥 T21 RTT Certificate
+            - **Qualification:** RTT Hospital Administration
+            - **Provider:** T21 Services
+            - **Skills:** NHS RTT Pathways
+            - **Evidence:** Real system experience
+            - **Status:** Industry Recognized
+            - **Bonus:** Job-ready portfolio
+            """)
+        
+        st.markdown("---")
+        
+        st.markdown("### 📋 Certification Requirements")
+        
+        requirements = [
+            ("Complete all 5 mandatory units", False),
+            ("Complete 2+ optional units (4+ credits)", False),
+            ("Submit evidence for all units", False),
+            ("Demonstrate RTT competence", False),
+            ("Achieve 20+ credits total", False),
+            ("Pass TQUK assessment", False)
+        ]
+        
+        for req, status in requirements:
+            icon = "✅" if status else "⬜"
+            st.write(f"{icon} {req}")
+        
+        st.markdown("---")
+        
+        if enrollment and enrollment.get('status') == 'completed':
+            st.success("""
+            ### 🎉 CONGRATULATIONS!
+            
+            You have completed all requirements!
+            
+            **Your certificates will be issued within 4-6 weeks.**
+            
+            **Next Steps:**
+            1. ✅ TQUK will verify your evidence
+            2. ✅ Certificates will be printed
+            3. ✅ You'll receive notification
+            4. ✅ Certificates posted to your address
+            
+            **Well done on your achievement!** 🎊
+            """)
+            st.balloons()
+        else:
+            st.info("""
+            ### 📚 Keep Going!
+            
+            **You're on your way to dual certification!**
+            
+            Continue working through your units and collecting evidence.
+            Your certificates will be available once you complete all requirements.
+            
+            **You've got this!** 💪
+            """)
