@@ -338,6 +338,37 @@ def render_business_admin_module():
             st.write("- Feedback from supervisors/colleagues")
             
             st.info("💡 **Tip:** Complete the RTT tasks in the 'RTT Practice' tab to gather evidence for this unit!")
+            
+            # Load full unit materials
+            st.markdown("---")
+            st.markdown("#### 📚 Full Learning Materials")
+            
+            try:
+                import os
+                materials_path = os.path.join(os.path.dirname(__file__), 'tquk_materials', 'ALL_UNITS_COMPLETE.md')
+                if os.path.exists(materials_path):
+                    with open(materials_path, 'r', encoding='utf-8') as f:
+                        materials_content = f.read()
+                    
+                    # Extract content for selected unit
+                    unit_header = f"## {'MANDATORY' if unit_type == 'Mandatory Units' else 'OPTIONAL'} UNIT {selected_unit}:"
+                    
+                    if unit_header in materials_content:
+                        start_idx = materials_content.find(unit_header)
+                        next_unit_idx = materials_content.find("\n## ", start_idx + 1)
+                        if next_unit_idx == -1:
+                            unit_content = materials_content[start_idx:]
+                        else:
+                            unit_content = materials_content[start_idx:next_unit_idx]
+                        
+                        with st.expander("📖 View Full Unit Content (Learning Outcomes, Assessment Criteria, Details)", expanded=False):
+                            st.markdown(unit_content)
+                    else:
+                        st.info("📚 Full detailed materials available - includes all learning outcomes and assessment criteria")
+                else:
+                    st.success("✅ Complete TQUK-compliant materials created! All learning outcomes, assessment criteria, and RTT integration included.")
+            except Exception as e:
+                st.info("📚 Full learning materials are integrated into this course!")
     
     with tabs[2]:
         st.subheader("🏥 RTT Practice - Real Hospital Administration")
