@@ -502,76 +502,6 @@ def render_business_admin_module():
                     st.info("Switch to the 'Learning Materials' tab and select 'Optional Units' to view full content!")
     
     with tabs[3]:
-        st.subheader("🏥 RTT Practice - Real Hospital Administration")
-        st.success("🚀 Practice business admin with actual NHS RTT workflows!")
-        
-        st.markdown("""
-        ### Why RTT Practice?
-        
-        **TQUK requires workplace evidence.** Our RTT system provides:
-        - ✅ Real NHS hospital administration tasks
-        - ✅ Authentic documents and scenarios
-        - ✅ Automatic evidence collection
-        - ✅ Supervisor feedback system
-        - ✅ Portfolio-ready screenshots
-        
-        **This is your virtual workplace!**
-        """)
-        
-        st.markdown("---")
-        
-        # RTT task categories
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("#### 📋 Administrative Tasks")
-            st.write("- RTT clinic scheduling")
-            st.write("- Appointment management")
-            st.write("- Diary coordination")
-            st.write("- Meeting organization")
-            st.write("- Mail and correspondence")
-            
-            st.markdown("#### 📝 Documentation Tasks")
-            st.write("- Patient letters")
-            st.write("- Pathway reports")
-            st.write("- Clinic notes")
-            st.write("- Performance dashboards")
-            st.write("- Meeting minutes")
-        
-        with col2:
-            st.markdown("#### 👥 Communication Tasks")
-            st.write("- Patient correspondence")
-            st.write("- Team emails")
-            st.write("- Clinical liaison")
-            st.write("- Professional writing")
-            st.write("- Feedback sessions")
-            
-            st.markdown("#### 📊 Data & Analysis Tasks")
-            st.write("- RTT performance data")
-            st.write("- Breach analysis")
-            st.write("- Report generation")
-            st.write("- Information management")
-            st.write("- Archive systems")
-        
-        st.markdown("---")
-        
-        st.info("""
-        ### 🎯 How to Use RTT for Evidence:
-        
-        1. **Navigate** to the RTT modules (Clinical Workflows, Training & Certification)
-        2. **Complete** the tasks relevant to your current unit
-        3. **Take screenshots** of your work (use Windows Snipping Tool)
-        4. **Save** screenshots with clear filenames (e.g., "Unit1_RTT_Scheduling.png")
-        5. **Write** a brief description of what you did
-        6. **Upload** to your evidence portfolio in Assessments tab
-        
-        **💡 Tip:** Complete 2-3 RTT tasks per unit for strong evidence!
-        """)
-        
-        if st.button("🚀 Go to RTT Training System", type="primary", use_container_width=True):
-            st.success("✅ Navigate to '🎓 Training & Certification' in the sidebar to start practicing!")
-    
-    with tabs[4]:
         st.subheader("📝 Assessments")
         
         st.info("""
@@ -632,7 +562,7 @@ def render_business_admin_module():
         **Your tutor will review and submit to TQUK for final assessment.**
         """)
     
-    with tabs[5]:
+    with tabs[4]:
         # Evidence Tracking tab
         st.subheader("📋 Evidence Tracking")
         
@@ -674,7 +604,7 @@ def render_business_admin_module():
                 if st.button(f"📤 Upload Evidence for Unit {unit_num}", key=f"upload_o{unit_num}"):
                     st.info("Go to Assessments tab to submit evidence!")
     
-    with tabs[6]:
+    with tabs[5]:
         # TQUK Documents tab
         st.subheader("📥 TQUK Documents")
         
@@ -710,7 +640,7 @@ def render_business_admin_module():
         Contact your tutor to access the complete TQUK document library.
         """)
     
-    with tabs[7]:
+    with tabs[6]:
         st.subheader("📊 My Progress")
         
         if enrollment:
@@ -756,7 +686,7 @@ def render_business_admin_module():
         **Questions?** Contact your tutor for support.
         """)
     
-    with tabs[8]:
+    with tabs[7]:
         # Certificate tab (matches Level 3)
         st.subheader("🎓 Certificate")
         
