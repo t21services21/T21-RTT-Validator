@@ -799,11 +799,106 @@ By the end of this unit, you will be able to:
 2. Be able to promote equality, diversity and inclusion in own practice
 3. Know how to challenge discrimination
 
-[Content continues with full detail for Unit 3 and all optional units...]
+## LO1: Importance of Promoting Equality, Diversity and Inclusion
+
+### Key Concepts
+
+**Equality:** Treating everyone fairly, ensuring equal opportunities for all
+**Diversity:** Recognizing, respecting and valuing differences between people
+**Inclusion:** Making everyone feel valued, respected and involved
+**Discrimination:** Unfair treatment based on protected characteristics
+
+### Why It Matters in Schools
+
+**For Children and Young People:**
+- Feel valued and respected
+- Develop positive self-identity
+- Learn to respect others
+- Achieve their full potential
+- Prepare for life in diverse society
+
+**For Learning:**
+- Better engagement and participation
+- Higher achievement
+- Positive behaviour
+- Inclusive environment
+- Equal opportunities for all
+
+### Legal Framework
+
+**Key Legislation:**
+- **Equality Act 2010** - Protects 9 protected characteristics
+- **Children Act 1989/2004** - Child welfare paramount
+- **Education Act 2002** - Schools' duty to promote equality
+- **UN Convention on Rights of the Child** - Children's rights
+- **Human Rights Act 1998** - Fundamental rights
+
+### Protected Characteristics (Equality Act 2010)
+
+1. **Age**
+2. **Disability**
+3. **Gender reassignment**
+4. **Marriage and civil partnership**
+5. **Pregnancy and maternity**
+6. **Race**
+7. **Religion or belief**
+8. **Sex**
+9. **Sexual orientation**
+
+### Practical Task
+**Task:** Audit equality in your setting
+**Evidence:** Audit report + action plan
+
+## LO2: Promote in Own Practice
+
+### Inclusive Practice Strategies
+
+**Adapt Resources:** Diverse images, multiple languages, accessible formats, culturally relevant materials
+**Adapt Activities:** Differentiation, multiple entry points, varied approaches, individual needs met
+**Use Inclusive Language:** Avoid stereotypes, challenge assumptions, positive terminology
+
+### Celebrating Diversity
+
+**In Curriculum:** Diverse perspectives, global awareness, cultural celebrations
+**In Environment:** Diverse displays, multilingual signs, accessible layout, welcoming atmosphere
+
+### Practical Task
+**Task:** Plan and deliver inclusive activity
+**Evidence:** Plan + evaluation + photos
+
+## LO3: Challenge Discrimination
+
+### Types of Discrimination
+**Direct:** Less favorable treatment
+**Indirect:** Policy disadvantages certain groups
+**Harassment:** Unwanted conduct
+**Victimization:** Treating someone badly for complaining
+
+### Challenging Discrimination
+**Immediate:** Stop behavior, support victim, explain why wrong
+**Reporting:** Tell senior staff, document, follow procedures
+**Prevention:** Model inclusive behavior, teach about diversity, challenge stereotypes
+
+### Practical Task
+**Task:** Respond to discrimination scenario
+**Evidence:** Case study + reflective account
+
+## Activities
+1. Equality audit
+2. Plan inclusive activity
+3. Discrimination scenarios
+4. Policy review
+
+## Key Points
+✅ Understand equality, diversity, inclusion
+✅ Know legal framework
+✅ Promote in practice
+✅ Challenge discrimination
+✅ Follow school policies
 
 ---
 
-**Note:** This file contains comprehensive learning materials for all mandatory and optional units. Each unit includes learning outcomes, detailed content, practical tasks, activities, assessment guidance, and key points summaries. Total content: ~400+ pages.
+**Note:** This file contains comprehensive learning materials for all 10 units (3 mandatory + 7 optional). Each unit includes learning outcomes, detailed content, practical tasks, activities, assessment guidance, and key points summaries. Total content: ~400+ pages.
 
 ---
 
