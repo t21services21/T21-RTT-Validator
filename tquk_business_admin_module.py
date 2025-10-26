@@ -489,107 +489,49 @@ def render_business_admin_module():
         render_optional_units_content(learner_email, COURSE_ID, all_units)
     
     with tabs[3]:
-        st.subheader("📝 Assessments")
+        # Assessments tab (EXACTLY like Level 3)
+        from tquk_evidence_tracking import render_evidence_submission_form
         
-        st.info("""
-        ### 📋 Assessment Requirements
-        
-        **To complete this qualification, you must:**
-        1. ✅ Complete all 5 mandatory units
-        2. ✅ Complete at least 2 optional units (4+ credits)
-        3. ✅ Submit evidence for all learning outcomes
-        4. ✅ Demonstrate competence in RTT practical tasks
-        
-        **Total Credits Required:** 20+ credits
-        """)
-        
-        st.markdown("---")
-        
-        st.markdown("### 📤 Evidence Portfolio")
-        
-        st.write("""
-        Your evidence portfolio should include:
-        
-        **For Each Unit:**
-        - 📸 **Screenshots** from RTT system showing completed tasks
-        - 📄 **Documents** you created (letters, reports, schedules, etc.)
-        - 📝 **Reflective accounts** explaining what you learned
-        - ✅ **Witness testimonies** from supervisors (if available)
-        - 📊 **Work products** demonstrating your skills
-        
-        **Quality over quantity!** 2-3 strong pieces of evidence per unit is better than 10 weak ones.
-        """)
-        
-        st.markdown("---")
+        st.subheader("📝 Assessment & Evidence Submission")
         
         st.success("""
-        ### ✅ Evidence Checklist
+        **📚 Welcome to Assessments!**
         
-        Before submitting, ensure your evidence:
-        - ✅ Clearly shows YOUR work
-        - ✅ Relates to the specific unit and learning outcomes
-        - ✅ Is dated and labeled
-        - ✅ Demonstrates competence
-        - ✅ Is professional and well-presented
-        - ✅ Includes your reflections on learning
+        Submit evidence for each unit to demonstrate you've met the learning outcomes.
+        """)
+        
+        st.info("""
+        **💡 Types of Evidence You Can Submit:**
+        
+        - 📸 **Observation** - Your assessor watches you work
+        - 📝 **Witness Statement** - Colleagues confirm your competence
+        - 💭 **Reflective Account** - You reflect on your practice
+        - 📄 **Product Evidence** - Documents you've created (care plans, reports, etc.)
+        - 💬 **Professional Discussion** - Discussion with your assessor
+        - 📋 **Case Study** - Analysis of a real situation
         """)
         
         st.markdown("---")
         
-        st.warning("""
-        ### 📬 Submission Process
+        # Combine mandatory and optional units for selector
+        all_units = {**MANDATORY_UNITS, **OPTIONAL_UNITS}
         
-        **When you're ready to submit:**
-        1. Organize all evidence by unit
-        2. Create a contents page
-        3. Number all pages
-        4. Include your name and candidate number
-        5. Contact your tutor to arrange submission
+        # Unit selector for assessment
+        selected_unit = st.selectbox(
+            "Select Unit for Assessment",
+            options=list(all_units.keys()),
+            format_func=lambda x: f"Unit {x}: {all_units[x]['name']}",
+            key="assessment_unit"
+        )
         
-        **Your tutor will review and submit to TQUK for final assessment.**
-        """)
+        if selected_unit:
+            # Use the proper evidence submission form
+            render_evidence_submission_form(learner_email, COURSE_ID, selected_unit)
     
     with tabs[4]:
-        # Evidence Tracking tab
-        st.subheader("📋 Evidence Tracking")
-        
-        st.success("📊 Track your evidence submission progress for each unit")
-        
-        st.markdown("### 📝 Evidence Status by Unit")
-        
-        st.markdown("#### Mandatory Units")
-        for unit_num, unit in MANDATORY_UNITS.items():
-            with st.expander(f"Unit {unit_num}: {unit['name']}"):
-                col1, col2 = st.columns([3, 1])
-                with col1:
-                    st.write(f"**Learning Outcomes:** {unit.get('learning_outcomes', 0)}")
-                    st.write(f"**Evidence Required:** Portfolio of work")
-                with col2:
-                    status = st.selectbox(
-                        "Status",
-                        ["Not Started", "In Progress", "Submitted", "Approved"],
-                        key=f"evidence_status_m{unit_num}"
-                    )
-                
-                if st.button(f"📤 Upload Evidence for Unit {unit_num}", key=f"upload_m{unit_num}"):
-                    st.info("Go to Assessments tab to submit evidence!")
-        
-        st.markdown("#### Optional Units")
-        for unit_num, unit in OPTIONAL_UNITS.items():
-            with st.expander(f"Unit {unit_num}: {unit['name']}"):
-                col1, col2 = st.columns([3, 1])
-                with col1:
-                    st.write(f"**Learning Outcomes:** {unit.get('learning_outcomes', 0)}")
-                    st.write(f"**Evidence Required:** Portfolio of work")
-                with col2:
-                    status = st.selectbox(
-                        "Status",
-                        ["Not Started", "In Progress", "Submitted", "Approved"],
-                        key=f"evidence_status_o{unit_num}"
-                    )
-                
-                if st.button(f"📤 Upload Evidence for Unit {unit_num}", key=f"upload_o{unit_num}"):
-                    st.info("Go to Assessments tab to submit evidence!")
+        # Evidence Tracking tab (EXACTLY like Level 3)
+        from tquk_evidence_tracking import render_evidence_tracking
+        render_evidence_tracking(learner_email, COURSE_ID)
     
     with tabs[5]:
         # TQUK Documents tab
