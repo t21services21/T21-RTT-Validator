@@ -71,7 +71,10 @@ OPTIONAL_UNITS = {
         "credits": 2,
         "glh": 13,
         "level": 2,
-        "category": "Core Skills"
+        "category": "Core Skills",
+        "file": "ADULT_SOCIAL_CARE_ALL_UNITS.md",
+        "learning_outcomes": 3,
+        "activities": 6
     },
     7: {
         "name": "Understand how to handle information in social care settings",
@@ -79,7 +82,10 @@ OPTIONAL_UNITS = {
         "credits": 1,
         "glh": 7,
         "level": 2,
-        "category": "Core Skills"
+        "category": "Core Skills",
+        "file": "ADULT_SOCIAL_CARE_ALL_UNITS.md",
+        "learning_outcomes": 2,
+        "activities": 4
     },
     8: {
         "name": "Understand person centred approaches in adult social care settings",
@@ -87,7 +93,10 @@ OPTIONAL_UNITS = {
         "credits": 3,
         "glh": 20,
         "level": 2,
-        "category": "Person-Centred Care"
+        "category": "Person-Centred Care",
+        "file": "ADULT_SOCIAL_CARE_ALL_UNITS.md",
+        "learning_outcomes": 5,
+        "activities": 10
     },
     9: {
         "name": "Understand the context of supporting individuals with learning disabilities",
@@ -95,7 +104,10 @@ OPTIONAL_UNITS = {
         "credits": 3,
         "glh": 25,
         "level": 2,
-        "category": "Specialist Care"
+        "category": "Specialist Care",
+        "file": "ADULT_SOCIAL_CARE_ALL_UNITS.md",
+        "learning_outcomes": 4,
+        "activities": 8
     },
     10: {
         "name": "Understand physical disability",
@@ -103,7 +115,10 @@ OPTIONAL_UNITS = {
         "credits": 3,
         "glh": 25,
         "level": 2,
-        "category": "Specialist Care"
+        "category": "Specialist Care",
+        "file": "ADULT_SOCIAL_CARE_ALL_UNITS.md",
+        "learning_outcomes": 5,
+        "activities": 10
     }
 }
 

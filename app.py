@@ -1577,6 +1577,7 @@ elif user_role in ['teacher', 'instructor', 'trainer']:
         "💻 IT User Skills",  # TQUK Qualification
         "🤝 Customer Service",  # TQUK Qualification
         "📊 Business Administration",  # TQUK Qualification
+        "🏥 Adult Social Care",  # TQUK Qualification
         "📊 Reports & Analytics",
         "📄 CV Builder",  # FULL Professional CV Builder
         "⚙️ Administration",
