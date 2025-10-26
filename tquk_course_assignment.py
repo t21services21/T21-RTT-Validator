@@ -69,13 +69,12 @@ def assign_course_to_learner(learner_email, course_id, assigned_by):
         if existing.data:
             return False, "Learner already enrolled in this course"
         
-        # Create enrollment
+        # Create enrollment (using only columns that exist in the table)
         enrollment_data = {
             'learner_email': learner_email,
             'course_id': course_id,
             'course_name': TQUK_QUALIFICATIONS[course_id]['name'],
             'assigned_by': assigned_by,
-            'assigned_date': datetime.now().isoformat(),
             'status': 'enrolled',
             'progress': 0,
             'units_completed': 0,
