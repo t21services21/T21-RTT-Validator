@@ -179,52 +179,109 @@ def render_it_user_skills_module():
                 st.write("**Assessment:** Practical tasks using RTT/PAS system")
     
     with tabs[1]:
+        # Learning Materials tab (EXACTLY like Level 3)
+        from tquk_pdf_converter import create_unit_pdf
+        
         st.subheader("📖 Learning Materials")
         
         st.success("""
         **📚 Welcome to Your Learning Materials!**
         
-        Study all 6 units to complete your qualification.
+        Study all 5 mandatory units to complete your qualification.
         """)
         
         st.info("""
-        **💡 Quick Guide:**
-        - 📖 **Read** the content for each unit
-        - ✏️ **Complete** the activities
-        - 💻 **Practice** with hospital IT systems
-        - 📝 **Submit** evidence in Assessments tab
+        **💡 Study Guide:**
+        - 📖 Read each unit's learning outcomes and assessment criteria
+        - ✏️ Complete the activities and exercises
+        - 🏥 Practice with real RTT/PAS tasks
+        - 📝 Collect evidence as you work
+        - ✅ Submit your portfolio for TQUK assessment
         """)
         
-        st.write("Materials available in TQUK_ALL_QUALIFICATIONS_SUMMARY.md")
+        st.markdown("---")
         
+        # Unit selector
         selected_unit = st.selectbox(
-            "Select Unit",
+            "Select Unit to Study:",
             options=list(UNITS.keys()),
-            format_func=lambda x: f"Unit {x}: {UNITS[x]['name']}"
+            format_func=lambda x: f"Unit {x}: {UNITS[x]['name']} ({UNITS[x]['credits']} credits)",
+            key="learning_materials_unit"
         )
         
         if selected_unit:
-            unit = UNITS[selected_unit]
-            st.markdown(f"### Unit {selected_unit}: {unit['name']}")
+            unit_data = UNITS[selected_unit]
             
+            # Unit header
+            st.markdown(f"## 🎯 Unit {selected_unit}: {unit_data['name']}")
+            st.caption(f"Mandatory Unit • {unit_data['credits']} Credits • {unit_data['glh']} GLH • Level {unit_data['level']}")
+            
+            # Unit info cards
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Learning Outcomes", unit_data['learning_outcomes'])
+            with col2:
+                st.metric("Activities", unit_data['activities'])
+            with col3:
+                st.metric("Credits", unit_data['credits'])
+            
+            st.markdown("---")
+            
+            # Load and display content
             try:
-                with open(unit['file'], 'r', encoding='utf-8') as f:
-                    content = f.read()
+                def load_markdown_file(filename):
+                    try:
+                        with open(filename, 'r', encoding='utf-8') as f:
+                            return f.read()
+                    except Exception as e:
+                        return f"Error loading file: {str(e)}"
+                
+                content = load_markdown_file(unit_data['file'])
+                
+                if content and not content.startswith("Error"):
+                    with st.container():
+                        st.markdown(content, unsafe_allow_html=True)
                     
-                    # Show relevant section
-                    if selected_unit == 1:
-                        st.markdown(content)
-                    else:
-                        st.info(f"📘 Unit {selected_unit} materials - Summary format")
-                        # Extract unit summary from TQUK_ALL_QUALIFICATIONS_SUMMARY.md
-                        if f"UNIT {selected_unit}:" in content:
-                            start = content.find(f"UNIT {selected_unit}:")
-                            end = content.find(f"UNIT {selected_unit + 1}:") if selected_unit < 5 else len(content)
-                            st.markdown(content[start:end])
-                        else:
-                            st.markdown("Full materials coming soon!")
-            except:
-                st.error("Error loading materials. Please contact your teacher.")
+                    st.markdown("---")
+                    
+                    # Interactive elements
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        if st.button(f"✅ Mark Unit {selected_unit} Complete", key=f"complete_{selected_unit}", type="primary"):
+                            st.success(f"✅ Unit {selected_unit} marked as complete!")
+                    
+                    with col2:
+                        if st.button(f"📝 Go to Assessment", key=f"assess_{selected_unit}"):
+                            st.info("Switch to the 'Assessments' tab to submit your evidence!")
+                    
+                    # Download option
+                    try:
+                        pdf_buffer = create_unit_pdf(selected_unit, unit_data['name'], content)
+                        st.download_button(
+                            label=f"📥 Download Unit {selected_unit} as PDF",
+                            data=pdf_buffer,
+                            file_name=f"Level2_IT_Skills_Unit{selected_unit}_{unit_data['name'].replace(' ', '_')}.pdf",
+                            mime="application/pdf",
+                            help="Download professional PDF document",
+                            key=f"download_{selected_unit}",
+                            type="primary"
+                        )
+                    except Exception as e:
+                        st.error(f"PDF generation error: {str(e)}")
+                        st.download_button(
+                            label=f"📥 Download Unit {selected_unit} (Markdown)",
+                            data=content,
+                            file_name=f"Level2_IT_Skills_Unit{selected_unit}_{unit_data['name'].replace(' ', '_')}.md",
+                            mime="text/markdown",
+                            key=f"download_md_{selected_unit}"
+                        )
+                else:
+                    st.warning(f"⚠️ Materials for Unit {selected_unit} are being prepared.")
+                    st.info("Use the RTT Practice tab to start collecting evidence!")
+                    
+            except Exception as e:
+                st.error(f"Error loading materials: {str(e)}")
     
     with tabs[2]:
         # Assessments tab (EXACTLY like Level 3)
