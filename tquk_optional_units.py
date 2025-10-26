@@ -96,10 +96,19 @@ def render_optional_units_selector(learner_email, course_id, required_credits=58
     
     st.subheader("🎯 Step 1: Choose Your Optional Units")
     
-    st.info("""
+    # Calculate optional credits needed
+    optional_credits_needed = required_credits - mandatory_credits
+    
+    # Determine number of mandatory units based on course
+    if course_id == "level2_business_admin":
+        mandatory_units_count = 5
+    else:
+        mandatory_units_count = 7
+    
+    st.info(f"""
     **📋 How to Complete This Qualification:**
-    - ✅ You've already completed 7 mandatory units (24 credits)
-    - 🎯 Now choose **34 credits** from the optional units below
+    - ✅ You've already completed {mandatory_units_count} mandatory units ({mandatory_credits} credits)
+    - 🎯 Now choose **{optional_credits_needed} credits** from the optional units below
     - 📚 Study the materials for your chosen units
     - 📝 Submit evidence for each unit
     - 🎓 Get your certificate when complete!
