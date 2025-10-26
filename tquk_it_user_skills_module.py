@@ -134,11 +134,22 @@ def render_it_user_skills_module():
         **Congratulations on starting your journey to becoming IT proficient!**
         """)
         
-        # Quick start guide
+        # Qualification details
         st.info("""
+        ## 📋 Qualification Details:
+        
+        - **Code:** 603/3646/8
+        - **Level:** 2
+        - **Total Credits:** 16 (5 mandatory units)
+        - **Duration:** 160 hours TQT / 120 hours GLH
+        - **Assessment:** Portfolio of evidence
+        """)
+        
+        # Quick start guide
+        st.success("""
         ## 🚀 Quick Start Guide - Your Journey to Qualification:
         
-        **Step 1:** 📖 Study the 6 units (Materials tab)
+        **Step 1:** 📖 Study all 5 mandatory units (Materials tab)
         
         **Step 2:** 💻 Practice with hospital IT systems (Practice tab)
         
@@ -173,10 +184,30 @@ def render_it_user_skills_module():
         ### Course Structure:
         """)
         
+        # Display all units with credits
+        st.markdown("### 📚 5 Mandatory Units (16 Credits Total):")
+        
         for unit_num, unit_data in UNITS.items():
             with st.expander(f"Unit {unit_num}: {unit_data['name']} ({unit_data['credits']} credits)"):
-                st.write(f"**Credits:** {unit_data['credits']}")
-                st.write("**Assessment:** Practical tasks using RTT/PAS system")
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.write(f"**Credits:** {unit_data['credits']}")
+                with col2:
+                    st.write(f"**GLH:** {unit_data['glh']} hours")
+                with col3:
+                    st.write(f"**Level:** {unit_data['level']}")
+                st.write(f"**Reference:** {unit_data['ref']}")
+                st.write(f"**Learning Outcomes:** {unit_data['learning_outcomes']}")
+                st.write("**Assessment:** Portfolio of evidence using RTT/PAS system")
+        
+        # Credits summary
+        total_credits = sum(unit['credits'] for unit in UNITS.values())
+        st.success(f"""
+        ### ✅ Total Qualification:
+        - **5 mandatory units**
+        - **{total_credits} credits total**
+        - **All units must be completed**
+        """)
     
     with tabs[1]:
         # Learning Materials tab (EXACTLY like Level 3)
