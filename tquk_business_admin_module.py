@@ -475,31 +475,18 @@ def render_business_admin_module():
                 st.warning("📚 Full learning materials are being finalized for this unit. Use the RTT Practice tab to start collecting evidence!")
     
     with tabs[2]:
-        # Optional Units tab
-        st.subheader("🎯 Optional Units Selection")
+        # Optional Units Selection and Content (EXACTLY like Level 3)
+        from tquk_optional_units import render_optional_units_selector, render_optional_units_content
         
-        st.info("""
-        **Choose at least 2 optional units (minimum 4 credits) to complete your qualification.**
+        render_optional_units_selector(learner_email, COURSE_ID, required_credits=20, mandatory_credits=16)
         
-        Recommended units for healthcare roles are marked with ⭐
-        """)
+        st.markdown("---")
+        st.markdown("---")
         
-        st.markdown("### 📋 Available Optional Units (13 to choose from)")
-        
-        for unit_num, unit in OPTIONAL_UNITS.items():
-            recommended = "⭐ " if unit.get('recommended') else ""
-            with st.expander(f"{recommended}Unit {unit_num}: {unit['name']} ({unit['credits']} credits)"):
-                st.write(f"**Reference:** {unit['ref']}")
-                st.write(f"**Credits:** {unit['credits']} | **GLH:** {unit['glh']} hours")
-                if unit.get('recommended'):
-                    st.success("⭐ **Recommended** - Highly relevant for NHS roles")
-                st.write("**🏥 RTT Practical Tasks:**")
-                for task in unit['rtt_tasks']:
-                    st.write(f"- {task}")
-                
-                # View materials button
-                if st.button(f"📖 View Unit {unit_num} Materials", key=f"view_opt_{unit_num}"):
-                    st.info("Switch to the 'Learning Materials' tab and select 'Optional Units' to view full content!")
+        # Show learning materials for selected optional units
+        # Combine mandatory and optional units for the content renderer
+        all_units = {**MANDATORY_UNITS, **OPTIONAL_UNITS}
+        render_optional_units_content(learner_email, COURSE_ID, all_units)
     
     with tabs[3]:
         st.subheader("📝 Assessments")
