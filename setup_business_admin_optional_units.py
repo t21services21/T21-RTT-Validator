@@ -131,29 +131,29 @@ def setup_optional_units():
     """Register all optional units in database"""
     supabase = get_supabase_client()
     if not supabase:
-        print("❌ Could not connect to database")
+        print("ERROR: Could not connect to database")
         return False
     
-    print(f"📊 Setting up {len(OPTIONAL_UNITS_DATA)} optional units for Business Admin...")
+    print(f"Setting up {len(OPTIONAL_UNITS_DATA)} optional units for Business Admin...")
     
     # First, delete existing units for this course (in case of re-run)
     try:
         supabase.table('tquk_optional_units').delete().eq('course_id', COURSE_ID).execute()
-        print("✅ Cleared existing units")
+        print("SUCCESS: Cleared existing units")
     except Exception as e:
-        print(f"⚠️ Warning clearing existing units: {e}")
+        print(f"WARNING: Error clearing existing units: {e}")
     
     # Insert all units
     success_count = 0
     for unit in OPTIONAL_UNITS_DATA:
         try:
             supabase.table('tquk_optional_units').insert(unit).execute()
-            print(f"✅ Added Unit {unit['unit_number']}: {unit['unit_name']}")
+            print(f"SUCCESS: Added Unit {unit['unit_number']}: {unit['unit_name']}")
             success_count += 1
         except Exception as e:
-            print(f"❌ Error adding Unit {unit['unit_number']}: {e}")
+            print(f"ERROR: Failed to add Unit {unit['unit_number']}: {e}")
     
-    print(f"\n🎉 Setup complete! {success_count}/{len(OPTIONAL_UNITS_DATA)} units registered")
+    print(f"\nSetup complete! {success_count}/{len(OPTIONAL_UNITS_DATA)} units registered")
     return success_count == len(OPTIONAL_UNITS_DATA)
 
 if __name__ == "__main__":
