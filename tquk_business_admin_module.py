@@ -1,10 +1,13 @@
 """
 TQUK LEVEL 2 BUSINESS ADMINISTRATION - COMPLETE LEARNER MODULE
 Integrated with RTT hospital administration for practical assessment
+VERSION: 2.0 - ALL 18 UNITS WITH FULL MATERIALS
 """
 
 import streamlit as st
-from tquk_course_assignment import get_learner_enrollments
+import os
+from tquk_course_assignment import get_learner_enrollments, update_learner_progress
+from tquk_pdf_converter import create_unit_pdf
 
 COURSE_ID = "level2_business_admin"
 COURSE_NAME = "Level 2 Certificate in Business Administration"
@@ -18,6 +21,9 @@ MANDATORY_UNITS = {
         "ref": "A/616/8832",
         "credits": 4,
         "glh": 25,
+        "file": "tquk_materials/UNIT_01_ADMIN_SERVICES_COMPLETE.md",
+        "activities": 15,
+        "learning_outcomes": 6,
         "rtt_tasks": ["RTT clinic scheduling", "Meeting organization", "Diary management", "Mail handling"]
     },
     2: {
@@ -25,6 +31,9 @@ MANDATORY_UNITS = {
         "ref": "F/616/8833",
         "credits": 3,
         "glh": 21,
+        "file": "tquk_materials/UNIT_02_DOCUMENT_PRODUCTION_COMPLETE.md",
+        "activities": 12,
+        "learning_outcomes": 3,
         "rtt_tasks": ["RTT letters", "Pathway reports", "Clinic documentation", "File management"]
     },
     3: {
@@ -32,6 +41,9 @@ MANDATORY_UNITS = {
         "ref": "J/616/8834",
         "credits": 6,
         "glh": 40,
+        "file": "tquk_materials/UNIT_03_EMPLOYER_ORGANISATIONS_COMPLETE.md",
+        "activities": 10,
+        "learning_outcomes": 2,
         "rtt_tasks": ["NHS structure", "Trust organization", "RTT governance", "Policy understanding"]
     },
     4: {
@@ -39,6 +51,9 @@ MANDATORY_UNITS = {
         "ref": "M/616/8861",
         "credits": 1,
         "glh": 10,
+        "file": "tquk_materials/UNIT_04_COMMUNICATION_COMPLETE.md",
+        "activities": 8,
+        "learning_outcomes": 1,
         "rtt_tasks": ["Patient communication", "Team emails", "Clinical correspondence", "Professional writing"]
     },
     5: {
@@ -46,6 +61,9 @@ MANDATORY_UNITS = {
         "ref": "T/616/8862",
         "credits": 2,
         "glh": 15,
+        "file": "tquk_materials/UNIT_05_WORKING_RELATIONSHIPS_COMPLETE.md",
+        "activities": 10,
+        "learning_outcomes": 2,
         "rtt_tasks": ["Team collaboration", "Pathway meetings", "Feedback sessions", "Conflict resolution"]
     }
 }
@@ -56,6 +74,9 @@ OPTIONAL_UNITS = {
         "ref": "A/616/8863",
         "credits": 3,
         "glh": 30,
+        "file": "tquk_materials/UNITS_08_TO_18_COMPLETE.md",
+        "activities": 8,
+        "learning_outcomes": 5,
         "recommended": True,
         "rtt_tasks": ["Referral processing", "Reception duties", "Event organization", "Financial admin"]
     },
@@ -64,6 +85,9 @@ OPTIONAL_UNITS = {
         "ref": "F/616/8864",
         "credits": 2,
         "glh": 20,
+        "file": "tquk_materials/UNITS_08_TO_18_COMPLETE.md",
+        "activities": 6,
+        "learning_outcomes": 2,
         "recommended": True,
         "rtt_tasks": ["Clinic notes", "Pathway documentation", "Transcription", "Text formatting"]
     },
@@ -72,6 +96,9 @@ OPTIONAL_UNITS = {
         "ref": "L/616/8835",
         "credits": 4,
         "glh": 28,
+        "file": "tquk_materials/UNITS_08_TO_18_COMPLETE.md",
+        "activities": 6,
+        "learning_outcomes": 3,
         "rtt_tasks": ["RTT meetings", "Agendas", "Minutes", "Action tracking"]
     },
     9: {
@@ -79,6 +106,9 @@ OPTIONAL_UNITS = {
         "ref": "R/616/8836",
         "credits": 4,
         "glh": 19,
+        "file": "tquk_materials/UNITS_08_TO_18_COMPLETE.md",
+        "activities": 5,
+        "learning_outcomes": 3,
         "rtt_tasks": ["Patient records", "RTT data", "Archive management", "Information retrieval"]
     },
     10: {
@@ -86,6 +116,9 @@ OPTIONAL_UNITS = {
         "ref": "Y/616/8837",
         "credits": 3,
         "glh": 25,
+        "file": "tquk_materials/UNITS_08_TO_18_COMPLETE.md",
+        "activities": 7,
+        "learning_outcomes": 4,
         "rtt_tasks": ["Patient service", "Query handling", "Complaint management", "Service standards"]
     },
     11: {
@@ -93,6 +126,9 @@ OPTIONAL_UNITS = {
         "ref": "D/616/8838",
         "credits": 6,
         "glh": 40,
+        "file": "tquk_materials/UNITS_08_TO_18_COMPLETE.md",
+        "activities": 8,
+        "learning_outcomes": 2,
         "rtt_tasks": ["RTT data analysis", "Performance research", "Improvement projects", "Report writing"]
     },
     12: {
@@ -100,6 +136,9 @@ OPTIONAL_UNITS = {
         "ref": "H/616/8839",
         "credits": 3,
         "glh": 18,
+        "file": "tquk_materials/UNITS_08_TO_18_COMPLETE.md",
+        "activities": 6,
+        "learning_outcomes": 3,
         "rtt_tasks": ["Patient relationships", "Feedback collection", "Service improvement", "Satisfaction tracking"]
     },
     13: {
@@ -107,6 +146,9 @@ OPTIONAL_UNITS = {
         "ref": "Y/616/8840",
         "credits": 4,
         "glh": 30,
+        "file": "tquk_materials/UNITS_08_TO_18_COMPLETE.md",
+        "activities": 7,
+        "learning_outcomes": 3,
         "rtt_tasks": ["Service promotion", "Patient engagement", "Communication campaigns", "Brand awareness"]
     },
     14: {
@@ -114,6 +156,9 @@ OPTIONAL_UNITS = {
         "ref": "D/616/8841",
         "credits": 2,
         "glh": 16,
+        "file": "tquk_materials/UNITS_08_TO_18_COMPLETE.md",
+        "activities": 4,
+        "learning_outcomes": 2,
         "rtt_tasks": ["NHS social media", "Patient engagement", "Digital communication", "Online presence"]
     },
     15: {
@@ -121,6 +166,9 @@ OPTIONAL_UNITS = {
         "ref": "H/616/8842",
         "credits": 4,
         "glh": 35,
+        "file": "tquk_materials/UNITS_08_TO_18_COMPLETE.md",
+        "activities": 10,
+        "learning_outcomes": 6,
         "rtt_tasks": ["Data protection", "Online security", "Safe communication", "Privacy management"]
     },
     16: {
@@ -128,6 +176,9 @@ OPTIONAL_UNITS = {
         "ref": "K/616/8843",
         "credits": 2,
         "glh": 10,
+        "file": "tquk_materials/UNITS_08_TO_18_COMPLETE.md",
+        "activities": 5,
+        "learning_outcomes": 2,
         "rtt_tasks": ["Inclusive service", "Equality practices", "Diversity awareness", "Fair treatment"]
     },
     17: {
@@ -135,6 +186,9 @@ OPTIONAL_UNITS = {
         "ref": "K/616/8860",
         "credits": 5,
         "glh": 40,
+        "file": "tquk_materials/UNITS_08_TO_18_COMPLETE.md",
+        "activities": 9,
+        "learning_outcomes": 5,
         "rtt_tasks": ["Digital campaigns", "Online engagement", "SEO basics", "Analytics"]
     },
     18: {
@@ -142,9 +196,22 @@ OPTIONAL_UNITS = {
         "ref": "T/616/8859",
         "credits": 5,
         "glh": 37,
+        "file": "tquk_materials/UNITS_08_TO_18_COMPLETE.md",
+        "activities": 8,
+        "learning_outcomes": 5,
         "rtt_tasks": ["Team leadership", "Motivation", "Performance management", "Change management"]
     }
 }
+
+
+def load_markdown_file(filename):
+    """Load markdown content from file"""
+    try:
+        with open(filename, 'r', encoding='utf-8') as f:
+            return f.read()
+    except Exception as e:
+        return f"Error loading file: {str(e)}\n\nPlease ensure the file '{filename}' exists in the project folder."
+
 
 def render_business_admin_module():
     """Main module for Business Administration"""
@@ -339,36 +406,35 @@ def render_business_admin_module():
             
             st.info("💡 **Tip:** Complete the RTT tasks in the 'RTT Practice' tab to gather evidence for this unit!")
             
-            # Load full unit materials
-            st.markdown("---")
-            st.markdown("#### 📚 Full Learning Materials")
-            
-            try:
-                import os
-                materials_path = os.path.join(os.path.dirname(__file__), 'tquk_materials', 'ALL_UNITS_COMPLETE.md')
-                if os.path.exists(materials_path):
-                    with open(materials_path, 'r', encoding='utf-8') as f:
-                        materials_content = f.read()
-                    
-                    # Extract content for selected unit
-                    unit_header = f"## {'MANDATORY' if unit_type == 'Mandatory Units' else 'OPTIONAL'} UNIT {selected_unit}:"
-                    
-                    if unit_header in materials_content:
-                        start_idx = materials_content.find(unit_header)
-                        next_unit_idx = materials_content.find("\n## ", start_idx + 1)
-                        if next_unit_idx == -1:
-                            unit_content = materials_content[start_idx:]
-                        else:
-                            unit_content = materials_content[start_idx:next_unit_idx]
-                        
-                        with st.expander("📖 View Full Unit Content (Learning Outcomes, Assessment Criteria, Details)", expanded=False):
-                            st.markdown(unit_content)
-                    else:
-                        st.info("📚 Full detailed materials available - includes all learning outcomes and assessment criteria")
-                else:
-                    st.success("✅ Complete TQUK-compliant materials created! All learning outcomes, assessment criteria, and RTT integration included.")
-            except Exception as e:
-                st.info("📚 Full learning materials are integrated into this course!")
+            # Load and display full unit content
+            if 'file' in unit:
+                st.markdown("---")
+                st.markdown("#### 📚 Full Learning Materials")
+                
+                col1, col2 = st.columns([3, 1])
+                with col1:
+                    st.write(f"📖 **{unit.get('learning_outcomes', 0)} Learning Outcomes** | ✏️ **{unit.get('activities', 0)} Activities**")
+                with col2:
+                    # PDF Download button
+                    if st.button(f"📥 Download PDF", key=f"download_{selected_unit}"):
+                        try:
+                            pdf_data = create_unit_pdf(f"Unit {selected_unit}: {unit['name']}", load_markdown_file(unit['file']))
+                            st.download_button(
+                                label="💾 Save PDF",
+                                data=pdf_data,
+                                file_name=f"Unit_{selected_unit}_{unit['name'].replace(' ', '_')}.pdf",
+                                mime="application/pdf",
+                                key=f"save_{selected_unit}"
+                            )
+                        except Exception as e:
+                            st.error(f"Error creating PDF: {str(e)}")
+                
+                # Display content in expander
+                with st.expander("📖 View Full Unit Content (Click to Expand)", expanded=False):
+                    content = load_markdown_file(unit['file'])
+                    st.markdown(content)
+            else:
+                st.warning("📚 Full learning materials are being finalized for this unit. Use the RTT Practice tab to start collecting evidence!")
     
     with tabs[2]:
         st.subheader("🏥 RTT Practice - Real Hospital Administration")
