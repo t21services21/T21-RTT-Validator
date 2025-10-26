@@ -409,30 +409,58 @@ def render_business_admin_module():
             # Load and display full unit content
             if 'file' in unit:
                 st.markdown("---")
-                st.markdown("#### 📚 Full Learning Materials")
                 
-                col1, col2 = st.columns([3, 1])
-                with col1:
-                    st.write(f"📖 **{unit.get('learning_outcomes', 0)} Learning Outcomes** | ✏️ **{unit.get('activities', 0)} Activities**")
-                with col2:
-                    # PDF Download button
-                    if st.button(f"📥 Download PDF", key=f"download_{selected_unit}"):
+                # Load content
+                try:
+                    content = load_markdown_file(unit['file'])
+                    
+                    if content and not content.startswith("Error"):
+                        # Display content directly (like Level 3)
+                        with st.container():
+                            st.markdown(content, unsafe_allow_html=True)
+                        
+                        st.markdown("---")
+                        
+                        # Interactive elements
+                        col1, col2 = st.columns(2)
+                        
+                        with col1:
+                            if st.button(f"✅ Mark Unit {selected_unit} Complete", key=f"complete_{selected_unit}", type="primary"):
+                                st.success(f"✅ Unit {selected_unit} marked as complete!")
+                                st.balloons()
+                        
+                        with col2:
+                            if st.button(f"📝 Go to Assessment", key=f"assess_{selected_unit}"):
+                                st.info("Switch to the 'Assessments' tab to submit your evidence!")
+                        
+                        # Download PDF
                         try:
-                            pdf_data = create_unit_pdf(f"Unit {selected_unit}: {unit['name']}", load_markdown_file(unit['file']))
+                            pdf_buffer = create_unit_pdf(f"Unit {selected_unit}: {unit['name']}", content)
                             st.download_button(
-                                label="💾 Save PDF",
-                                data=pdf_data,
-                                file_name=f"Unit_{selected_unit}_{unit['name'].replace(' ', '_')}.pdf",
+                                label=f"📥 Download Unit {selected_unit} as PDF",
+                                data=pdf_buffer,
+                                file_name=f"Level2_Unit{selected_unit}_{unit['name'].replace(' ', '_')}.pdf",
                                 mime="application/pdf",
-                                key=f"save_{selected_unit}"
+                                help="Download professional PDF document",
+                                key=f"download_{selected_unit}",
+                                type="primary"
                             )
                         except Exception as e:
-                            st.error(f"Error creating PDF: {str(e)}")
-                
-                # Display content in expander
-                with st.expander("📖 View Full Unit Content (Click to Expand)", expanded=False):
-                    content = load_markdown_file(unit['file'])
-                    st.markdown(content)
+                            st.error(f"PDF generation error: {str(e)}")
+                            # Fallback to markdown
+                            st.download_button(
+                                label=f"📥 Download Unit {selected_unit} (Markdown)",
+                                data=content,
+                                file_name=f"Level2_Unit{selected_unit}_{unit['name'].replace(' ', '_')}.md",
+                                mime="text/markdown",
+                                key=f"download_md_{selected_unit}"
+                            )
+                    else:
+                        st.warning(f"⚠️ Materials for Unit {selected_unit} are being prepared.")
+                        st.info("Use the RTT Practice tab to start collecting evidence!")
+                        
+                except Exception as e:
+                    st.error(f"Error loading materials: {str(e)}")
             else:
                 st.warning("📚 Full learning materials are being finalized for this unit. Use the RTT Practice tab to start collecting evidence!")
     
