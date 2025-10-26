@@ -435,7 +435,7 @@ def render_business_admin_module():
                         
                         # Download PDF
                         try:
-                            pdf_buffer = create_unit_pdf(f"Unit {selected_unit}: {unit['name']}", content)
+                            pdf_buffer = create_unit_pdf(selected_unit, unit['name'], content)
                             st.download_button(
                                 label=f"📥 Download Unit {selected_unit} as PDF",
                                 data=pdf_buffer,
