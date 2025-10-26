@@ -5,17 +5,27 @@ echo ========================================
 echo   DEPLOY LEVEL 2 BUSINESS ADMIN + RTT
 echo ========================================
 echo.
-echo This will deploy:
-echo - Complete TQUK Level 2 Business Admin (603/2949/X)
-echo - All 18 units (5 mandatory + 13 optional)
-echo - Full RTT integration
+echo DEPLOYING TONIGHT:
+echo - Complete TQUK Level 2 Business Admin framework (603/2949/X)
+echo - All 18 units with learning outcomes and assessment criteria
+echo - Full RTT integration for all units
 echo - Evidence collection system
 echo - Dual certification pathway
+echo - Sample detailed content (Unit 1 LO1 - shows quality standard)
 echo.
-echo After deployment, teachers can enroll students who will get:
-echo - TQUK Level 2 Business Admin qualification
-echo - T21 RTT Hospital Admin certification
-echo - Real NHS workplace experience
+echo STUDENTS CAN START IMMEDIATELY:
+echo - See all 18 units and requirements
+echo - Practice with RTT tasks
+echo - Collect evidence
+echo - Pass qualification
+echo.
+echo DETAILED CONTENT SCHEDULE:
+echo - Tomorrow: Units 1-2 complete (Session 2)
+echo - Day 3: Units 3-5 complete (Session 3)
+echo - Day 4: Units 6-7 complete (Session 4)
+echo - Days 5-8: Units 8-18 complete (Sessions 5-8)
+echo.
+echo Result: Full Level 3-quality content in 8 days!
 echo.
 echo ========================================
 echo.
