@@ -162,16 +162,27 @@ def get_direct_messages(user_email: str, other_email: str, limit: int = 50) -> L
         return []
     
     try:
-        # Get messages in both directions
+        # Get all DMs and filter in Python (simpler approach)
         response = supabase.table('direct_messages')\
             .select('*')\
-            .or_(f'and(sender_email.eq.{user_email},recipient_email.eq.{other_email}),and(sender_email.eq.{other_email},recipient_email.eq.{user_email})')\
             .eq('is_deleted', False)\
             .order('created_at', desc=False)\
-            .limit(limit)\
+            .limit(200)\
             .execute()
         
-        return response.data if response.data else []
+        if not response.data:
+            return []
+        
+        # Filter for messages between these two users
+        messages = []
+        for dm in response.data:
+            if (dm['sender_email'] == user_email and dm['recipient_email'] == other_email) or \
+               (dm['sender_email'] == other_email and dm['recipient_email'] == user_email):
+                messages.append(dm)
+                if len(messages) >= limit:
+                    break
+        
+        return messages
     except Exception as e:
         st.error(f"Error loading DMs: {str(e)}")
         return []
@@ -217,20 +228,24 @@ def get_conversations(user_email: str) -> List[Dict]:
         return []
     
     try:
-        # Get latest message from each conversation
+        # Get all DMs and filter in Python
         response = supabase.table('direct_messages')\
             .select('*')\
-            .or_(f'sender_email.eq.{user_email},recipient_email.eq.{user_email}')\
             .eq('is_deleted', False)\
             .order('created_at', desc=True)\
+            .limit(500)\
             .execute()
         
         if not response.data:
             return []
         
-        # Group by conversation and get latest
+        # Filter for user's messages and group by conversation
         conversations = {}
         for dm in response.data:
+            # Only include if user is sender or recipient
+            if dm['sender_email'] != user_email and dm['recipient_email'] != user_email:
+                continue
+            
             conv_id = dm['conversation_id']
             if conv_id not in conversations:
                 # Determine other user
