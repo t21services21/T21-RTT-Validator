@@ -1537,6 +1537,8 @@ st.sidebar.title(" Platform Modules")
 
 # CRITICAL: Proper access control based on user role
 user_role = st.session_state.user_license.role if hasattr(st.session_state.user_license, 'role') else "trial"
+# Normalize role: "Student Ultimate" → "student_ultimate", "Student Basic" → "student_basic", etc.
+user_role = user_role.lower().replace(' ', '_')
 user_email = st.session_state.user_email if 'user_email' in st.session_state else None
 
 # Define modules based on role
