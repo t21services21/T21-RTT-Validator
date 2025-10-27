@@ -302,7 +302,7 @@ def render_learner_portfolio():
                 {"type": "Reflective Account", "date": "2025-10-18", "status": "Pending", "criteria": "2.1"},
             ]
             
-            for item in evidence_items:
+            for idx, item in enumerate(evidence_items):
                 status_icon = "✅" if item['status'] == "Approved" else "⏳"
                 st.write(f"{status_icon} **{item['type']}** - {item['date']} - Criteria: {item['criteria']}")
                 
@@ -310,7 +310,7 @@ def render_learner_portfolio():
                 with col1:
                     st.write(f"Status: {item['status']}")
                 with col2:
-                    st.button("View", key=f"view_{item['type']}_{item['date']}")
+                    st.button("View", key=f"view_{unit_id}_{item['type']}_{item['date']}_{idx}")
     
     # Download portfolio
     st.markdown("---")
