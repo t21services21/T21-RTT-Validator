@@ -265,16 +265,25 @@ def render_materials(level, course_info):
     
     st.markdown(f"## {component_info['icon']} {component_info['name']}")
     
-    # Load content from markdown file
+    # Load content from level-specific markdown file
     try:
-        with open('FUNCTIONAL_SKILLS_ENGLISH_ALL_CONTENT.md', 'r', encoding='utf-8') as f:
+        filename = f"tquk_functional_skills_english_{level.lower().replace(' ', '_')}_content.md"
+        with open(filename, 'r', encoding='utf-8') as f:
             content = f.read()
             
-            # Find the section for this level and component
-            section_marker = f"# {level.upper()} - {component_info['name'].upper()}"
-            if section_marker in content:
+            # Find the section for this component
+            # Map component keys to section titles
+            section_titles = {
+                "reading": "# Reading -",
+                "writing": "# Writing -",
+                "speaking": "# Speaking -",
+                "listening": "# Listening -"
+            }
+            
+            section_marker = section_titles.get(component, "")
+            if section_marker and section_marker in content:
                 section_start = content.find(section_marker)
-                # Find next section or end
+                # Find next major section or end
                 next_section = content.find("\n# ", section_start + 1)
                 if next_section == -1:
                     section_content = content[section_start:]
@@ -283,9 +292,10 @@ def render_materials(level, course_info):
                 
                 st.markdown(section_content)
             else:
-                st.warning(f"Content for {level} {component_info['name']} is being prepared.")
+                # Show all content if section not found
+                st.markdown(content)
     except FileNotFoundError:
-        st.error("Content file not found. Please contact support.")
+        st.error(f"Content file not found: {filename}. Please contact support.")
     
     st.markdown("---")
     
@@ -293,32 +303,42 @@ def render_materials(level, course_info):
     with col1:
         if st.button(f"📄 Download {component_info['name']} PDF", use_container_width=True, key=f"download_pdf_{component}"):
             try:
-                # Load content
-                with open('FUNCTIONAL_SKILLS_ENGLISH_ALL_CONTENT.md', 'r', encoding='utf-8') as f:
+                # Load content from level-specific file
+                filename = f"tquk_functional_skills_english_{level.lower().replace(' ', '_')}_content.md"
+                with open(filename, 'r', encoding='utf-8') as f:
                     content = f.read()
-                    section_marker = f"# {level.upper()} - {component_info['name'].upper()}"
-                    if section_marker in content:
+                    
+                    # Find section for this component
+                    section_titles = {
+                        "reading": "# Reading -",
+                        "writing": "# Writing -",
+                        "speaking": "# Speaking -",
+                        "listening": "# Listening -"
+                    }
+                    
+                    section_marker = section_titles.get(component, "")
+                    if section_marker and section_marker in content:
                         section_start = content.find(section_marker)
                         next_section = content.find("\n# ", section_start + 1)
                         section_content = content[section_start:next_section] if next_section != -1 else content[section_start:]
-                        
-                        # Generate PDF
-                        pdf_buffer = create_pdf_from_markdown(
-                            section_content,
-                            title=f"{level} {component_info['name']} - TQUK Functional Skills English"
-                        )
-                        
-                        # Offer download
-                        st.download_button(
-                            label=f"⬇️ Download {component_info['name']} PDF",
-                            data=pdf_buffer,
-                            file_name=f"TQUK_English_{level.replace(' ', '_')}_{component_info['name']}.pdf",
-                            mime="application/pdf",
-                            use_container_width=True
-                        )
-                        st.success("✅ PDF ready for download!")
                     else:
-                        st.error("Content not found for PDF generation.")
+                        section_content = content
+                    
+                    # Generate PDF
+                    pdf_buffer = create_pdf_from_markdown(
+                        section_content,
+                        title=f"{level} {component_info['name']} - TQUK Functional Skills English"
+                    )
+                    
+                    # Offer download
+                    st.download_button(
+                        label=f"⬇️ Download {component_info['name']} PDF",
+                        data=pdf_buffer,
+                        file_name=f"TQUK_English_{level.replace(' ', '_')}_{component_info['name']}.pdf",
+                        mime="application/pdf",
+                        use_container_width=True
+                    )
+                    st.success("✅ PDF ready for download!")
             except Exception as e:
                 st.error(f"PDF generation error: {str(e)}")
     with col2:
