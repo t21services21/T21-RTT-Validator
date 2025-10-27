@@ -5757,7 +5757,7 @@ elif tool == "🎓 Learning Portal":
             st.success("✅ **TQUK Approved Centre #36257481088** - Nationally Recognized Qualification")
             
             try:
-                from level3_adult_care_system import render_level3_adult_care
+                from level3_adult_care_system_COMPLETE import render_level3_adult_care
                 render_level3_adult_care()
             except Exception as e:
                 st.error(f"Error loading Level 3 module: {str(e)}")
