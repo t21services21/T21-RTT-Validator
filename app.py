@@ -1543,10 +1543,35 @@ user_email = st.session_state.user_email if 'user_email' in st.session_state els
 
 # Define modules based on role
 if user_role in ['student', 'student_basic', 'student_standard', 'student_premium', 'student_ultimate', 'trial']:
-    # STUDENTS: Check database for actual module access
+    # STUDENTS: Check database for actual module access AND course enrollments
     try:
         from supabase_database import get_user_modules
+        from tquk_course_assignment import get_learner_enrollments
+        
         user_modules = get_user_modules(user_email) if user_email else []
+        
+        # Check TQUK course enrollments
+        enrollments = get_learner_enrollments(user_email) if user_email else []
+        
+        # Map course IDs to module names
+        course_to_module = {
+            'level3_adult_care': '📚 Level 3 Adult Care',
+            'level2_it_skills': '💻 IT User Skills',
+            'level2_customer_service': '🤝 Customer Service',
+            'level2_business_admin': '📊 Business Administration',
+            'level2_adult_social_care': '🏥 Adult Social Care',
+            'level3_teaching_learning': '👨‍🏫 Teaching & Learning',
+            'functional_skills_english': '📚 Functional Skills English',
+            'functional_skills_maths': '🔢 Functional Skills Maths'
+        }
+        
+        # Add enrolled courses to user modules
+        for enrollment in enrollments:
+            course_id = enrollment.get('course_id', '')
+            if course_id in course_to_module:
+                module_name = course_to_module[course_id]
+                if module_name not in user_modules:
+                    user_modules.append(module_name)
         
         # Always include these basic modules
         accessible_modules = [
@@ -1555,11 +1580,14 @@ if user_role in ['student', 'student_basic', 'student_standard', 'student_premiu
             "📧 Contact & Support"
         ]
         
-        # Add modules from database
+        # Add Learning Portal if they have any enrollments
+        if enrollments and "🎓 Learning Portal" not in user_modules:
+            user_modules.insert(0, "🎓 Learning Portal")
+        
+        # Add modules from database and enrollments
         if user_modules:
             accessible_modules = user_modules + accessible_modules
         # If no modules assigned, they only see basic modules (My Account, Help, Contact)
-        # NO automatic Learning Portal - they only see what you assign!
     except Exception as e:
         # Fallback to basic access if database check fails
         # Only show basic modules - NO automatic content
