@@ -5685,44 +5685,69 @@ elif tool == "🎓 Learning Portal":
         enrolled_courses = []
     
     # Build tabs based on enrollments
-    tab_list = ["📖 Structured Learning"]  # Always show main learning path
+    tab_list = []
+    has_tquk_courses = False
+    has_rtt_access = False
+    
+    # Check if student has RTT/Hospital modules
+    try:
+        from supabase_database import get_user_modules
+        user_modules = get_user_modules(user_email) if user_email else []
+        rtt_modules = ['🏥 Patient Administration Hub', '🏥 Clinical Workflows', '✅ Task Management']
+        has_rtt_access = any(module in user_modules for module in rtt_modules)
+    except:
+        has_rtt_access = False
     
     # Add course-specific tabs only if enrolled
     if 'level3_adult_care' in enrolled_courses:
         tab_list.append("🎓 Level 3 Diploma")
+        has_tquk_courses = True
     if 'level2_it_skills' in enrolled_courses:
         tab_list.append("💻 IT User Skills")
+        has_tquk_courses = True
     if 'level2_customer_service' in enrolled_courses:
         tab_list.append("🤝 Customer Service")
+        has_tquk_courses = True
     if 'functional_skills_english' in enrolled_courses:
         tab_list.append("📚 Functional Skills English")
+        has_tquk_courses = True
     if 'functional_skills_maths' in enrolled_courses:
         tab_list.append("🔢 Functional Skills Maths")
+        has_tquk_courses = True
     
-    # Add general tabs
-    tab_list.extend([
-        "📚 Materials",
-        "🎥 Videos",
-        "📢 News",
-        "📝 Assignments",
-        "🎯 Practice Quizzes"
-    ])
+    # Only show general tabs if student has RTT access (not TQUK-only students)
+    if has_rtt_access:
+        tab_list.insert(0, "📖 Structured Learning")  # RTT learning path
+        tab_list.extend([
+            "📚 Materials",
+            "🎥 Videos",
+            "📢 News",
+            "📝 Assignments",
+            "🎯 Practice Quizzes"
+        ])
+    elif not has_tquk_courses:
+        # No enrollments at all - show basic tabs
+        tab_list = [
+            "📖 Structured Learning",
+            "📢 News"
+        ]
     
     tabs = st.tabs(tab_list)
     
     # Render tabs dynamically based on what's in tab_list
     tab_index = 0
     
-    # Tab 0: Always Structured Learning
-    with tabs[tab_index]:
-        # COMPREHENSIVE LEARNING SYSTEM - Learn BEFORE testing!
-        try:
-            from comprehensive_learning_system import render_comprehensive_learning
-            render_comprehensive_learning()
-        except Exception as e:
-            st.error(f"Error loading learning system: {str(e)}")
-            st.info("💡 The comprehensive learning system is being set up. Meanwhile, use other tabs for materials and videos.")
-    tab_index += 1
+    # Structured Learning tab (only if in tab_list)
+    if "📖 Structured Learning" in tab_list:
+        with tabs[tab_index]:
+            # COMPREHENSIVE LEARNING SYSTEM - Learn BEFORE testing!
+            try:
+                from comprehensive_learning_system import render_comprehensive_learning
+                render_comprehensive_learning()
+            except Exception as e:
+                st.error(f"Error loading learning system: {str(e)}")
+                st.info("💡 The comprehensive learning system is being set up. Meanwhile, use other tabs for materials and videos.")
+        tab_index += 1
     
     # Level 3 Diploma tab (only if enrolled)
     if "🎓 Level 3 Diploma" in tab_list:
