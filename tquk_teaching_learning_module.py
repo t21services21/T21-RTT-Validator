@@ -172,15 +172,15 @@ def render_teaching_learning_module():
     
     st.markdown("---")
     
-    # 8 tabs
+    # 8 tabs (shortened names to ensure all visible on screen)
     tabs = st.tabs([
-        "📚 Course Overview",
-        "📖 Learning Materials",
-        "🎯 Optional Units",
-        "📝 Assessments",
-        "📋 Evidence Tracking",
-        "📥 TQUK Documents",
-        "📊 My Progress",
+        "📚 Overview",
+        "📖 Materials",
+        "🎯 Optional",
+        "📝 Assess",
+        "📋 Evidence",
+        "📥 Docs",
+        "📊 Progress",
         "🎓 Certificate"
     ])
     
