@@ -24,7 +24,7 @@ COURSES = {
     "Level 2": {
         "id": COURSE_ID_L2,
         "name": "Functional Skills English Level 2",
-        "qualification_number": "610/2626/6",
+        "qualification_number": "610/2625/6",
         "level": 2,
         "glh": 55,
         "description": "GCSE equivalent English skills for work and further study"

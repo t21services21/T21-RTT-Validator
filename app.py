@@ -1580,6 +1580,7 @@ elif user_role in ['teacher', 'instructor', 'trainer']:
         "🏥 Adult Social Care",  # TQUK Qualification
         "👨‍🏫 Teaching & Learning",  # TQUK Qualification
         "📚 Functional Skills English",  # TQUK Qualification
+        "🔢 Functional Skills Maths",  # TQUK Qualification
         "📊 Reports & Analytics",
         "📄 CV Builder",  # FULL Professional CV Builder
         "⚙️ Administration",
@@ -1606,6 +1607,7 @@ elif user_role == 'tester':
         "🏥 Adult Social Care",               # TQUK Qualification
         "👨‍🏫 Teaching & Learning",            # TQUK Qualification
         "📚 Functional Skills English",       # TQUK Qualification
+        "🔢 Functional Skills Maths",         # TQUK Qualification
         "🔒 Information Governance",          # IG training and compliance
         "💼 Career Development",              # Career tools and development
         "📄 CV Builder",                      # FULL Professional CV Builder
@@ -1637,6 +1639,10 @@ elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
         "💻 IT User Skills",
         "🤝 Customer Service",
         "📊 Business Administration",
+        "🏥 Adult Social Care",
+        "👨‍🏫 Teaching & Learning",
+        "📚 Functional Skills English",
+        "🔢 Functional Skills Maths",
         
         # PROFESSIONAL DEVELOPMENT
         "🔒 Information Governance",
@@ -1672,6 +1678,10 @@ elif user_role == 'admin':
         "💻 IT User Skills",
         "🤝 Customer Service",
         "📊 Business Administration",
+        "🏥 Adult Social Care",
+        "👨‍🏫 Teaching & Learning",
+        "📚 Functional Skills English",
+        "🔢 Functional Skills Maths",
         
         # PROFESSIONAL DEVELOPMENT
         "🔒 Information Governance",
@@ -1708,6 +1718,13 @@ elif user_role == 'staff':
         "🤝 Customer Service",
         "📊 Business Administration",
         "🏥 Adult Social Care",
+        "👨‍🏫 Teaching & Learning",
+        "📚 Functional Skills English",
+        "🔢 Functional Skills Maths",
+        "📚 Level 4 Adult Care",
+        "📚 Level 5 Adult Care",
+        "📚 Level 6 Adult Care",
+        "📚 Level 7 Adult Care",
         
         # PROFESSIONAL DEVELOPMENT
         "🔒 Information Governance",
@@ -7432,6 +7449,10 @@ elif tool == "👨‍🏫 Teaching & Learning":
 elif tool == "📚 Functional Skills English":
     from tquk_functional_skills_english_module import render_functional_skills_english_module
     render_functional_skills_english_module()
+
+elif tool == "🔢 Functional Skills Maths":
+    from tquk_functional_skills_maths_module import render_functional_skills_maths_module
+    render_functional_skills_maths_module()
 
 # ============================================
 # CONTACT & SUPPORT
