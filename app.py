@@ -5675,10 +5675,32 @@ elif tool == "🎓 Learning Portal":
     st.header("🎓 Learning Portal")
     st.info("📚 Complete Training Programmes - RTT & TQUK Qualifications!")
     
-    tabs = st.tabs([
-        "📖 Structured Learning",  # NEW - Main learning path!
-        "🎓 Level 3 Diploma",  # NEW - Level 3 Adult Care!
-        "💻 IT User Skills",  # NEW - Level 2 IT!
+    # Get user's enrollments to show only relevant tabs
+    try:
+        from tquk_course_assignment import get_learner_enrollments
+        user_email = st.session_state.get('user_email', '')
+        enrollments = get_learner_enrollments(user_email) if user_email else []
+        enrolled_courses = [e.get('course_id', '') for e in enrollments]
+    except:
+        enrolled_courses = []
+    
+    # Build tabs based on enrollments
+    tab_list = ["📖 Structured Learning"]  # Always show main learning path
+    
+    # Add course-specific tabs only if enrolled
+    if 'level3_adult_care' in enrolled_courses:
+        tab_list.append("🎓 Level 3 Diploma")
+    if 'level2_it_skills' in enrolled_courses:
+        tab_list.append("💻 IT User Skills")
+    if 'level2_customer_service' in enrolled_courses:
+        tab_list.append("🤝 Customer Service")
+    if 'functional_skills_english' in enrolled_courses:
+        tab_list.append("📚 Functional Skills English")
+    if 'functional_skills_maths' in enrolled_courses:
+        tab_list.append("🔢 Functional Skills Maths")
+    
+    # Add general tabs
+    tab_list.extend([
         "📚 Materials",
         "🎥 Videos",
         "📢 News",
@@ -5686,7 +5708,13 @@ elif tool == "🎓 Learning Portal":
         "🎯 Practice Quizzes"
     ])
     
-    with tabs[0]:
+    tabs = st.tabs(tab_list)
+    
+    # Render tabs dynamically based on what's in tab_list
+    tab_index = 0
+    
+    # Tab 0: Always Structured Learning
+    with tabs[tab_index]:
         # COMPREHENSIVE LEARNING SYSTEM - Learn BEFORE testing!
         try:
             from comprehensive_learning_system import render_comprehensive_learning
@@ -5694,72 +5722,88 @@ elif tool == "🎓 Learning Portal":
         except Exception as e:
             st.error(f"Error loading learning system: {str(e)}")
             st.info("💡 The comprehensive learning system is being set up. Meanwhile, use other tabs for materials and videos.")
+    tab_index += 1
     
-    with tabs[1]:
-        # LEVEL 3 DIPLOMA IN ADULT CARE
-        st.subheader("🎓 Level 3 Diploma in Adult Care")
-        st.success("✅ **TQUK Approved Centre #36257481088** - Nationally Recognized Qualification")
-        
-        try:
-            from level3_adult_care_system import render_level3_adult_care
-            render_level3_adult_care()
-        except Exception as e:
-            st.error(f"Error loading Level 3 module: {str(e)}")
-            st.info("📚 Level 3 materials are available in your project folder")
+    # Level 3 Diploma tab (only if enrolled)
+    if "🎓 Level 3 Diploma" in tab_list:
+        with tabs[tab_index]:
+            # LEVEL 3 DIPLOMA IN ADULT CARE
+            st.subheader("🎓 Level 3 Diploma in Adult Care")
+            st.success("✅ **TQUK Approved Centre #36257481088** - Nationally Recognized Qualification")
             
-            # Fallback - show materials list
-            st.markdown("### 📋 Available Materials:")
+            try:
+                from level3_adult_care_system import render_level3_adult_care
+                render_level3_adult_care()
+            except Exception as e:
+                st.error(f"Error loading Level 3 module: {str(e)}")
+                st.info("📚 Level 3 materials are available in your project folder")
+                
+                # Fallback - show materials list
+                st.markdown("### 📋 Available Materials:")
+                st.markdown("""
+                - ✅ Learner Handbook (50+ pages)
+                - ✅ Unit 1: Duty of Care (20 pages)
+                - ✅ Unit 2: Equality & Diversity (30 pages)
+                - ✅ Unit 3: Person-Centred Care (25 pages)
+                - ✅ Assessment Templates (8 templates)
+                - ✅ 10-Week Delivery Plan
+                - ✅ TQUK Submission Package
+                """)
+        tab_index += 1
+    
+    # IT User Skills tab (only if enrolled)
+    if "💻 IT User Skills" in tab_list:
+        with tabs[tab_index]:
+            # IT USER SKILLS
+            st.subheader("💻 Level 2 Certificate in IT User Skills")
+            st.success("✅ **TQUK Approved** - Learn Using Real NHS Systems (RTT/PAS)")
+            
+            st.info("🚀 **UNIQUE:** Learn IT skills by using our RTT/PAS hospital system - Real-world training!")
+            
+            st.markdown("### 📚 Course Content:")
             st.markdown("""
-            - ✅ Learner Handbook (50+ pages)
-            - ✅ Unit 1: Duty of Care (20 pages)
-            - ✅ Unit 2: Equality & Diversity (30 pages)
-            - ✅ Unit 3: Person-Centred Care (25 pages)
-            - ✅ Assessment Templates (8 templates)
-            - ✅ 10-Week Delivery Plan
-            - ✅ TQUK Submission Package
+            **Mandatory Units:**
+            1. ✅ Using IT Systems (5 credits)
+            2. ✅ IT Communication Fundamentals (4 credits)
+            3. ✅ IT Software Fundamentals (4 credits)
+            
+            **Optional Units:**
+            4. ✅ Using Collaborative Technologies (3 credits)
+            5. ✅ Using Databases (4 credits)
+            
+            **Total:** 20 credits | 10-12 weeks | £700
             """)
+            
+            if st.button("📥 Download IT User Skills Materials"):
+                st.success("Materials available in project folder: LEVEL2_IT_USER_SKILLS_COMPLETE.md")
+        tab_index += 1
     
-    with tabs[2]:
-        # IT USER SKILLS
-        st.subheader("💻 Level 2 Certificate in IT User Skills")
-        st.success("✅ **TQUK Approved** - Learn Using Real NHS Systems (RTT/PAS)")
-        
-        st.info("🚀 **UNIQUE:** Learn IT skills by using our RTT/PAS hospital system - Real-world training!")
-        
-        st.markdown("### 📚 Course Content:")
-        st.markdown("""
-        **Mandatory Units:**
-        1. ✅ Using IT Systems (5 credits)
-        2. ✅ IT Communication Fundamentals (4 credits)
-        3. ✅ IT Software Fundamentals (4 credits)
-        
-        **Optional Units:**
-        4. ✅ Using Collaborative Technologies (3 credits)
-        5. ✅ Using Databases (4 credits)
-        
-        **Total:** 20 credits | 10-12 weeks | £700
-        """)
-        
-        if st.button("📥 Download IT User Skills Materials"):
-            st.success("Materials available in project folder: LEVEL2_IT_USER_SKILLS_COMPLETE.md")
-    
-    with tabs[3]:
+    # Materials tab
+    with tabs[tab_index]:
         from lms_system import render_lms_feature
         render_lms_feature("learning_materials")
+    tab_index += 1
     
-    with tabs[4]:
+    # Videos tab
+    with tabs[tab_index]:
         from lms_system import render_lms_feature
         render_lms_feature("video_library")
+    tab_index += 1
     
-    with tabs[5]:
+    # News tab
+    with tabs[tab_index]:
         from lms_system import render_lms_feature
         render_lms_feature("announcements")
+    tab_index += 1
     
-    with tabs[6]:
+    # Assignments tab
+    with tabs[tab_index]:
         from lms_system import render_lms_feature
         render_lms_feature("assignments")
+    tab_index += 1
     
-    with tabs[7]:
+    # Practice Quizzes tab
+    with tabs[tab_index]:
         # Practice quizzes AFTER learning
         from lms_system import render_lms_feature
         render_lms_feature("quizzes")
