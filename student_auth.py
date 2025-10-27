@@ -396,3 +396,36 @@ def delete_student(email):
         return True, "Student account deleted"
     
     return False, "Email not found"
+
+
+def change_password(email, current_password, new_password):
+    """
+    Change user password
+    Returns: (success: bool, message: str)
+    """
+    users = load_users()
+    
+    # Check if user exists
+    if email not in users:
+        return False, "Email not found"
+    
+    user = users[email]
+    
+    # Verify current password
+    if hash_password(current_password) != user["password_hash"]:
+        return False, "Current password is incorrect"
+    
+    # Validate new password
+    if len(new_password) < 8:
+        return False, "New password must be at least 8 characters long"
+    
+    if new_password == current_password:
+        return False, "New password must be different from current password"
+    
+    # Update password
+    user["password_hash"] = hash_password(new_password)
+    user["password_changed_at"] = datetime.now().isoformat()
+    
+    save_users(users)
+    
+    return True, "Password changed successfully! Please log in again with your new password."

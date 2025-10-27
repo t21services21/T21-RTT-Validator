@@ -7208,8 +7208,86 @@ elif tool == "⚙️ Administration" or tool == "⚙️ My Account":
     
     with tabs[0]:
         # My Account - Available to ALL users
-        st.info("Loading account settings...")
-        # The actual handler will be called by the existing code
+        st.subheader("⚙️ My Account Settings")
+        
+        user_email = st.session_state.get('user_email', '')
+        
+        # Account Information
+        st.markdown("### 👤 Account Information")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.text_input("Email", value=user_email, disabled=True)
+        with col2:
+            user_role = st.session_state.user_license.role if hasattr(st.session_state.user_license, 'role') else "trial"
+            st.text_input("Role", value=user_role.title(), disabled=True)
+        
+        st.markdown("---")
+        
+        # Change Password
+        st.markdown("### 🔒 Change Password")
+        
+        with st.form("change_password_form"):
+            current_password = st.text_input("Current Password", type="password")
+            new_password = st.text_input("New Password", type="password")
+            confirm_password = st.text_input("Confirm New Password", type="password")
+            
+            submit_button = st.form_submit_button("🔄 Change Password", type="primary")
+            
+            if submit_button:
+                if not current_password or not new_password or not confirm_password:
+                    st.error("❌ Please fill in all fields")
+                elif new_password != confirm_password:
+                    st.error("❌ New passwords do not match")
+                elif len(new_password) < 8:
+                    st.error("❌ Password must be at least 8 characters long")
+                else:
+                    # Change password in database
+                    try:
+                        from student_auth import change_password
+                        success, message = change_password(user_email, current_password, new_password)
+                        
+                        if success:
+                            st.success(f"✅ {message}")
+                            st.balloons()
+                            st.info("🔒 **For security, you will be logged out in 3 seconds...**")
+                            
+                            # Log out user after password change
+                            import time
+                            time.sleep(3)
+                            
+                            # Clear session state
+                            for key in list(st.session_state.keys()):
+                                del st.session_state[key]
+                            
+                            st.success("✅ Logged out successfully! Please log in with your new password.")
+                            st.rerun()
+                        else:
+                            st.error(f"❌ {message}")
+                    except Exception as e:
+                        st.error(f"❌ Error changing password: {str(e)}")
+        
+        st.markdown("---")
+        
+        # Security Dashboard
+        st.markdown("### 🔒 Security & Devices")
+        if st.button("🔐 View Security Dashboard"):
+            try:
+                from account_security_ui import render_security_dashboard
+                render_security_dashboard(user_email)
+            except Exception as e:
+                st.error(f"Error loading security dashboard: {str(e)}")
+        
+        st.markdown("---")
+        
+        # Account Actions
+        st.markdown("### ⚙️ Account Actions")
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("📧 Update Email Preferences"):
+                st.info("Email preferences coming soon!")
+        with col2:
+            if st.button("🗑️ Delete Account"):
+                st.warning("⚠️ Account deletion requires admin approval. Please contact support.")
     
     # ADMIN TABS: Only show if NOT student
     if not is_student and len(tabs) > 1:
