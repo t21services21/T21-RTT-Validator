@@ -42,7 +42,10 @@ def render_messaging_interface():
         render_sidebar(user_email, user_name, unread_count)
     
     with col_main:
-        if st.session_state.view_mode == 'channels' and st.session_state.current_channel:
+        # Check if user wants to start new DM
+        if st.session_state.get('show_new_dm', False):
+            render_new_dm_form(user_email, user_name)
+        elif st.session_state.view_mode == 'channels' and st.session_state.current_channel:
             render_channel_chat(user_email, user_name)
         elif st.session_state.view_mode == 'dms' and st.session_state.current_dm_user:
             render_dm_chat(user_email, user_name)
@@ -375,24 +378,42 @@ def extract_mentions(text: str) -> List[str]:
 # HELPER FUNCTIONS
 # ============================================
 
-def show_new_dm_dialog():
-    """Show dialog to start new DM"""
+def render_new_dm_form(user_email: str, user_name: str):
+    """Show form to start new DM"""
     
-    st.subheader("➕ New Message")
+    st.markdown("## ➕ New Message")
+    st.markdown("Send a direct message to another user")
     
-    # Get list of users (you'd need to implement this)
-    # For now, just a text input
-    recipient_email = st.text_input("Recipient Email")
-    message_text = st.text_area("Message")
+    st.markdown("---")
     
-    if st.button("Send"):
-        user_email = st.session_state.get('user_email', '')
-        user_name = st.session_state.get('user_name', '')
+    with st.form(key="new_dm_form", clear_on_submit=True):
+        recipient_email = st.text_input("Recipient Email", placeholder="user@example.com")
+        message_text = st.text_area("Message", placeholder="Type your message here...", height=150)
         
-        if recipient_email and message_text:
-            if send_direct_message(user_email, user_name, recipient_email, recipient_email.split('@')[0], message_text):
-                st.success("Message sent!")
-                st.session_state.show_new_dm = False
-                st.session_state.current_dm_user = recipient_email
-                st.session_state.view_mode = 'dms'
-                st.rerun()
+        col1, col2 = st.columns(2)
+        with col1:
+            send_button = st.form_submit_button("📤 Send Message", type="primary", use_container_width=True)
+        with col2:
+            cancel_button = st.form_submit_button("❌ Cancel", use_container_width=True)
+        
+        if cancel_button:
+            st.session_state.show_new_dm = False
+            st.rerun()
+        
+        if send_button:
+            if not recipient_email or not message_text:
+                st.error("❌ Please fill in both fields")
+            elif recipient_email == user_email:
+                st.error("❌ You cannot message yourself!")
+            else:
+                recipient_name = recipient_email.split('@')[0]
+                if send_direct_message(user_email, user_name, recipient_email, recipient_name, message_text):
+                    st.success(f"✅ Message sent to {recipient_email}!")
+                    st.balloons()
+                    time.sleep(1)
+                    st.session_state.show_new_dm = False
+                    st.session_state.current_dm_user = recipient_email
+                    st.session_state.view_mode = 'dms'
+                    st.rerun()
+                else:
+                    st.error("❌ Failed to send message")
