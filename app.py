@@ -7522,8 +7522,8 @@ elif tool == "📚 TQUK Document Library":
 # ============================================
 
 elif tool == "📚 Level 3 Adult Care":
-    from tquk_level3_adult_care_module import render_level3_adult_care_module
-    render_level3_adult_care_module()
+    from level3_adult_care_system_COMPLETE import render_level3_adult_care
+    render_level3_adult_care()
 
 elif tool == "💻 IT User Skills":
     from tquk_it_user_skills_module import render_it_user_skills_module

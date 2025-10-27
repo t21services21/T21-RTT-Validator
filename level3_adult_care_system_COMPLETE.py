@@ -3,9 +3,9 @@ LEVEL 3 DIPLOMA IN ADULT CARE - COMPLETE SYSTEM WITH ALL 27 UNITS
 Integrated into T21 Healthcare Platform
 
 Structure:
-- 3 Mandatory Units (37 credits)
-- 24 Optional Units (choose 4 for 21 credits)
-- Total: 7 units = 58 credits
+- 7 Mandatory Units (24 credits) - Units 1-7
+- 20 Optional Units (choose 34 credits) - Units 8-27
+- Total: 58 credits
 
 Features:
 - Unit selection system
@@ -23,13 +23,13 @@ from typing import Dict, List, Optional
 # LEVEL 3 QUALIFICATION STRUCTURE
 # ============================================
 
-# MANDATORY UNITS (3 units = 37 credits)
+# MANDATORY UNITS (7 units = 24 credits) - ALL STUDENTS MUST COMPLETE
 MANDATORY_UNITS = {
     'unit1': {
         'code': 'Unit 1',
         'name': 'Duty of Care',
-        'glh': 20,
-        'credits': 12,
+        'glh': 30,
+        'credits': 5,
         'type': 'mandatory',
         'file': 'LEVEL3_UNIT1_DUTY_OF_CARE_COMPLETE.md',
         'criteria': ['1.1', '1.2', '2.1', '2.2', '3.1', '3.2', '3.3'],
@@ -38,8 +38,8 @@ MANDATORY_UNITS = {
     'unit2': {
         'code': 'Unit 2',
         'name': 'Equality, Diversity and Inclusion',
-        'glh': 27,
-        'credits': 13,
+        'glh': 12,
+        'credits': 2,
         'type': 'mandatory',
         'file': 'LEVEL3_UNIT2_EQUALITY_DIVERSITY_COMPLETE.md',
         'criteria': ['1.1', '1.2', '1.3', '2.1', '2.2', '2.3', '3.1', '3.2', '3.3'],
@@ -48,57 +48,57 @@ MANDATORY_UNITS = {
     'unit3': {
         'code': 'Unit 3',
         'name': 'Person-Centred Care',
-        'glh': 24,
-        'credits': 12,
+        'glh': 30,
+        'credits': 5,
         'type': 'mandatory',
         'file': 'LEVEL3_UNIT3_PERSON_CENTRED_CARE_COMPLETE.md',
         'criteria': ['1.1', '1.2', '2.1', '2.2', '2.3', '3.1', '3.2', '4.1', '4.2'],
         'assessment_methods': ['Observation', 'Professional Discussion', 'Care Plan Evidence']
-    }
-}
-
-# OPTIONAL UNITS (24 units - choose 4 for 21 credits)
-OPTIONAL_UNITS = {
+    },
     'unit4': {
         'code': 'Unit 4',
         'name': 'Safeguarding in Care Settings',
-        'glh': 26,
+        'glh': 18,
         'credits': 3,
-        'type': 'optional',
-        'category': 'Core Skills',
+        'type': 'mandatory',
         'file': 'LEVEL3_UNIT4_SAFEGUARDING_COMPLETE.md',
-        'unit_code': 'L/650/2299'
+        'criteria': ['1.1', '1.2', '2.1', '2.2', '3.1', '3.2'],
+        'assessment_methods': ['Case Study', 'Professional Discussion', 'Witness Statement']
     },
     'unit5': {
         'code': 'Unit 5',
         'name': 'Effective Communication',
-        'glh': 22,
+        'glh': 18,
         'credits': 3,
-        'type': 'optional',
-        'category': 'Core Skills',
+        'type': 'mandatory',
         'file': 'LEVEL3_UNIT5_COMMUNICATION_COMPLETE.md',
-        'unit_code': 'F/650/2302'
+        'criteria': ['1.1', '1.2', '2.1', '2.2', '3.1'],
+        'assessment_methods': ['Observation', 'Professional Discussion', 'Reflective Account']
     },
     'unit6': {
         'code': 'Unit 6',
         'name': 'Health & Wellbeing',
-        'glh': 28,
+        'glh': 18,
         'credits': 3,
-        'type': 'optional',
-        'category': 'Core Skills',
+        'type': 'mandatory',
         'file': 'LEVEL3_UNIT6_HEALTH_WELLBEING_COMPLETE.md',
-        'unit_code': 'R/650/2308'
+        'criteria': ['1.1', '1.2', '2.1', '2.2', '3.1'],
+        'assessment_methods': ['Written Assignment', 'Observation', 'Care Plan Evidence']
     },
     'unit7': {
         'code': 'Unit 7',
         'name': 'Continuous Professional Development',
-        'glh': 24,
+        'glh': 18,
         'credits': 3,
-        'type': 'optional',
-        'category': 'Core Skills',
+        'type': 'mandatory',
         'file': 'LEVEL3_UNIT7_PROFESSIONAL_DEVELOPMENT_COMPLETE.md',
-        'unit_code': 'D/650/2310'
-    },
+        'criteria': ['1.1', '1.2', '2.1', '2.2', '3.1'],
+        'assessment_methods': ['Reflective Account', 'Professional Discussion', 'Development Plan']
+    }
+}
+
+# OPTIONAL UNITS (20 units - choose 34 credits)
+OPTIONAL_UNITS = {
     'unit8': {
         'code': 'Unit 8',
         'name': 'Dementia Care',
@@ -342,10 +342,10 @@ def render_learner_view():
         **Total Credits Required:** 58 credits
         
         **Structure:**
-        - **3 Mandatory Units** (37 credits) - MUST complete all
-        - **4 Optional Units** (21 credits) - Choose from 24 options
+        - **7 Mandatory Units** (24 credits) - MUST complete all
+        - **Optional Units** (34 credits) - Choose from 20 options
         
-        **Total:** 7 units = 58 credits
+        **Total:** 58 credits
         """)
     
     # Tabs
@@ -389,9 +389,9 @@ def render_progress_overview():
     st.subheader("📊 Your Progress")
     
     # Mock data (replace with database queries)
-    mandatory_completed = 2
-    mandatory_total = 3
-    optional_selected = 4
+    mandatory_completed = 4
+    mandatory_total = 7
+    optional_selected = 3
     optional_completed = 1
     
     col1, col2, col3 = st.columns(3)
@@ -413,17 +413,17 @@ def render_progress_overview():
     st.markdown("---")
     st.subheader("💳 Credits")
     
-    mandatory_credits = 25  # Mock: 2/3 units done
-    optional_credits = 4    # Mock: 1/4 units done
+    mandatory_credits = 14  # Mock: 4/7 units done (approx 14 credits)
+    optional_credits = 8    # Mock: 1/3 units done (approx 8 credits)
     total_credits = mandatory_credits + optional_credits
     
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.metric("Mandatory Credits", f"{mandatory_credits}/37")
+        st.metric("Mandatory Credits", f"{mandatory_credits}/24")
     
     with col2:
-        st.metric("Optional Credits", f"{optional_credits}/21")
+        st.metric("Optional Credits", f"{optional_credits}/34")
     
     with col3:
         st.metric("Total Credits", f"{total_credits}/58")
@@ -431,11 +431,11 @@ def render_progress_overview():
 
 
 def render_mandatory_units():
-    """Show mandatory units (must complete all 3)"""
+    """Show mandatory units (must complete all 7)"""
     
     st.subheader("📚 Mandatory Units (Must Complete All)")
     
-    st.info("✅ You MUST complete all 3 mandatory units to achieve your diploma.")
+    st.info("✅ You MUST complete all 7 mandatory units (24 credits) to achieve your diploma.")
     
     for unit_id, unit in MANDATORY_UNITS.items():
         with st.expander(f"✅ {unit['code']}: {unit['name']} ({unit['credits']} credits)"):
@@ -453,11 +453,11 @@ def render_mandatory_units():
 
 
 def render_optional_units_selection():
-    """Allow students to choose 4 optional units from 24"""
+    """Allow students to choose optional units to reach 34 credits from 20 options"""
     
     st.subheader("🎯 Choose Your Optional Units")
     
-    st.info("✅ You must choose **4 optional units** (21 credits total) from the 24 options below.")
+    st.info("✅ You must choose **34 credits** of optional units from the 20 options below to complete your diploma.")
     
     # Mock selected units (replace with database)
     if 'selected_optional_units' not in st.session_state:
@@ -467,10 +467,16 @@ def render_optional_units_selection():
     st.markdown("### 📌 Your Selected Units")
     
     if len(st.session_state.selected_optional_units) == 0:
-        st.warning("⚠️ You haven't selected any optional units yet. Choose 4 units below.")
+        st.warning("⚠️ You haven't selected any optional units yet. Choose units to reach 34 credits.")
     else:
         selected_credits = sum([OPTIONAL_UNITS[uid]['credits'] for uid in st.session_state.selected_optional_units])
-        st.success(f"✅ Selected: {len(st.session_state.selected_optional_units)}/4 units ({selected_credits} credits)")
+        credits_remaining = 34 - selected_credits
+        if credits_remaining > 0:
+            st.warning(f"⚠️ Selected: {len(st.session_state.selected_optional_units)} units ({selected_credits}/34 credits) - Need {credits_remaining} more credits")
+        elif credits_remaining == 0:
+            st.success(f"✅ Perfect! Selected: {len(st.session_state.selected_optional_units)} units ({selected_credits}/34 credits)")
+        else:
+            st.error(f"❌ Too many credits! Selected: {selected_credits}/34 credits - Remove {abs(credits_remaining)} credits")
         
         for unit_id in st.session_state.selected_optional_units:
             unit = OPTIONAL_UNITS[unit_id]
