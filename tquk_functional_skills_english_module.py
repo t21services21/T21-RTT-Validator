@@ -253,7 +253,8 @@ def render_materials(level, course_info):
     component = st.selectbox(
         "Select Component to Study:",
         list(COMPONENTS.keys()),
-        format_func=lambda x: f"{COMPONENTS[x]['icon']} {COMPONENTS[x]['name']} - {COMPONENTS[x]['description']}"
+        format_func=lambda x: f"{COMPONENTS[x]['icon']} {COMPONENTS[x]['name']} - {COMPONENTS[x]['description']}",
+        key="materials_component_selector"
     )
     
     component_info = COMPONENTS[component]
@@ -309,7 +310,8 @@ def render_practice(level, course_info):
     component = st.selectbox(
         "Select Component:",
         list(COMPONENTS.keys()),
-        format_func=lambda x: f"{COMPONENTS[x]['icon']} {COMPONENTS[x]['name']}"
+        format_func=lambda x: f"{COMPONENTS[x]['icon']} {COMPONENTS[x]['name']}",
+        key="practice_component_selector"
     )
     
     component_info = COMPONENTS[component]
@@ -433,7 +435,8 @@ def render_evidence(level, course_info, learner_email):
     component = st.selectbox(
         "Select Component:",
         list(COMPONENTS.keys()),
-        format_func=lambda x: f"{COMPONENTS[x]['icon']} {COMPONENTS[x]['name']}"
+        format_func=lambda x: f"{COMPONENTS[x]['icon']} {COMPONENTS[x]['name']}",
+        key="evidence_component_selector"
     )
     
     component_info = COMPONENTS[component]
@@ -444,7 +447,8 @@ def render_evidence(level, course_info, learner_email):
     
     evidence_type = st.selectbox(
         "Evidence Type:",
-        ["Written Work", "Recording", "Assessment", "Portfolio"]
+        ["Written Work", "Recording", "Assessment", "Portfolio"],
+        key="evidence_type_selector"
     )
     
     description = st.text_area(
