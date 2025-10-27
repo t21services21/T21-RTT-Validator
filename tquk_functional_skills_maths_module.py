@@ -231,12 +231,20 @@ def render_materials(level, course_info):
             else:
                 section_marker = "# Problem Solving"
             
+            # Find the section and display it
             if section_marker in content:
-                sections = content.split("# ")
-                for section in sections:
-                    if section.startswith(section_marker[2:]):
-                        st.markdown("# " + section)
-                        break
+                section_start = content.find(section_marker)
+                # Find the next major section (next # at start of line)
+                next_section = content.find("\n# ", section_start + 1)
+                
+                if next_section == -1:
+                    # This is the last section, take everything to the end
+                    section_content = content[section_start:]
+                else:
+                    # Take content up to the next section
+                    section_content = content[section_start:next_section]
+                
+                st.markdown(section_content)
             else:
                 st.markdown(content)
     except FileNotFoundError:
