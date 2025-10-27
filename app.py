@@ -5757,8 +5757,8 @@ elif tool == "🎓 Learning Portal":
             st.success("✅ **TQUK Approved Centre #36257481088** - Nationally Recognized Qualification")
             
             try:
-                from level3_adult_care_system_COMPLETE import render_level3_adult_care
-                render_level3_adult_care()
+                from tquk_level3_adult_care_module import render_level3_adult_care_module
+                render_level3_adult_care_module()
             except Exception as e:
                 st.error(f"Error loading Level 3 module: {str(e)}")
                 st.info("📚 Level 3 materials are available in your project folder")
@@ -7528,8 +7528,8 @@ elif tool == "📚 TQUK Document Library":
 # ============================================
 
 elif tool == "📚 Level 3 Adult Care":
-    from level3_adult_care_system_COMPLETE import render_level3_adult_care
-    render_level3_adult_care()
+    from tquk_level3_adult_care_module import render_level3_adult_care_module
+    render_level3_adult_care_module()
 
 elif tool == "💻 IT User Skills":
     from tquk_it_user_skills_module import render_it_user_skills_module

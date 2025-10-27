@@ -18,6 +18,7 @@ import streamlit as st
 from datetime import datetime, date
 import json
 from typing import Dict, List, Optional
+import os
 
 # ============================================
 # LEVEL 3 QUALIFICATION STRUCTURE
@@ -306,6 +307,19 @@ ALL_UNITS = {**MANDATORY_UNITS, **OPTIONAL_UNITS}
 
 
 # ============================================
+# HELPER FUNCTIONS
+# ============================================
+
+def load_markdown_file(filename):
+    """Load markdown content from file"""
+    try:
+        with open(filename, 'r', encoding='utf-8') as f:
+            return f.read()
+    except Exception as e:
+        return f"Error loading file: {str(e)}\n\nPlease ensure the file '{filename}' exists in the project folder."
+
+
+# ============================================
 # MAIN LEVEL 3 MODULE
 # ============================================
 
@@ -438,18 +452,62 @@ def render_mandatory_units():
     st.info("✅ You MUST complete all 7 mandatory units (24 credits) to achieve your diploma.")
     
     for unit_id, unit in MANDATORY_UNITS.items():
-        with st.expander(f"✅ {unit['code']}: {unit['name']} ({unit['credits']} credits)"):
-            st.write(f"**GLH:** {unit['glh']} hours")
-            st.write(f"**Credits:** {unit['credits']}")
+        with st.expander(f"✅ {unit['code']}: {unit['name']} ({unit['credits']} credits)", expanded=False):
+            # Unit info
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("GLH", f"{unit['glh']} hours")
+            with col2:
+                st.metric("Credits", unit['credits'])
+            with col3:
+                st.metric("Progress", "60%")
+            
             st.write(f"**Assessment Methods:** {', '.join(unit['assessment_methods'])}")
             
-            # Mock progress
-            st.progress(0.6)
-            st.write("**Progress:** 60% complete")
+            st.markdown("---")
             
             # View materials button
             if st.button(f"📖 View Learning Materials", key=f"view_{unit_id}"):
-                st.info(f"Learning materials for {unit['name']} would load here from {unit['file']}")
+                st.session_state[f'show_materials_{unit_id}'] = True
+            
+            # Display materials if button was clicked
+            if st.session_state.get(f'show_materials_{unit_id}', False):
+                with st.container():
+                    st.markdown(f"### 📚 Learning Materials: {unit['name']}")
+                    
+                    # Load and display content
+                    content = load_markdown_file(unit['file'])
+                    
+                    if content and not content.startswith("Error"):
+                        st.markdown(content, unsafe_allow_html=True)
+                        
+                        st.markdown("---")
+                        
+                        # Action buttons
+                        col1, col2, col3 = st.columns(3)
+                        with col1:
+                            if st.button(f"✅ Mark Complete", key=f"complete_{unit_id}", type="primary"):
+                                st.success(f"✅ {unit['name']} marked as complete!")
+                                st.balloons()
+                        with col2:
+                            if st.button(f"📝 Submit Evidence", key=f"evidence_{unit_id}"):
+                                st.info("Go to the 'Submit Evidence' tab to upload your evidence!")
+                        with col3:
+                            # Download as markdown
+                            st.download_button(
+                                label=f"📥 Download",
+                                data=content,
+                                file_name=f"{unit['file']}",
+                                mime="text/markdown",
+                                key=f"download_{unit_id}"
+                            )
+                        
+                        # Hide button
+                        if st.button(f"🔼 Hide Materials", key=f"hide_{unit_id}"):
+                            st.session_state[f'show_materials_{unit_id}'] = False
+                            st.rerun()
+                    else:
+                        st.error(content)  # Show error message
 
 
 def render_optional_units_selection():
