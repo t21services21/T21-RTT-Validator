@@ -1575,6 +1575,7 @@ if user_role in ['student', 'student_basic', 'student_standard', 'student_premiu
         
         # Always include these basic modules
         accessible_modules = [
+            "💬 Messages",
             "⚙️ My Account",
             "ℹ️ Help & Information",
             "📧 Contact & Support"
@@ -1592,6 +1593,7 @@ if user_role in ['student', 'student_basic', 'student_standard', 'student_premiu
         # Fallback to basic access if database check fails
         # Only show basic modules - NO automatic content
         accessible_modules = [
+            "💬 Messages",
             "⚙️ My Account",
             "ℹ️ Help & Information",
             "📧 Contact & Support"
@@ -1602,15 +1604,7 @@ elif user_role in ['teacher', 'instructor', 'trainer']:
         "👨‍🏫 Teaching & Assessment",  # Teacher tools, student management
         "📚 TQUK Document Library",  # TQUK documents for tutors
         "🎓 Learning Portal",
-        "🎓 Training & Certification",
-        "📚 Level 3 Adult Care",  # TQUK Qualification
-        "💻 IT User Skills",  # TQUK Qualification
-        "🤝 Customer Service",  # TQUK Qualification
-        "📊 Business Administration",  # TQUK Qualification
-        "🏥 Adult Social Care",  # TQUK Qualification
-        "👨‍🏫 Teaching & Learning",  # TQUK Qualification
-        "📚 Functional Skills English",  # TQUK Qualification
-        "🔢 Functional Skills Maths",  # TQUK Qualification
+        "💬 Messages",
         "📊 Reports & Analytics",
         "📄 CV Builder",  # FULL Professional CV Builder
         "⚙️ Administration",
@@ -1641,6 +1635,7 @@ elif user_role == 'tester':
         "🔒 Information Governance",          # IG training and compliance
         "💼 Career Development",              # Career tools and development
         "📄 CV Builder",                      # FULL Professional CV Builder
+        "💬 Messages",                        # Real-time messaging system
         "ℹ️ Help & Information",              # Help pages and documentation
         "📧 Contact & Support"                # Support and contact pages
     ]
@@ -1680,6 +1675,7 @@ elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
         "📄 CV Builder",
         
         # SYSTEM
+        "💬 Messages",
         "⚙️ Administration",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
@@ -1719,6 +1715,7 @@ elif user_role == 'admin':
         "📄 CV Builder",
         
         # SYSTEM
+        "💬 Messages",
         "⚙️ Administration",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
@@ -1762,6 +1759,7 @@ elif user_role == 'staff':
         "📄 CV Builder",
         
         # SYSTEM
+        "💬 Messages",
         "⚙️ Administration",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
@@ -1775,6 +1773,7 @@ else:
         "🤖 AI & Automation",
         "📊 Reports & Analytics",
         "🔒 Information Governance",
+        "💬 Messages",
         "⚙️ Administration",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
@@ -7597,6 +7596,11 @@ elif tool == "ℹ️ Help & Information":
     - Check your course materials
     - Use the platform's built-in help features
     """)
+
+elif tool == "💬 Messages":
+    # MESSAGING SYSTEM - Real-time communication
+    from messaging_interface import render_messaging_interface
+    render_messaging_interface()
 
 elif tool == "📧 Contact & Support":
     st.header("📧 Contact & Support")
