@@ -7516,22 +7516,86 @@ elif tool == "📊 Data Quality":
 
 elif tool == "ℹ️ Help & Information":
     st.header("ℹ️ Help & Information")
-    st.info("Documentation and RTT rules")
     
+    # Check if user has RTT access
+    user_email = st.session_state.get('user_email', '')
+    
+    # Get user's enrollments to check if they have RTT access
+    try:
+        from tquk_course_assignment import get_learner_enrollments
+        enrollments = get_learner_enrollments(user_email)
+        enrolled_courses = [e['course_id'] for e in enrollments]
+        
+        # Check if user has ANY TQUK courses
+        tquk_courses = ['level3_adult_care', 'level2_it_skills', 'level2_customer_service', 
+                        'level2_business_admin', 'level2_adult_social_care', 'level3_teaching_learning',
+                        'functional_skills_english', 'functional_skills_maths']
+        has_tquk_only = any(course in enrolled_courses for course in tquk_courses)
+        
+        # Check if user has RTT access (not TQUK-only)
+        has_rtt_access = not has_tquk_only or len(enrolled_courses) == 0
+    except:
+        has_rtt_access = True  # Default to showing RTT content if can't determine
+    
+    if has_rtt_access:
+        # RTT CONTENT - For RTT and Hospital Administration students
+        st.info("Documentation and RTT rules")
+        
+        st.markdown("""
+        ### 📖 About RTT Rules
+        
+        **RTT (Referral to Treatment) 18-Week Standard:**
+        - Maximum wait from referral to treatment start
+        - Clock starts on referral received or first consultation
+        - Clock stops on treatment start or patient removes themselves
+        
+        **Key Concepts:**
+        - **Active pathway:** Clock running
+        - **Paused pathway:** Clock stopped (valid pause reason)
+        - **Breach:** Over 18 weeks without treatment
+        
+        For detailed guidance, see NHS England RTT rules and regulations.
+        """)
+    else:
+        # TQUK CONTENT - For TQUK-only students
+        st.info("TQUK Qualification Help & Support")
+        
+        st.markdown("""
+        ### 📖 About Your TQUK Qualification
+        
+        **Welcome to your TQUK learning journey!**
+        
+        You are enrolled in a nationally recognized qualification from TQUK (Training Qualifications UK).
+        
+        **How to Use This Platform:**
+        1. **Learning Materials** - Access your course content and study materials
+        2. **Optional Units** - Choose units that match your career goals
+        3. **Submit Evidence** - Upload evidence of your learning
+        4. **Track Progress** - Monitor your completion status
+        5. **Get Certified** - Receive your TQUK certificate upon completion
+        
+        **Need Help?**
+        - Contact your tutor for course-specific questions
+        - Use the Contact & Support page for technical issues
+        - Check your course materials for detailed guidance
+        
+        **TQUK Approved Centre #36257481088**
+        """)
+    
+    st.markdown("---")
+    
+    # Common help section for everyone
     st.markdown("""
-    ### 📖 About RTT Rules
+    ### 🆘 Getting Help
     
-    **RTT (Referral to Treatment) 18-Week Standard:**
-    - Maximum wait from referral to treatment start
-    - Clock starts on referral received or first consultation
-    - Clock stops on treatment start or patient removes themselves
+    **Technical Support:**
+    - Use the "📧 Contact & Support" page
+    - Email: support@t21services.com
     
-    **Key Concepts:**
-    - **Active pathway:** Clock running
-    - **Paused pathway:** Clock stopped (valid pause reason)
-    - **Breach:** Over 18 weeks without treatment
-    
-    For detailed guidance, see NHS England RTT rules and regulations.
+    **Course Support:**
+    - Contact your assigned tutor
+    - Check your course materials
+    - Use the platform's built-in help features
     """)
 
 elif tool == "📧 Contact & Support":
