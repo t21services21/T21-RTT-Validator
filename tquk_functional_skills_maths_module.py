@@ -4,6 +4,7 @@ Levels 1 and 2
 """
 
 import streamlit as st
+from tquk_mock_exams_maths import render_maths_mock_exam
 
 # Course IDs
 COURSE_ID_L1 = "tquk_fs_maths_l1"
@@ -627,8 +628,10 @@ def render_exam_prep(level, course_info):
     Practice with mock exams to build confidence and identify areas for improvement.
     """)
     
-    if st.button("📝 Start Mock Exam", key="start_mock_maths"):
-        st.info("Mock exams will be available soon. Contact your tutor for practice papers.")
+    st.markdown("---")
+    
+    # Render actual mock exam
+    render_maths_mock_exam(level)
     
     st.markdown("---")
     

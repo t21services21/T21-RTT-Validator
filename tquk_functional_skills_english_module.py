@@ -6,6 +6,8 @@ Dual-level qualification with Reading, Writing, Speaking, Listening components
 import streamlit as st
 from datetime import datetime
 from tquk_course_assignment import get_learner_enrollments
+from tquk_mock_exams_english import render_mock_exam_tab
+from tquk_pdf_generator import create_pdf_from_markdown
 
 # Course IDs for both levels
 COURSE_ID_L1 = "functional_skills_english_l1"
@@ -289,8 +291,36 @@ def render_materials(level, course_info):
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button(f"📄 Download {component_info['name']} PDF", use_container_width=True):
-            st.success("PDF download feature coming soon!")
+        if st.button(f"📄 Download {component_info['name']} PDF", use_container_width=True, key=f"download_pdf_{component}"):
+            try:
+                # Load content
+                with open('FUNCTIONAL_SKILLS_ENGLISH_ALL_CONTENT.md', 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    section_marker = f"# {level.upper()} - {component_info['name'].upper()}"
+                    if section_marker in content:
+                        section_start = content.find(section_marker)
+                        next_section = content.find("\n# ", section_start + 1)
+                        section_content = content[section_start:next_section] if next_section != -1 else content[section_start:]
+                        
+                        # Generate PDF
+                        pdf_buffer = create_pdf_from_markdown(
+                            section_content,
+                            title=f"{level} {component_info['name']} - TQUK Functional Skills English"
+                        )
+                        
+                        # Offer download
+                        st.download_button(
+                            label=f"⬇️ Download {component_info['name']} PDF",
+                            data=pdf_buffer,
+                            file_name=f"TQUK_English_{level.replace(' ', '_')}_{component_info['name']}.pdf",
+                            mime="application/pdf",
+                            use_container_width=True
+                        )
+                        st.success("✅ PDF ready for download!")
+                    else:
+                        st.error("Content not found for PDF generation.")
+            except Exception as e:
+                st.error(f"PDF generation error: {str(e)}")
     with col2:
         if st.button(f"✅ Mark {component_info['name']} Complete", use_container_width=True):
             st.success(f"{component_info['name']} marked as studied!")
@@ -393,33 +423,8 @@ def render_practice(level, course_info):
 
 
 def render_mock_exam(level, course_info):
-    """Render mock exam tab"""
-    st.subheader("🎯 Mock Examination")
-    
-    st.warning("""
-    **⏱️ Timed Mock Exam**
-    
-    This is a practice exam under timed conditions.
-    
-    **Reading:** 45 minutes (L1) / 60 minutes (L2)  
-    **Writing:** 45 minutes (L1) / 60 minutes (L2)
-    """)
-    
-    exam_type = st.radio("Select Exam:", ["Reading", "Writing"], horizontal=True)
-    
-    st.markdown("---")
-    
-    if exam_type == "Reading":
-        st.markdown(f"### 📖 {level} Reading Mock Exam")
-        
-        if st.button("🚀 Start Reading Exam", use_container_width=True):
-            st.info("Mock exam feature coming soon! This will include full practice papers.")
-    
-    else:
-        st.markdown(f"### ✍️ {level} Writing Mock Exam")
-        
-        if st.button("🚀 Start Writing Exam", use_container_width=True):
-            st.info("Mock exam feature coming soon! This will include full practice papers.")
+    """Render mock exam tab - now with full mock exams!"""
+    render_mock_exam_tab(level)
 
 
 def render_evidence(level, course_info, learner_email):
