@@ -5803,35 +5803,41 @@ elif tool == "🎓 Learning Portal":
                 st.success("Materials available in project folder: LEVEL2_IT_USER_SKILLS_COMPLETE.md")
         tab_index += 1
     
-    # Materials tab
-    with tabs[tab_index]:
-        from lms_system import render_lms_feature
-        render_lms_feature("learning_materials")
-    tab_index += 1
+    # Materials tab (only if in tab_list)
+    if "📚 Materials" in tab_list:
+        with tabs[tab_index]:
+            from lms_system import render_lms_feature
+            render_lms_feature("learning_materials")
+        tab_index += 1
     
-    # Videos tab
-    with tabs[tab_index]:
-        from lms_system import render_lms_feature
-        render_lms_feature("video_library")
-    tab_index += 1
+    # Videos tab (only if in tab_list)
+    if "🎥 Videos" in tab_list:
+        with tabs[tab_index]:
+            from lms_system import render_lms_feature
+            render_lms_feature("video_library")
+        tab_index += 1
     
-    # News tab
-    with tabs[tab_index]:
-        from lms_system import render_lms_feature
-        render_lms_feature("announcements")
-    tab_index += 1
+    # News tab (only if in tab_list)
+    if "📢 News" in tab_list:
+        with tabs[tab_index]:
+            from lms_system import render_lms_feature
+            render_lms_feature("announcements")
+        tab_index += 1
     
-    # Assignments tab
-    with tabs[tab_index]:
-        from lms_system import render_lms_feature
-        render_lms_feature("assignments")
-    tab_index += 1
+    # Assignments tab (only if in tab_list)
+    if "📝 Assignments" in tab_list:
+        with tabs[tab_index]:
+            from lms_system import render_lms_feature
+            render_lms_feature("assignments")
+        tab_index += 1
     
-    # Practice Quizzes tab
-    with tabs[tab_index]:
-        # Practice quizzes AFTER learning
-        from lms_system import render_lms_feature
-        render_lms_feature("quizzes")
+    # Practice Quizzes tab (only if in tab_list)
+    if "🎯 Practice Quizzes" in tab_list:
+        with tabs[tab_index]:
+            # Practice quizzes AFTER learning
+            from lms_system import render_lms_feature
+            render_lms_feature("quizzes")
+        tab_index += 1
 
 elif tool == "👨‍🏫 Teaching & Assessment":
     st.header("👨‍🏫 Teaching & Assessment Hub")
