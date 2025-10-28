@@ -93,23 +93,110 @@ EVIDENCE_REQUIREMENTS = {
     }
 }
 
-# Unit classifications for Level 3 Adult Care
+# Unit classifications for ALL TQUK COURSES
 UNIT_CLASSIFICATIONS = {
-    # Mandatory Units
-    1: {"name": "Duty of Care", "type": "knowledge_unit"},
-    2: {"name": "Equality, Diversity & Inclusion", "type": "knowledge_unit"},
-    3: {"name": "Person-Centred Care", "type": "mixed_unit"},
-    4: {"name": "Safeguarding in Care Settings", "type": "mixed_unit"},
-    5: {"name": "Effective Communication", "type": "mixed_unit"},
-    6: {"name": "Health & Wellbeing", "type": "mixed_unit"},
-    7: {"name": "Continuous Professional Development", "type": "knowledge_unit"},
+    # ============================================
+    # LEVEL 3 DIPLOMA IN ADULT CARE
+    # ============================================
+    "level3_adult_care": {
+        1: {"name": "Duty of Care", "type": "knowledge_unit"},
+        2: {"name": "Equality, Diversity & Inclusion", "type": "knowledge_unit"},
+        3: {"name": "Person-Centred Care", "type": "mixed_unit"},
+        4: {"name": "Safeguarding in Care Settings", "type": "mixed_unit"},
+        5: {"name": "Effective Communication", "type": "mixed_unit"},
+        6: {"name": "Health & Wellbeing", "type": "mixed_unit"},
+        7: {"name": "Continuous Professional Development", "type": "knowledge_unit"},
+        8: {"name": "Dementia Care", "type": "competence_unit"},
+        9: {"name": "Mental Health Awareness", "type": "knowledge_unit"},
+        10: {"name": "End of Life Care", "type": "competence_unit"},
+        11: {"name": "Medication Management", "type": "competence_unit"},
+        12: {"name": "Moving and Handling", "type": "competence_unit"},
+    },
     
-    # Optional Units (examples)
-    8: {"name": "Dementia Care", "type": "competence_unit"},
-    9: {"name": "Mental Health Awareness", "type": "knowledge_unit"},
-    10: {"name": "End of Life Care", "type": "competence_unit"},
-    11: {"name": "Medication Management", "type": "competence_unit"},
-    12: {"name": "Moving and Handling", "type": "competence_unit"},
+    # ============================================
+    # LEVEL 2 IT USER SKILLS
+    # ============================================
+    "level2_it_skills": {
+        1: {"name": "IT User Fundamentals", "type": "mixed_unit"},
+        2: {"name": "Using Email", "type": "competence_unit"},
+        3: {"name": "Using the Internet", "type": "competence_unit"},
+        4: {"name": "Word Processing Software", "type": "competence_unit"},
+        5: {"name": "Spreadsheet Software", "type": "competence_unit"},
+        6: {"name": "Database Software", "type": "competence_unit"},
+        7: {"name": "Presentation Software", "type": "competence_unit"},
+        8: {"name": "IT Security for Users", "type": "knowledge_unit"},
+    },
+    
+    # ============================================
+    # LEVEL 2 CUSTOMER SERVICE
+    # ============================================
+    "level2_customer_service": {
+        1: {"name": "Customer Service Principles", "type": "knowledge_unit"},
+        2: {"name": "Delivering Customer Service", "type": "competence_unit"},
+        3: {"name": "Customer Communication", "type": "mixed_unit"},
+        4: {"name": "Handling Customer Complaints", "type": "competence_unit"},
+        5: {"name": "Teamwork in Customer Service", "type": "mixed_unit"},
+        6: {"name": "Understanding the Organisation", "type": "knowledge_unit"},
+    },
+    
+    # ============================================
+    # LEVEL 2 BUSINESS ADMINISTRATION
+    # ============================================
+    "level2_business_admin": {
+        1: {"name": "Business Communication", "type": "mixed_unit"},
+        2: {"name": "Principles of Business", "type": "knowledge_unit"},
+        3: {"name": "Principles of Administration", "type": "knowledge_unit"},
+        4: {"name": "Document Production", "type": "competence_unit"},
+        5: {"name": "Manage Diary Systems", "type": "competence_unit"},
+        6: {"name": "Produce Business Documents", "type": "competence_unit"},
+        7: {"name": "Handle Mail", "type": "competence_unit"},
+        8: {"name": "Store and Retrieve Information", "type": "competence_unit"},
+    },
+    
+    # ============================================
+    # LEVEL 2 ADULT SOCIAL CARE
+    # ============================================
+    "level2_adult_social_care": {
+        1: {"name": "Introduction to Care", "type": "knowledge_unit"},
+        2: {"name": "Duty of Care", "type": "knowledge_unit"},
+        3: {"name": "Equality and Inclusion", "type": "knowledge_unit"},
+        4: {"name": "Safeguarding", "type": "mixed_unit"},
+        5: {"name": "Communication", "type": "mixed_unit"},
+        6: {"name": "Personal Development", "type": "knowledge_unit"},
+        7: {"name": "Health and Safety", "type": "mixed_unit"},
+        8: {"name": "Person-Centred Support", "type": "competence_unit"},
+    },
+    
+    # ============================================
+    # LEVEL 3 TEACHING & LEARNING
+    # ============================================
+    "level3_teaching_learning": {
+        1: {"name": "Understanding Roles in Education", "type": "knowledge_unit"},
+        2: {"name": "Communication in Education", "type": "mixed_unit"},
+        3: {"name": "Equality, Diversity & Inclusion", "type": "knowledge_unit"},
+        4: {"name": "Safeguarding in Education", "type": "mixed_unit"},
+        5: {"name": "Supporting Learning Activities", "type": "competence_unit"},
+        6: {"name": "Assessment for Learning", "type": "mixed_unit"},
+        7: {"name": "Professional Development", "type": "knowledge_unit"},
+    },
+    
+    # ============================================
+    # FUNCTIONAL SKILLS ENGLISH
+    # ============================================
+    "functional_skills_english": {
+        1: {"name": "Reading Skills", "type": "competence_unit"},
+        2: {"name": "Writing Skills", "type": "competence_unit"},
+        3: {"name": "Speaking, Listening & Communication", "type": "competence_unit"},
+    },
+    
+    # ============================================
+    # FUNCTIONAL SKILLS MATHS
+    # ============================================
+    "functional_skills_maths": {
+        1: {"name": "Number and the Number System", "type": "competence_unit"},
+        2: {"name": "Common Measures, Shape and Space", "type": "competence_unit"},
+        3: {"name": "Handling Information and Data", "type": "competence_unit"},
+    },
 }
 
 
@@ -129,10 +216,20 @@ def render_evidence_requirements_guide(unit_number=None):
         render_general_requirements_overview()
 
 
-def render_unit_specific_requirements(unit_number):
+def render_unit_specific_requirements(unit_number, course_id="level3_adult_care"):
     """Show detailed requirements for a specific unit"""
     
-    unit_info = UNIT_CLASSIFICATIONS[unit_number]
+    # Get course-specific units
+    if course_id not in UNIT_CLASSIFICATIONS:
+        course_id = "level3_adult_care"  # Default fallback
+    
+    course_units = UNIT_CLASSIFICATIONS[course_id]
+    
+    if unit_number not in course_units:
+        st.warning(f"Unit {unit_number} not found for this course")
+        return
+    
+    unit_info = course_units[unit_number]
     unit_name = unit_info['name']
     unit_type = unit_info['type']
     requirements = EVIDENCE_REQUIREMENTS[unit_type]
@@ -399,13 +496,19 @@ def render_unit_evidence_checklist(unit_number):
 
 
 # Quick helper function
-def get_unit_evidence_summary(unit_number):
+def get_unit_evidence_summary(unit_number, course_id="level3_adult_care"):
     """Get a quick summary of evidence requirements for a unit"""
     
-    if unit_number not in UNIT_CLASSIFICATIONS:
-        return "Unit not found"
+    # Get course-specific units
+    if course_id not in UNIT_CLASSIFICATIONS:
+        course_id = "level3_adult_care"  # Default fallback
     
-    unit_info = UNIT_CLASSIFICATIONS[unit_number]
+    course_units = UNIT_CLASSIFICATIONS[course_id]
+    
+    if unit_number not in course_units:
+        return f"Unit {unit_number} not found for this course"
+    
+    unit_info = course_units[unit_number]
     unit_type = unit_info['type']
     requirements = EVIDENCE_REQUIREMENTS[unit_type]
     

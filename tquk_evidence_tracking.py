@@ -148,9 +148,9 @@ def render_evidence_submission_form(learner_email, course_id, unit_number):
     with st.expander("❓ What evidence do I need for this unit?", expanded=False):
         try:
             from tquk_evidence_requirements_guide import get_unit_evidence_summary
-            summary = get_unit_evidence_summary(unit_number)
+            summary = get_unit_evidence_summary(unit_number, course_id)
             st.markdown(summary)
-        except:
+        except Exception as e:
             st.info("""
             **General Evidence Requirements:**
             - **Observations:** Assessor watches you work (2-3 per competence unit)
