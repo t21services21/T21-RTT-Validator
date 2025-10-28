@@ -144,6 +144,25 @@ def render_evidence_submission_form(learner_email, course_id, unit_number):
     
     st.subheader(f"📝 Submit Evidence for Unit {unit_number}")
     
+    # Show evidence requirements help
+    with st.expander("❓ What evidence do I need for this unit?", expanded=False):
+        try:
+            from tquk_evidence_requirements_guide import get_unit_evidence_summary
+            summary = get_unit_evidence_summary(unit_number)
+            st.markdown(summary)
+        except:
+            st.info("""
+            **General Evidence Requirements:**
+            - **Observations:** Assessor watches you work (2-3 per competence unit)
+            - **Witness Statements:** Supervisor confirms your competence (1-2 per unit)
+            - **Reflective Accounts:** Written reflection on your practice (1-2 per unit)
+            - **Product Evidence:** Documents you've created (as needed)
+            - **Professional Discussion:** Discussion with assessor (1 per knowledge unit)
+            - **Case Study:** Detailed analysis of care situation (optional)
+            
+            **Minimum:** 2-4 pieces of evidence covering all learning outcomes
+            """)
+    
     # Evidence type
     evidence_type = st.selectbox(
         "Evidence Type",
@@ -156,7 +175,8 @@ def render_evidence_submission_form(learner_email, course_id, unit_number):
             "case_study"
         ],
         format_func=lambda x: x.replace('_', ' ').title(),
-        key=f"evidence_type_{unit_number}"
+        key=f"evidence_type_{unit_number}",
+        help="Select the type of evidence you're submitting"
     )
     
     # Description
