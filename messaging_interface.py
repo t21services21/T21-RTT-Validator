@@ -185,22 +185,36 @@ def render_channel_chat(user_email: str, user_name: str):
     with st.form(key=f"channel_message_form_{channel_id}", clear_on_submit=True):
         message_text = st.text_area("Type a message...", key=f"msg_input_{channel_id}", height=100)
         
-        col1, col2, col3 = st.columns([1, 1, 4])
-        with col1:
-            send_button = st.form_submit_button("📤 Send", type="primary")
-        with col2:
-            attach_button = st.form_submit_button("📎 Attach")
+        # File upload (optional)
+        uploaded_file = st.file_uploader("📎 Attach file (optional)", type=['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'txt'], key=f"file_upload_channel_{channel_id}")
         
-        if send_button and message_text.strip():
-            # Check for @mentions
-            mentions = extract_mentions(message_text)
-            
-            if send_channel_message(channel_id, user_email, user_name, message_text, mentions):
-                st.success("Message sent!")
-                time.sleep(0.5)
-                st.rerun()
+        col1, col2 = st.columns([1, 5])
+        with col1:
+            send_button = st.form_submit_button("📤 Send", type="primary", use_container_width=True)
+        
+        if send_button:
+            if not message_text.strip() and not uploaded_file:
+                st.error("❌ Please type a message or attach a file")
             else:
-                st.error("Failed to send message")
+                # Prepare message content
+                final_message = message_text.strip()
+                
+                # If file attached, add file info to message
+                if uploaded_file:
+                    file_info = f"\n\n📎 **Attached:** {uploaded_file.name} ({uploaded_file.size} bytes)"
+                    final_message = final_message + file_info if final_message else f"📎 Sent a file: {uploaded_file.name}"
+                
+                # Check for @mentions
+                mentions = extract_mentions(final_message)
+                
+                if send_channel_message(channel_id, user_email, user_name, final_message, mentions):
+                    st.success("✅ Message sent!")
+                    if uploaded_file:
+                        st.info(f"📎 File attached: {uploaded_file.name}")
+                    time.sleep(0.5)
+                    st.rerun()
+                else:
+                    st.error("❌ Failed to send message")
 
 
 def render_dm_chat(user_email: str, user_name: str):
@@ -249,19 +263,33 @@ def render_dm_chat(user_email: str, user_name: str):
     with st.form(key=f"dm_message_form_{other_email}", clear_on_submit=True):
         message_text = st.text_area("Type a message...", key=f"dm_input_{other_email}", height=100)
         
-        col1, col2, col3 = st.columns([1, 1, 4])
-        with col1:
-            send_button = st.form_submit_button("📤 Send", type="primary")
-        with col2:
-            attach_button = st.form_submit_button("📎 Attach")
+        # File upload (optional)
+        uploaded_file = st.file_uploader("📎 Attach file (optional)", type=['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'txt'], key=f"file_upload_{other_email}")
         
-        if send_button and message_text.strip():
-            if send_direct_message(user_email, user_name, other_email, other_name, message_text):
-                st.success("Message sent!")
-                time.sleep(0.5)
-                st.rerun()
+        col1, col2 = st.columns([1, 5])
+        with col1:
+            send_button = st.form_submit_button("📤 Send", type="primary", use_container_width=True)
+        
+        if send_button:
+            if not message_text.strip() and not uploaded_file:
+                st.error("❌ Please type a message or attach a file")
             else:
-                st.error("Failed to send message")
+                # Prepare message content
+                final_message = message_text.strip()
+                
+                # If file attached, add file info to message
+                if uploaded_file:
+                    file_info = f"\n\n📎 **Attached:** {uploaded_file.name} ({uploaded_file.size} bytes)"
+                    final_message = final_message + file_info if final_message else f"📎 Sent a file: {uploaded_file.name}"
+                
+                if send_direct_message(user_email, user_name, other_email, other_name, final_message):
+                    st.success("✅ Message sent!")
+                    if uploaded_file:
+                        st.info(f"📎 File attached: {uploaded_file.name}")
+                    time.sleep(0.5)
+                    st.rerun()
+                else:
+                    st.error("❌ Failed to send message")
 
 
 def render_message(msg: Dict, current_user_email: str):
