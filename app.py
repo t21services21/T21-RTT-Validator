@@ -1703,6 +1703,7 @@ elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
         "💬 Messages",
         "⚙️ Administration",
         "🛡️ Admin Security Monitor",
+        "🚨 SOC Analyst Dashboard",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
@@ -1745,6 +1746,7 @@ elif user_role == 'admin':
         "💬 Messages",
         "⚙️ Administration",
         "🛡️ Admin Security Monitor",
+        "🚨 SOC Analyst Dashboard",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
@@ -1791,6 +1793,7 @@ elif user_role == 'staff':
         "💬 Messages",
         "⚙️ Administration",
         "🛡️ Admin Security Monitor",
+        "🚨 SOC Analyst Dashboard",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
@@ -7634,6 +7637,9 @@ elif tool == "💬 Messages":
 
 elif tool == "🛡️ Admin Security Monitor":
     st.switch_page("pages/admin_security_monitor.py")
+
+elif tool == "🚨 SOC Analyst Dashboard":
+    st.switch_page("pages/soc_analyst_dashboard.py")
 
 elif tool == "📧 Contact & Support":
     st.header("📧 Contact & Support")
