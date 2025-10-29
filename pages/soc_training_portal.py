@@ -1,4 +1,4 @@
-a"""
+"""
 T21 SOC ANALYST TRAINING PORTAL
 Complete cybersecurity training platform - Better than TryHackMe!
 
