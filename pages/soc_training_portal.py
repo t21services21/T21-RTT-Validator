@@ -25,6 +25,8 @@ st.set_page_config(page_title="SOC Training Portal", page_icon="🎓", layout="w
 # Check if user is logged in
 if 'user_email' not in st.session_state or not st.session_state.get('logged_in'):
     st.error("🔒 Please log in to access the SOC Training Portal")
+    if st.button("🔐 Go to Login"):
+        st.switch_page("app.py")
     st.stop()
 
 user_email = st.session_state.user_email

@@ -22,6 +22,8 @@ st.set_page_config(page_title="Cyber Lab", page_icon="🔬", layout="wide")
 # Check login
 if 'user_email' not in st.session_state or not st.session_state.get('logged_in'):
     st.error("🔒 Please log in to access the Cyber Lab")
+    if st.button("🔐 Go to Login"):
+        st.switch_page("app.py")
     st.stop()
 
 user_email = st.session_state.user_email

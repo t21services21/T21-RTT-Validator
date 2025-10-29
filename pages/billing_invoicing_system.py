@@ -22,6 +22,8 @@ st.set_page_config(page_title="Billing System", page_icon="💰", layout="wide")
 # Check if admin/staff
 if 'user_email' not in st.session_state or not st.session_state.get('logged_in'):
     st.error("🔒 Please log in")
+    if st.button("🔐 Go to Login"):
+        st.switch_page("app.py")
     st.stop()
 
 user_email = st.session_state.user_email
