@@ -1704,6 +1704,11 @@ elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
         "⚙️ Administration",
         "🛡️ Admin Security Monitor",
         "🚨 SOC Analyst Dashboard",
+        "🎓 SOC Training Portal",
+        "🔬 Cyber Lab",
+        "💼 Client Acquisition",
+        "🛡️ SOC Operations",
+        "💰 Billing & Invoicing",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
@@ -1747,6 +1752,11 @@ elif user_role == 'admin':
         "⚙️ Administration",
         "🛡️ Admin Security Monitor",
         "🚨 SOC Analyst Dashboard",
+        "🎓 SOC Training Portal",
+        "🔬 Cyber Lab",
+        "💼 Client Acquisition",
+        "🛡️ SOC Operations",
+        "💰 Billing & Invoicing",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
@@ -1794,6 +1804,11 @@ elif user_role == 'staff':
         "⚙️ Administration",
         "🛡️ Admin Security Monitor",
         "🚨 SOC Analyst Dashboard",
+        "🎓 SOC Training Portal",
+        "🔬 Cyber Lab",
+        "💼 Client Acquisition",
+        "🛡️ SOC Operations",
+        "💰 Billing & Invoicing",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
@@ -7640,6 +7655,21 @@ elif tool == "🛡️ Admin Security Monitor":
 
 elif tool == "🚨 SOC Analyst Dashboard":
     st.switch_page("pages/soc_analyst_dashboard.py")
+
+elif tool == "🎓 SOC Training Portal":
+    st.switch_page("pages/soc_training_portal.py")
+
+elif tool == "🔬 Cyber Lab":
+    st.switch_page("pages/cyber_lab_environment.py")
+
+elif tool == "💼 Client Acquisition":
+    st.switch_page("pages/client_acquisition_system.py")
+
+elif tool == "🛡️ SOC Operations":
+    st.switch_page("pages/soc_operations_platform.py")
+
+elif tool == "💰 Billing & Invoicing":
+    st.switch_page("pages/billing_invoicing_system.py")
 
 elif tool == "📧 Contact & Support":
     st.header("📧 Contact & Support")
