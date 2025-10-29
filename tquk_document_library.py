@@ -506,23 +506,14 @@ def render_tquk_documents():
     user_role = st.session_state.get('user_role', st.session_state.get('user_type', 'student'))
     user_email = st.session_state.get('user_email', '')
     
-    # DEBUG: Show what we detected
-    st.info(f"🔍 DEBUG: Detected role = '{user_role}' | Email = '{user_email}'")
-    st.info(f"🔍 DEBUG: user_role in session = '{st.session_state.get('user_role', 'NOT SET')}'")
-    st.info(f"🔍 DEBUG: user_type in session = '{st.session_state.get('user_type', 'NOT SET')}'")
-    
     # Check if super admin
     is_super_admin = (user_role == 'super_admin' or 'admin@t21services' in user_email.lower())
     
     # Only show for admin, tutor, assessor, super_admin, or tester
     allowed_roles = ['admin', 'super_admin', 'tutor', 'assessor', 'staff', 'tester', 'teacher', 'instructor', 'trainer']
     
-    st.info(f"🔍 DEBUG: Is '{user_role}' in allowed_roles? {user_role in allowed_roles}")
-    st.info(f"🔍 DEBUG: Is super_admin? {is_super_admin}")
-    
     if user_role not in allowed_roles and not is_super_admin:
         st.warning("⚠️ Document library is only available for Admin, Tutors, Assessors, and Testers.")
-        st.error(f"❌ Access denied for role: '{user_role}'")
         return
     
     # Map roles to appropriate view
