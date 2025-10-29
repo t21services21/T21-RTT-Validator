@@ -502,8 +502,8 @@ def render_assessor_document_library():
 def render_tquk_documents():
     """Main function to render document library based on user role"""
     
-    # Determine user role
-    user_role = st.session_state.get('user_role', 'student')
+    # Determine user role (check both user_role and user_type for compatibility)
+    user_role = st.session_state.get('user_role', st.session_state.get('user_type', 'student'))
     user_email = st.session_state.get('user_email', '')
     
     # Check if super admin
@@ -513,7 +513,7 @@ def render_tquk_documents():
     allowed_roles = ['admin', 'super_admin', 'tutor', 'assessor', 'staff', 'tester', 'teacher', 'instructor', 'trainer']
     
     if user_role not in allowed_roles and not is_super_admin:
-        st.warning("⚠️ Document library is only available for Admin, Tutors, and Assessors.")
+        st.warning("⚠️ Document library is only available for Admin, Tutors, Assessors, and Testers.")
         return
     
     # Map roles to appropriate view
