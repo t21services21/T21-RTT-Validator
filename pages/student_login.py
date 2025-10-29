@@ -273,9 +273,10 @@ else:
                         if st.button(" Verify & Login", type="primary", key="student_verify_2fa"):
                             if two_fa_code and len(two_fa_code) == 6:
                                 secret = pending_user.get('two_factor_secret')
+                                user_email = pending_user.get('email')
                                 
                                 if verify_2fa_code(secret, two_fa_code):
-                                    update_user_last_login(email)
+                                    update_user_last_login(user_email)
                                     
                                     class SimpleUser:
                                         def __init__(self, data):
@@ -288,12 +289,12 @@ else:
                                     
                                     st.session_state.logged_in = True
                                     st.session_state.user_license = user_obj
-                                    st.session_state.user_email = email
-                                    st.session_state.session_email = email
+                                    st.session_state.user_email = user_email
+                                    st.session_state.session_email = user_email
                                     
                                     # Save to cookie for persistent login (non-blocking)
                                     try:
-                                        save_auth_cookie(email, pending_user.get('password_hash'), pending_user)
+                                        save_auth_cookie(user_email, pending_user.get('password_hash'), pending_user)
                                     except:
                                         pass  # Continue even if cookies fail
                                     
@@ -320,9 +321,9 @@ else:
                         
                         if st.button("✅ Verify Backup Code", key="student_verify_backup"):
                             if backup_code:
-                                if use_backup_code(pending_user.get('email'), backup_code):
-                                    email = pending_user.get('email')
-                                    update_user_last_login(email)
+                                user_email = pending_user.get('email')
+                                if use_backup_code(user_email, backup_code):
+                                    update_user_last_login(user_email)
                                     
                                     class SimpleUser:
                                         def __init__(self, data):
@@ -335,8 +336,8 @@ else:
                                     
                                     st.session_state.logged_in = True
                                     st.session_state.user_license = user_obj
-                                    st.session_state.user_email = email
-                                    st.session_state.session_email = email
+                                    st.session_state.user_email = user_email
+                                    st.session_state.session_email = user_email
                                     
                                     st.session_state.show_2fa_prompt = False
                                     st.session_state.pending_2fa_user = None
