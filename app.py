@@ -1619,6 +1619,7 @@ elif user_role == 'tester':
         "🎓 Learning Portal",                 # All training courses and materials
         "👨‍🏫 Teaching & Assessment",          # Interview prep, certification, teaching tools
         "📚 TQUK Document Library",           # TQUK documents for admin/tutors/assessors
+        "📋 TQUK CDA Documents",              # CDA submission documents
         "🏥 Clinical Workflows",              # Booking, PTL, pathways, episodes, MDT
         "✅ Task Management",                 # Task tracking and management
         "🤖 AI & Automation",                 # AI tools, job automation, AI validators
@@ -1658,6 +1659,7 @@ elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
         # TEACHING & ASSESSMENT
         "👨‍🏫 Teaching & Assessment",
         "📚 TQUK Document Library",
+        "📋 TQUK CDA Documents",
         
         # TQUK QUALIFICATIONS (used together)
         "📚 Level 3 Adult Care",
@@ -1698,6 +1700,7 @@ elif user_role == 'admin':
         # TEACHING & ASSESSMENT
         "👨‍🏫 Teaching & Assessment",
         "📚 TQUK Document Library",
+        "📋 TQUK CDA Documents",
         
         # TQUK QUALIFICATIONS (used together)
         "📚 Level 3 Adult Care",
@@ -1738,6 +1741,7 @@ elif user_role == 'staff':
         # TEACHING & ASSESSMENT
         "👨‍🏫 Teaching & Assessment",
         "📚 TQUK Document Library",
+        "📋 TQUK CDA Documents",
         
         # TQUK QUALIFICATIONS (used together)
         "📚 Level 3 Adult Care",
@@ -7668,6 +7672,9 @@ elif tool == "👨‍🏫 Student Progress Monitor":
 elif tool == "📚 TQUK Document Library":
     from tquk_document_library import render_tquk_documents
     render_tquk_documents()
+
+elif tool == "📋 TQUK CDA Documents":
+    st.switch_page("pages/tquk_cda_documents.py")
 
 # ============================================
 # TQUK QUALIFICATION MODULES
