@@ -745,7 +745,19 @@ with tab1:
         video_url = video_map.get(st.session_state.current_module, "https://www.youtube.com/watch?v=inWWhr5tnEA")
         
         st.info("📺 Watch the video lecture to reinforce what you just read!")
+        st.warning("🔊 **No sound?** Click the video and press the unmute button (🔇), or click the link below to watch on YouTube directly.")
+        
+        # Show video
         st.video(video_url)
+        
+        # Provide direct YouTube link
+        col_yt1, col_yt2 = st.columns([3, 1])
+        with col_yt1:
+            st.markdown(f"**Can't hear audio?** [🎥 Watch on YouTube]({video_url})")
+        with col_yt2:
+            if st.button("🔗 Open in YouTube"):
+                st.markdown(f"[Click here to open]({video_url})")
+                st.info("Video will open in a new tab")
         
         col_vid1, col_vid2 = st.columns(2)
         with col_vid1:
