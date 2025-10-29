@@ -1,4 +1,4 @@
-"""
+a"""
 T21 SOC ANALYST TRAINING PORTAL
 Complete cybersecurity training platform - Better than TryHackMe!
 
@@ -131,9 +131,621 @@ with tab1:
         st.markdown("---")
         st.markdown(f"## 📚 {st.session_state.current_module}")
         
+        # Module content (text to read)
+        module_content = {
+            "Introduction to Cybersecurity": """
+            ## 📖 Module Content
+            
+            ### What is Cybersecurity?
+            
+            Cybersecurity is the practice of protecting systems, networks, and programs from digital attacks. 
+            These cyberattacks are usually aimed at accessing, changing, or destroying sensitive information, 
+            extorting money from users, or interrupting normal business processes.
+            
+            ### The CIA Triad
+            
+            The foundation of cybersecurity is built on three core principles:
+            
+            **1. Confidentiality**
+            - Ensures that information is only accessible to authorized individuals
+            - Examples: Encryption, access controls, authentication
+            - Real-world: Password protection, data encryption
+            
+            **2. Integrity**
+            - Ensures that information is accurate and hasn't been tampered with
+            - Examples: Checksums, digital signatures, version control
+            - Real-world: File integrity monitoring, blockchain
+            
+            **3. Availability**
+            - Ensures that information and resources are accessible when needed
+            - Examples: Redundancy, backups, DDoS protection
+            - Real-world: Load balancing, disaster recovery
+            
+            ### Common Threats
+            
+            **Malware:** Malicious software designed to harm or exploit systems
+            - Viruses, worms, trojans, ransomware, spyware
+            
+            **Phishing:** Social engineering attacks to steal credentials
+            - Email phishing, spear phishing, whaling
+            
+            **DDoS Attacks:** Overwhelming systems with traffic
+            - Volumetric, protocol, application layer attacks
+            
+            **Insider Threats:** Threats from within the organization
+            - Malicious insiders, negligent employees
+            
+            ### Defense in Depth
+            
+            Multiple layers of security controls:
+            1. Physical security
+            2. Network security
+            3. Endpoint security
+            4. Application security
+            5. Data security
+            6. User education
+            
+            ### Key Takeaways
+            
+            ✅ Cybersecurity protects against digital threats
+            ✅ CIA Triad is the foundation (Confidentiality, Integrity, Availability)
+            ✅ Multiple threat types require multiple defenses
+            ✅ Defense in depth provides layered protection
+            """,
+            
+            "Network Security Basics": """
+            ## 📖 Module Content
+            
+            ### Network Fundamentals
+            
+            **TCP/IP Model:**
+            - Application Layer (HTTP, FTP, SSH)
+            - Transport Layer (TCP, UDP)
+            - Internet Layer (IP, ICMP)
+            - Network Access Layer (Ethernet, Wi-Fi)
+            
+            ### Common Ports
+            
+            | Port | Protocol | Use |
+            |------|----------|-----|
+            | 21   | FTP      | File Transfer |
+            | 22   | SSH      | Secure Shell |
+            | 23   | Telnet   | Remote Access (Insecure) |
+            | 25   | SMTP     | Email |
+            | 53   | DNS      | Domain Name System |
+            | 80   | HTTP     | Web Traffic |
+            | 443  | HTTPS    | Secure Web Traffic |
+            | 3389 | RDP      | Remote Desktop |
+            
+            ### Firewalls
+            
+            **Types:**
+            - Packet filtering
+            - Stateful inspection
+            - Application layer
+            - Next-generation (NGFW)
+            
+            **Rules:**
+            - Allow/Deny traffic based on:
+              - Source IP
+              - Destination IP
+              - Port numbers
+              - Protocols
+            
+            ### IDS vs IPS
+            
+            **IDS (Intrusion Detection System):**
+            - Monitors network traffic
+            - Alerts on suspicious activity
+            - Passive monitoring
+            
+            **IPS (Intrusion Prevention System):**
+            - Monitors AND blocks threats
+            - Active prevention
+            - Can stop attacks in real-time
+            
+            ### VPNs
+            
+            **Purpose:**
+            - Secure remote access
+            - Encrypt traffic
+            - Hide IP addresses
+            
+            **Types:**
+            - Site-to-site VPN
+            - Remote access VPN
+            - SSL/TLS VPN
+            
+            ### Network Segmentation
+            
+            **Why segment?**
+            - Limit attack spread
+            - Improve performance
+            - Easier management
+            - Compliance requirements
+            
+            **Methods:**
+            - VLANs
+            - Subnets
+            - DMZ (Demilitarized Zone)
+            - Zero Trust Architecture
+            
+            ### Key Takeaways
+            
+            ✅ Understand TCP/IP and common ports
+            ✅ Firewalls filter traffic based on rules
+            ✅ IDS detects, IPS prevents
+            ✅ VPNs provide secure remote access
+            ✅ Network segmentation limits attack spread
+            """,
+            
+            "SOC Fundamentals": """
+            ## 📖 Module Content
+            
+            ### What is a SOC?
+            
+            A Security Operations Center (SOC) is a centralized unit that deals with security 
+            issues on an organizational and technical level.
+            
+            **Purpose:**
+            - Monitor security events 24/7
+            - Detect and respond to threats
+            - Investigate incidents
+            - Maintain security posture
+            
+            ### SOC Team Structure
+            
+            **Tier 1 Analyst (Alert Triage):**
+            - Monitor alerts
+            - Initial investigation
+            - Escalate to Tier 2
+            - 80% of SOC work
+            
+            **Tier 2 Analyst (Incident Response):**
+            - Deep investigation
+            - Threat hunting
+            - Incident response
+            - Create playbooks
+            
+            **Tier 3 Analyst (Threat Hunter):**
+            - Advanced threat hunting
+            - Malware analysis
+            - Threat intelligence
+            - Security research
+            
+            **SOC Manager:**
+            - Team leadership
+            - Metrics and reporting
+            - Process improvement
+            - Stakeholder communication
+            
+            ### SOC Workflow
+            
+            **1. Detection**
+            - SIEM alerts
+            - IDS/IPS alerts
+            - EDR alerts
+            - User reports
+            
+            **2. Triage**
+            - Is it a real threat?
+            - What's the severity?
+            - Who's affected?
+            - What's the impact?
+            
+            **3. Investigation**
+            - Gather evidence
+            - Analyze logs
+            - Check threat intelligence
+            - Determine root cause
+            
+            **4. Response**
+            - Contain the threat
+            - Eradicate malware
+            - Recover systems
+            - Document everything
+            
+            **5. Reporting**
+            - Incident report
+            - Lessons learned
+            - Metrics and KPIs
+            - Executive summary
+            
+            ### Key Tools
+            
+            - **SIEM:** Splunk, QRadar, Sentinel
+            - **EDR:** CrowdStrike, Carbon Black
+            - **Threat Intel:** MISP, ThreatConnect
+            - **Ticketing:** ServiceNow, Jira
+            - **Analysis:** Wireshark, Volatility
+            
+            ### Metrics & KPIs
+            
+            - Mean Time to Detect (MTTD)
+            - Mean Time to Respond (MTTR)
+            - Number of incidents
+            - False positive rate
+            - SLA compliance
+            
+            ### Key Takeaways
+            
+            ✅ SOC provides 24/7 security monitoring
+            ✅ Three tiers of analysts (Triage, Response, Hunter)
+            ✅ Standard workflow: Detect → Triage → Investigate → Respond → Report
+            ✅ Multiple tools work together
+            ✅ Metrics measure effectiveness
+            """,
+            
+            "SIEM Tools & Log Analysis": """
+            ## 📖 Module Content
+            
+            ### What is SIEM?
+            
+            Security Information and Event Management (SIEM) is a solution that helps organizations 
+            detect, analyze, and respond to security threats before they harm business operations.
+            
+            **Key Functions:**
+            - Log collection and aggregation
+            - Real-time event correlation
+            - Alert generation
+            - Compliance reporting
+            - Forensic analysis
+            
+            ### Popular SIEM Platforms
+            
+            **Splunk**
+            - Industry leader
+            - Powerful search (SPL)
+            - Extensive integrations
+            - Expensive but feature-rich
+            
+            **IBM QRadar**
+            - Strong correlation engine
+            - AI-powered analytics
+            - Good for enterprises
+            - Complex but powerful
+            
+            **Microsoft Sentinel**
+            - Cloud-native
+            - Azure integration
+            - AI and ML built-in
+            - Cost-effective
+            
+            **Elastic (ELK Stack)**
+            - Open source option
+            - Highly customizable
+            - Good for log analysis
+            - Requires more setup
+            
+            ### Log Sources
+            
+            **Network Devices:**
+            - Firewalls
+            - Routers and switches
+            - IDS/IPS
+            - VPN concentrators
+            
+            **Servers:**
+            - Windows Event Logs
+            - Linux Syslog
+            - Application logs
+            - Database logs
+            
+            **Security Tools:**
+            - Antivirus/EDR
+            - Web proxies
+            - Email gateways
+            - DLP systems
+            
+            **Cloud Services:**
+            - AWS CloudTrail
+            - Azure Activity Logs
+            - Office 365 logs
+            - SaaS application logs
+            
+            ### Log Analysis Techniques
+            
+            **1. Search and Filter**
+            ```
+            index=security sourcetype=firewall action=blocked
+            | stats count by src_ip
+            | sort -count
+            ```
+            
+            **2. Correlation**
+            - Connect related events
+            - Identify patterns
+            - Detect multi-stage attacks
+            
+            **3. Baseline and Anomaly Detection**
+            - Establish normal behavior
+            - Alert on deviations
+            - Machine learning helps
+            
+            **4. Threat Intelligence Integration**
+            - Check IPs against threat feeds
+            - Identify known malicious domains
+            - Correlate with IOCs
+            
+            ### Common Use Cases
+            
+            **Failed Login Attempts:**
+            - Detect brute force attacks
+            - Identify compromised accounts
+            - Geographic anomalies
+            
+            **Malware Detection:**
+            - Suspicious file downloads
+            - Command and control traffic
+            - Unusual process execution
+            
+            **Data Exfiltration:**
+            - Large data transfers
+            - Unusual destinations
+            - After-hours activity
+            
+            **Insider Threats:**
+            - Privilege escalation
+            - Access to sensitive data
+            - Policy violations
+            
+            ### Creating Effective Searches
+            
+            **Best Practices:**
+            - Start broad, then narrow
+            - Use time ranges wisely
+            - Leverage field extractions
+            - Save useful searches
+            - Create dashboards
+            
+            **Example Search:**
+            ```
+            index=windows EventCode=4625
+            | stats count by Account_Name, src_ip
+            | where count > 5
+            ```
+            
+            ### Dashboards and Alerts
+            
+            **Dashboard Components:**
+            - Real-time metrics
+            - Trend charts
+            - Top talkers
+            - Geographic maps
+            - Alert status
+            
+            **Alert Configuration:**
+            - Define trigger conditions
+            - Set severity levels
+            - Configure notifications
+            - Avoid alert fatigue
+            
+            ### Key Takeaways
+            
+            ✅ SIEM aggregates and analyzes security logs
+            ✅ Multiple log sources provide visibility
+            ✅ Correlation detects complex attacks
+            ✅ Effective searches require practice
+            ✅ Dashboards and alerts enable proactive monitoring
+            """,
+            
+            "Incident Detection & Response": """
+            ## 📖 Module Content
+            
+            ### Incident Response Lifecycle
+            
+            The NIST Incident Response framework consists of four main phases:
+            
+            **1. Preparation**
+            - Develop IR plan
+            - Train IR team
+            - Deploy tools
+            - Create playbooks
+            - Establish communication channels
+            
+            **2. Detection & Analysis**
+            - Monitor alerts
+            - Identify incidents
+            - Determine scope
+            - Assess severity
+            - Document findings
+            
+            **3. Containment, Eradication & Recovery**
+            - Contain the threat
+            - Remove malware
+            - Patch vulnerabilities
+            - Restore systems
+            - Verify recovery
+            
+            **4. Post-Incident Activity**
+            - Lessons learned
+            - Update procedures
+            - Improve defenses
+            - Report to stakeholders
+            
+            ### Indicators of Compromise (IOCs)
+            
+            **Network IOCs:**
+            - Suspicious IP addresses
+            - Malicious domains
+            - Unusual ports
+            - C2 traffic patterns
+            
+            **Host IOCs:**
+            - Malicious file hashes
+            - Registry modifications
+            - Suspicious processes
+            - Unauthorized accounts
+            
+            **Behavioral IOCs:**
+            - Unusual login times
+            - Lateral movement
+            - Data staging
+            - Privilege escalation
+            
+            ### Incident Classification
+            
+            **Severity Levels:**
+            
+            **Critical:**
+            - Active data breach
+            - Ransomware outbreak
+            - Critical system compromise
+            - Response: Immediate, all hands
+            
+            **High:**
+            - Malware infection
+            - Unauthorized access
+            - DDoS attack
+            - Response: Within 1 hour
+            
+            **Medium:**
+            - Policy violations
+            - Suspicious activity
+            - Failed attacks
+            - Response: Within 4 hours
+            
+            **Low:**
+            - False positives
+            - Minor violations
+            - Informational alerts
+            - Response: Next business day
+            
+            ### Containment Strategies
+            
+            **Short-term Containment:**
+            - Isolate affected systems
+            - Block malicious IPs
+            - Disable compromised accounts
+            - Preserve evidence
+            
+            **Long-term Containment:**
+            - Apply patches
+            - Rebuild systems
+            - Implement additional controls
+            - Monitor for reinfection
+            
+            ### Evidence Collection
+            
+            **What to Collect:**
+            - System logs
+            - Network traffic captures
+            - Memory dumps
+            - Disk images
+            - Screenshots
+            - Timeline of events
+            
+            **Chain of Custody:**
+            - Document who handled evidence
+            - When it was collected
+            - Where it's stored
+            - Any modifications made
+            
+            ### Incident Response Tools
+            
+            **Analysis Tools:**
+            - Wireshark (network analysis)
+            - Volatility (memory forensics)
+            - Autopsy (disk forensics)
+            - Sysinternals (Windows analysis)
+            
+            **Response Tools:**
+            - EDR platforms
+            - SOAR platforms
+            - Forensic toolkits
+            - Backup/recovery tools
+            
+            ### Communication During Incidents
+            
+            **Internal Communication:**
+            - IR team coordination
+            - Management updates
+            - IT team collaboration
+            - Regular status meetings
+            
+            **External Communication:**
+            - Law enforcement (if needed)
+            - Customers (if affected)
+            - Regulators (if required)
+            - Media (if necessary)
+            
+            ### Common Incident Types
+            
+            **Malware Infections:**
+            - Identify patient zero
+            - Determine spread
+            - Remove malware
+            - Prevent reinfection
+            
+            **Phishing Attacks:**
+            - Identify victims
+            - Reset credentials
+            - Block sender
+            - User education
+            
+            **Data Breaches:**
+            - Determine what was accessed
+            - Identify how breach occurred
+            - Notify affected parties
+            - Regulatory reporting
+            
+            **Insider Threats:**
+            - Investigate activity
+            - Preserve evidence
+            - Coordinate with HR/Legal
+            - Implement controls
+            
+            ### Post-Incident Review
+            
+            **Questions to Answer:**
+            - What happened?
+            - How did it happen?
+            - What was the impact?
+            - What worked well?
+            - What needs improvement?
+            - How can we prevent recurrence?
+            
+            **Deliverables:**
+            - Incident report
+            - Timeline of events
+            - Lessons learned document
+            - Updated procedures
+            - Recommendations
+            
+            ### Key Takeaways
+            
+            ✅ Follow the incident response lifecycle
+            ✅ Identify and document IOCs
+            ✅ Classify incidents by severity
+            ✅ Contain quickly, investigate thoroughly
+            ✅ Learn from every incident
+            ✅ Communication is critical
+            ✅ Preparation prevents panic
+            """
+        }
+        
+        # Show text content
+        content = module_content.get(st.session_state.current_module, "Content coming soon...")
+        st.markdown(content)
+        
+        st.markdown("---")
+        
         # Video section
         st.markdown("### 📹 Video Lecture")
-        st.video("https://www.youtube.com/watch?v=inWWhr5tnEA")  # Sample cybersecurity video
+        
+        # Map modules to real training videos
+        video_map = {
+            "Introduction to Cybersecurity": "https://www.youtube.com/watch?v=inWWhr5tnEA",
+            "Network Security Basics": "https://www.youtube.com/watch?v=qiQR5rTSshw",
+            "SOC Fundamentals": "https://www.youtube.com/watch?v=Q7Cn_yJwXWE",
+            "SIEM Tools & Log Analysis": "https://www.youtube.com/watch?v=ULGILG-ZhO0",
+            "Incident Detection & Response": "https://www.youtube.com/watch?v=M7hfYp7Gs7Y"
+        }
+        
+        video_url = video_map.get(st.session_state.current_module, "https://www.youtube.com/watch?v=inWWhr5tnEA")
+        
+        st.info("📺 Watch the video lecture to reinforce what you just read!")
+        st.video(video_url)
         
         col_vid1, col_vid2 = st.columns(2)
         with col_vid1:
