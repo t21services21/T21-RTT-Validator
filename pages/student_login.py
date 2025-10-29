@@ -15,6 +15,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from student_auth import login_student, register_student
 from advanced_access_control import UserAccount
 from auth_persistence import initialize_auth_session, save_auth_cookie
+from supabase_database import verify_2fa_code, update_user_last_login, get_user_by_email, use_backup_code
 import hashlib
 
 
@@ -86,11 +87,8 @@ else:
                 
                 if login_btn:
                     if email and password:
-                        import hashlib
-                        
                         # Try Supabase first
                         try:
-                            from supabase_database import get_user_by_email, update_user_last_login
                             supabase_user = get_user_by_email(email)
                             
                             if supabase_user:
@@ -321,8 +319,6 @@ else:
                         
                         if st.button("✅ Verify Backup Code", key="student_verify_backup"):
                             if backup_code:
-                                from supabase_database import use_backup_code, update_user_last_login
-                                
                                 if use_backup_code(pending_user.get('email'), backup_code):
                                     email = pending_user.get('email')
                                     update_user_last_login(email)
