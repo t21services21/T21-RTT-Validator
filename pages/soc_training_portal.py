@@ -117,14 +117,72 @@ with tab1:
         with col_mod3:
             if module['status'] == "🔄 In Progress":
                 if st.button("Continue", key=f"continue_{module['name']}"):
-                    st.success("✅ Module content ready!")
-                    st.info("📹 Watch the video, complete the quiz, and practice in the lab")
+                    st.session_state.current_module = module['name']
+                    st.rerun()
             elif module['status'] == "✅ Complete":
                 if st.button("Review", key=f"review_{module['name']}"):
-                    st.success("✅ Review materials loaded!")
-                    st.info("📚 Review videos and notes anytime")
+                    st.session_state.current_module = module['name']
+                    st.rerun()
             else:
                 st.button("Locked", key=f"locked_{module['name']}", disabled=True)
+    
+    # Show module content if selected
+    if 'current_module' in st.session_state:
+        st.markdown("---")
+        st.markdown(f"## 📚 {st.session_state.current_module}")
+        
+        # Video section
+        st.markdown("### 📹 Video Lecture")
+        st.video("https://www.youtube.com/watch?v=inWWhr5tnEA")  # Sample cybersecurity video
+        
+        col_vid1, col_vid2 = st.columns(2)
+        with col_vid1:
+            if st.button("✅ Mark Video Complete"):
+                st.success("Video marked as complete!")
+                st.balloons()
+        with col_vid2:
+            if st.button("⏭️ Next Video"):
+                st.info("Loading next video...")
+        
+        # Quiz section
+        st.markdown("### 📝 Module Quiz")
+        with st.expander("Take Quiz"):
+            st.markdown("**Question 1:** What does CIA stand for in cybersecurity?")
+            answer = st.radio("Select answer:", 
+                ["Confidentiality, Integrity, Availability", 
+                 "Central Intelligence Agency",
+                 "Cyber Information Analysis",
+                 "Computer Internet Access"])
+            if st.button("Submit Answer"):
+                if answer == "Confidentiality, Integrity, Availability":
+                    st.success("✅ Correct!")
+                else:
+                    st.error("❌ Incorrect. Try again!")
+        
+        # Lab section
+        st.markdown("### 🔬 Hands-On Lab")
+        with st.expander("Start Lab"):
+            st.info("Lab environment: Linux Command Line Basics")
+            st.code("ssh student@lab.t21services.co.uk", language="bash")
+            flag_input = st.text_input("Submit Flag:", placeholder="flag{...}")
+            if st.button("Submit Flag"):
+                if "linux" in flag_input.lower():
+                    st.success("🎉 Correct flag! Lab completed!")
+                    st.balloons()
+                else:
+                    st.error("❌ Incorrect flag")
+        
+        # Resources
+        st.markdown("### 📚 Additional Resources")
+        st.markdown("""
+        - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
+        - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+        - [MITRE ATT&CK](https://attack.mitre.org/)
+        """)
+        
+        if st.button("⬅️ Back to Course List"):
+            del st.session_state.current_module
+            st.rerun()
     
     st.markdown("### Level 2: Professional (12 Weeks)")
     st.info("🔒 Unlock by completing Level 1")
