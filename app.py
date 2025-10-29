@@ -706,10 +706,33 @@ if st.session_state.logged_in and st.session_state.last_activity:
         st.warning("⏱️ Session expired due to inactivity. Please login again.")
         st.rerun()
 
-# Update last activity timestamp
+# Update last activity timestamp AND validate session (single-device enforcement)
 if st.session_state.logged_in:
     from datetime import datetime
     st.session_state.last_activity = datetime.now()
+    
+    # SECURITY: Check if session is still valid (not terminated by new login)
+    if 'security_session_id' in st.session_state and 'user_email' in st.session_state:
+        try:
+            from account_security_system import is_session_valid
+            is_valid, message = is_session_valid(
+                st.session_state.user_email,
+                st.session_state.security_session_id
+            )
+            
+            if not is_valid:
+                # Session terminated - force logout
+                st.session_state.logged_in = False
+                st.session_state.user_license = None
+                st.session_state.user_email = None
+                st.session_state.session_email = None
+                st.session_state.security_session_id = None
+                
+                st.error(f"🔒 {message}")
+                st.info("Please log in again to continue.")
+                st.rerun()
+        except:
+            pass  # Silent fail if security system not available
 
 # Session persistence - restore login on refresh
 if not st.session_state.logged_in and st.session_state.get('session_email'):

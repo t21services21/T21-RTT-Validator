@@ -184,6 +184,8 @@ def check_concurrent_sessions(email: str) -> Tuple[bool, str]:
 def create_session(email: str, device_fingerprint: str) -> str:
     """
     Create new session for user
+    STRICT SINGLE-DEVICE ENFORCEMENT: Terminates all other sessions
+    ENTERPRISE TRACKING: Advanced fingerprinting, geolocation, risk scoring
     Returns session_id
     """
     db = load_security_db()
@@ -198,15 +200,79 @@ def create_session(email: str, device_fingerprint: str) -> str:
     
     user_data = db[email]
     
-    # Create session
+    # ADVANCED TRACKING: Get comprehensive security data
+    try:
+        from advanced_security_tracking import (
+            get_advanced_fingerprint,
+            get_user_ip_advanced,
+            get_real_ip_geolocation,
+            DeviceIntelligence,
+            AnomalyDetector
+        )
+        
+        # Collect advanced data
+        advanced_fp = get_advanced_fingerprint()
+        ip = get_user_ip_advanced()
+        geolocation = get_real_ip_geolocation(ip)
+        device_type = DeviceIntelligence.classify_device(advanced_fp)
+        os = DeviceIntelligence.get_os(advanced_fp)
+        browser = DeviceIntelligence.get_browser(advanced_fp)
+        is_vpn, vpn_reason = DeviceIntelligence.is_vpn_or_proxy(ip, geolocation)
+        is_bot, bot_reason = AnomalyDetector.detect_bot_behavior(advanced_fp)
+        
+        # Enhanced location string
+        location = f"{geolocation.get('city', 'Unknown')}, {geolocation.get('country', 'Unknown')}"
+        
+    except Exception as e:
+        # Fallback to basic tracking
+        ip = get_user_ip()
+        location = get_user_location_estimate(ip)
+        geolocation = {}
+        device_type = 'Unknown'
+        os = 'Unknown'
+        browser = 'Unknown'
+        is_vpn = False
+        is_bot = False
+    
+    # SECURITY: Terminate ALL existing sessions (single-device enforcement)
+    # This prevents account sharing and ensures only one active session
+    old_sessions_count = len(user_data.get('sessions', []))
+    if old_sessions_count > 0:
+        # Log the forced logout for security tracking
+        user_data['login_history'].append({
+            'timestamp': datetime.now().isoformat(),
+            'ip': ip,
+            'location': location,
+            'device_fingerprint': device_fingerprint,
+            'success': True,
+            'action': f'FORCED_LOGOUT_OF_{old_sessions_count}_SESSIONS',
+            'reason': 'New login detected - single device enforcement',
+            'geolocation': geolocation,
+            'device_type': device_type,
+            'os': os,
+            'browser': browser,
+            'is_vpn': is_vpn,
+            'is_bot': is_bot
+        })
+    
+    # Clear all existing sessions
+    user_data['sessions'] = []
+    
+    # Create NEW session with enhanced data
     session_id = str(uuid.uuid4())
     session_info = {
         'session_id': session_id,
         'device_fingerprint': device_fingerprint,
         'created': datetime.now().isoformat(),
         'last_activity': datetime.now().isoformat(),
-        'ip': get_user_ip(),
-        'location': get_user_location_estimate(get_user_ip())
+        'ip': ip,
+        'location': location,
+        'geolocation': geolocation,
+        'device_type': device_type,
+        'os': os,
+        'browser': browser,
+        'is_vpn': is_vpn,
+        'is_bot': is_bot
     }
     
     user_data['sessions'].append(session_info)
@@ -254,6 +320,35 @@ def end_all_sessions(email: str):
     if email in db:
         db[email]['sessions'] = []
         save_security_db(db)
+
+
+def is_session_valid(email: str, session_id: str) -> Tuple[bool, str]:
+    """
+    Check if a session is still valid (not terminated by new login)
+    Returns (is_valid, message)
+    """
+    db = load_security_db()
+    
+    if email not in db:
+        return False, "User not found"
+    
+    user_data = db[email]
+    sessions = user_data.get('sessions', [])
+    
+    # Check if this session_id exists in active sessions
+    for session in sessions:
+        if session['session_id'] == session_id:
+            # Session exists, check if it's expired
+            last_activity = datetime.fromisoformat(session['last_activity'])
+            timeout_minutes = SECURITY_CONFIG['session_timeout_minutes']
+            
+            if datetime.now() - last_activity > timedelta(minutes=timeout_minutes):
+                return False, f"Session expired (inactive for {timeout_minutes} minutes)"
+            
+            return True, "Session valid"
+    
+    # Session not found - user logged in from another device
+    return False, "You've been logged out - new login detected from another device"
 
 
 def detect_suspicious_activity(email: str) -> List[dict]:
