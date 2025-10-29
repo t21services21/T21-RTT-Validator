@@ -15,8 +15,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from student_auth import login_student, register_student
 from advanced_access_control import UserAccount
 from auth_persistence import initialize_auth_session, save_auth_cookie
-from supabase_database import update_user_last_login, get_user_by_email
-from two_factor_auth import verify_2fa_code, use_backup_code
+from supabase_database import update_user_last_login, get_user_by_email, use_backup_code
+from two_factor_auth import verify_2fa_code
 import hashlib
 
 
