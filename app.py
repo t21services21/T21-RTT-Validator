@@ -1660,6 +1660,13 @@ elif user_role == 'tester':
         "💼 Career Development",              # Career tools and development
         "📄 CV Builder",                      # FULL Professional CV Builder
         "💬 Messages",                        # Real-time messaging system
+        "🛡️ Admin Security Monitor",         # Security monitoring
+        "🚨 SOC Analyst Dashboard",           # SOC dashboard
+        "🎓 SOC Training Portal",             # SOC training
+        "🔬 Cyber Lab",                       # Cyber labs
+        "💼 Client Acquisition",              # Client management
+        "🛡️ SOC Operations",                  # SOC operations
+        "💰 Billing & Invoicing",             # Billing system
         "ℹ️ Help & Information",              # Help pages and documentation
         "📧 Contact & Support"                # Support and contact pages
     ]
