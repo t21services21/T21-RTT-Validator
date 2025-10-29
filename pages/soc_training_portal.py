@@ -117,10 +117,12 @@ with tab1:
         with col_mod3:
             if module['status'] == "🔄 In Progress":
                 if st.button("Continue", key=f"continue_{module['name']}"):
-                    st.info("Loading module...")
+                    st.success("✅ Module content ready!")
+                    st.info("📹 Watch the video, complete the quiz, and practice in the lab")
             elif module['status'] == "✅ Complete":
                 if st.button("Review", key=f"review_{module['name']}"):
-                    st.info("Loading review...")
+                    st.success("✅ Review materials loaded!")
+                    st.info("📚 Review videos and notes anytime")
             else:
                 st.button("Locked", key=f"locked_{module['name']}", disabled=True)
     
@@ -277,13 +279,16 @@ for i, course in enumerate(courses):
             
             if course['progress'] == 0:
                 if st.button("Start Course", key=f"start_course_{i}"):
-                    st.success("🎬 Starting course...")
+                    st.success("🎬 Course started!")
+                    st.info(f"📹 {course['videos']} videos available - Start watching now!")
             elif course['progress'] == 100:
                 if st.button("Review Course", key=f"review_course_{i}"):
-                    st.info("📚 Loading course...")
+                    st.success("📚 Course materials ready!")
+                    st.info("Review all videos and download your certificate")
             else:
                 if st.button("Continue Learning", key=f"continue_course_{i}"):
-                    st.success("▶️ Resuming course...")
+                    st.success("▶️ Continuing where you left off!")
+                    st.info(f"Progress: {course['progress']}% - Keep going!")
             
             st.markdown("---")
 
@@ -321,10 +326,13 @@ with challenge_tabs[0]:
     col_ch1, col_ch2 = st.columns(2)
     with col_ch1:
         if st.button("🚀 Start Challenge", use_container_width=True):
-            st.success("Loading challenge environment...")
+            st.success("✅ Challenge environment ready!")
+            st.info("🎯 Objective: Analyze the logs and identify the attacker's IP address")
+            st.code("ssh student@challenge-server.t21.lab", language="bash")
     with col_ch2:
         if st.button("💡 Get Hint", use_container_width=True):
-            st.info("Hint: Look for failed login attempts from the same IP")
+            st.info("💡 Hint: Look for failed login attempts from the same IP")
+            st.caption("Check /var/log/auth.log for suspicious patterns")
 
 with challenge_tabs[1]:
     st.subheader("This Week's CTF Competition")
