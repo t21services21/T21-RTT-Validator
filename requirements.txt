@@ -25,3 +25,8 @@ feedparser>=6.0.10
 requests>=2.31.0
 # Updated 2025-10-29 - Enterprise security tracking
 # Force redeploy 2025-10-29 19:52
+
+# SOC Training Platform APIs (Added 2025-10-29)
+stripe>=7.0.0
+boto3>=1.28.0
+youtube-dl>=2021.12.17
