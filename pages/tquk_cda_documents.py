@@ -6,8 +6,130 @@ Download page for all CDA submission materials
 import streamlit as st
 import os
 from datetime import datetime
+from io import BytesIO
+from docx import Document
+from docx.shared import Pt, Inches, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+import markdown2
+from reportlab.lib.pagesizes import letter, A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_JUSTIFY
 
 st.set_page_config(page_title="TQUK CDA Documents", page_icon="📋", layout="wide")
+
+# Conversion functions
+def markdown_to_word(markdown_text, title):
+    """Convert markdown to Word document"""
+    doc = Document()
+    
+    # Add title
+    title_para = doc.add_heading(title, 0)
+    title_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    
+    # Add metadata
+    doc.add_paragraph(f"Centre: T21 Services UK (#36257481088)")
+    doc.add_paragraph(f"Generated: {datetime.now().strftime('%B %d, %Y')}")
+    doc.add_paragraph("")
+    
+    # Process markdown content
+    lines = markdown_text.split('\n')
+    for line in lines:
+        if line.startswith('# '):
+            doc.add_heading(line[2:], 1)
+        elif line.startswith('## '):
+            doc.add_heading(line[3:], 2)
+        elif line.startswith('### '):
+            doc.add_heading(line[4:], 3)
+        elif line.startswith('#### '):
+            doc.add_heading(line[5:], 4)
+        elif line.strip().startswith('- ') or line.strip().startswith('* '):
+            doc.add_paragraph(line.strip()[2:], style='List Bullet')
+        elif line.strip().startswith('✓ ') or line.strip().startswith('✅ '):
+            doc.add_paragraph(line.strip(), style='List Bullet')
+        elif line.strip():
+            doc.add_paragraph(line)
+    
+    # Save to BytesIO
+    buffer = BytesIO()
+    doc.save(buffer)
+    buffer.seek(0)
+    return buffer
+
+def markdown_to_pdf(markdown_text, title):
+    """Convert markdown to PDF document"""
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4,
+                           rightMargin=72, leftMargin=72,
+                           topMargin=72, bottomMargin=18)
+    
+    # Container for the 'Flowable' objects
+    elements = []
+    
+    # Define styles
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=24,
+        textColor=RGBColor(0, 0, 139),
+        spaceAfter=30,
+        alignment=TA_CENTER
+    )
+    
+    heading1_style = ParagraphStyle(
+        'CustomHeading1',
+        parent=styles['Heading1'],
+        fontSize=18,
+        textColor=RGBColor(0, 0, 139),
+        spaceAfter=12,
+        spaceBefore=12
+    )
+    
+    heading2_style = ParagraphStyle(
+        'CustomHeading2',
+        parent=styles['Heading2'],
+        fontSize=14,
+        textColor=RGBColor(0, 0, 139),
+        spaceAfter=10,
+        spaceBefore=10
+    )
+    
+    # Add title
+    elements.append(Paragraph(title, title_style))
+    elements.append(Spacer(1, 12))
+    
+    # Add metadata
+    elements.append(Paragraph(f"<b>Centre:</b> T21 Services UK (#36257481088)", styles['Normal']))
+    elements.append(Paragraph(f"<b>Generated:</b> {datetime.now().strftime('%B %d, %Y')}", styles['Normal']))
+    elements.append(Spacer(1, 20))
+    
+    # Process markdown content
+    lines = markdown_text.split('\n')
+    for line in lines:
+        if line.startswith('# '):
+            elements.append(Paragraph(line[2:], heading1_style))
+        elif line.startswith('## '):
+            elements.append(Paragraph(line[3:], heading2_style))
+        elif line.startswith('### '):
+            elements.append(Paragraph(line[4:], styles['Heading3']))
+        elif line.strip().startswith('- ') or line.strip().startswith('* '):
+            elements.append(Paragraph(f"• {line.strip()[2:]}", styles['Normal']))
+        elif line.strip().startswith('✓ ') or line.strip().startswith('✅ '):
+            elements.append(Paragraph(line.strip(), styles['Normal']))
+        elif line.strip() == '---':
+            elements.append(Spacer(1, 12))
+        elif line.strip():
+            # Clean up markdown formatting
+            clean_line = line.replace('**', '').replace('`', '')
+            elements.append(Paragraph(clean_line, styles['Normal']))
+            elements.append(Spacer(1, 6))
+    
+    # Build PDF
+    doc.build(elements)
+    buffer.seek(0)
+    return buffer
 
 # Header
 st.title("📋 TQUK CDA Submission Documents")
@@ -47,11 +169,23 @@ with col1:
         with open(file_path_1, 'r', encoding='utf-8') as f:
             content_1 = f.read()
         
+        # PDF Download
+        pdf_buffer_1 = markdown_to_pdf(content_1, "TQUK CDA Master Mapping Document")
         st.download_button(
-            label="📥 Download Master Mapping Document",
-            data=content_1,
-            file_name="TQUK_CDA_Master_Mapping_Document.md",
-            mime="text/markdown",
+            label="📄 Download as PDF",
+            data=pdf_buffer_1,
+            file_name="TQUK_CDA_Master_Mapping_Document.pdf",
+            mime="application/pdf",
+            use_container_width=True
+        )
+        
+        # Word Download
+        word_buffer_1 = markdown_to_word(content_1, "TQUK CDA Master Mapping Document")
+        st.download_button(
+            label="📝 Download as Word",
+            data=word_buffer_1,
+            file_name="TQUK_CDA_Master_Mapping_Document.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             use_container_width=True
         )
     else:
@@ -74,11 +208,23 @@ with col2:
         with open(file_path_2, 'r', encoding='utf-8') as f:
             content_2 = f.read()
         
+        # PDF Download
+        pdf_buffer_2 = markdown_to_pdf(content_2, "TQUK CDA Assessment Strategy")
         st.download_button(
-            label="📥 Download Assessment Strategy",
-            data=content_2,
-            file_name="TQUK_CDA_Assessment_Strategy.md",
-            mime="text/markdown",
+            label="📄 Download as PDF",
+            data=pdf_buffer_2,
+            file_name="TQUK_CDA_Assessment_Strategy.pdf",
+            mime="application/pdf",
+            use_container_width=True
+        )
+        
+        # Word Download
+        word_buffer_2 = markdown_to_word(content_2, "TQUK CDA Assessment Strategy")
+        st.download_button(
+            label="📝 Download as Word",
+            data=word_buffer_2,
+            file_name="TQUK_CDA_Assessment_Strategy.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             use_container_width=True
         )
     else:
@@ -105,11 +251,23 @@ with col3:
         with open(file_path_3, 'r', encoding='utf-8') as f:
             content_3 = f.read()
         
+        # PDF Download
+        pdf_buffer_3 = markdown_to_pdf(content_3, "TQUK CDA Form Completion Guide")
         st.download_button(
-            label="📥 Download Form Completion Guide",
-            data=content_3,
-            file_name="TQUK_CDA_Form_Completion_Guide.md",
-            mime="text/markdown",
+            label="📄 Download as PDF",
+            data=pdf_buffer_3,
+            file_name="TQUK_CDA_Form_Completion_Guide.pdf",
+            mime="application/pdf",
+            use_container_width=True
+        )
+        
+        # Word Download
+        word_buffer_3 = markdown_to_word(content_3, "TQUK CDA Form Completion Guide")
+        st.download_button(
+            label="📝 Download as Word",
+            data=word_buffer_3,
+            file_name="TQUK_CDA_Form_Completion_Guide.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             use_container_width=True
         )
     else:
@@ -132,11 +290,23 @@ with col4:
         with open(file_path_4, 'r', encoding='utf-8') as f:
             content_4 = f.read()
         
+        # PDF Download
+        pdf_buffer_4 = markdown_to_pdf(content_4, "TQUK CDA Complete Package Summary")
         st.download_button(
-            label="📥 Download Complete Package Summary",
-            data=content_4,
-            file_name="TQUK_CDA_Complete_Package_Summary.md",
-            mime="text/markdown",
+            label="📄 Download as PDF",
+            data=pdf_buffer_4,
+            file_name="TQUK_CDA_Complete_Package_Summary.pdf",
+            mime="application/pdf",
+            use_container_width=True
+        )
+        
+        # Word Download
+        word_buffer_4 = markdown_to_word(content_4, "TQUK CDA Complete Package Summary")
+        st.download_button(
+            label="📝 Download as Word",
+            data=word_buffer_4,
+            file_name="TQUK_CDA_Complete_Package_Summary.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             use_container_width=True
         )
     else:
