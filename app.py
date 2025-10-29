@@ -1699,9 +1699,10 @@ elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
         "💼 Career Development",
         "📄 CV Builder",
         
-        # SYSTEM
+        # SYSTEM & SECURITY
         "💬 Messages",
         "⚙️ Administration",
+        "🛡️ Admin Security Monitor",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
@@ -1740,9 +1741,10 @@ elif user_role == 'admin':
         "💼 Career Development",
         "📄 CV Builder",
         
-        # SYSTEM
+        # SYSTEM & SECURITY
         "💬 Messages",
         "⚙️ Administration",
+        "🛡️ Admin Security Monitor",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
@@ -1785,9 +1787,10 @@ elif user_role == 'staff':
         "💼 Career Development",
         "📄 CV Builder",
         
-        # SYSTEM
+        # SYSTEM & SECURITY
         "💬 Messages",
         "⚙️ Administration",
+        "🛡️ Admin Security Monitor",
         "ℹ️ Help & Information",
         "📧 Contact & Support"
     ]
@@ -7628,6 +7631,9 @@ elif tool == "💬 Messages":
     # MESSAGING SYSTEM - Real-time communication
     from messaging_interface import render_messaging_interface
     render_messaging_interface()
+
+elif tool == "🛡️ Admin Security Monitor":
+    st.switch_page("pages/admin_security_monitor.py")
 
 elif tool == "📧 Contact & Support":
     st.header("📧 Contact & Support")
