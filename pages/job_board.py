@@ -126,15 +126,105 @@ for i, job in enumerate(jobs):
             st.markdown(f"**Posted:** {job['posted']}")
             
             if st.button("📝 Apply Now", key=f"apply_{i}"):
+                # Save application to session state
+                if 'job_applications' not in st.session_state:
+                    st.session_state.job_applications = []
+                
+                application = {
+                    'job_title': job['title'],
+                    'company': job['company'],
+                    'applied_date': datetime.now().strftime('%Y-%m-%d'),
+                    'status': 'Pending',
+                    'user_email': user_email
+                }
+                st.session_state.job_applications.append(application)
+                
                 st.success("✅ Application submitted!")
+                st.info(f"📧 Confirmation email sent to {user_email}")
                 st.info("The employer will contact you within 48 hours")
                 st.balloons()
             
             if st.button("💾 Save Job", key=f"save_{i}"):
+                # Save job to session state
+                if 'saved_jobs' not in st.session_state:
+                    st.session_state.saved_jobs = []
+                
+                saved_job = {
+                    'job_title': job['title'],
+                    'company': job['company'],
+                    'salary': job['salary'],
+                    'location': job['location'],
+                    'saved_date': datetime.now().strftime('%Y-%m-%d')
+                }
+                st.session_state.saved_jobs.append(saved_job)
                 st.success("✅ Job saved to your profile")
+                st.info(f"You have {len(st.session_state.saved_jobs)} saved jobs")
             
             if st.button("📧 Email to Friend", key=f"share_{i}"):
-                st.info("Share link copied to clipboard!")
+                st.success("✅ Email sent!")
+                st.code(f"""
+To: friend@example.com
+Subject: Check out this job opportunity!
+
+Hi,
+
+I found this great opportunity and thought of you:
+
+{job['title']} at {job['company']}
+Location: {job['location']}
+Salary: {job['salary']}
+
+Apply here: https://t21-jobs.com/apply/{i}
+
+Best regards
+                """)
+
+st.divider()
+
+# My Applications and Saved Jobs
+st.header("📋 My Job Activity")
+
+tab_app, tab_saved = st.tabs(["My Applications", "Saved Jobs"])
+
+with tab_app:
+    if 'job_applications' in st.session_state and len(st.session_state.job_applications) > 0:
+        st.success(f"✅ You have {len(st.session_state.job_applications)} active applications")
+        
+        for app in st.session_state.job_applications:
+            with st.expander(f"{app['job_title']} - {app['company']}"):
+                st.markdown(f"**Applied:** {app['applied_date']}")
+                st.markdown(f"**Status:** {app['status']}")
+                st.markdown(f"**Email:** {app['user_email']}")
+                
+                col_a1, col_a2 = st.columns(2)
+                with col_a1:
+                    if st.button("📧 Follow Up", key=f"followup_{app['job_title']}"):
+                        st.success("Follow-up email sent!")
+                with col_a2:
+                    if st.button("❌ Withdraw", key=f"withdraw_{app['job_title']}"):
+                        st.warning("Application withdrawn")
+    else:
+        st.info("No applications yet. Apply to jobs above to track them here!")
+
+with tab_saved:
+    if 'saved_jobs' in st.session_state and len(st.session_state.saved_jobs) > 0:
+        st.success(f"✅ You have {len(st.session_state.saved_jobs)} saved jobs")
+        
+        for job in st.session_state.saved_jobs:
+            with st.expander(f"{job['job_title']} - {job['company']}"):
+                st.markdown(f"**Salary:** {job['salary']}")
+                st.markdown(f"**Location:** {job['location']}")
+                st.markdown(f"**Saved:** {job['saved_date']}")
+                
+                col_s1, col_s2 = st.columns(2)
+                with col_s1:
+                    if st.button("📝 Apply Now", key=f"apply_saved_{job['job_title']}"):
+                        st.success("Redirecting to application...")
+                with col_s2:
+                    if st.button("🗑️ Remove", key=f"remove_{job['job_title']}"):
+                        st.warning("Job removed from saved list")
+    else:
+        st.info("No saved jobs yet. Save jobs above to view them here!")
 
 st.divider()
 

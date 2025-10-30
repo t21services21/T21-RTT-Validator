@@ -83,11 +83,12 @@ st.divider()
 
 st.header("🛤️ Learning Paths")
 
-tab1, tab2, tab3, tab4 = st.tabs([
-    "📚 SOC Analyst Track",
-    "🔍 Threat Hunter Track",
-    "🚨 Incident Responder Track",
-    "🎯 Penetration Tester Track"
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "📚 My Courses",
+    "🔬 Labs",
+    "🎖️ Certifications",
+    "🏆 Leaderboard",
+    "📊 My Progress"
 ])
 
 with tab1:
@@ -779,10 +780,26 @@ with tab1:
                  "Cyber Information Analysis",
                  "Computer Internet Access"])
             if st.button("Submit Answer"):
-                if answer == "Confidentiality, Integrity, Availability":
+                # Save quiz result
+                if 'quiz_results' not in st.session_state:
+                    st.session_state.quiz_results = {}
+                
+                module_name = st.session_state.current_module
+                is_correct = (answer == "Confidentiality, Integrity, Availability")
+                
+                st.session_state.quiz_results[module_name] = {
+                    'answer': answer,
+                    'correct': is_correct,
+                    'date': datetime.now().strftime('%Y-%m-%d %H:%M')
+                }
+                
+                if is_correct:
                     st.success("✅ Correct!")
+                    st.balloons()
+                    st.info("Quiz result saved to your profile!")
                 else:
                     st.error("❌ Incorrect. Try again!")
+                    st.info("Hint: Think about the three pillars of information security")
         
         # Lab section
         st.markdown("### 🔬 Hands-On Lab")
@@ -791,11 +808,27 @@ with tab1:
             st.code("ssh student@lab.t21services.co.uk", language="bash")
             flag_input = st.text_input("Submit Flag:", placeholder="flag{...}")
             if st.button("Submit Flag"):
+                # Save lab completion
+                if 'lab_completions' not in st.session_state:
+                    st.session_state.lab_completions = {}
+                
+                module_name = st.session_state.current_module
+                
                 if "linux" in flag_input.lower():
+                    st.session_state.lab_completions[module_name] = {
+                        'flag': flag_input,
+                        'completed': True,
+                        'date': datetime.now().strftime('%Y-%m-%d %H:%M'),
+                        'points': 50
+                    }
+                    
                     st.success("🎉 Correct flag! Lab completed!")
+                    st.success("✅ +50 points earned!")
+                    st.info("Lab completion saved to your profile!")
                     st.balloons()
                 else:
                     st.error("❌ Incorrect flag")
+                    st.info("Hint: The flag contains 'linux'")
         
         # Resources
         st.markdown("### 📚 Additional Resources")
@@ -1182,6 +1215,57 @@ for group in groups:
     with col_g3:
         if st.button("Join", key=f"join_{group['name']}"):
             st.success(f"Joined {group['name']}!")
+
+with tab5:
+    st.subheader("📊 My Learning Progress")
+    
+    # Quiz Results
+    st.markdown("### 📝 Quiz Results")
+    if 'quiz_results' in st.session_state and len(st.session_state.quiz_results) > 0:
+        correct_count = sum(1 for r in st.session_state.quiz_results.values() if r['correct'])
+        total_count = len(st.session_state.quiz_results)
+        
+        st.success(f"✅ {correct_count}/{total_count} quizzes passed ({round(correct_count/total_count*100)}%)")
+        
+        for module, result in st.session_state.quiz_results.items():
+            status = "✅" if result['correct'] else "❌"
+            st.markdown(f"{status} **{module}** - {result['date']}")
+    else:
+        st.info("No quiz results yet. Complete quizzes to track your progress!")
+    
+    st.divider()
+    
+    # Lab Completions
+    st.markdown("### 🔬 Lab Completions")
+    if 'lab_completions' in st.session_state and len(st.session_state.lab_completions) > 0:
+        total_points = sum(lab['points'] for lab in st.session_state.lab_completions.values())
+        
+        st.success(f"✅ {len(st.session_state.lab_completions)} labs completed")
+        st.success(f"⭐ {total_points} points earned")
+        
+        for module, lab in st.session_state.lab_completions.items():
+            st.markdown(f"✅ **{module}** - {lab['points']} points - {lab['date']}")
+    else:
+        st.info("No labs completed yet. Complete labs to earn points!")
+    
+    st.divider()
+    
+    # Overall Progress
+    st.markdown("### 📈 Overall Statistics")
+    
+    col_stat1, col_stat2, col_stat3 = st.columns(3)
+    
+    with col_stat1:
+        quiz_count = len(st.session_state.get('quiz_results', {}))
+        st.metric("Quizzes Taken", quiz_count)
+    
+    with col_stat2:
+        lab_count = len(st.session_state.get('lab_completions', {}))
+        st.metric("Labs Completed", lab_count)
+    
+    with col_stat3:
+        total_points = sum(lab['points'] for lab in st.session_state.get('lab_completions', {}).values())
+        st.metric("Total Points", total_points)
 
 # Footer
 st.markdown("---")
