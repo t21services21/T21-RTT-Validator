@@ -192,7 +192,114 @@ with tab3:
             st.markdown(f"**Description:** {lab['description']}")
             st.markdown(f"**Time:** {lab['time']} | **Points:** {lab['points']}")
             if st.button("🚀 Start Lab", key=f"start_web_{lab['name']}", use_container_width=True):
-                st.success("Launching web hacking lab...")
+                st.session_state.active_web_lab = lab['name']
+                st.rerun()
+    
+    # Show active lab content
+    if 'active_web_lab' in st.session_state:
+        st.markdown("---")
+        st.markdown(f"## 🔓 {st.session_state.active_web_lab}")
+        
+        if "SQL Injection" in st.session_state.active_web_lab:
+            st.markdown("""
+            ### 🎯 Objective
+            Exploit SQL injection to bypass login and retrieve sensitive data
+            
+            ### 📚 What You'll Learn
+            - How SQL injection works
+            - Finding vulnerable parameters
+            - Extracting database information
+            - Bypassing authentication
+            
+            ### 🌐 Target Application
+            A vulnerable login page with SQL injection flaw
+            """)
+            
+            st.code("http://vulnerable-app.t21lab.local/login", language="text")
+            
+            st.markdown("### 💻 Login Form")
+            
+            col_sql1, col_sql2 = st.columns(2)
+            with col_sql1:
+                username = st.text_input("Username:", placeholder="admin")
+                password = st.text_input("Password:", type="password", placeholder="password")
+                
+                if st.button("Login"):
+                    # Check for SQL injection
+                    if "'" in username or "or" in username.lower() or "--" in username:
+                        st.success("🎉 SQL Injection successful!")
+                        st.code("""
+Logged in as: admin
+User ID: 1
+Role: administrator
+Database: users_db
+                        """)
+                        st.balloons()
+                        st.success("✅ Flag: flag{sql_injection_master}")
+                        st.info("💡 You used SQL injection to bypass authentication!")
+                    elif username == "admin" and password == "password":
+                        st.success("Logged in successfully")
+                    else:
+                        st.error("Invalid credentials")
+            
+            with col_sql2:
+                st.markdown("### 💡 Hints")
+                with st.expander("Hint 1"):
+                    st.info("Try entering a single quote (') in the username field")
+                with st.expander("Hint 2"):
+                    st.info("SQL injection payload: ' OR '1'='1")
+                with st.expander("Hint 3"):
+                    st.info("Try: admin' OR '1'='1'--")
+            
+            st.markdown("### 📖 Learning Resources")
+            st.markdown("""
+            **SQL Injection Basics:**
+            - Single quote (') to break the query
+            - OR '1'='1' to make condition always true
+            - -- to comment out rest of query
+            
+            **Example vulnerable code:**
+            ```sql
+            SELECT * FROM users WHERE username='$username' AND password='$password'
+            ```
+            
+            **Injected query:**
+            ```sql
+            SELECT * FROM users WHERE username='admin' OR '1'='1'--' AND password=''
+            ```
+            """)
+        
+        elif "XSS" in st.session_state.active_web_lab:
+            st.markdown("""
+            ### 🎯 Objective
+            Find and exploit Cross-Site Scripting (XSS) vulnerabilities
+            
+            ### 🌐 Target: Comment Section
+            """)
+            
+            st.markdown("### 💬 Post a Comment")
+            comment = st.text_area("Your comment:", placeholder="Enter your comment...")
+            
+            if st.button("Submit Comment"):
+                if "<script>" in comment.lower() or "alert" in comment.lower():
+                    st.success("🎉 XSS vulnerability exploited!")
+                    st.warning("⚠️ Malicious script would execute here!")
+                    st.code(comment)
+                    st.balloons()
+                    st.success("✅ Flag: flag{xss_found}")
+                else:
+                    st.info(f"Comment posted: {comment}")
+            
+            st.markdown("### 💡 XSS Payloads to Try")
+            st.code("""
+<script>alert('XSS')</script>
+<img src=x onerror=alert('XSS')>
+<svg onload=alert('XSS')>
+            """, language="html")
+        
+        if st.button("⬅️ Back to Lab List"):
+            del st.session_state.active_web_lab
+            st.rerun()
 
 with tab4:
     st.subheader("Malware Analysis Labs")
