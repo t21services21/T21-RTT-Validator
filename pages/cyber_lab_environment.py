@@ -988,7 +988,27 @@ student@lab:~$ _
                     st.warning("Enter a command first!")
         with col_cmd2:
             if st.button("🔄 Reset Lab"):
-                st.info("Resetting lab environment...")
+                # Clear all lab-related session state
+                keys_to_clear = [
+                    'active_lab',
+                    'active_network_lab', 
+                    'active_web_lab',
+                    'active_malware_lab',
+                    'active_forensics_lab',
+                    'lab_command_history',
+                    'lab_output',
+                    'hints_used',
+                    'view_solution'
+                ]
+                
+                for key in keys_to_clear:
+                    if key in st.session_state:
+                        del st.session_state[key]
+                
+                st.success("✅ Lab environment reset!")
+                st.success("🔄 Hints counter reset!")
+                st.info("📋 Returning to lab selection...")
+                st.rerun()
     
     with col_lab2:
         st.subheader("📋 Lab Objectives")
@@ -1012,10 +1032,36 @@ student@lab:~$ _
         st.markdown("---")
         
         st.subheader("💡 Hints Available")
-        st.markdown("**Hints Used:** 0/3")
+        
+        # Initialize hints counter
+        if 'hints_used' not in st.session_state:
+            st.session_state.hints_used = 0
+        
+        st.markdown(f"**Hints Used:** {st.session_state.hints_used}/3")
         
         if st.button("💡 Get Hint", use_container_width=True):
-            st.info("**Hint 1:** Check for SUID binaries using: find / -perm -4000 2>/dev/null")
+            if st.session_state.hints_used < 3:
+                st.session_state.hints_used += 1
+                
+                if st.session_state.hints_used == 1:
+                    st.info("**Hint 1:** Check for SUID binaries using: `find / -perm -4000 2>/dev/null`")
+                elif st.session_state.hints_used == 2:
+                    st.info("**Hint 2:** Look for the `find` command in the SUID list - it can execute commands with elevated privileges")
+                elif st.session_state.hints_used == 3:
+                    st.warning("**Hint 3 (Final):** Use: `/usr/bin/find . -exec /bin/sh -p \\;` to get a root shell")
+            else:
+                st.error("❌ No more hints available! Try to solve it yourself or view the solution.")
+        
+        # Display used hints
+        if st.session_state.hints_used > 0:
+            st.markdown("---")
+            st.markdown("**Hints Revealed:**")
+            if st.session_state.hints_used >= 1:
+                st.caption("1️⃣ Check for SUID binaries")
+            if st.session_state.hints_used >= 2:
+                st.caption("2️⃣ Look for the find command")
+            if st.session_state.hints_used >= 3:
+                st.caption("3️⃣ Use find with -exec parameter")
         
         st.markdown("---")
         
