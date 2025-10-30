@@ -19,6 +19,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import json
+import sys
+sys.path.append('..')
+from certificate_generator import display_certificate
 
 st.set_page_config(page_title="SOC Training Portal", page_icon="🎓", layout="wide")
 
@@ -1266,6 +1269,27 @@ with tab5:
     with col_stat3:
         total_points = sum(lab['points'] for lab in st.session_state.get('lab_completions', {}).values())
         st.metric("Total Points", total_points)
+    
+    st.divider()
+    
+    # Certificate Generation
+    st.markdown("### 🎖️ Generate Certificate")
+    
+    # Check if eligible for certificate
+    quiz_count = len(st.session_state.get('quiz_results', {}))
+    lab_count = len(st.session_state.get('lab_completions', {}))
+    
+    if quiz_count >= 3 and lab_count >= 3:
+        st.success("✅ Congratulations! You're eligible for a certificate!")
+        
+        if st.button("🎓 Generate My Certificate", use_container_width=True):
+            student_name = user_email.split('@')[0].replace('.', ' ').title()
+            course_name = "SOC Analyst Foundation Training"
+            
+            display_certificate(student_name, course_name)
+    else:
+        st.info(f"📋 Complete {max(0, 3-quiz_count)} more quizzes and {max(0, 3-lab_count)} more labs to earn your certificate!")
+        st.progress((quiz_count + lab_count) / 6)
 
 # Footer
 st.markdown("---")
