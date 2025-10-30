@@ -239,7 +239,20 @@ with tab3:
                 st.metric("Replied", campaign['replied'], f"{round(campaign['replied']/campaign['sent']*100)}%")
             
             if st.button("📊 View Details", key=f"campaign_{campaign['name']}"):
-                st.info("Loading campaign details...")
+                st.success(f"✅ Campaign: {campaign['name']}")
+                st.markdown(f"""
+                **Campaign Performance:**
+                - Sent: {campaign['sent']} emails
+                - Opened: {campaign['opened']} ({round(campaign['opened']/campaign['sent']*100)}%)
+                - Clicked: {campaign['clicked']} ({round(campaign['clicked']/campaign['sent']*100)}%)
+                - Replied: {campaign['replied']} ({round(campaign['replied']/campaign['sent']*100)}%)
+                
+                **Top Performing Links:**
+                1. Service Overview - 45 clicks
+                2. Pricing Page - 32 clicks
+                3. Case Studies - 28 clicks
+                """)
+                st.balloons()
     
     st.markdown("### Create New Campaign")
     

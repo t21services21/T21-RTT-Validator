@@ -163,7 +163,17 @@ with tab2:
             st.markdown(f"⏱️ {alert['time']}")
         with col_h4:
             if st.button("View", key=f"view_{alert['id']}"):
-                st.info("Loading alert...")
+                st.success("✅ Alert Details:")
+                st.code(f"""
+Alert ID: {alert['id']}
+Type: {alert['type']}
+Source: {alert['source']}
+Time: {alert['time']}
+Status: Active
+
+Recommended Action: Investigate and contain
+                """)
+                st.info("🔍 Click 'Investigate' to start analysis")
 
 with tab3:
     st.subheader("Medium Priority Alerts")

@@ -766,7 +766,8 @@ with tab1:
                 st.balloons()
         with col_vid2:
             if st.button("⏭️ Next Video"):
-                st.info("Loading next video...")
+                st.success("✅ Moving to next video!")
+                st.info("📹 Next video in the series will load here")
         
         # Quiz section
         st.markdown("### 📝 Module Quiz")

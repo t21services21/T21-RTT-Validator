@@ -284,7 +284,219 @@ with tab2:
             st.markdown(f"**Description:** {lab['description']}")
             st.markdown(f"**Time:** {lab['time']} | **Points:** {lab['points']}")
             if st.button("🚀 Start Lab", key=f"start_net_{lab['name']}", use_container_width=True):
-                st.success("Launching network lab...")
+                st.session_state.active_network_lab = lab['name']
+                st.rerun()
+    
+    # Show active network lab content
+    if 'active_network_lab' in st.session_state:
+        st.markdown("---")
+        st.markdown(f"## 🌐 {st.session_state.active_network_lab}")
+        
+        if "Nmap" in st.session_state.active_network_lab:
+            st.markdown("""
+            ### 🎯 Objective
+            Scan the target network and identify all open ports and services
+            
+            ### 📚 What You'll Learn
+            - How to use Nmap for network scanning
+            - Identifying open ports and services
+            - Service version detection
+            - OS fingerprinting
+            
+            ### 🌐 Target Network
+            **Target:** 192.168.1.0/24
+            **Your IP:** 192.168.1.50
+            """)
+            
+            st.markdown("### 💻 Nmap Terminal")
+            
+            # Nmap cheat sheet
+            with st.expander("📋 Nmap Quick Reference"):
+                st.code("""
+# Basic Scans
+nmap 192.168.1.1                    # Basic scan
+nmap 192.168.1.0/24                 # Scan subnet
+nmap -p 80,443 192.168.1.1          # Specific ports
+nmap -p- 192.168.1.1                # All ports
+
+# Service Detection
+nmap -sV 192.168.1.1                # Version detection
+nmap -O 192.168.1.1                 # OS detection
+nmap -A 192.168.1.1                 # Aggressive scan
+
+# Stealth Scans
+nmap -sS 192.168.1.1                # SYN scan
+nmap -sT 192.168.1.1                # TCP connect
+                """, language="bash")
+            
+            # Command input
+            command = st.text_input("Enter Nmap command:", placeholder="nmap -sV 192.168.1.100", key="nmap_input")
+            
+            if st.button("▶️ Execute Command"):
+                if "nmap" in command.lower():
+                    # Simulate different outputs based on command
+                    if "-sV" in command or "-A" in command:
+                        st.code("""
+Starting Nmap 7.94 ( https://nmap.org )
+Nmap scan report for 192.168.1.100
+Host is up (0.0012s latency).
+Not shown: 995 closed ports
+
+PORT     STATE SERVICE    VERSION
+22/tcp   open  ssh        OpenSSH 8.2p1 Ubuntu 4ubuntu0.5
+80/tcp   open  http       Apache httpd 2.4.41 ((Ubuntu))
+443/tcp  open  ssl/http   Apache httpd 2.4.41 ((Ubuntu))
+3306/tcp open  mysql      MySQL 5.7.38-0ubuntu0.18.04.1
+8080/tcp open  http       Apache Tomcat 9.0.65
+
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Nmap done: 1 IP address (1 host up) scanned in 15.23 seconds
+                        """, language="bash")
+                        st.success("✅ Scan complete! 5 open ports found")
+                        
+                    elif "-O" in command:
+                        st.code("""
+Starting Nmap 7.94 ( https://nmap.org )
+Nmap scan report for 192.168.1.100
+Host is up (0.0012s latency).
+
+OS details: Linux 4.15 - 5.6
+Running: Linux 4.X|5.X
+OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5
+
+Nmap done: 1 IP address (1 host up) scanned in 8.45 seconds
+                        """, language="bash")
+                        st.success("✅ OS detected: Linux!")
+                        
+                    elif "-p-" in command:
+                        st.code("""
+Starting Nmap 7.94 ( https://nmap.org )
+Nmap scan report for 192.168.1.100
+Host is up (0.0012s latency).
+Not shown: 65530 closed ports
+
+PORT      STATE SERVICE
+22/tcp    open  ssh
+80/tcp    open  http
+443/tcp   open  https
+3306/tcp  open  mysql
+8080/tcp  open  http-proxy
+
+Nmap done: 1 IP address (1 host up) scanned in 42.18 seconds
+                        """, language="bash")
+                        st.success("✅ Full port scan complete!")
+                    else:
+                        st.code("""
+Starting Nmap 7.94 ( https://nmap.org )
+Nmap scan report for 192.168.1.100
+Host is up (0.0012s latency).
+Not shown: 995 closed ports
+
+PORT     STATE SERVICE
+22/tcp   open  ssh
+80/tcp   open  http
+443/tcp  open  https
+3306/tcp open  mysql
+8080/tcp open  http-proxy
+
+Nmap done: 1 IP address (1 host up) scanned in 2.34 seconds
+                        """, language="bash")
+                        st.info("💡 Try adding -sV to detect service versions!")
+                else:
+                    st.error("❌ Invalid command. Must start with 'nmap'")
+            
+            # Quiz
+            st.markdown("### 📝 Challenge Questions")
+            
+            q1 = st.radio("What port is SSH running on?", ["21", "22", "23", "80"], key="nmap_q1")
+            q2 = st.radio("What web server is running?", ["Nginx", "Apache", "IIS", "Tomcat"], key="nmap_q2")
+            q3 = st.text_input("What is the MySQL version?", key="nmap_q3")
+            
+            if st.button("Submit Answers"):
+                score = 0
+                if q1 == "22":
+                    st.success("✅ Q1 Correct! SSH is on port 22")
+                    score += 33
+                else:
+                    st.error("❌ Q1 Incorrect")
+                
+                if q2 == "Apache":
+                    st.success("✅ Q2 Correct! Apache httpd 2.4.41")
+                    score += 33
+                else:
+                    st.error("❌ Q2 Incorrect")
+                
+                if "5.7" in q3:
+                    st.success("✅ Q3 Correct! MySQL 5.7.38")
+                    score += 34
+                else:
+                    st.error("❌ Q3 Incorrect")
+                
+                if score == 100:
+                    st.balloons()
+                    st.success("🎉 Perfect score! +100 points earned!")
+                    st.success("✅ Flag: flag{nmap_network_scanner}")
+        
+        elif "Wireshark" in st.session_state.active_network_lab:
+            st.markdown("""
+            ### 🎯 Objective
+            Analyze captured network traffic to identify suspicious activity
+            
+            ### 🦈 Wireshark Lab
+            You've captured network traffic during a suspected attack. Analyze the PCAP file.
+            """)
+            
+            # Sample packet data
+            st.markdown("### 📊 Captured Packets")
+            
+            packets_df = pd.DataFrame({
+                "No.": [1, 2, 3, 4, 5, 6, 7, 8],
+                "Time": ["0.000", "0.123", "0.245", "0.367", "0.489", "0.611", "0.733", "0.855"],
+                "Source": ["192.168.1.100", "10.0.0.50", "192.168.1.100", "10.0.0.50", "192.168.1.100", "185.220.101.45", "192.168.1.100", "185.220.101.45"],
+                "Destination": ["10.0.0.50", "192.168.1.100", "10.0.0.50", "192.168.1.100", "10.0.0.50", "192.168.1.100", "185.220.101.45", "192.168.1.100"],
+                "Protocol": ["TCP", "TCP", "HTTP", "HTTP", "TCP", "TCP", "TCP", "TCP"],
+                "Info": ["SYN", "SYN, ACK", "GET /admin", "200 OK", "FIN", "SYN (Port 22)", "RST", "SYN (Port 22)"]
+            })
+            
+            st.dataframe(packets_df, use_container_width=True)
+            
+            # Wireshark filters
+            st.markdown("### 🔍 Apply Wireshark Filter")
+            
+            filter_input = st.text_input("Enter display filter:", placeholder="ip.addr == 192.168.1.100", key="wireshark_filter")
+            
+            if st.button("Apply Filter"):
+                if "185.220.101.45" in filter_input:
+                    st.warning("🚨 Suspicious traffic detected!")
+                    filtered = packets_df[packets_df["Source"].str.contains("185.220.101.45") | packets_df["Destination"].str.contains("185.220.101.45")]
+                    st.dataframe(filtered)
+                    st.error("⚠️ Multiple SSH connection attempts from 185.220.101.45 - Possible brute force attack!")
+                elif "http" in filter_input.lower():
+                    st.success("✅ HTTP traffic filtered")
+                    filtered = packets_df[packets_df["Protocol"] == "HTTP"]
+                    st.dataframe(filtered)
+                else:
+                    st.info("Filter applied")
+            
+            # Questions
+            st.markdown("### 📝 Analysis Questions")
+            
+            q1 = st.text_input("What is the suspicious IP address?", key="ws_q1")
+            q2 = st.radio("What type of attack is this?", ["DDoS", "Brute Force", "SQL Injection", "XSS"], key="ws_q2")
+            
+            if st.button("Submit Analysis"):
+                if "185.220.101.45" in q1 and q2 == "Brute Force":
+                    st.success("🎉 Correct analysis!")
+                    st.balloons()
+                    st.success("✅ Flag: flag{wireshark_packet_master}")
+                else:
+                    st.error("❌ Incorrect. Review the packets again!")
+        
+        if st.button("⬅️ Back to Lab List"):
+            if 'active_network_lab' in st.session_state:
+                del st.session_state.active_network_lab
+            st.rerun()
 
 with tab3:
     st.subheader("Web Application Security Labs")
@@ -408,13 +620,14 @@ Database: users_db
             Find and exploit Cross-Site Scripting (XSS) vulnerabilities
             
             ### 🌐 Target: Comment Section
+            A blog with user comments - test for XSS!
             """)
             
             st.markdown("### 💬 Post a Comment")
-            comment = st.text_area("Your comment:", placeholder="Enter your comment...")
+            comment = st.text_area("Your comment:", placeholder="Enter your comment...", key="xss_comment")
             
-            if st.button("Submit Comment"):
-                if "<script>" in comment.lower() or "alert" in comment.lower():
+            if st.button("Submit Comment", key="xss_submit"):
+                if "<script>" in comment.lower() or "alert" in comment.lower() or "onerror" in comment.lower():
                     st.success("🎉 XSS vulnerability exploited!")
                     st.warning("⚠️ Malicious script would execute here!")
                     st.code(comment)
@@ -429,6 +642,89 @@ Database: users_db
 <img src=x onerror=alert('XSS')>
 <svg onload=alert('XSS')>
             """, language="html")
+        
+        elif "Authentication Bypass" in st.session_state.active_web_lab:
+            st.markdown("""
+            ### 🎯 Objective
+            Bypass authentication using various techniques
+            
+            ### 🔐 Secure Login System (or is it?)
+            Find ways to access the admin panel without valid credentials
+            """)
+            
+            st.markdown("### 💻 Login Panel")
+            
+            auth_user = st.text_input("Username:", key="auth_user")
+            auth_pass = st.text_input("Password:", type="password", key="auth_pass")
+            
+            if st.button("Login", key="auth_login"):
+                # Check for various bypass techniques
+                if auth_user == "admin" and (auth_pass == "" or auth_pass == " " or "null" in auth_pass.lower()):
+                    st.success("🎉 Authentication bypassed using null/empty password!")
+                    st.success("✅ Flag: flag{auth_bypass_null}")
+                    st.balloons()
+                elif "admin" in auth_user and ("or" in auth_user.lower() or "'" in auth_user):
+                    st.success("🎉 Authentication bypassed using SQL injection!")
+                    st.success("✅ Flag: flag{auth_bypass_sqli}")
+                    st.balloons()
+                elif auth_user == "admin" and auth_pass == "admin":
+                    st.success("🎉 Weak credentials found!")
+                    st.success("✅ Flag: flag{weak_password}")
+                    st.balloons()
+                else:
+                    st.error("Access denied")
+            
+            st.markdown("### 💡 Bypass Techniques")
+            with st.expander("Technique 1: Null/Empty Password"):
+                st.info("Try leaving password empty or using null")
+            with st.expander("Technique 2: SQL Injection"):
+                st.info("Try SQL injection in username field")
+            with st.expander("Technique 3: Default Credentials"):
+                st.info("Try common admin passwords")
+        
+        elif "Advanced" in st.session_state.active_web_lab:
+            st.markdown("""
+            ### 🎯 Objective
+            Chain multiple vulnerabilities for complete system compromise
+            
+            ### 🔥 Advanced Challenge
+            This server has multiple vulnerabilities. Find and exploit them all!
+            """)
+            
+            st.markdown("### Step 1: Reconnaissance")
+            if st.button("Scan for Vulnerabilities", key="adv_scan"):
+                st.code("""
+Scanning target: advanced-app.t21lab.local
+
+[+] SQL Injection found in /search?q=
+[+] XSS found in /comments
+[+] File Upload vulnerability in /upload
+[+] Weak session management detected
+[+] Directory traversal possible in /files
+                """)
+                st.success("✅ 5 vulnerabilities found!")
+            
+            st.markdown("### Step 2: Exploitation")
+            exploit = st.selectbox("Choose exploit:", [
+                "Select...",
+                "SQL Injection → Database Access",
+                "File Upload → Shell Upload",
+                "Directory Traversal → Config Files"
+            ], key="adv_exploit")
+            
+            if exploit != "Select..." and st.button("Execute Exploit", key="adv_execute"):
+                if "SQL" in exploit:
+                    st.success("🎉 Database dumped!")
+                    st.code("admin:$2y$10$hash... (cracked: admin123)")
+                elif "Upload" in exploit:
+                    st.success("🎉 Shell uploaded!")
+                    st.code("Webshell active at: /uploads/shell.php")
+                elif "Traversal" in exploit:
+                    st.success("🎉 Config file accessed!")
+                    st.code("DB_PASSWORD=SuperSecret123")
+                
+                st.balloons()
+                st.success("✅ Flag: flag{advanced_exploitation_master}")
         
         if st.button("⬅️ Back to Lab List"):
             del st.session_state.active_web_lab
@@ -466,7 +762,81 @@ with tab4:
             st.markdown(f"**Description:** {lab['description']}")
             st.markdown(f"**Time:** {lab['time']} | **Points:** {lab['points']}")
             if st.button("🚀 Start Lab", key=f"start_mal_{lab['name']}", use_container_width=True):
-                st.success("Launching malware analysis lab...")
+                st.session_state.active_malware_lab = lab['name']
+                st.rerun()
+    
+    # Show active malware lab content
+    if 'active_malware_lab' in st.session_state:
+        st.markdown("---")
+        st.markdown(f"## 🦠 {st.session_state.active_malware_lab}")
+        
+        if "Static" in st.session_state.active_malware_lab:
+            st.markdown("""
+            ### 🎯 Objective
+            Analyze suspicious file without executing it
+            
+            ### 🔬 Static Analysis Tools
+            Examine file properties, strings, and structure
+            """)
+            
+            st.markdown("### 📁 Suspicious File: malware.exe")
+            
+            col_mal1, col_mal2 = st.columns(2)
+            
+            with col_mal1:
+                st.markdown("**File Properties:**")
+                st.code("""
+Filename: malware.exe
+Size: 2.4 MB
+MD5: 5d41402abc4b2a76b9719d911017c592
+SHA256: 2c26b46b68ffc68ff99b453c1d30413413422d706...
+Created: 2025-10-28 14:32:11
+                """)
+            
+            with col_mal2:
+                st.markdown("**Actions:**")
+                if st.button("🔍 Calculate Hash", key="mal_hash"):
+                    st.success("Hash calculated!")
+                    st.code("MD5: 5d41402abc4b2a76b9719d911017c592")
+                if st.button("🌐 Check VirusTotal", key="mal_vt"):
+                    st.warning("⚠️ 45/70 vendors detected this as malware!")
+                    st.error("Detected as: Trojan.Generic")
+                if st.button("📝 Extract Strings", key="mal_strings"):
+                    st.code("""
+http://malicious-c2-server.com
+password123
+backdoor.dll
+C:\\Windows\\System32\\evil.exe
+                    """)
+                    st.success("✅ Flag: flag{malware_strings_found}")
+                    st.balloons()
+        
+        elif "Dynamic" in st.session_state.active_malware_lab:
+            st.markdown("""
+            ### 🎯 Objective
+            Execute malware in safe sandbox and observe behavior
+            
+            ### ⚠️ WARNING: Sandbox Environment Only!
+            """)
+            
+            if st.button("▶️ Run in Sandbox", key="mal_run"):
+                st.warning("🔬 Executing malware in isolated sandbox...")
+                st.code("""
+[+] Process started: malware.exe (PID: 1337)
+[!] Network connection attempt: 185.220.101.45:4444
+[!] File created: C:\\Windows\\Temp\\backdoor.dll
+[!] Registry modification: HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run
+[!] Attempting to disable Windows Defender
+[!] Keylogger detected
+[!] Screenshot capture detected
+                """)
+                st.error("🚨 Malicious behavior detected!")
+                st.success("✅ Flag: flag{dynamic_analysis_complete}")
+                st.balloons()
+        
+        if st.button("⬅️ Back to Lab List", key="mal_back"):
+            del st.session_state.active_malware_lab
+            st.rerun()
 
 with tab5:
     st.subheader("Digital Forensics Labs")
@@ -500,7 +870,74 @@ with tab5:
             st.markdown(f"**Description:** {lab['description']}")
             st.markdown(f"**Time:** {lab['time']} | **Points:** {lab['points']}")
             if st.button("🚀 Start Lab", key=f"start_for_{lab['name']}", use_container_width=True):
-                st.success("Launching forensics lab...")
+                st.session_state.active_forensics_lab = lab['name']
+                st.rerun()
+    
+    # Show active forensics lab content
+    if 'active_forensics_lab' in st.session_state:
+        st.markdown("---")
+        st.markdown(f"## 🕵️ {st.session_state.active_forensics_lab}")
+        
+        if "Disk" in st.session_state.active_forensics_lab:
+            st.markdown("""
+            ### 🎯 Objective
+            Investigate compromised system disk image
+            
+            ### 💾 Evidence: disk_image.dd (500 MB)
+            A disk image from a compromised server
+            """)
+            
+            st.markdown("### 🔍 Forensic Tools")
+            
+            tool = st.selectbox("Select tool:", [
+                "Select...",
+                "Autopsy - Disk Analysis",
+                "FTK Imager - File Recovery",
+                "Sleuth Kit - Timeline Analysis"
+            ], key="for_tool")
+            
+            if tool != "Select..." and st.button("Run Analysis", key="for_run"):
+                if "Autopsy" in tool:
+                    st.code("""
+Autopsy Analysis Results:
+
+[+] Deleted files found: 47
+[+] Suspicious file: evil_payload.exe (deleted)
+[+] Browser history: visits to malicious-site.com
+[+] USB device connected: 2025-10-28 14:30
+[+] Files copied to USB: confidential_data.zip
+                    """)
+                    st.success("✅ Flag: flag{disk_forensics_master}")
+                    st.balloons()
+        
+        elif "Memory" in st.session_state.active_forensics_lab:
+            st.markdown("""
+            ### 🎯 Objective
+            Analyze memory dump from infected system
+            
+            ### 🧠 Memory Dump: memory.dmp (4 GB)
+            """)
+            
+            if st.button("Run Volatility", key="for_vol"):
+                st.code("""
+volatility -f memory.dmp --profile=Win10x64 pslist
+
+PID   Process Name
+1337  malware.exe
+4444  backdoor.exe
+5555  keylogger.exe
+
+volatility -f memory.dmp --profile=Win10x64 netscan
+
+Local Address          Foreign Address        State
+192.168.1.100:49152    185.220.101.45:4444   ESTABLISHED
+                """)
+                st.success("✅ Flag: flag{memory_forensics_expert}")
+                st.balloons()
+        
+        if st.button("⬅️ Back to Lab List", key="for_back"):
+            del st.session_state.active_forensics_lab
+            st.rerun()
 
 st.divider()
 
@@ -673,7 +1110,9 @@ for rec in recommended:
         st.caption(f"💡 {rec['reason']} | 🎯 {rec['points']} points")
     with col_r2:
         if st.button("Start", key=f"rec_{rec['name']}"):
-            st.success("Loading lab...")
+            st.session_state.active_lab = rec['name']
+            st.success(f"✅ Starting {rec['name']}!")
+            st.rerun()
 
 # Footer
 st.markdown("---")

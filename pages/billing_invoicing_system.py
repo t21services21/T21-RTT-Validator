@@ -158,7 +158,22 @@ with tab1:
             
             with col_b1:
                 if st.button("👁️ View", key=f"view_{invoice['invoice_no']}"):
-                    st.info("Loading invoice...")
+                    st.success(f"✅ Invoice {invoice['invoice_no']}")
+                    st.markdown(f"""
+                    **Invoice Details:**
+                    - Client: {invoice['client']}
+                    - Amount: £{invoice['amount']:,}
+                    - Due Date: {invoice['due_date']}
+                    - Status: {invoice['status']}
+                    
+                    **Services:**
+                    - SOC Monitoring (24/7) - £2,500
+                    - Incident Response - £500
+                    - Threat Intelligence - £300
+                    
+                    **Total: £{invoice['amount']:,}**
+                    """)
+                    st.info("📥 Click 'Download PDF' to get printable version")
             
             with col_b2:
                 if st.button("📥 Download PDF", key=f"pdf_{invoice['invoice_no']}"):

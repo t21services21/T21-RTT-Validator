@@ -63,61 +63,163 @@ if prompt := st.chat_input("Ask me anything about cybersecurity..."):
     # Generate AI response
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            try:
-                # Use OpenAI API
-                client = OpenAI(api_key=st.secrets.get("OPENAI_API_KEY", ""))
-                
-                # System prompt for cybersecurity tutor
-                system_prompt = """You are an expert cybersecurity tutor for SOC analyst training.
+            # Intelligent fallback system - works WITHOUT API key
+            ai_response = None
+            
+            # Check for common questions and provide smart answers
+            prompt_lower = prompt.lower()
+            
+            # CIA Triad questions
+            if "cia" in prompt_lower and ("triad" in prompt_lower or "what" in prompt_lower):
+                ai_response = """**The CIA Triad** is the foundation of cybersecurity:
 
-Your role:
-- Explain concepts clearly and simply
-- Provide hints for labs WITHOUT giving direct answers
-- Encourage critical thinking
-- Relate concepts to real-world scenarios
-- Be encouraging and supportive
-- Guide students to discover answers themselves
+**C - Confidentiality:** Ensuring information is only accessible to authorized people
+- Example: Encryption, access controls, passwords
 
-Topics you cover:
+**I - Integrity:** Ensuring information is accurate and hasn't been tampered with  
+- Example: Checksums, digital signatures, version control
+
+**A - Availability:** Ensuring information is accessible when needed
+- Example: Backups, redundancy, DDoS protection
+
+💡 **Real-world example:** A hospital needs:
+- Confidentiality: Only doctors see patient records
+- Integrity: Medical records must be accurate
+- Availability: Records available 24/7 for emergencies"""
+
+            # Nmap questions
+            elif "nmap" in prompt_lower:
+                ai_response = """**Nmap (Network Mapper)** is the #1 network scanning tool!
+
+**Basic Commands:**
+```bash
+nmap 192.168.1.1          # Basic scan
+nmap -sV 192.168.1.1      # Service version detection
+nmap -O 192.168.1.1       # OS detection
+nmap -p- 192.168.1.1      # Scan all ports
+```
+
+**Common Use Cases:**
+- Find open ports on a target
+- Identify services and versions
+- Detect operating system
+- Security auditing
+
+💡 **Tip:** Always get permission before scanning! Unauthorized scanning is illegal.
+
+**Try the Nmap lab** in the Cyber Lab to practice hands-on!"""
+            
+            # SQL Injection questions
+            elif "sql" in prompt_lower and "injection" in prompt_lower:
+                ai_response = """**SQL Injection** is a critical web vulnerability!
+
+**How it works:**
+Attackers insert malicious SQL code into input fields to manipulate database queries.
+
+**Example Attack:**
+```sql
+Username: admin' OR '1'='1'--
+Password: anything
+```
+
+**Why it works:**
+The query becomes: `SELECT * FROM users WHERE username='admin' OR '1'='1'--'`
+- The `OR '1'='1'` is always true
+- The `--` comments out the rest
+
+**Prevention:**
+- Use prepared statements
+- Input validation
+- Parameterized queries
+- Never trust user input!
+
+🔬 **Practice:** Try the SQL Injection lab in the Web Hacking section!"""
+
+            # Wireshark questions
+            elif "wireshark" in prompt_lower:
+                ai_response = """**Wireshark** is the world's most popular packet analyzer!
+
+**What it does:**
+Captures and analyzes network traffic in real-time.
+
+**Common Filters:**
+```
+ip.addr == 192.168.1.1    # Specific IP
+tcp.port == 80             # HTTP traffic
+http                       # All HTTP
+dns                        # DNS queries
+```
+
+**Use Cases:**
+- Troubleshoot network issues
+- Detect suspicious activity
+- Analyze malware traffic
+- Investigate security incidents
+
+💡 **Tip:** Start with broad filters, then narrow down!
+
+🔬 **Practice:** Check out the Wireshark lab in Network Security!"""
+
+            # Career questions
+            elif "career" in prompt_lower or "job" in prompt_lower or "salary" in prompt_lower:
+                ai_response = """**SOC Analyst Career Path:**
+
+**Entry Level (0-2 years):**
+- Junior SOC Analyst
+- Salary: £28,000 - £35,000
+- Focus: Alert monitoring, basic investigations
+
+**Mid Level (2-5 years):**
+- SOC Analyst / Security Analyst
+- Salary: £35,000 - £50,000
+- Focus: Incident response, threat hunting
+
+**Senior Level (5+ years):**
+- Senior SOC Analyst / Team Lead
+- Salary: £50,000 - £70,000
+- Focus: Advanced threats, mentoring, strategy
+
+**Required Skills:**
+- SIEM tools (Splunk, QRadar)
 - Network security
-- SIEM and log analysis
 - Incident response
-- Threat hunting
-- Malware analysis
-- SOC operations
-- Security tools (Splunk, Wireshark, etc.)
-- Career guidance
+- Threat intelligence
+- Communication skills
 
-Keep responses concise (2-3 paragraphs max) unless asked for detail."""
+💼 **Check the Job Board** for current opportunities!"""
 
-                response = client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        *st.session_state.tutor_messages
-                    ],
-                    temperature=0.7,
-                    max_tokens=500
-                )
-                
-                ai_response = response.choices[0].message.content
-                
-            except Exception as e:
-                # Fallback response if API fails
-                ai_response = f"""I'm having trouble connecting right now, but here's what I can tell you:
+            # Default response for other questions
+            else:
+                ai_response = f"""Great question about: **{prompt}**
 
-**About your question:** "{prompt}"
+Here's what I can help with:
 
-This is a great question! Here are some key points:
+**If you're asking about a concept:**
+- Check the SOC Training Portal for detailed lessons
+- Watch the video lectures
+- Read the module content
 
-1. **Start with the basics** - Make sure you understand the fundamentals
-2. **Practice hands-on** - Theory is important, but labs solidify learning
-3. **Use resources** - Check the module content, videos, and documentation
-4. **Ask specific questions** - The more specific, the better I can help!
+**If you're stuck on a lab:**
+- Review the hints provided
+- Check the cheat sheets
+- Try breaking the problem into smaller steps
 
-Try rephrasing your question or check the course materials. I'll be back online soon!
+**If you need tool help:**
+- Visit the Tool Practice Arena
+- Check the command references
+- Practice with the interactive examples
 
-💡 **Tip:** Break complex problems into smaller parts."""
+**Popular topics I can explain:**
+- CIA Triad
+- Nmap scanning
+- SQL Injection
+- Wireshark analysis
+- SIEM tools
+- Career advice
+
+💡 **Tip:** Ask specific questions like "What is the CIA Triad?" or "How does Nmap work?"
+
+Try rephrasing your question to be more specific, and I'll give you a detailed answer!"""
 
             st.markdown(ai_response)
             st.session_state.tutor_messages.append({"role": "assistant", "content": ai_response})
