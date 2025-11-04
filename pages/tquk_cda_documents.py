@@ -140,10 +140,12 @@ st.divider()
 
 # Introduction
 st.info("""
-**Complete CDA Package for 10 TQUK Qualifications**
+**✅ UPDATED: Level 3 Diploma in Adult Care - Complete CDA Submission**
 
-This page provides access to all Centre-Devised Assessment (CDA) submission documents 
-for TQUK approval of our AI-powered digital learning platform.
+This page provides access to ALL Centre-Devised Assessment (CDA) submission documents 
+for TQUK Level 3 Diploma in Adult Care (RQF) – 610/0103/6
+
+**NEW:** All 7 mandatory unit assessment plans with GLH breakdown and assessment methods!
 """)
 
 # Document list
@@ -311,6 +313,216 @@ with col4:
         )
     else:
         st.error("File not found")
+
+st.divider()
+
+# NEW SECTION: Level 3 Adult Care Unit Assessment Plans
+st.header("🎓 Level 3 Diploma in Adult Care - Unit Assessment Plans")
+st.success("✅ **COMPLETE SUBMISSION:** All 7 mandatory units with comprehensive assessment plans!")
+
+# Base path for unit files
+unit_base_path = "TQUK_CDA_Complete_Submission"
+
+# Unit details
+units = [
+    {
+        "number": "1",
+        "title": "Duty of Care",
+        "file": "Unit_1_Assessment_Plan_Duty_of_Care.md",
+        "glh": "20",
+        "credit": "2"
+    },
+    {
+        "number": "2",
+        "title": "Equality, Diversity & Inclusion",
+        "file": "Unit_2_Assessment_Plan_Equality_Diversity_Inclusion.md",
+        "glh": "20",
+        "credit": "2"
+    },
+    {
+        "number": "3",
+        "title": "Person-Centred Practice",
+        "file": "Unit_3_Assessment_Plan_Person_Centred_Practice.md",
+        "glh": "20",
+        "credit": "2"
+    },
+    {
+        "number": "4",
+        "title": "Safeguarding",
+        "file": "Unit_4_Assessment_Plan_Safeguarding.md",
+        "glh": "20",
+        "credit": "2"
+    },
+    {
+        "number": "5",
+        "title": "Communication",
+        "file": "Unit_5_Assessment_Plan_Communication.md",
+        "glh": "20",
+        "credit": "2"
+    },
+    {
+        "number": "6",
+        "title": "Health & Safety",
+        "file": "Unit_6_Assessment_Plan_Health_Safety.md",
+        "glh": "20",
+        "credit": "2"
+    },
+    {
+        "number": "7",
+        "title": "CPD",
+        "file": "Unit_7_Assessment_Plan_CPD.md",
+        "glh": "20",
+        "credit": "2"
+    }
+]
+
+# Display units in 2 columns
+for i in range(0, len(units), 2):
+    col_left, col_right = st.columns(2)
+    
+    # Left column
+    with col_left:
+        unit = units[i]
+        st.subheader(f"Unit {unit['number']}: {unit['title']}")
+        st.markdown(f"**GLH:** {unit['glh']} | **Credit:** {unit['credit']}")
+        
+        file_path = os.path.join(unit_base_path, unit['file'])
+        if os.path.exists(file_path):
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # PDF Download
+            pdf_buffer = markdown_to_pdf(content, f"Unit {unit['number']}: {unit['title']}")
+            st.download_button(
+                label="📄 Download PDF",
+                data=pdf_buffer,
+                file_name=f"Unit_{unit['number']}_{unit['title'].replace(' ', '_')}.pdf",
+                mime="application/pdf",
+                use_container_width=True,
+                key=f"pdf_{unit['number']}"
+            )
+            
+            # Word Download
+            word_buffer = markdown_to_word(content, f"Unit {unit['number']}: {unit['title']}")
+            st.download_button(
+                label="📝 Download Word",
+                data=word_buffer,
+                file_name=f"Unit_{unit['number']}_{unit['title'].replace(' ', '_')}.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                use_container_width=True,
+                key=f"word_{unit['number']}"
+            )
+        else:
+            st.error(f"File not found: {file_path}")
+    
+    # Right column (if exists)
+    if i + 1 < len(units):
+        with col_right:
+            unit = units[i + 1]
+            st.subheader(f"Unit {unit['number']}: {unit['title']}")
+            st.markdown(f"**GLH:** {unit['glh']} | **Credit:** {unit['credit']}")
+            
+            file_path = os.path.join(unit_base_path, unit['file'])
+            if os.path.exists(file_path):
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                
+                # PDF Download
+                pdf_buffer = markdown_to_pdf(content, f"Unit {unit['number']}: {unit['title']}")
+                st.download_button(
+                    label="📄 Download PDF",
+                    data=pdf_buffer,
+                    file_name=f"Unit_{unit['number']}_{unit['title'].replace(' ', '_')}.pdf",
+                    mime="application/pdf",
+                    use_container_width=True,
+                    key=f"pdf_{unit['number']}"
+                )
+                
+                # Word Download
+                word_buffer = markdown_to_word(content, f"Unit {unit['number']}: {unit['title']}")
+                st.download_button(
+                    label="📝 Download Word",
+                    data=word_buffer,
+                    file_name=f"Unit_{unit['number']}_{unit['title'].replace(' ', '_')}.docx",
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    use_container_width=True,
+                    key=f"word_{unit['number']}"
+                )
+            else:
+                st.error(f"File not found: {file_path}")
+
+st.divider()
+
+# Submission Summary and Email Response
+st.header("📧 Submission Documents")
+
+col_sum1, col_sum2 = st.columns(2)
+
+with col_sum1:
+    st.subheader("📋 CDA Submission Summary")
+    st.markdown("**Complete overview of all 7 units**")
+    
+    summary_file = os.path.join(unit_base_path, "CDA_SUBMISSION_SUMMARY.md")
+    if os.path.exists(summary_file):
+        with open(summary_file, 'r', encoding='utf-8') as f:
+            summary_content = f.read()
+        
+        # PDF Download
+        pdf_summary = markdown_to_pdf(summary_content, "CDA Submission Summary")
+        st.download_button(
+            label="📄 Download PDF",
+            data=pdf_summary,
+            file_name="CDA_Submission_Summary.pdf",
+            mime="application/pdf",
+            use_container_width=True,
+            key="pdf_summary"
+        )
+        
+        # Word Download
+        word_summary = markdown_to_word(summary_content, "CDA Submission Summary")
+        st.download_button(
+            label="📝 Download Word",
+            data=word_summary,
+            file_name="CDA_Submission_Summary.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            use_container_width=True,
+            key="word_summary"
+        )
+    else:
+        st.error("Summary file not found")
+
+with col_sum2:
+    st.subheader("📧 Email Response to TQUK")
+    st.markdown("**Ready-to-send email template**")
+    
+    email_file = os.path.join(unit_base_path, "EMAIL_RESPONSE_TO_TQUK.md")
+    if os.path.exists(email_file):
+        with open(email_file, 'r', encoding='utf-8') as f:
+            email_content = f.read()
+        
+        # PDF Download
+        pdf_email = markdown_to_pdf(email_content, "Email Response to TQUK")
+        st.download_button(
+            label="📄 Download PDF",
+            data=pdf_email,
+            file_name="Email_Response_to_TQUK.pdf",
+            mime="application/pdf",
+            use_container_width=True,
+            key="pdf_email"
+        )
+        
+        # Word Download
+        word_email = markdown_to_word(email_content, "Email Response to TQUK")
+        st.download_button(
+            label="📝 Download Word",
+            data=word_email,
+            file_name="Email_Response_to_TQUK.docx",
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            use_container_width=True,
+            key="word_email"
+        )
+    else:
+        st.error("Email file not found")
 
 st.divider()
 
