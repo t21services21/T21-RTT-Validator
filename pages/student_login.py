@@ -153,11 +153,11 @@ else:
                                     st.error(f" {result['message']}")
                         except Exception as e:
                             # Fall back to old system
-                            result = login_student(email, password)
+                            success, message, user_license = login_student(email, password)
                             
-                            if result["success"]:
+                            if success:
                                 st.session_state.logged_in = True
-                                st.session_state.user_license = result["license"]
+                                st.session_state.user_license = user_license
                                 st.session_state.user_email = email
                                 
                                 # Save to cookie for persistent login (non-blocking)
@@ -171,7 +171,7 @@ else:
                                 st.success(" Login successful! Welcome to T21 Healthcare Platform!")
                                 st.switch_page("app.py")
                             else:
-                                st.error(f" {result['message']}")
+                                st.error(f" {message}")
                     else:
                         st.error(" Please enter both email and password")
             
