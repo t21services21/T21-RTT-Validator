@@ -1649,6 +1649,7 @@ elif user_role == 'tester':
         "📊 Reports & Analytics",             # Dashboards, analytics, reporting
         "🎓 Training & Certification",        # Certification exams, training modules
         "📊 Data Science Foundations (Pathway 1)",  # Global data science pathway
+        "📊 Data Science Pathway 2 (Intermediate ML)",  # Next-step ML pathway
         "📚 Level 3 Adult Care",              # TQUK Qualification
         "💻 IT User Skills",                  # TQUK Qualification
         "🤝 Customer Service",                # TQUK Qualification
@@ -1687,6 +1688,7 @@ elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
         "🎓 Learning Portal",
         "🎓 Training & Certification",
         "📊 Data Science Foundations (Pathway 1)",
+        "📊 Data Science Pathway 2 (Intermediate ML)",
         
         # TEACHING & ASSESSMENT
         "👨‍🏫 Teaching & Assessment",
@@ -7757,6 +7759,10 @@ elif tool == "📋 TQUK CDA Documents":
 elif tool == "📊 Data Science Foundations (Pathway 1)":
     from data_science_foundations_module import render_data_science_foundations_module
     render_data_science_foundations_module()
+
+elif tool == "📊 Data Science Pathway 2 (Intermediate ML)":
+    from data_science_pathway2_module import render_data_science_pathway2_module
+    render_data_science_pathway2_module()
 
 elif tool == "📚 Level 3 Adult Care":
     from tquk_level3_adult_care_module import render_level3_adult_care_module
