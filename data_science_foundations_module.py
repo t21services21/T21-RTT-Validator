@@ -842,6 +842,7 @@ def render_data_science_foundations_module():
                         "Writing reports without data",
                     ],
                     "answer": 1,
+                    "explanation": "Data science combines data, statistics and computing to answer real questions and support decisions.",
                 },
                 {
                     "text": "Which CRISP-DM phase comes first?",
@@ -852,6 +853,35 @@ def render_data_science_foundations_module():
                         "Data Preparation",
                     ],
                     "answer": 1,
+                    "explanation": "You always start with Business Understanding – being clear on the problem before touching data.",
+                },
+                {
+                    "text": "Which role mainly focuses on deploying models into production systems?",
+                    "options": [
+                        "Data Analyst",
+                        "Data Engineer",
+                        "Machine Learning Engineer",
+                        "Database Administrator",
+                    ],
+                    "answer": 2,
+                    "explanation": "Machine Learning Engineers take models and turn them into reliable services and products.",
+                },
+                {
+                    "text": "Which of the following is an example of data ethics?",
+                    "options": [
+                        "Collecting as much data as possible without telling users",
+                        "Only collecting data that is needed and protecting it properly",
+                        "Selling user data to anyone who pays",
+                        "Ignoring local privacy laws if the model is accurate",
+                    ],
+                    "answer": 1,
+                    "explanation": "Good data ethics means collecting only what you need and protecting it in line with laws like GDPR.",
+                },
+                {
+                    "text": "In CRISP-DM, which phase checks whether the model really solves the business problem?",
+                    "options": ["Data Preparation", "Evaluation", "Deployment", "Data Understanding"],
+                    "answer": 1,
+                    "explanation": "Evaluation checks performance against the business goals before deployment.",
                 },
             ],
             2: [
@@ -859,11 +889,36 @@ def render_data_science_foundations_module():
                     "text": "Which keyword is used to define a function in Python?",
                     "options": ["func", "def", "define", "lambda"],
                     "answer": 1,
+                    "explanation": "Python functions are defined with the def keyword, for example: def my_function(): ...",
                 },
                 {
                     "text": "Which structure is best for key–value pairs such as customer_id -> country?",
                     "options": ["list", "tuple", "dict", "set"],
                     "answer": 2,
+                    "explanation": "A dict stores key–value mappings efficiently, e.g. {customer_id: country}.",
+                },
+                {
+                    "text": "What is the result of len([1, 2, 3, 4])?",
+                    "options": ["3", "4", "5", "Error"],
+                    "answer": 1,
+                    "explanation": "The list has four elements, so len(...) returns 4.",
+                },
+                {
+                    "text": "Which control structure lets you run some code only when a condition is true?",
+                    "options": ["for loop", "while loop", "if statement", "function"],
+                    "answer": 2,
+                    "explanation": "An if statement chooses whether to run a block of code based on a condition.",
+                },
+                {
+                    "text": "In a notebook, which is generally better practice?",
+                    "options": [
+                        "Keep all experiments, even broken ones, in the final version",
+                        "Remove dead code and keep the notebook tidy and readable",
+                        "Never use comments",
+                        "Use one very long cell for the whole project",
+                    ],
+                    "answer": 1,
+                    "explanation": "A clean, readable notebook with dead code removed is easier for others (and you) to understand.",
                 },
             ],
             3: [
@@ -871,11 +926,41 @@ def render_data_science_foundations_module():
                     "text": "In Pandas, which object represents a table of rows and columns?",
                     "options": ["Series", "DataFrame", "Array", "List"],
                     "answer": 1,
+                    "explanation": "A DataFrame is a 2D table of rows and columns with labels.",
                 },
                 {
                     "text": "Which method shows column types and non-null counts?",
                     "options": ["df.head()", "df.info()", "df.describe()", "df.columns"],
                     "answer": 1,
+                    "explanation": "df.info() gives an overview of columns, dtypes and non-null counts.",
+                },
+                {
+                    "text": "Which operation is best for computing total revenue per country?",
+                    "options": [
+                        "df.sort_values()",
+                        "df.groupby('country')['revenue'].sum()",
+                        "df.dropna()",
+                        "df.merge()",
+                    ],
+                    "answer": 1,
+                    "explanation": "groupby with sum aggregates revenue per country.",
+                },
+                {
+                    "text": "Which method would you use first to quickly inspect the top few rows of a DataFrame?",
+                    "options": ["df.tail()", "df.head()", "df.count()", "df.sort_values()"],
+                    "answer": 1,
+                    "explanation": "df.head() shows the first 5 rows by default, useful for a quick glance.",
+                },
+                {
+                    "text": "Which is a good way to handle obvious duplicate rows in a dataset?",
+                    "options": [
+                        "Ignore them always",
+                        "Use df.drop_duplicates() when duplicates truly represent the same record",
+                        "Delete every second row",
+                        "You can never remove duplicates",
+                    ],
+                    "answer": 1,
+                    "explanation": "df.drop_duplicates() is appropriate when duplicates are genuine repeats of the same record.",
                 },
             ],
             4: [
@@ -883,11 +968,36 @@ def render_data_science_foundations_module():
                     "text": "Which SQL clause filters rows before aggregation?",
                     "options": ["GROUP BY", "WHERE", "HAVING", "ORDER BY"],
                     "answer": 1,
+                    "explanation": "WHERE filters rows before grouping; HAVING filters groups after aggregation.",
                 },
                 {
                     "text": "Which JOIN keeps all rows from the left table and matches from the right?",
                     "options": ["INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL OUTER JOIN"],
                     "answer": 1,
+                    "explanation": "LEFT JOIN keeps all rows from the left table and matches or NULLs from the right.",
+                },
+                {
+                    "text": "Which keyword is used to sort query results?",
+                    "options": ["GROUP BY", "ORDER BY", "SORT BY", "RANK BY"],
+                    "answer": 1,
+                    "explanation": "ORDER BY sorts the result set.",
+                },
+                {
+                    "text": "In a typical orders schema, which column is most likely a foreign key in the orders table?",
+                    "options": ["order_id", "order_date", "customer_id", "total_amount"],
+                    "answer": 2,
+                    "explanation": "customer_id in the orders table usually refers to the primary key of the customers table.",
+                },
+                {
+                    "text": "What does SELECT * FROM customers WHERE country = 'UK'; do?",
+                    "options": [
+                        "Updates all UK customers",
+                        "Deletes all UK customers",
+                        "Returns all columns for customers where country is UK",
+                        "Returns only the country column",
+                    ],
+                    "answer": 2,
+                    "explanation": "SELECT with WHERE filters rows and returns matching records; it does not change the data.",
                 },
             ],
             5: [
@@ -895,6 +1005,7 @@ def render_data_science_foundations_module():
                     "text": "Which measure describes spread: mean, median or standard deviation?",
                     "options": ["Mean", "Median", "Standard deviation", "Mode"],
                     "answer": 2,
+                    "explanation": "Standard deviation is a common measure of spread around the mean.",
                 },
                 {
                     "text": "In an A/B test, conversion rate is usually defined as:",
@@ -905,6 +1016,40 @@ def render_data_science_foundations_module():
                         "revenue / conversions",
                     ],
                     "answer": 0,
+                    "explanation": "Conversion rate is number of conversions divided by total users or visits.",
+                },
+                {
+                    "text": "Which statement about correlation is true?",
+                    "options": [
+                        "Correlation proves causation",
+                        "Correlation measures a linear relationship between two variables",
+                        "Correlation is always between -2 and 2",
+                        "Correlation is the same as p-value",
+                    ],
+                    "answer": 1,
+                    "explanation": "Correlation measures linear association but does not by itself prove causation.",
+                },
+                {
+                    "text": "A p-value of 0.03 in an A/B test typically means:",
+                    "options": [
+                        "There is a 3% chance the result is due to random variation under the null hypothesis",
+                        "The new variant is 3% better",
+                        "The result is definitely true",
+                        "The test was run on 3% of users",
+                    ],
+                    "answer": 0,
+                    "explanation": "A low p-value suggests the observed difference would be unlikely if there were actually no effect.",
+                },
+                {
+                    "text": "Which of these is an example of a hypothesis test question?",
+                    "options": [
+                        "What is the average age of users?",
+                        "Is the conversion rate higher for variant B than variant A?",
+                        "How many users signed up this month?",
+                        "What is the maximum revenue?",
+                    ],
+                    "answer": 1,
+                    "explanation": "Hypothesis tests compare groups or conditions, such as A vs B conversion rates.",
                 },
             ],
             6: [
@@ -912,6 +1057,7 @@ def render_data_science_foundations_module():
                     "text": "Which chart is best for a trend over time?",
                     "options": ["Bar chart", "Line chart", "Pie chart", "Scatter plot"],
                     "answer": 1,
+                    "explanation": "Line charts are usually best for showing changes over time.",
                 },
                 {
                     "text": "What is chart junk?",
@@ -922,6 +1068,35 @@ def render_data_science_foundations_module():
                         "Charts with more than one series",
                     ],
                     "answer": 1,
+                    "explanation": "Chart junk is clutter that distracts from the message, such as heavy 3D effects or random icons.",
+                },
+                {
+                    "text": "Which visual would best show the relationship between price and quantity sold?",
+                    "options": ["Bar chart", "Line chart", "Pie chart", "Scatter plot"],
+                    "answer": 3,
+                    "explanation": "Scatter plots are ideal for showing relationships between two numeric variables.",
+                },
+                {
+                    "text": "When creating a dashboard for senior managers, what is usually most important?",
+                    "options": [
+                        "As many charts as possible",
+                        "Clear key metrics and a short narrative they can act on",
+                        "Fancy animations",
+                        "Showing all raw data tables",
+                    ],
+                    "answer": 1,
+                    "explanation": "Decision-makers need a clear story with key metrics and recommended actions, not noise.",
+                },
+                {
+                    "text": "Which of these is a good practice for chart titles?",
+                    "options": [
+                        "Use generic titles like 'Chart 1'",
+                        "Write a short takeaway, e.g. 'UK revenue grew 10% year-on-year'",
+                        "Leave the title blank",
+                        "Use only acronyms",
+                    ],
+                    "answer": 1,
+                    "explanation": "Titles that state the main message help non-technical audiences understand quickly.",
                 },
             ],
             7: [
@@ -934,6 +1109,7 @@ def render_data_science_foundations_module():
                         "A random collection of charts",
                     ],
                     "answer": 1,
+                    "explanation": "A capstone is an end-to-end project that tells a clear story using realistic data.",
                 },
                 {
                     "text": "Why should you describe limitations of your project?",
@@ -944,6 +1120,40 @@ def render_data_science_foundations_module():
                         "It is not important",
                     ],
                     "answer": 1,
+                    "explanation": "Being open about limitations builds trust and shows you understand your methods.",
+                },
+                {
+                    "text": "Which of the following is usually NOT a good choice for a capstone dataset?",
+                    "options": [
+                        "A realistic open dataset relevant to an industry",
+                        "A tiny toy dataset with 10 rows and no real context",
+                        "A public healthcare dataset with clear documentation",
+                        "Retail sales data from an online shop",
+                    ],
+                    "answer": 1,
+                    "explanation": "Capstones should use realistic data; very small toy datasets are not impressive to employers.",
+                },
+                {
+                    "text": "What is one good way to present your capstone to employers?",
+                    "options": [
+                        "Keep it only on your local laptop",
+                        "Upload the notebook and report to GitHub with a clear README",
+                        "Print screenshots only",
+                        "Describe it verbally without any artefacts",
+                    ],
+                    "answer": 1,
+                    "explanation": "A well-documented GitHub repo with code, notebook and README is easy to share and review.",
+                },
+                {
+                    "text": "Which document is most important to include alongside your capstone code?",
+                    "options": [
+                        "A README explaining the problem, data, methods and results",
+                        "Your full employment history",
+                        "A list of all Python errors you saw",
+                        "Random notes with no structure",
+                    ],
+                    "answer": 0,
+                    "explanation": "A clear README helps others understand your project quickly and is standard practice on GitHub.",
                 },
             ],
         }
@@ -971,6 +1181,15 @@ def render_data_science_foundations_module():
             score = sum(1 for ua, q in zip(user_answers, qs) if ua == q["answer"])
             total = len(qs)
             st.success(f"You scored {score} out of {total} on Unit {quiz_unit} quick-check quiz.")
+
+            # Show brief feedback for any questions that were answered incorrectly
+            if total:
+                for idx, (ua, q) in enumerate(zip(user_answers, qs), start=1):
+                    if ua != q["answer"]:
+                        correct_option = q["options"][q["answer"]]
+                        explanation = q.get("explanation", "")
+                        st.warning(f"Q{idx}: Correct answer is '{correct_option}'. {explanation}")
+
             if total > 0 and score == total:
                 st.balloons()
 
