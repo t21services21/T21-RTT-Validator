@@ -1,0 +1,4 @@
+order_id,country,order_date,channel,customer_segment,order_value
+10001,US,2024-01-05,Web,Consumer,89.99
+10002,US,2024-01-05,Mobile,Small Business,249.50
+10003,US,2024-01-06,Web,Consumer,39.00

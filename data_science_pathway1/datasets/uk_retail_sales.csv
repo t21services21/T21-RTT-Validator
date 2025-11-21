@@ -1,0 +1,4 @@
+country,region,store_id,date,product_category,sales_amount,transactions
+UK,England,STORE_001,2024-01-01,Groceries,1250.50,87
+UK,England,STORE_001,2024-01-02,Clothing,840.00,43
+UK,Scotland,STORE_010,2024-01-01,Electronics,2130.75,19
