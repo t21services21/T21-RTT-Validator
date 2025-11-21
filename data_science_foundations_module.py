@@ -47,6 +47,13 @@ except Exception:
     def render_evidence_tracking(email: str, course_id: str):
         st.info("Evidence tracking system is not available in this environment.")
 
+try:
+    # Global video library helper (used to show per-unit recordings)
+    from video_library import get_all_videos
+except Exception:
+    def get_all_videos(category: str = None, week: int = None, competency: str = None):
+        return []
+
 
 COURSE_ID = "data_science_foundations_pathway_1"
 COURSE_NAME = "Data Science Foundations (Pathway 1)"
@@ -716,6 +723,53 @@ def render_data_science_foundations_module():
                 file_name=f"Data_Science_Foundations_Unit_{selected_unit}.pdf",
                 mime="application/pdf",
             )
+
+        st.markdown("---")
+        st.markdown("### 📺 Session recordings for this unit")
+        st.caption(
+            "Videos added in the global Video Library for this week/unit will appear here. "
+            "Tutors can upload or link Vimeo/Zoom/YouTube recordings from the main Video Library tool."
+        )
+
+        try:
+            videos = get_all_videos(week=selected_unit)
+        except Exception:
+            videos = []
+
+        if not videos:
+            st.info("No session recordings have been linked to this unit yet.")
+        else:
+            for video in videos:
+                title = video.get("title", "Untitled video")
+                desc = video.get("description", "")
+                vimeo_id = video.get("vimeo_id")
+                vimeo_url = video.get("vimeo_url")
+
+                with st.expander(f"🎥 {title}"):
+                    if desc:
+                        st.write(desc)
+
+                    # Prefer embedded Vimeo player if we have an ID
+                    if vimeo_id:
+                        embed_url = f"https://player.vimeo.com/video/{vimeo_id}"
+                        if vimeo_url and ("?h=" in vimeo_url or "&h=" in vimeo_url):
+                            import re as _re
+                            match = _re.search(r"[?&]h=([a-zA-Z0-9]+)", vimeo_url)
+                            if match:
+                                embed_url += f"?h={match.group(1)}"
+
+                        st.markdown(
+                            f"""
+<iframe src="{embed_url}" width="640" height="360" frameborder="0" 
+        allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+</iframe>
+""",
+                            unsafe_allow_html=True,
+                        )
+                    elif vimeo_url:
+                        st.markdown(f"[Open video link]({vimeo_url})")
+                    else:
+                        st.warning("Video link not available. Please check the Video Library entry.")
 
     # Labs & mini projects
     with tabs[2]:
