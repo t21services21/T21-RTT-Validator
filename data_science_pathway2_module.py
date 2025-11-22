@@ -1,6 +1,38 @@
 import streamlit as st
 from typing import Dict, Any
 
+try:
+    from tquk_course_assignment import get_learner_enrollments
+except Exception:
+    def get_learner_enrollments(email: str):
+        return []
+
+try:
+    from tquk_pdf_converter import create_unit_pdf
+except Exception:
+    def create_unit_pdf(unit_number: int, unit_name: str, content: str):
+        return content.encode("utf-8")
+
+try:
+    from tquk_evidence_tracking import (
+        render_evidence_submission_form,
+        render_evidence_tracking,
+    )
+except Exception:
+    def render_evidence_submission_form(email: str, course_id: str, unit_number: int):
+        st.info("Evidence submission system is not available in this environment.")
+
+    def render_evidence_tracking(email: str, course_id: str):
+        st.info("Evidence tracking system is not available in this environment.")
+
+try:
+    # Global video library helper (used to show per-unit recordings)
+    from video_library import get_all_videos
+except Exception:
+    def get_all_videos(category: str = None, week: int = None, competency: str = None):
+        return []
+
+
 COURSE_ID = "data_science_pathway_2"
 COURSE_NAME = "Data Science Pathway 2 (Intermediate ML)"
 
@@ -48,6 +80,36 @@ UNITS: Dict[int, Dict[str, Any]] = {
         "credits": 6,
     },
 }
+
+
+def _get_enrollment(email: str):
+    """Helper to fetch a learner's enrollment record for this course."""
+
+    enrollments = get_learner_enrollments(email)
+    for e in enrollments:
+        if e.get("course_id") == COURSE_ID:
+            return e
+    return None
+
+
+def _render_progress_header(enrollment):
+    """Show top-of-page progress metrics if enrollment data exists."""
+
+    if not enrollment:
+        return
+
+    total_units = len(UNITS)
+    units_completed = enrollment.get("units_completed", 0)
+    progress = enrollment.get("progress", 0)
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Progress", f"{progress}%")
+        st.progress(progress / 100 if progress else 0)
+    with col2:
+        st.metric("Units Completed", f"{units_completed}/{total_units}")
+    with col3:
+        st.metric("Status", enrollment.get("status", "in_progress").title())
 
 
 def _render_unit1_learning_materials():
@@ -846,13 +908,19 @@ def render_data_science_pathway2_module():
     """Main UI for Data Science Pathway 2 (Intermediate ML).
 
     Mirrors the overall structure of Pathway 1, with detailed content
-    currently implemented for Units 1–7.
+    implemented for Units 1–7 and hooks for evidence, documents and progress.
     """
+
+    learner_email = st.session_state.get("user_email", "")
 
     st.title("📊 Data Science Pathway 2 (Intermediate ML)")
     st.success(
         "Take the next step after Foundations: build, evaluate and communicate machine learning models that solve real problems."
     )
+
+    enrollment = _get_enrollment(learner_email) if learner_email else None
+    if enrollment:
+        _render_progress_header(enrollment)
 
     st.markdown("---")
 
@@ -862,6 +930,10 @@ def render_data_science_pathway2_module():
             "📖 Learning Materials",
             "🧪 Labs & Mini Projects",
             "📝 Assessments",
+            "📋 Evidence Tracking",
+            "📂 Documents & Downloads",
+            "📊 My Progress",
+            "🎓 Certificate",
         ]
     )
 
@@ -911,6 +983,8 @@ By the end of this pathway you will be able to:
     # Learning materials
     with tabs[1]:
         st.subheader("📖 Learning Materials")
+        st.info("Use this tab as the main reading and concept reference for each unit.")
+
         selected_unit = st.selectbox(
             "Select a unit:",
             options=list(UNITS.keys()),
@@ -936,6 +1010,53 @@ By the end of this pathway you will be able to:
             st.info(
                 "Detailed learning materials for this unit will be added in a future update."
             )
+
+        st.markdown("---")
+        st.markdown("### 📺 Session recordings for this unit")
+        st.caption(
+            "Videos added in the global Video Library for this week/unit will appear here. "
+            "Tutors can upload or link recordings from the main Video Library tool."
+        )
+
+        try:
+            videos = get_all_videos(week=selected_unit)
+        except Exception:
+            videos = []
+
+        if not videos:
+            st.info("No session recordings have been linked to this unit yet.")
+        else:
+            for video in videos:
+                title = video.get("title", "Untitled video")
+                desc = video.get("description", "")
+                vimeo_id = video.get("vimeo_id")
+                vimeo_url = video.get("vimeo_url")
+
+                with st.expander(f"🎥 {title}"):
+                    if desc:
+                        st.write(desc)
+
+                    if vimeo_id:
+                        embed_url = f"https://player.vimeo.com/video/{vimeo_id}"
+                        if vimeo_url and ("?h=" in vimeo_url or "&h=" in vimeo_url):
+                            import re as _re
+
+                            match = _re.search(r"[?&]h=([a-zA-Z0-9]+)", vimeo_url)
+                            if match:
+                                embed_url += f"?h={match.group(1)}"
+
+                        st.markdown(
+                            f"""
+<iframe src="{embed_url}" width="640" height="360" frameborder="0" 
+        allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+</iframe>
+""",
+                            unsafe_allow_html=True,
+                        )
+                    elif vimeo_url:
+                        st.markdown(f"[Open video link]({vimeo_url})")
+                    else:
+                        st.warning("Video link not available. Please check the Video Library entry.")
 
     # Labs & mini projects
     with tabs[2]:
@@ -966,11 +1087,30 @@ By the end of this pathway you will be able to:
                 "Lab outlines for this unit will be added in a future update."
             )
 
-    # Assessments (lightweight for now – quick-check quiz only)
+    # Assessments
     with tabs[3]:
         st.subheader("📝 Assessments")
         st.info(
-            "Formal evidence submission and documents will follow the same pattern as Pathway 1. For now, use the quick-check quiz to test your understanding."
+            "Use this tab to submit evidence for each unit (labs, mini projects, capstone) "
+            "and to complete quick-check quizzes."
+        )
+
+        if not learner_email:
+            st.warning("Log in as a learner to submit assessments.")
+        else:
+            assessment_unit = st.selectbox(
+                "Select unit for assessment submission:",
+                options=list(UNITS.keys()),
+                format_func=lambda x: f"Unit {x}: {UNITS[x]['name']}",
+                key="ds_p2_assessment_submission_unit",
+            )
+            render_evidence_submission_form(learner_email, COURSE_ID, assessment_unit)
+
+        st.markdown("---")
+        st.markdown("### ✅ Quick-check quizzes (Units 1–7)")
+        st.caption(
+            "Answer a short multiple-choice quiz for the selected unit directly in the app. "
+            "Tutors can still use separate assessment materials for formal evidence."
         )
 
         unit_assessment = st.selectbox(
@@ -994,3 +1134,110 @@ By the end of this pathway you will be able to:
             _render_unit6_quiz()
         elif unit_assessment == 7:
             _render_unit7_quiz()
+
+    # Evidence tracking
+    with tabs[4]:
+        st.subheader("📋 Evidence Tracking")
+        if not learner_email:
+            st.warning("Log in as a learner to view your evidence.")
+        else:
+            render_evidence_tracking(learner_email, COURSE_ID)
+
+    # Documents & downloads
+    with tabs[5]:
+        st.subheader("📂 Documents & Downloads")
+        st.markdown(
+            """Use this area for supporting documents, study plans and checklists.
+
+Suggested documents (which tutors/admins can host in the main LMS materials system):
+- Study timetable templates for Intermediate ML
+- Checklists for each Pathway 2 unit
+- Portfolio structure guide (with emphasis on ML projects)
+- Example project reports and capstone write-ups
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("### 📥 Download core documents as PDF")
+
+        col_a, col_b = st.columns(2)
+
+        with col_a:
+            if st.button("📥 Pathway 2 study plan PDF", key="dsp2_study_plan_pdf"):
+                study_plan_md = """# Data Science Pathway 2 – Study Plan
+
+Week-by-week guide covering Units 1–7 with theory, labs and capstone milestones.
+Refer to the in-app materials for full details.
+"""
+                pdf = create_unit_pdf(0, "Pathway 2 Study Plan", study_plan_md)
+                st.download_button(
+                    label="Download Study Plan PDF",
+                    data=pdf,
+                    file_name="Data_Science_Pathway2_Study_Plan.pdf",
+                    mime="application/pdf",
+                    key="dsp2_study_plan_pdf_dl",
+                )
+
+        with col_b:
+            if st.button("📥 Pathway 2 checklists PDF", key="dsp2_checklists_pdf"):
+                checklists_md = """# Data Science Pathway 2 – Unit Checklists
+
+Tick-box knowledge and skills checklists for Units 1–7 to support learner and
+tutor progress tracking.
+"""
+                pdf = create_unit_pdf(0, "Pathway 2 Checklists", checklists_md)
+                st.download_button(
+                    label="Download Checklists PDF",
+                    data=pdf,
+                    file_name="Data_Science_Pathway2_Unit_Checklists.pdf",
+                    mime="application/pdf",
+                    key="dsp2_checklists_pdf_dl",
+                )
+
+    # My Progress
+    with tabs[6]:
+        st.subheader("📊 My Progress")
+        if not enrollment:
+            st.info(
+                "Progress data is not available yet. Once enrolled, your progress will appear here."
+            )
+        else:
+            _render_progress_header(enrollment)
+
+            st.markdown("---")
+            st.markdown("### ✅ Personal checklist (for learners)")
+            for unit_number, unit in UNITS.items():
+                st.checkbox(
+                    f"Completed Unit {unit_number}: {unit['name']}",
+                    key=f"ds_pathway2_progress_unit_{unit_number}",
+                )
+
+    # Certificate
+    with tabs[7]:
+        st.subheader("🎓 Certificate")
+        st.info(
+            "On successful completion of all units and assessments, learners receive a "
+            "T21 Data Science Pathway 2 (Intermediate ML) certificate, where offered by "
+            "their training provider."
+        )
+
+        st.markdown(
+            """### Requirements for completion
+
+- Complete and submit evidence for all 7 units
+- Demonstrate competence in feature engineering, supervised and unsupervised learning
+- Complete at least one end-to-end ML capstone project
+- Meet internal quality standards set by tutors/assessors
+"""
+        )
+
+        if enrollment and enrollment.get("progress", 0) >= 100:
+            st.success(
+                "All requirements appear to be complete. Your training provider can now "
+                "issue your Data Science Pathway 2 certificate."
+            )
+        else:
+            st.info(
+                "Keep working through your units and projects. Once everything is complete, "
+                "your tutor will confirm and issue your certificate."
+            )
