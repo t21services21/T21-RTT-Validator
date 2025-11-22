@@ -369,6 +369,283 @@ def _render_unit1_quiz():
             st.balloons()
 
 
+def _render_unit2_learning_materials():
+    """Theory content for Unit 2: Supervised Learning – Regression."""
+
+    st.markdown("### Unit 2: Supervised Learning – Regression")
+    st.caption("Level: Intermediate • Suggested hours: 24 • Suggested credits: 4")
+
+    st.markdown("#### 📘 What is regression?")
+    st.markdown(
+        """In regression we predict a **continuous numeric value** such as
+monthly spend, length of stay, or demand for a product.
+
+Typical goals:
+
+- Forecasting a quantity in the future.
+- Explaining how features relate to an outcome.
+- Supporting decisions that depend on an estimated value (e.g. risk or cost).
+"""
+    )
+
+    st.markdown("#### 🧮 Linear models and loss functions")
+    st.markdown(
+        """You will work mainly with linear models such as `LinearRegression`
+and regularised variants.
+
+Key ideas:
+
+- Predictions are a weighted sum of features.
+- We compare predictions to true values using **loss functions** such as
+  MSE, RMSE and MAE.
+- We care not only about average error but also about whether large
+  errors are acceptable for the business context.
+"""
+    )
+
+    st.markdown("#### 🧱 Regularisation and overfitting")
+    st.markdown(
+        """To avoid overfitting you will explore **Ridge** and **Lasso**
+regression:
+
+- Ridge (L2) shrinks coefficients towards zero.
+- Lasso (L1) can set some coefficients exactly to zero.
+- Regularisation strength is chosen via validation, not the test set.
+"""
+    )
+
+    st.markdown("#### 📊 Metrics and evaluation for regression")
+    st.markdown(
+        """You will practice selecting metrics that match the problem:
+
+- RMSE / MAE for general accuracy.
+- MAPE where relative error matters.
+- R² for proportion of variance explained (with limitations).
+
+You will also compare train vs validation performance to spot overfitting.
+"""
+    )
+
+
+def _render_unit2_labs():
+    """Labs and mini-project ideas for Unit 2."""
+
+    st.markdown("### 🧪 Labs & Mini Projects – Unit 2")
+    st.markdown(
+        """Suggested activities:
+
+- **Lab 1 – Baseline regression model**
+  - Take a cleaned feature table from Unit 1.
+  - Fit a baseline linear regression model.
+  - Compute RMSE/MAE on a validation set.
+
+- **Lab 2 – Regularised models**
+  - Train Ridge and Lasso models with several regularisation strengths.
+  - Use cross-validation to pick a good value.
+  - Compare coefficients and metrics to the baseline.
+
+- **Mini project – Explainable regression**
+  - Choose a business question (e.g. drivers of spend).
+  - Fit a model and interpret key coefficients / feature importances.
+  - Write a short note for stakeholders explaining what drives the outcome.
+"""
+    )
+
+
+def _render_unit2_quiz():
+    """Quick-check quiz for Unit 2."""
+
+    st.markdown("### ✅ Quick-check quiz – Unit 2")
+    st.caption("Check your understanding of regression basics and metrics.")
+
+    questions = [
+        {
+            "text": "Which problem is most suitable for regression?",
+            "options": [
+                "Predicting whether a user will churn (yes/no)",
+                "Predicting monthly revenue in GBP",
+                "Predicting a product category",
+                "Classifying emails as spam or not",
+            ],
+            "answer": 1,
+            "explanation": "Regression predicts continuous numeric values, such as revenue.",
+        },
+        {
+            "text": "What does regularisation mainly help with?",
+            "options": [
+                "Reducing dataset size",
+                "Preventing overfitting by shrinking coefficients",
+                "Improving data quality",
+                "Guaranteeing perfect accuracy",
+            ],
+            "answer": 1,
+            "explanation": "Regularisation discourages very large coefficients and can reduce overfitting.",
+        },
+        {
+            "text": "Why do we usually compare models on a validation set instead of the training set?",
+            "options": [
+                "Training performance is always lower",
+                "Validation performance better reflects generalisation to new data",
+                "It is faster to compute",
+                "We do not need a validation set",
+            ],
+            "answer": 1,
+            "explanation": "Validation data simulates unseen data, so it is better for model selection.",
+        },
+    ]
+
+    answers = []
+    for idx, q in enumerate(questions, start=1):
+        st.markdown(f"**Q{idx}. {q['text']}**")
+        choice = st.radio(
+            label=f"u2_q{idx}",
+            options=list(range(len(q["options"]))),
+            format_func=lambda i, opts=q["options"]: opts[i],
+            key=f"ds_p2_u2_q{idx}",
+        )
+        answers.append(choice)
+
+    if st.button("Mark Unit 2 quiz", key="ds_p2_u2_quiz_mark"):
+        score = sum(1 for ua, q in zip(answers, questions) if ua == q["answer"])
+        total = len(questions)
+        st.success(f"You scored {score} out of {total} on Unit 2 quick-check quiz.")
+
+        if total:
+            for idx, (ua, q) in enumerate(zip(answers, questions), start=1):
+                if ua != q["answer"]:
+                    correct = q["options"][q["answer"]]
+                    explanation = q.get("explanation", "")
+                    st.warning(f"Q{idx}: Correct answer is '{correct}'. {explanation}")
+
+        if total > 0 and score == total:
+            st.balloons()
+
+
+def _render_unit3_learning_materials():
+    """Theory content for Unit 3: Supervised Learning – Classification."""
+
+    st.markdown("### Unit 3: Supervised Learning – Classification")
+    st.caption("Level: Intermediate • Suggested hours: 24 • Suggested credits: 4")
+
+    st.markdown("#### 📘 What is classification?")
+    st.markdown(
+        """In classification we predict a **categorical label** such as
+churn vs no-churn, high vs low risk, or a diagnosis category.
+
+You will revisit logistic regression and tree-based models as core tools.
+"""
+    )
+
+    st.markdown("#### 📊 Classification metrics")
+    st.markdown(
+        """You will learn why accuracy is often not enough:
+
+- **Precision / recall / F1** for imbalanced problems.
+- **ROC-AUC** and **PR-AUC** for ranking quality.
+- Confusion matrices to understand types of error.
+"""
+    )
+
+    st.markdown("#### ⚖️ Class imbalance and decision thresholds")
+    st.markdown(
+        """Many real problems have rare positive cases.
+
+You will practice:
+
+- Using stratified splits.
+- Adjusting decision thresholds.
+- Explaining trade-offs between false positives and false negatives to stakeholders.
+"""
+    )
+
+
+def _render_unit3_labs():
+    """Labs and mini-project ideas for Unit 3."""
+
+    st.markdown("### 🧪 Labs & Mini Projects – Unit 3")
+    st.markdown(
+        """Suggested activities:
+
+- **Lab 1 – Baseline classifier**
+  - Build a logistic regression model for a binary outcome.
+  - Plot the confusion matrix and compute precision/recall/F1.
+
+- **Lab 2 – Handling class imbalance**
+  - Try re-weighting classes or simple resampling.
+  - Compare metrics at different thresholds.
+
+- **Mini project – Risk scoring model**
+  - Choose a realistic risk prediction task (e.g. churn, default).
+  - Train at least two classifiers and compare them using appropriate metrics.
+  - Write a short summary focusing on the business impact of errors.
+"""
+    )
+
+
+def _render_unit3_quiz():
+    """Quick-check quiz for Unit 3."""
+
+    st.markdown("### ✅ Quick-check quiz – Unit 3")
+    st.caption("Check your understanding of classification concepts and metrics.")
+
+    questions = [
+        {
+            "text": "Which of the following is a classification problem?",
+            "options": [
+                "Predicting daily sales amount",
+                "Predicting whether a transaction is fraudulent (yes/no)",
+                "Predicting length of stay in days",
+                "Predicting a temperature in °C",
+            ],
+            "answer": 1,
+            "explanation": "Fraud vs non-fraud is a binary classification problem.",
+        },
+        {
+            "text": "Why can accuracy be misleading on highly imbalanced data?",
+            "options": [
+                "It is hard to compute",
+                "A model can be accurate by always predicting the majority class",
+                "It always underestimates performance",
+                "It only works for regression",
+            ],
+            "answer": 1,
+            "explanation": "With rare positives, predicting the majority class can give high accuracy but zero recall.",
+        },
+        {
+            "text": "Which metric focuses on 'of the predicted positives, how many were correct'?",
+            "options": ["Recall", "Precision", "Accuracy", "F1-score"],
+            "answer": 1,
+            "explanation": "Precision is the proportion of predicted positives that are truly positive.",
+        },
+    ]
+
+    answers = []
+    for idx, q in enumerate(questions, start=1):
+        st.markdown(f"**Q{idx}. {q['text']}**")
+        choice = st.radio(
+            label=f"u3_q{idx}",
+            options=list(range(len(q["options"]))),
+            format_func=lambda i, opts=q["options"]: opts[i],
+            key=f"ds_p2_u3_q{idx}",
+        )
+        answers.append(choice)
+
+    if st.button("Mark Unit 3 quiz", key="ds_p2_u3_quiz_mark"):
+        score = sum(1 for ua, q in zip(answers, questions) if ua == q["answer"])
+        total = len(questions)
+        st.success(f"You scored {score} out of {total} on Unit 3 quick-check quiz.")
+
+        if total:
+            for idx, (ua, q) in enumerate(zip(answers, questions), start=1):
+                if ua != q["answer"]:
+                    correct = q["options"][q["answer"]]
+                    explanation = q.get("explanation", "")
+                    st.warning(f"Q{idx}: Correct answer is '{correct}'. {explanation}")
+
+        if total > 0 and score == total:
+            st.balloons()
+
+
 def _render_unit5_learning_materials():
     """Detailed theory content for Unit 5: Unsupervised Learning & Segmentation."""
 
