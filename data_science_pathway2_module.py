@@ -275,11 +275,6 @@ pipelines**.
   - Write a short note explaining why the pipeline version is better for
     production.
 """
-def _render_unit1_quiz():
-    """Quick-check multiple-choice quiz for Unit 1."""
-    st.markdown("### ✅ Quick-check quiz – Unit 1")
-    st.caption(
-        "Use this short quiz to check your understanding of feature engineering and pipelines."
     )
 
     questions = [
@@ -365,6 +360,12 @@ def _render_unit1_quiz():
 
         if total > 0 and score == total:
             st.balloons()
+
+
+def _render_unit1_quiz():
+    """Wrapper to render the Unit 1 quick-check quiz from the labs block."""
+
+    _render_unit1_labs()
 
 
 def _render_unit5_learning_materials():
