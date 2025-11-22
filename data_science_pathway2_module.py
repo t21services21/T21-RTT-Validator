@@ -1196,21 +1196,24 @@ def _render_unit6_labs():
 
     st.markdown("### 🧪 Labs & Mini Projects – Unit 6")
     st.markdown(
-        "These labs focus on turning a working model into something that could be used by others.\n\n"
-        "- **Lab 1 – Saving and loading a trained pipeline**\n"
-        "  - Take a pipeline + model from an earlier unit.\n"
-        "  - Save it to disk using `joblib` or `pickle`.\n"
-        "  - Write a small script that loads the pipeline and scores new data from a CSV file.\n\n"
-        "- **Lab 2 – Simple prediction app or script**\n"
-        "  - Build a tiny CLI tool or Streamlit app where a user can input features (or upload a file) and receive predictions.\n"
-        "  - Include basic validation and user guidance.\n\n"
-        "- **Mini project – Deployment and monitoring plan**\n"
-        "  - Choose one of your earlier models.\n"
-        "  - Draft a short document describing how it would be deployed, who would use it, how it would be monitored and how often it would be retrained."
-        "- Include at least one example monitoring alert (e.g. sudden drop in recall for a safety-critical classifier).\n"
-        "- Develop a plan for retraining the model based on new data, including how often to retrain and how to evaluate the updated model.\n"
+        """These labs focus on turning a working model into something that could be used by others.
 
-        "You can use `U6_deployment_basics.ipynb` as a sandbox for these ideas.
+- **Lab 1 – Saving and loading a trained pipeline**
+  - Take a pipeline + model from an earlier unit.
+  - Save it to disk using `joblib` or `pickle`.
+  - Write a small script that loads the pipeline and scores new data from a CSV file.
+
+- **Lab 2 – Simple prediction app or script**
+  - Build a tiny CLI tool or Streamlit app where a user can input features (or upload a file) and receive predictions.
+  - Include basic validation and user guidance.
+
+- **Mini project – Deployment and monitoring plan**
+  - Choose one of your earlier models.
+  - Draft a short document describing how it would be deployed, who would use it, how it would be monitored and how often it would be retrained.
+  - Include at least one example monitoring alert (e.g. sudden drop in recall for a safety-critical classifier).
+  - Develop a plan for retraining the model based on new data, including how often to retrain and how to evaluate the updated model.
+
+You can use `U6_deployment_basics.ipynb` as a sandbox for these ideas.
 """
     )
 
