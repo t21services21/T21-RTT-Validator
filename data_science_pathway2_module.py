@@ -275,11 +275,12 @@ pipelines**.
   - Write a short note explaining why the pipeline version is better for
     production.
 """
-    )
+def _render_unit1_quiz():
     """Quick-check multiple-choice quiz for Unit 1."""
-
-    st.markdown("### Quick-check quiz – Unit 1")
-    st.caption("Use this short quiz to check your understanding of feature engineering and pipelines.")
+    st.markdown("### ✅ Quick-check quiz – Unit 1")
+    st.caption(
+        "Use this short quiz to check your understanding of feature engineering and pipelines."
+    )
 
     questions = [
         {
