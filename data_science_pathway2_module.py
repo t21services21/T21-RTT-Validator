@@ -214,16 +214,10 @@ pipelines**.
     production.
 """
     )
-
-
-def _render_unit1_quiz():
     """Quick-check multiple-choice quiz for Unit 1."""
 
-    st.markdown("### ✅ Quick-check quiz – Unit 1")
-    st.caption(
-        "Use this short quiz to check your understanding of feature
-engineering and pipelines."
-    )
+    st.markdown("### Quick-check quiz – Unit 1")
+    st.caption("Use this short quiz to check your understanding of feature engineering and pipelines.")
 
     questions = [
         {
@@ -235,52 +229,43 @@ engineering and pipelines."
                 "Avoid cleaning data",
             ],
             "answer": 1,
-            "explanation": "Feature engineering creates useful inputs that
-help models learn patterns relevant to the problem.",
+            "explanation": "Feature engineering creates useful inputs for models.",
         },
         {
-            "text": "Which step should usually happen FIRST when building a
-pipeline?",
+            "text": "Which step should usually happen FIRST when building a pipeline?",
             "options": [
                 "Train the model and then split the data",
-                "Split into train/validation/test, then fit transformers on
-the training data",
+                "Split into train/validation/test, then fit transformers on the training data",
                 "Impute missing values on the full dataset before splitting",
                 "Scale features using statistics from the test set",
             ],
             "answer": 1,
-            "explanation": "You split first, then fit preprocessing only on
-the training data to avoid leakage.",
+            "explanation": "Split first, then fit preprocessing on the training data.",
         },
         {
             "text": "Which is a good reason to use one-hot encoding?",
             "options": [
                 "To convert free-text notes into a single number",
-                "To represent categorical values as binary indicator
-columns",
+                "To represent categorical values as binary indicator columns",
                 "To remove all categorical columns",
                 "To scale numeric features",
             ],
             "answer": 1,
-            "explanation": "One-hot encoding turns categories into binary
-features that many models can use.",
+            "explanation": "One-hot encoding turns categories into binary features.",
         },
         {
             "text": "What is data leakage?",
             "options": [
                 "Storing data without encryption",
-                "Using information from validation/test sets inside training
-transformations or labels",
+                "Using information from validation/test sets inside training transformations or labels",
                 "Making backups of the database",
                 "Dropping missing values",
             ],
             "answer": 1,
-            "explanation": "Leakage happens when future or validation
-information leaks into training, giving overly optimistic results.",
+            "explanation": "Leakage happens when future or validation information affects training.",
         },
         {
-            "text": "Which of these is an example of a business-aware
-feature?",
+            "text": "Which of these is an example of a business-aware feature?",
             "options": [
                 "A random number between 0 and 1",
                 "Days since last appointment",
@@ -288,8 +273,7 @@ feature?",
                 "The string representation of an ID",
             ],
             "answer": 1,
-            "explanation": "Days since last appointment often relates to
-engagement or risk and is meaningful for many models.",
+            "explanation": "Days since last appointment relates to engagement or risk.",
         },
     ]
 
@@ -867,8 +851,7 @@ def render_data_science_pathway2_module():
 
     st.title("📊 Data Science Pathway 2 (Intermediate ML)")
     st.success(
-        "Take the next step after Foundations: build, evaluate and communicate "
-        "machine learning models that solve real problems."
+        "Take the next step after Foundations: build, evaluate and communicate machine learning models that solve real problems."
     )
 
     st.markdown("---")
