@@ -647,6 +647,117 @@ def _render_unit3_quiz():
             st.balloons()
 
 
+def _render_unit4_learning_materials():
+    """Theory content for Unit 4: Model Evaluation & Validation."""
+
+    st.markdown("### Unit 4: Model Evaluation & Validation")
+    st.caption("Level: Intermediate • Suggested hours: 18 • Suggested credits: 3")
+
+    st.markdown("#### 📘 Why evaluation and validation matter")
+    st.markdown(
+        """In this unit you focus on how well your models **generalise** to new data,
+and how to choose models and hyperparameters without overfitting.
+
+Key ideas include:
+
+- Separating train, validation and test data.
+- Using cross-validation for reliable estimates.
+- Picking metrics that match the business problem.
+"""
+    )
+
+    st.markdown("#### 📊 Validation strategies")
+    st.markdown(
+        """You will compare several strategies:
+
+- Simple train/validation/test split.
+- k-fold cross-validation.
+- Time-aware validation for time-series style problems.
+
+You will also revisit why you **must not** use the test set to make
+modelling decisions.
+"""
+    )
+
+
+def _render_unit4_labs():
+    """Labs and mini-project ideas for Unit 4."""
+
+    st.markdown("### 🧪 Labs & Mini Projects – Unit 4")
+    st.markdown(
+        """Suggested activities:
+
+- **Lab 1 – Comparing validation strategies**
+  - Take a model from Units 2 or 3.
+  - Evaluate it with a hold-out split and with k-fold cross-validation.
+  - Compare the stability of the metrics.
+
+- **Lab 2 – Metric selection for a real decision**
+  - Choose a regression or classification problem.
+  - Decide which metrics matter most for the stakeholders.
+  - Justify your choice in a short note.
+"""
+    )
+
+
+def _render_unit4_quiz():
+    """Quick-check quiz for Unit 4."""
+
+    st.markdown("### ✅ Quick-check quiz – Unit 4")
+    st.caption("Check your understanding of evaluation and validation.")
+
+    questions = [
+        {
+            "text": "What is the main purpose of a validation set?",
+            "options": [
+                "To train the model",
+                "To select models and hyperparameters without touching the test set",
+                "To store raw data",
+                "To replace the training set",
+            ],
+            "answer": 1,
+            "explanation": "The validation set is used for model selection and tuning.",
+        },
+        {
+            "text": "Why should you avoid using the test set to make modelling decisions?",
+            "options": [
+                "It is usually smaller",
+                "You would leak information and overestimate real performance",
+                "It is slower to compute",
+                "It cannot be used with cross-validation",
+            ],
+            "answer": 1,
+            "explanation": "The test set should simulate truly unseen data.",
+        },
+    ]
+
+    answers = []
+    for idx, q in enumerate(questions, start=1):
+        st.markdown(f"**Q{idx}. {q['text']}**")
+        choice = st.radio(
+            label=f"u4_q{idx}",
+            options=list(range(len(q["options"]))),
+            format_func=lambda i, opts=q["options"]: opts[i],
+            key=f"ds_p2_u4_q{idx}",
+        )
+        answers.append(choice)
+
+    if st.button("Mark Unit 4 quiz", key="ds_p2_u4_quiz_mark"):
+        score = sum(1 for ua, q in zip(answers, questions) if ua == q["answer"])
+        total = len(questions)
+        st.success(f"You scored {score} out of {total} on Unit 4 quick-check quiz.")
+
+        if total:
+            for idx, (ua, q) in enumerate(zip(answers, questions), start=1):
+                if ua != q["answer"]:
+                    correct = q["options"][q["answer"]]
+                    explanation = q.get("explanation", "")
+                    st.warning(f"Q{idx}: Correct answer is '{correct}'. {explanation}")
+
+        if total > 0 and score == total:
+            st.balloons()
+
+
 def _render_unit5_learning_materials():
     """Detailed theory content for Unit 5: Unsupervised Learning & Segmentation."""
 
