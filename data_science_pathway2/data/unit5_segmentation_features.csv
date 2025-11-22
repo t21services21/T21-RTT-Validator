@@ -1,0 +1,11 @@
+customer_id,age,country,sessions_last_30d,total_spend,products_viewed_last_30d,support_tickets_last_12m
+C001,34,UK,18,375.20,42,1
+C002,48,UK,6,142.10,15,0
+C003,29,NG,25,119.50,38,2
+C004,57,UK,2,65.90,9,0
+C005,41,IE,12,263.40,25,1
+C006,36,UK,20,388.00,47,3
+C007,62,UK,1,0.00,3,0
+C008,25,NG,10,127.30,21,1
+C009,52,UK,8,239.90,19,2
+C010,45,UK,15,355.60,32,1

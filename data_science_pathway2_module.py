@@ -273,6 +273,8 @@ pipelines**.
   - Compare maintainability and risk of leakage.
   - Write a short note explaining why the pipeline version is better for
     production.
+
+For a guided walkthrough, see the notebook `U1_feature_pipelines.ipynb` in the Pathway 2 notebooks folder.
 """
     )
 
@@ -412,6 +414,24 @@ regression:
 - Ridge (L2) shrinks coefficients towards zero.
 - Lasso (L1) can set some coefficients exactly to zero.
 - Regularisation strength is chosen via validation, not the test set.
+
+You will compare models with and without regularisation on the same
+train/validation split so you can see how much variance in performance is
+just noise.
+"""
+    )
+
+    st.markdown("#### 🧹 Preparing data for regression")
+    st.markdown(
+        """Most of the feature-engineering ideas from Unit 1 still apply, but
+for regression you will pay close attention to:
+
+- Obvious outliers that can dominate squared-error metrics.
+- Skewed targets (e.g. spend) where log-transforms might be helpful.
+- Leakage from target-like features (e.g. future revenue).
+
+You will practice building a **single pipeline** that handles
+imputation/encoding/scaling and then feeds a regression model.
 """
     )
 
@@ -423,7 +443,23 @@ regression:
 - MAPE where relative error matters.
 - R² for proportion of variance explained (with limitations).
 
-You will also compare train vs validation performance to spot overfitting.
+You will also compare **train vs validation** performance to spot
+overfitting and use simple plots of **predicted vs actual** to see where
+the model is systematically wrong (e.g. under-predicting high spenders).
+"""
+    )
+
+    st.markdown("#### 💬 Communicating regression results")
+    st.markdown(
+        """A key skill for this unit is turning numbers into a clear story:
+
+- Explain what a 10-unit change in the target actually means in money or
+  risk terms.
+- Use examples and simple tables instead of raw coefficient dumps.
+- Be explicit about **uncertainty** and where the model performs poorly.
+
+You will practice writing short stakeholder summaries that connect
+regression outputs to concrete decisions.
 """
     )
 
@@ -449,6 +485,8 @@ def _render_unit2_labs():
   - Choose a business question (e.g. drivers of spend).
   - Fit a model and interpret key coefficients / feature importances.
   - Write a short note for stakeholders explaining what drives the outcome.
+
+You can use the notebook `U2_regression_models.ipynb` as a starting point for this unit's practical work.
 """
     )
 
@@ -492,6 +530,28 @@ def _render_unit2_quiz():
             ],
             "answer": 1,
             "explanation": "Validation data simulates unseen data, so it is better for model selection.",
+        },
+        {
+            "text": "Which situation suggests that a log-transform of the target might be useful?",
+            "options": [
+                "Target values are tightly clustered around a small range",
+                "Target values are highly skewed with a long right tail (e.g. spend)",
+                "The target is binary",
+                "The target is a category label",
+            ],
+            "answer": 1,
+            "explanation": "Strong right-skewed numeric targets can benefit from log-transforms for stability.",
+        },
+        {
+            "text": "In a stakeholder summary, which statement best explains RMSE of 50 on next-month spend?",
+            "options": [
+                "\"The model is 50% accurate.\"",
+                "\"On average, our predictions are about \u00a350 away from the true monthly spend.\"",
+                "\"The model never makes errors greater than \u00a350.\"",
+                "\"The coefficients are small so the model is good.\"",
+            ],
+            "answer": 1,
+            "explanation": "RMSE can be translated into an average error in the same units as the target.",
         },
     ]
 
@@ -537,6 +597,21 @@ You will revisit logistic regression and tree-based models as core tools.
 """
     )
 
+    st.markdown("#### 🧱 Choosing and training classifiers")
+    st.markdown(
+        """You will focus on **interpretable baselines** first:
+
+- Logistic regression for binary problems.
+- Simple tree-based models (e.g. decision trees, random forests).
+
+The emphasis is on:
+
+- Starting with a transparent baseline before trying complex models.
+- Making sure features from Unit 1 are suitable for both linear and
+  tree-based methods.
+"""
+    )
+
     st.markdown("#### 📊 Classification metrics")
     st.markdown(
         """You will learn why accuracy is often not enough:
@@ -544,18 +619,39 @@ You will revisit logistic regression and tree-based models as core tools.
 - **Precision / recall / F1** for imbalanced problems.
 - **ROC-AUC** and **PR-AUC** for ranking quality.
 - Confusion matrices to understand types of error.
+
+You will build intuition with concrete examples (e.g. fraud detection,
+readmission risk) where missing positives is much worse than flagging a
+few extra negatives.
 """
     )
 
     st.markdown("#### ⚖️ Class imbalance and decision thresholds")
     st.markdown(
-        """Many real problems have rare positive cases.
+        """Many real problems have **rare positive cases** (e.g. high-risk
+patients, fraudulent claims).
 
 You will practice:
 
-- Using stratified splits.
-- Adjusting decision thresholds.
-- Explaining trade-offs between false positives and false negatives to stakeholders.
+- Using **stratified splits** so each fold has similar class ratios.
+- Adjusting **decision thresholds** and plotting precision/recall vs
+  threshold.
+- Explaining trade-offs between **false positives** and **false
+  negatives** to stakeholders.
+"""
+    )
+
+    st.markdown("#### 💬 Communicating classification results")
+    st.markdown(
+        """Stakeholders rarely ask for ROC-AUC; they ask questions like
+"how many high-risk patients will we miss?".
+
+You will practice:
+
+- Turning metrics into **plain-language statements** about outcomes.
+- Presenting **example cases** the model got right/wrong.
+- Highlighting where the model should **not** be used on its own
+  (e.g. as a decision support tool, not an automatic rejection).
 """
     )
 
@@ -579,6 +675,8 @@ def _render_unit3_labs():
   - Choose a realistic risk prediction task (e.g. churn, default).
   - Train at least two classifiers and compare them using appropriate metrics.
   - Write a short summary focusing on the business impact of errors.
+
+The notebook `U3_classification_metrics.ipynb` provides a scaffold for these experiments.
 """
     )
 
@@ -617,6 +715,28 @@ def _render_unit3_quiz():
             "options": ["Recall", "Precision", "Accuracy", "F1-score"],
             "answer": 1,
             "explanation": "Precision is the proportion of predicted positives that are truly positive.",
+        },
+        {
+            "text": "In a hospital readmission model, which statement best describes high recall for the positive class?",
+            "options": [
+                "We correctly flag a high proportion of patients who will be readmitted",
+                "We rarely flag patients who will not be readmitted",
+                "Overall accuracy is guaranteed to be high",
+                "The model is not useful for rare events",
+            ],
+            "answer": 0,
+            "explanation": "Recall for the positive class measures how many true positives we successfully catch.",
+        },
+        {
+            "text": "What does moving the classification threshold from 0.5 down to 0.2 usually do?",
+            "options": [
+                "Decreases both precision and recall",
+                "Increases recall but may reduce precision",
+                "Increases precision but may reduce recall",
+                "Leaves precision and recall unchanged",
+            ],
+            "answer": 1,
+            "explanation": "Lowering the threshold marks more cases as positive, catching more true positives but also more false positives.",
         },
     ]
 
@@ -679,6 +799,45 @@ modelling decisions.
 """
     )
 
+    st.markdown("#### 🔁 Cross-validation in practice")
+    st.markdown(
+        """You will use **k-fold cross-validation** to get more stable
+estimates of model performance:
+
+- How to choose k (e.g. 5 vs 10 folds).
+- How CV interacts with hyperparameter tuning.
+- Why you still need a final test set even after doing CV.
+
+You will run simple experiments comparing single validation splits to
+cross-validation and see how much scores can vary.
+"""
+    )
+
+    st.markdown("#### ⏱ Time-aware evaluation")
+    st.markdown(
+        """For problems with a natural time order (e.g. admissions over
+time) you will explore **time-aware validation**:
+
+- Splitting by time so the model is trained on the past and evaluated on
+  the future.
+- Why shuffling can leak future information into the past.
+- How to adapt cross-validation ideas for time-series style data.
+"""
+    )
+
+    st.markdown("#### ⚠️ Common pitfalls in evaluation")
+    st.markdown(
+        """This unit also focuses on what can go wrong:
+
+- Tuning hyperparameters directly on the test set.
+- Reporting only accuracy on highly imbalanced data.
+- Comparing models on different validation splits.
+
+You will work through small case studies where evaluation mistakes lead
+to over-optimistic conclusions, and practice fixing them.
+"""
+    )
+
 
 def _render_unit4_labs():
     """Labs and mini-project ideas for Unit 4."""
@@ -696,6 +855,14 @@ def _render_unit4_labs():
   - Choose a regression or classification problem.
   - Decide which metrics matter most for the stakeholders.
   - Justify your choice in a short note.
+
+- **Mini project – Evaluation review for a healthcare model**
+  - Take an existing model (e.g. readmission risk or clinic no-show).
+  - Audit how it was originally validated and identify any weaknesses
+    (e.g. test set reuse, wrong metric for class imbalance).
+  - Propose an improved validation plan.
+
+For practical guidance, see `U4_model_validation.ipynb` in the Pathway 2 notebooks folder.
 """
     )
 
@@ -728,6 +895,39 @@ def _render_unit4_quiz():
             ],
             "answer": 1,
             "explanation": "The test set should simulate truly unseen data.",
+        },
+        {
+            "text": "Which of the following is a reasonable use of k-fold cross-validation?",
+            "options": [
+                "To generate more training data by copying rows",
+                "To estimate model performance more reliably by averaging over several splits",
+                "To avoid needing a test set",
+                "To guarantee perfect generalisation",
+            ],
+            "answer": 1,
+            "explanation": "Cross-validation averages performance over multiple splits to give a more stable estimate.",
+        },
+        {
+            "text": "For a time-ordered dataset, which validation strategy is usually safest?",
+            "options": [
+                "Randomly shuffle all rows, then split",
+                "Train on future data and test on past data",
+                "Train on past data and validate on more recent data",
+                "Use no validation at all",
+            ],
+            "answer": 2,
+            "explanation": "To mimic production, you train on the past and evaluate on the future.",
+        },
+        {
+            "text": "A model shows 99% accuracy but recall of 5% for the positive class on imbalanced data. What is the main issue?",
+            "options": [
+                "The accuracy metric is incorrect",
+                "The model is effectively ignoring most positive cases",
+                "Recall is always low on test data",
+                "Nothing is wrong; high accuracy means the model is good",
+            ],
+            "answer": 1,
+            "explanation": "Very low recall on the minority class means the model is missing almost all of the cases we care about.",
         },
     ]
 
@@ -849,6 +1049,13 @@ def _render_unit5_labs():
     communication, targeted support).
   - Prepare a short slide or document explaining segments and how they
     should influence actions.
+
+- **Healthcare-flavoured extension**
+  - Imagine the data represents patients or service users.
+  - Describe how you would use segments to prioritise outreach,
+    education or follow-up appointments.
+
+Use `U5_clustering_segmentation.ipynb` for a worked example of these steps.
 """
     )
 
@@ -1000,6 +1207,11 @@ def _render_unit6_labs():
         "- **Mini project – Deployment and monitoring plan**\n"
         "  - Choose one of your earlier models.\n"
         "  - Draft a short document describing how it would be deployed, who would use it, how it would be monitored and how often it would be retrained."
+        "- Include at least one example monitoring alert (e.g. sudden drop in recall for a safety-critical classifier).\n"
+        "- Develop a plan for retraining the model based on new data, including how often to retrain and how to evaluate the updated model.\n"
+
+        "You can use `U6_deployment_basics.ipynb` as a sandbox for these ideas.
+"""
     )
 
 
@@ -1199,6 +1411,9 @@ def _render_unit7_labs():
   - Sketch how the model would be deployed (script, app, or API).
   - Propose monitoring and retraining approach.
   - Prepare your final report or slides.
+
+The notebook `U7_capstone_template.ipynb` provides a full scaffold for
+planning and documenting your capstone.
 """
     )
 
@@ -1558,8 +1773,74 @@ Suggested documents (which tutors/admins can host in the main LMS materials syst
             if st.button("📥 Pathway 2 study plan PDF", key="dsp2_study_plan_pdf"):
                 study_plan_md = """# Data Science Pathway 2 – Study Plan
 
-Week-by-week guide covering Units 1–7 with theory, labs and capstone milestones.
-Refer to the in-app materials for full details.
+This plan assumes **7–12 weeks** of part-time study. Tutors can adapt the
+pace for different cohorts. Always refer to the in-app materials for
+full details and latest updates.
+
+---
+
+## Week 1–2 – Unit 1: Feature Engineering & Data Pipelines
+
+- Read Unit 1 learning materials in the platform.
+- Work through `U1_feature_pipelines.ipynb`:
+  - Explore the sample events dataset.
+  - Build a basic feature table.
+  - Implement a `ColumnTransformer` + `Pipeline`.
+- Complete Unit 1 labs and quick-check quiz.
+
+## Week 2–3 – Unit 2: Supervised Learning – Regression
+
+- Read Unit 2 theory (linear models, loss functions, regularisation).
+- Use `U2_regression_models.ipynb` to:
+  - Train baseline and regularised models.
+  - Compare RMSE/MAE/R² on train vs validation.
+- Complete Unit 2 labs and quick-check quiz.
+
+## Week 3–4 – Unit 3: Supervised Learning – Classification
+
+- Study classification metrics and class imbalance guidance.
+- In `U3_classification_metrics.ipynb`:
+  - Fit at least one logistic regression model.
+  - Plot confusion matrix, ROC and PR curves.
+  - Experiment with different thresholds.
+- Complete Unit 3 labs and quick-check quiz.
+
+## Week 4–5 – Unit 4: Model Evaluation & Validation
+
+- Read about validation strategies and cross-validation.
+- In `U4_model_validation.ipynb`:
+  - Implement explicit train/validation/test splits.
+  - Run k-fold cross-validation.
+  - Try at least one time-aware split if relevant.
+- Complete Unit 4 labs and quick-check quiz.
+
+## Week 5–6 – Unit 5: Unsupervised Learning & Segmentation
+
+- Review Unit 5 theory on clustering and segmentation.
+- Use `U5_clustering_segmentation.ipynb` to:
+  - Build a clustering pipeline with scaling.
+  - Compare several values of *k*.
+  - Profile clusters and write short segment descriptions.
+- Complete Unit 5 labs and quick-check quiz.
+
+## Week 6–7 – Unit 6: Deploying & Operationalising Models
+
+- Study Unit 6 materials on deployment patterns and monitoring.
+- In `U6_deployment_basics.ipynb`:
+  - Load a trained pipeline from Units 1–3.
+  - Implement a batch scoring helper.
+  - Sketch a simple CLI or Streamlit interface.
+- Complete Unit 6 labs and quick-check quiz.
+
+## Week 7+ – Unit 7: Capstone Project
+
+- Read the capstone brief and milestones in the platform.
+- Use `U7_capstone_template.ipynb` as your main project notebook.
+- Schedule regular check-ins with tutors/mentors.
+- Prepare final notebook/script, report/slides and optional demo app.
+
+Learners who already have experience can progress faster; those new to
+ML may spread Units 1–4 over extra weeks.
 """
                 pdf = create_unit_pdf(0, "Pathway 2 Study Plan", study_plan_md)
                 st.download_button(
@@ -1574,8 +1855,66 @@ Refer to the in-app materials for full details.
             if st.button("📥 Pathway 2 checklists PDF", key="dsp2_checklists_pdf"):
                 checklists_md = """# Data Science Pathway 2 – Unit Checklists
 
-Tick-box knowledge and skills checklists for Units 1–7 to support learner and
-tutor progress tracking.
+Use these checklists to track your progress. They are **not** formal
+assessment criteria but a practical guide for learners and tutors.
+
+---
+
+## Unit 1 – Feature Engineering & Data Pipelines
+
+- [ ] I can explain what feature engineering is and why it matters.
+- [ ] I can identify numeric, categorical, date/time and ID columns.
+- [ ] I can handle missing values in a deliberate, documented way.
+- [ ] I can build a scikit-learn `Pipeline` / `ColumnTransformer`.
+- [ ] I understand data leakage and can give at least two examples.
+
+## Unit 2 – Supervised Learning: Regression
+
+- [ ] I can describe the difference between regression and classification.
+- [ ] I can train and evaluate at least one regression model.
+- [ ] I know when to use RMSE, MAE, MAPE and R².
+- [ ] I can explain the idea of Ridge and Lasso regularisation.
+- [ ] I can write a short, non-technical summary of regression results.
+
+## Unit 3 – Supervised Learning: Classification
+
+- [ ] I can explain accuracy, precision, recall and F1 in plain language.
+- [ ] I can interpret a confusion matrix for a binary classifier.
+- [ ] I understand why accuracy alone is risky on imbalanced data.
+- [ ] I can adjust a classification threshold and explain the impact.
+
+## Unit 4 – Model Evaluation & Validation
+
+- [ ] I can set up separate train, validation and test sets.
+- [ ] I can run and interpret k-fold cross-validation.
+- [ ] I understand when and how to use time-aware validation.
+- [ ] I know why the test set must not be used for tuning.
+
+## Unit 5 – Unsupervised Learning & Segmentation
+
+- [ ] I can explain the difference between supervised and unsupervised
+      learning.
+- [ ] I can run a basic clustering algorithm on tabular data.
+- [ ] I can interpret clusters using simple profiles/aggregates.
+- [ ] I can describe at least one realistic use of segmentation.
+
+## Unit 6 – Deploying & Operationalising Models
+
+- [ ] I can save and reload a trained model/pipeline.
+- [ ] I understand the difference between batch scoring and real-time
+      prediction.
+- [ ] I can outline a simple deployment architecture for an internal
+      tool.
+- [ ] I can list at least three things that should be monitored after
+      deployment.
+
+## Unit 7 – Capstone Project
+
+- [ ] I have a clear problem statement and defined stakeholders.
+- [ ] I have documented data sources and key assumptions.
+- [ ] I have built at least one end-to-end pipeline + model.
+- [ ] I have evaluated the model with appropriate metrics.
+- [ ] I have written a short report or slide deck summarising the work.
 """
                 pdf = create_unit_pdf(0, "Pathway 2 Checklists", checklists_md)
                 st.download_button(
