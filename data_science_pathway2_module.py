@@ -243,6 +243,7 @@ learned only from the training portion.
 """
     )
 
+def _render_unit1_labs():
     """Labs and mini-project ideas for Unit 1."""
 
     st.markdown("### 🧪 Labs & Mini Projects – Unit 1")
