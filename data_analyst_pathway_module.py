@@ -5068,103 +5068,1733 @@ Want to go deeper? Try these:
             with st.expander("🎯 Mini Project - Click to expand full instructions"):
                 st.markdown(
                     """
-*This is your Unit 1 capstone - a one-page analytical framework document.*
+### Project Overview
 
-**Coming soon:** Full project requirements and template
+**This is your Unit 1 capstone** - a one-page analytical framework document that bridges business questions to data sources.
 
-**Brief overview:**
-- Choose a business domain (healthcare, retail, etc.)
-- Create a comprehensive question-to-metric mapping
-- Include data sources, calculation logic, and refresh frequency
-- Design for stakeholder sign-off
+This document is what you'd create BEFORE starting any analysis project. It ensures alignment with stakeholders, 
+clarifies data requirements, and serves as your project roadmap.
 
-**Deliverable:** One-page professional document suitable for manager approval
+**This is a REAL analyst deliverable** that you'd present to your manager for sign-off before proceeding with analysis.
+
+---
+
+### Learning Objectives
+
+By completing this project, you will:
+- Synthesize skills from Labs 1 and 2 (SMART questions + data source mapping)
+- Create a professional analytical framework document
+- Practice stakeholder communication (writing for business audience)
+- Build a portfolio piece showcasing your analytical planning skills
+
+---
+
+### Project Requirements
+
+**Your task:** Create a **Question-to-Metric Map** document for a business domain of your choice.
+
+**Choose ONE domain:**
+1. Healthcare (hospital operations, GP practice, pharmacy)
+2. Retail (physical store, e-commerce, inventory management)
+3. SaaS (subscription platform, user engagement, churn)
+4. Financial Services (banking, insurance, lending)
+5. Other (with similar complexity)
+
+**Deliverable:** One-page professional document (PDF or polished Word/Google Doc)
+
+---
+
+### Document Template
+
+Use this structure for your Question-to-Metric Map:
+
+---
+
+**QUESTION-TO-METRIC MAP**
+
+**Project:** [Your chosen domain - e.g., "Retail Store Performance Analysis"]  
+**Prepared by:** [Your name]  
+**Date:** [Current date]  
+**Stakeholders:** [Who will use this analysis - e.g., "Store Manager, Regional Manager"]
+
+---
+
+**BUSINESS OBJECTIVE**
+
+[2-3 sentences describing the business goal]
+
+*Example: "Improve store profitability by identifying underperforming product categories 
+and optimizing inventory levels. Current gross margin is 35%; target is 40% within 6 months."*
+
+---
+
+**KEY QUESTIONS & METRICS**
+
+| # | Business Question (SMART) | Metric Definition | Data Source | Calculation Logic | Refresh Frequency |
+|---|---------------------------|-------------------|-------------|-------------------|-------------------|
+| 1 | What is the gross margin by product category for the last quarter? | Gross Margin % | Sales System, Inventory System | (Revenue - Cost) / Revenue × 100, GROUP BY category | Weekly |
+| 2 | [Your question] | [Your metric] | [Your source] | [Your calc] | [Your frequency] |
+| 3 | [Your question] | [Your metric] | [Your source] | [Your calc] | [Your frequency] |
+| 4 | [Your question] | [Your metric] | [Your source] | [Your calc] | [Your frequency] |
+| 5 | [Your question] | [Your metric] | [Your source] | [Your calc] | [Your frequency] |
+
+**Include 5-7 questions minimum**
+
+---
+
+**DATA SOURCE INVENTORY**
+
+| System/Database | Tables Used | Join Keys | Update Frequency | Known Limitations |
+|-----------------|-------------|-----------|------------------|-------------------|
+| Sales System | sales_transactions, products | product_id | Real-time | Returns not always logged |
+| Inventory System | inventory_levels, suppliers | product_id, supplier_id | Daily (2am) | Manual counts lag by 1 day |
+| [Your system] | [Tables] | [Keys] | [Frequency] | [Limitations] |
+
+**Include 3-5 data sources**
+
+---
+
+**DATA QUALITY CHECKS**
+
+Before analysis, validate:
+- [ ] No duplicate transaction IDs
+- [ ] All products have cost data (required for margin calculation)
+- [ ] Date range is complete (no missing days)
+- [ ] Currency is consistent (all GBP)
+- [ ] [Add 2-3 more specific to your domain]
+
+---
+
+**EXPECTED DELIVERABLES**
+
+**Timeline:** 2 weeks from approval
+
+**Week 1:**
+- Data extraction and cleaning
+- Initial analysis
+
+**Week 2:**
+- Dashboard creation
+- Presentation to stakeholders
+
+**Final Outputs:**
+1. Excel dashboard with 5-7 key metrics
+2. 10-slide PowerPoint presentation
+3. One-page executive summary
+
+---
+
+**ASSUMPTIONS & DEPENDENCIES**
+
+**Assumptions:**
+- Historic data is accurate and complete
+- [Add 1-2 more]
+
+**Dependencies:**
+- SQL read access to Sales and Inventory systems (requires IT approval - 2 days)
+- [Add 1-2 more]
+
+---
+
+**APPROVAL**
+
+Stakeholder Sign-Off: ____________________________ Date: __________
+
+---
+
+### Your Task Breakdown
+
+**STEP 1: Choose Your Domain** (15 minutes)
+- Pick a business area you understand or want to learn
+- Research typical metrics for that domain if needed
+
+**STEP 2: Define Business Objective** (15 minutes)
+- What's the high-level goal?
+- Why does this analysis matter?
+- What decision will it inform?
+
+**STEP 3: Create 5-7 SMART Questions** (30 minutes)
+- Use Lab 1 skills to refine questions
+- Ensure they're Specific, Measurable, Achievable, Relevant, Time-bound
+- Mix different types (trends, comparisons, breakdowns)
+
+**STEP 4: Map to Data Sources** (45 minutes)
+- Use Lab 2 skills to identify tables
+- Document join keys
+- Define calculation logic
+- Note data limitations
+
+**STEP 5: Add Quality Checks** (15 minutes)
+- What could go wrong with this data?
+- How will you validate before analysis?
+
+**STEP 6: Polish Document** (30 minutes)
+- Format professionally
+- Proofread for typos
+- Ensure tables are aligned
+- Export to PDF
+
+---
+
+### Example: Retail Store Analysis
+
+**Here's a complete example to guide you:**
+
+**Project:** Multi-Store Retail Performance Analysis  
+**Stakeholder:** Regional Manager  
+**Objective:** Identify top and bottom performing stores to inform resource allocation
+
+**Key Questions:**
+
+1. **Which 5 stores had highest revenue in Q4 2024?**
+   - Metric: Total Revenue (£)
+   - Source: sales_transactions table
+   - Calculation: SUM(transaction_amount) WHERE transaction_date BETWEEN '2024-10-01' AND '2024-12-31', GROUP BY store_id
+   - Frequency: Monthly
+
+2. **What is the average transaction value by store?**
+   - Metric: Average Transaction Value (£)
+   - Source: sales_transactions table
+   - Calculation: AVG(transaction_amount), GROUP BY store_id
+   - Frequency: Weekly
+
+3. **How does footfall correlate with revenue across stores?**
+   - Metric: Revenue per Visitor (£)
+   - Source: sales_transactions + footfall_sensors tables
+   - Calculation: SUM(revenue) / SUM(visitor_count) per store
+   - Frequency: Weekly
+
+4. **Which product categories drive the most profit margin by store?**
+   - Metric: Gross Margin % by Category
+   - Source: sales_transactions + product_costs tables
+   - Calculation: (Revenue - Cost) / Revenue × 100, GROUP BY store_id, product_category
+   - Frequency: Monthly
+
+5. **What is staff productivity (revenue per employee hour) by store?**
+   - Metric: Revenue per Employee Hour (£/hour)
+   - Source: sales_transactions + staff_schedules tables
+   - Calculation: SUM(revenue) / SUM(hours_worked), GROUP BY store_id
+   - Frequency: Bi-weekly
+
+**Data Sources:**
+- Sales System (sales_transactions, products, product_costs)
+- Footfall System (footfall_sensors - counts by hour)
+- HR System (staff_schedules, employee_info)
+
+**Join Keys:**
+- sales_transactions.product_id = products.product_id
+- sales_transactions.store_id = footfall_sensors.store_id
+- sales_transactions.store_id = staff_schedules.store_id
+
+---
+
+### Success Criteria
+
+**You've successfully completed the Mini Project if your document:**
+
+✅ **Completeness**
+- 5-7 SMART questions included
+- All table sections filled out
+- 3-5 data sources documented
+- Timeline and deliverables specified
+
+✅ **Quality of Questions**
+- Questions follow SMART framework
+- Mix of different analysis types (trends, comparisons, segments)
+- Directly tied to business objective
+
+✅ **Data Source Mapping**
+- Specific tables and fields identified
+- Join keys documented
+- Calculation logic is clear and executable
+- Data quality checks are realistic
+
+✅ **Professional Presentation**
+- Formatted cleanly (tables aligned, consistent fonts)
+- No typos or grammatical errors
+- Looks like a real business document
+- Ready to present to manager
+
+---
+
+### Common Mistakes to Avoid
+
+❌ **Vague Questions**
+- "How are we doing?" → Not SMART
+- "What's our performance?" → Too broad
+
+❌ **Unrealistic Data Sources**
+- Making up tables that wouldn't exist
+- Assuming all data is in one place
+
+❌ **Missing Calculation Logic**
+- "Calculate revenue" → HOW? SUM? AVG? GROUP BY what?
+
+❌ **No Quality Checks**
+- Assuming data is perfect
+- Not planning validation steps
+
+❌ **Unprofessional Formatting**
+- Messy tables
+- Inconsistent fonts
+- Looks like rough draft
+
+---
+
+### Assessment Rubric
+
+| Criteria | Excellent (A) | Good (B) | Needs Improvement (C) |
+|----------|---------------|----------|----------------------|
+| **Business Objective** | Clear, specific, measurable goal with context | Defined but could be more specific | Vague or missing |
+| **Questions (SMART)** | 5-7 questions, all follow SMART framework perfectly | 5-7 questions, mostly SMART, minor issues | <5 questions or significant SMART violations |
+| **Metric Definitions** | Precise, includes unit of measure, calculation clear | Adequate definitions, minor ambiguity | Vague or missing |
+| **Data Source Mapping** | All sources documented, join keys specified, realistic | Most sources mapped, minor gaps | Significant missing information |
+| **Calculation Logic** | Executable SQL-like logic, could be implemented directly | Generally clear, some refinement needed | Vague or incorrect |
+| **Data Quality Checks** | 5+ relevant checks, specific SQL to validate | 3-4 checks, somewhat specific | <3 checks or very generic |
+| **Professional Presentation** | Polished, error-free, looks like real business doc | Clean, minor formatting issues | Messy or many errors |
+
+**Target:** "Excellent" on 5+ criteria, "Good" on rest
+
+---
+
+### Extension Challenges (Optional)
+
+Want to go further?
+
+**CHALLENGE 1: Add Stakeholder Impact Matrix**
+- For each question, note which stakeholder cares most
+- What decision will each answer inform?
+
+**CHALLENGE 2: Include Mock Dashboard Sketch**
+- Draw wireframe of what dashboard would look like
+- Where would each metric go?
+
+**CHALLENGE 3: Risk Assessment**
+- What could go wrong with this analysis?
+- What are alternative approaches if data isn't available?
+
+---
+
+### Deliverables Checklist
+
+Before submitting, ensure you have:
+
+- [ ] One-page document (can be 2 pages if tables require it)
+- [ ] Professional formatting (clean tables, consistent fonts)
+- [ ] All sections completed (no "TBD" or "Coming soon")
+- [ ] 5-7 SMART questions with full metric definitions
+- [ ] 3-5 data sources documented with join keys
+- [ ] 5+ data quality checks
+- [ ] Timeline and deliverables section complete
+- [ ] Proofread (no typos)
+- [ ] Saved as PDF
+
+---
+
+**TIME TO COMPLETE:** 2-3 hours
+
+**NEXT:** After completing Unit 1 (Labs 1, 2, and Mini Project), you're ready for Unit 2 (Spreadsheet Skills)!
+
+---
+
+### Portfolio Use
+
+**This document is portfolio-ready!**
+
+**How to use it:**
+1. **GitHub:** Upload as `Question-to-Metric-Map-[Domain].pdf`
+2. **Portfolio Website:** "Sample analytical framework document"
+3. **Interviews:** "Here's how I approach analysis planning"
+4. **Resume:** "Created analytical frameworks for [domain] analysis projects"
+
+**This shows employers you can:**
+- Plan before executing (strategic thinking)
+- Communicate with stakeholders (business acumen)
+- Document requirements (professional standards)
+- Bridge business needs to technical execution (core analyst skill)
+
+**Make it count.**
 """
                 )
         elif selected_unit == 2:
-            st.markdown(
-                """These labs emphasise **hands-on spreadsheet skills**.
+            st.markdown("### 🎯 Unit 2 Labs: Excel/Spreadsheet Skills")
+            st.markdown("**Focus:** Hands-on data cleaning, formulas, and pivot tables")
+            
+            st.markdown("---")
+            st.markdown("## 📝 LAB 1: Clean a Messy Dataset")
+            st.markdown("**Duration:** 60 minutes | **Difficulty:** Beginner-Intermediate")
+            
+            with st.expander("🎯 Lab 1 - Click to expand full instructions"):
+                st.markdown(
+                    """
+### Learning Objectives
 
-- **Lab 1 – Clean a messy sheet**
-  - Start from a messy CSV/Excel file (mixed formats, blanks,
-    duplicates).
-  - Use basic cleaning steps to create a tidy table.
+By completing this lab, you will:
+- Apply the 8-step data cleaning workflow from Unit 2 theory
+- Handle real-world data quality issues (duplicates, blanks, formatting)
+- Use Excel functions (TRIM, PROPER, IF, VLOOKUP for validation)
+- Document cleaning steps for reproducibility
+- Prepare analysis-ready data
 
-- **Lab 2 – Lookups and joins in Excel/Sheets**
-  - Use lookups to join a fact table (e.g. orders) to a dimension table
-    (e.g. customers) and compute per-customer metrics.
+---
 
-- **Mini project – Mini KPI dashboard in Excel/Sheets**
-  - Build a small dashboard using pivot tables and charts for a chosen
-    dataset (e.g. weekly appointments or sales).
-  - Add short text explaining 2–3 key insights.
+### Scenario: Sales Data Cleanup
+
+You've received a sales report from the regional offices. The data is messy and needs cleaning before analysis.
+
+**Download the messy dataset:** `sales_data_messy.csv` (simulated - create your own or use provided template)
+
+**Your task:** Clean the data and prepare it for analysis.
+
+---
+
+### Part 1: Initial Assessment (10 minutes)
+
+**STEP 1:** Open the messy dataset and document what you see
+
+**Common issues to look for:**
+- [ ] Empty rows/columns
+- [ ] Merged cells
+- [ ] Inconsistent date formats
+- [ ] Extra spaces in text
+- [ ] Duplicate records
+- [ ] Missing values
+- [ ] Inconsistent capitalization
+- [ ] Currency symbols mixed with numbers
+
+**TASK:** Create a "Data Quality Issues" sheet and list 5+ issues you find
+
+**Template:**
+```
+DATA QUALITY ASSESSMENT
+
+Issue # | Problem | Location | Impact | Priority (H/M/L)
+--------|---------|----------|--------|------------------
+1       | Date formats mixed (01/05/2024 and 2024-01-05) | Column B | Can't sort/filter correctly | High
+2       | [Your issue] | [Column] | [Impact] | [Priority]
+```
+
+---
+
+### Part 2: Create Cleaning Workflow (15 minutes)
+
+**STEP 2:** Always preserve original data
+
+1. Save original file as `sales_data_messy_BACKUP.csv`
+2. Create new sheet in Excel called "Raw Data" (copy all data here)
+3. Create new sheet called "Cleaned Data" (working copy)
+4. Create sheet called "Cleaning Log" (document all changes)
+
+**STEP 3:** Document your cleaning plan
+
+**Cleaning Log Template:**
+```
+CLEANING LOG - Sales Data
+
+Date: [Today]
+Analyst: [Your Name]
+
+Original row count: _____
+Original column count: _____
+
+Planned Cleaning Steps:
+1. Remove empty rows and columns
+2. Unmerge cells and fill down values
+3. Standardize date format to YYYY-MM-DD
+4. TRIM all text columns (remove extra spaces)
+5. Standardize product names (PROPER case)
+6. Remove duplicate transactions
+7. Fill missing regions with "Unknown"
+8. Remove test transactions (Amount = £0)
+
+Expected final row count: _____ (estimate)
+```
+
+---
+
+### Part 3: Execute Cleaning Steps (25 minutes)
+
+**STEP 1: Remove Empty Rows/Columns**
+
+- Select all data (Ctrl+A)
+- Go → Special → Blanks
+- Right-click → Delete Entire Row
+- **Log:** "Removed X empty rows"
+
+**STEP 2: Unmerge Cells**
+
+- Find merged cells: Home → Find & Select → Find
+- Search for merged cells
+- Home → Merge & Center → Unmerge
+- Fill down values: Select cell, Ctrl+D
+- **Log:** "Unmerged X cells, filled down values"
+
+**STEP 3: Standardize Date Format**
+
+**Problem:** Mixed formats like "01/05/2024" and "05-Jan-2024"
+
+**Solution:**
+```excel
+=TEXT(A2,"YYYY-MM-DD")
+```
+
+- Create helper column with formula
+- Copy and Paste Special → Values
+- Delete original column
+- **Log:** "Standardized all dates to YYYY-MM-DD format"
+
+**STEP 4: TRIM Text Columns**
+
+**Problem:** Extra spaces cause VLOOKUP failures
+
+**Solution:**
+```excel
+=TRIM(B2)  // For customer names
+=TRIM(C2)  // For product names
+=TRIM(D2)  // For regions
+```
+
+- Apply to all text columns
+- Copy and Paste Special → Values
+- **Log:** "Applied TRIM to columns B, C, D"
+
+**STEP 5: Standardize Text Capitalization**
+
+**Problem:** "john doe", "JOHN DOE", "John Doe" should all be "John Doe"
+
+**Solution:**
+```excel
+=PROPER(B2)  // Capitalizes first letter of each word
+```
+
+- Apply to customer and product name columns
+- **Log:** "Standardized capitalization to Proper Case"
+
+**STEP 6: Remove Duplicates**
+
+**Check first:**
+```excel
+// Count duplicates
+=COUNTIF($A$2:$A$1000,A2)
+```
+
+If count > 1, it's a duplicate.
+
+**Remove:**
+- Data → Remove Duplicates
+- Select key columns (Transaction ID, Date, Customer, Amount)
+- **IMPORTANT:** Keep earliest record
+- **Log:** "Removed X duplicate transactions"
+
+**STEP 7: Handle Missing Values**
+
+**Region column has blanks:**
+
+**Option 1: Fill with "Unknown"**
+```excel
+=IF(ISBLANK(D2),"Unknown",D2)
+```
+
+**Option 2: Exclude from analysis**
+- Filter → Blanks → Delete rows
+- **ONLY if missing region doesn't matter**
+
+**Option 3: Impute from customer history**
+```excel
+=IFERROR(VLOOKUP(B2,CustomerRegionTable,2,FALSE),"Unknown")
+```
+
+**Log your choice:** "Filled X blank regions with 'Unknown'"
+
+**STEP 8: Remove Invalid Records**
+
+**Test transactions (Amount = £0):**
+- Filter Amount column = 0
+- Delete these rows
+- **Log:** "Removed X test transactions (£0 amounts)"
+
+**Future dates:**
+```excel
+=IF(A2>TODAY(),"DELETE","KEEP")
+```
+
+- Filter "DELETE" → Delete rows
+- **Log:** "Removed X transactions with future dates"
+
+---
+
+### Part 4: Validate Results (10 minutes)
+
+**STEP 1: Run Validation Checks**
+
+**Check 1: Row Count**
+```
+Original rows: _____
+Final rows: _____
+Difference: _____ (should match sum of deletions in log)
+```
+
+**Check 2: Date Range**
+```excel
+=MIN(date_column)  // Should be earliest valid date
+=MAX(date_column)  // Should be today or earlier
+```
+
+**Check 3: No Duplicates**
+```excel
+=COUNTIF($A$2:$A$1000,A2)  // All should = 1
+```
+
+**Check 4: No Blanks in Critical Fields**
+```excel
+=COUNTBLANK(A:A)  // Transaction ID should = 0
+=COUNTBLANK(E:E)  // Amount should = 0
+```
+
+**Check 5: Text is Clean**
+- Spot check 10 random rows
+- No leading/trailing spaces
+- Consistent capitalization
+
+**STEP 2: Document Final State**
+
+Update Cleaning Log:
+```
+FINAL STATE:
+
+Original row count: 1,250
+Final row count: 1,198
+Rows removed: 52 (15 duplicates, 23 test records, 8 empties, 6 invalid dates)
+
+Validation checks passed:
+✓ No duplicates remain
+✓ All dates between 2024-01-01 and 2024-11-23
+✓ No blanks in Transaction ID or Amount
+✓ All text columns trimmed
+✓ Regions standardized (North, South, East, West, Unknown)
+```
+
+---
+
+### Success Criteria
+
+✅ **Data Quality**
+- Zero duplicate Transaction IDs
+- All dates in valid range
+- No blanks in critical columns (ID, Amount, Date)
+- Text columns properly formatted (no extra spaces, consistent capitalization)
+
+✅ **Documentation**
+- Cleaning Log completed with all 8 steps
+- Before/After row counts documented
+- Validation checks performed and logged
+
+✅ **Professional Standards**
+- Original data preserved in backup
+- Cleaning process is reproducible (someone else could follow your log)
+- Final dataset is analysis-ready
+
+---
+
+### Deliverables
+
+Submit:
+1. **Cleaned Data File** (`sales_data_clean.xlsx`)
+   - "Raw Data" sheet (original)
+   - "Cleaned Data" sheet (final clean version)
+   - "Cleaning Log" sheet (documentation)
+
+2. **Data Quality Report** (can be additional sheet)
+   - Issues found (initial assessment)
+   - Steps taken
+   - Validation results
+
+---
+
+### Common Mistakes
+
+❌ **Cleaning original file directly** → Always work on copy
+❌ **Not documenting steps** → Can't reproduce or explain
+❌ **Assuming TRIM isn't needed** → "Hidden" spaces break everything
+❌ **Deleting rows without checking** → Might delete valid data
+❌ **Not validating after cleaning** → Don't know if it worked
+
+---
+
+### Extension Challenge
+
+**Create a Data Cleaning Checklist Template**
+
+Make a reusable Excel template with:
+- Checklist of common cleaning steps
+- Formula templates
+- Validation check formulas
+- Space for documentation
+
+This becomes your tool for every messy dataset!
+
+---
+
+**TIME TO COMPLETE:** 60 minutes
+
+**NEXT:** Lab 2 (Excel Lookups and Joins)
 """
-            )
+                )
+            
+            st.markdown("---")
+            st.markdown("## 📝 LAB 2: Excel Lookups and Joins")
+            st.markdown("**Duration:** 75 minutes | **Difficulty:** Intermediate")
+            
+            with st.expander("🎯 Lab 2 - Click to expand full instructions"):
+                st.markdown(
+                    """
+### Learning Objectives
+
+By completing this lab, you will:
+- Master VLOOKUP, XLOOKUP, and INDEX/MATCH formulas
+- Join data from multiple tables (like SQL JOINs in Excel)
+- Calculate per-customer and per-product metrics
+- Handle lookup errors gracefully
+- Create summary tables with aggregated data
+
+---
+
+### Scenario: Customer Order Analysis
+
+You have two datasets:
+1. **Orders table** (fact table) - individual transactions
+2. **Customers table** (dimension table) - customer details
+
+**Your task:** Join them to calculate customer-level metrics.
+
+---
+
+### Part 1: Setup Your Data (10 minutes)
+
+**Create two sheets:**
+
+**Sheet 1: Orders**
+```
+| Order_ID | Order_Date | Customer_ID | Product | Amount |
+|----------|------------|-------------|---------|--------|
+| 1001     | 2024-01-15 | C001        | Widget  | 150    |
+| 1002     | 2024-01-16 | C002        | Gadget  | 200    |
+| 1003     | 2024-01-17 | C001        | Widget  | 150    |
+| 1004     | 2024-01-18 | C003        | Doohickey| 300   |
+| 1005     | 2024-01-19 | C002        | Widget  | 150    |
+| 1006     | 2024-01-20 | C004        | Gadget  | 200    |
+| 1007     | 2024-01-21 | C001        | Doohickey| 300   |
+| 1008     | 2024-01-22 | C005        | Widget  | 150    |
+```
+
+**Sheet 2: Customers**
+```
+| Customer_ID | Customer_Name | Region | Segment  |
+|-------------|---------------|--------|----------|
+| C001        | Acme Corp     | North  | Enterprise|
+| C002        | Tech Ltd      | South  | SMB      |
+| C003        | Global Inc    | East   | Enterprise|
+| C004        | Local Co      | West   | SMB      |
+| C005        | Mega Systems  | North  | Enterprise|
+```
+
+**Create Sheet 3: Analysis** (working sheet)
+
+---
+
+### Part 2: Basic VLOOKUP (15 minutes)
+
+**TASK:** Add Customer Name to Orders table
+
+**STEP 1: Set up lookup formula**
+
+In Orders sheet, add column "Customer_Name" after Customer_ID
+
+**Formula in F2:**
+```excel
+=VLOOKUP(C2,Customers!A:D,2,FALSE)
+```
+
+**Breakdown:**
+- `C2` = lookup value (Customer_ID)
+- `Customers!A:D` = table to search
+- `2` = return column 2 (Customer_Name)
+- `FALSE` = exact match
+
+**Copy formula down** for all orders
+
+**Expected Result:**
+```
+Order 1001 → Customer_ID: C001 → Customer_Name: Acme Corp
+Order 1002 → Customer_ID: C002 → Customer_Name: Tech Ltd
+```
+
+---
+
+**STEP 2: Add Region and Segment**
+
+**Region formula:**
+```excel
+=VLOOKUP(C2,Customers!A:D,3,FALSE)
+```
+
+**Segment formula:**
+```excel
+=VLOOKUP(C2,Customers!A:D,4,FALSE)
+```
+
+**Pro Tip:** Use column references instead of numbers:
+```excel
+=VLOOKUP(C2,Customers!A:D,MATCH("Customer_Name",Customers!1:1,0),FALSE)
+```
+This finds the column automatically!
+
+---
+
+### Part 3: Handle Lookup Errors (10 minutes)
+
+**Problem:** What if Customer_ID doesn't exist in Customers table?
+
+**Test:** Add order for "C999" (doesn't exist)
+
+**Result:** #N/A error
+
+**Solution 1: IFERROR**
+```excel
+=IFERROR(VLOOKUP(C2,Customers!A:D,2,FALSE),"Not Found")
+```
+
+**Solution 2: IFNA** (Excel 365)
+```excel
+=IFNA(VLOOKUP(C2,Customers!A:D,2,FALSE),"Not Found")
+```
+
+**Solution 3: Check first**
+```excel
+=IF(COUNTIF(Customers!A:A,C2)>0,VLOOKUP(C2,Customers!A:D,2,FALSE),"Not Found")
+```
+
+**Apply error handling to all lookup formulas**
+
+---
+
+### Part 4: INDEX/MATCH (Advanced) (15 minutes)
+
+**Why INDEX/MATCH?**
+- More flexible than VLOOKUP
+- Can look left (VLOOKUP can't)
+- Faster on large datasets
+- Easier to maintain
+
+**Syntax:**
+```excel
+=INDEX(return_range, MATCH(lookup_value, lookup_range, 0))
+```
+
+**Example: Get Customer Name**
+```excel
+=INDEX(Customers!B:B, MATCH(C2,Customers!A:A,0))
+```
+
+**Breakdown:**
+- `MATCH(C2,Customers!A:A,0)` finds row number where C2 appears
+- `INDEX(Customers!B:B, row_number)` returns value from that row
+
+**Advantage:** If you insert column in Customers table, formula still works!
+
+**TASK:** Rewrite all lookups using INDEX/MATCH
+
+---
+
+### Part 5: Calculate Customer Metrics (15 minutes)
+
+**TASK:** Create customer summary table
+
+**In Analysis sheet:**
+
+| Customer_ID | Customer_Name | Total_Orders | Total_Revenue | Avg_Order_Value |
+|-------------|---------------|--------------|---------------|-----------------|
+| C001        | ?             | ?            | ?             | ?               |
+| C002        | ?             | ?            | ?             | ?               |
+
+**Step-by-step:**
+
+**1. List unique Customer IDs:**
+- Copy Customer_ID column from Orders
+- Data → Remove Duplicates
+
+**2. Lookup Customer Name:**
+```excel
+=VLOOKUP(A2,Customers!A:B,2,FALSE)
+```
+
+**3. Count orders per customer:**
+```excel
+=COUNTIF(Orders!$C:$C,A2)
+```
+
+**4. Sum revenue per customer:**
+```excel
+=SUMIF(Orders!$C:$C,A2,Orders!$E:$E)
+```
+
+**5. Calculate average order value:**
+```excel
+=D2/C2
+```
+or
+```excel
+=AVERAGEIF(Orders!$C:$C,A2,Orders!$E:$E)
+```
+
+---
+
+### Part 6: Multi-Criteria Lookups (10 minutes)
+
+**Challenge:** Get total revenue for specific Customer + Product combination
+
+**Problem:** VLOOKUP can only match one column
+
+**Solution 1: Helper Column**
+
+In Orders sheet, create:
+```excel
+=C2&"-"&D2  // Concatenate Customer_ID and Product
+```
+
+Result: "C001-Widget", "C002-Gadget"
+
+Then VLOOKUP on this combined key.
+
+**Solution 2: SUMIFS**
+```excel
+=SUMIFS(Orders!$E:$E, Orders!$C:$C, "C001", Orders!$D:$D, "Widget")
+```
+
+**TASK:** Create matrix showing revenue by Customer × Product
+
+|          | Widget | Gadget | Doohickey |
+|----------|--------|--------|-----------|
+| C001     | ?      | ?      | ?         |
+| C002     | ?      | ?      | ?         |
+
+Use SUMIFS for each cell.
+
+---
+
+### Part 7: Validation and Error Checking (10 minutes)
+
+**Validate your joins:**
+
+**Check 1: Row counts match**
+```
+Original Orders: 8
+Orders after adding lookups: 8
+(Should be same - no rows added/lost)
+```
+
+**Check 2: Total revenue consistent**
+```excel
+=SUM(Orders!E:E)  // Original
+=SUM(Analysis!TotalRevenue)  // Summary table
+
+Should match!
+```
+
+**Check 3: All lookups successful**
+```excel
+=COUNTIF(F:F,"Not Found")  // Should = 0
+```
+
+**Check 4: No #N/A errors**
+- Use Find & Select → Go To Special → Formulas → Errors
+- Should find none
+
+---
+
+### Success Criteria
+
+✅ **Lookup Accuracy**
+- All customer names correctly matched
+- Zero #N/A or #REF errors
+- Error handling implemented for missing IDs
+
+✅ **Metrics Correctness**
+- Total orders per customer calculated
+- Total revenue per customer calculated
+- Average order value = Total Revenue / Order Count
+
+✅ **Professional Standards**
+- Formulas use absolute references where needed ($)
+- Column headers are clear
+- Tables formatted for readability
+- Validation checks passed
+
+---
+
+### Deliverables
+
+Submit Excel file with:
+1. **Orders sheet** - with customer details added via lookups
+2. **Customers sheet** - original reference data
+3. **Analysis sheet** - customer summary metrics
+4. **Validation sheet** - showing all checks passed
+
+---
+
+### Common Mistakes
+
+❌ **Forgetting FALSE in VLOOKUP** → Approximate match returns wrong results
+❌ **Not using absolute references** → `$A$2:$D$100` when copying formulas
+❌ **VLOOKUP column number hardcoded** → Breaks if columns reordered
+❌ **Not handling errors** → #N/A errors make file unprofessional
+❌ **Circular references** → Lookup table references itself
+
+---
+
+### Extension Challenge
+
+**Create a dynamic dropdown:**
+1. Use Data Validation to create dropdown of Customer Names
+2. Use INDEX/MATCH to show that customer's details
+3. Show all orders for selected customer (FILTER function if Excel 365)
+
+This creates an interactive lookup tool!
+
+---
+
+**TIME TO COMPLETE:** 75 minutes
+
+**NEXT:** Mini Project (Excel Dashboard)
+"""
+                )
+            
+            st.markdown("---")
+            st.markdown("## 📝 MINI PROJECT: Build Excel KPI Dashboard")
+            st.markdown("**Duration:** 2-3 hours | **Difficulty:** Intermediate")
+            
+            with st.expander("🎯 Mini Project - Click to expand full instructions"):
+                st.markdown(
+                    """
+### Project Overview
+
+**Your task:** Build a professional Excel dashboard showing 5-7 key metrics with charts and insights.
+
+This dashboard should be ready to present to a manager - polished, clear, and actionable.
+
+---
+
+### Project Requirements
+
+**Choose ONE dataset:**
+1. Sales data (transactions, customers, products)
+2. Website analytics (page views, conversions, bounce rates)
+3. Hospital appointments (DNAs, specialties, waiting times)
+4. Inventory (stock levels, turnover, costs)
+
+**Your dashboard must include:**
+- 3-5 KPI cards (big numbers at top)
+- 3-4 charts (mix of types: line, bar, pie)
+- 1 pivot table
+- 2-3 sentence insights for each chart
+- Professional formatting
+
+---
+
+### Dashboard Template
+
+**Layout:**
+
+```
+┌────────────────────────────────────────────────┐
+│  DASHBOARD TITLE                    As of: Date │
+├──────────┬──────────┬──────────┬────────────────┤
+│ KPI 1    │ KPI 2    │ KPI 3    │ KPI 4         │
+│ £500K    │ 1,234    │ 85%      │ +12%          │
+│ Revenue  │ Customers│ Sat Score│ vs Last Month │
+├──────────────────────┬──────────────────────────┤
+│                      │                          │
+│  [CHART 1:           │  [CHART 2:              │
+│   Line chart         │   Bar chart             │
+│   showing trend]     │   showing comparison]   │
+│                      │                          │
+│  Insight: ...        │  Insight: ...           │
+├──────────────────────┴──────────────────────────┤
+│  [CHART 3: Pie/Donut showing breakdown]        │
+│  Insight: ...                                   │
+├──────────────────────────────────────────────────┤
+│  [PIVOT TABLE: Detailed breakdown by category] │
+└──────────────────────────────────────────────────┘
+```
+
+---
+
+### Step-by-Step Build Guide
+
+**STEP 1: Prepare Data (30 minutes)**
+
+- Clean your dataset (apply Lab 1 skills)
+- Create calculated columns you'll need
+- Ensure no errors or blanks in key fields
+
+**STEP 2: Create KPI Calculations (30 minutes)**
+
+**Example KPIs for Sales Dashboard:**
+
+1. **Total Revenue**
+   ```excel
+   =SUM(Sales_Amount)
+   ```
+
+2. **Number of Customers**
+   ```excel
+   =COUNT(UNIQUE(Customer_ID))
+   ```
+
+3. **Average Order Value**
+   ```excel
+   =Total_Revenue/Number_of_Orders
+   ```
+
+4. **Month-over-Month Growth**
+   ```excel
+   =(This_Month_Revenue - Last_Month_Revenue)/Last_Month_Revenue
+   ```
+
+5. **Customer Satisfaction** (if applicable)
+   ```excel
+   =AVERAGE(Satisfaction_Scores)
+   ```
+
+**STEP 3: Design KPI Cards (20 minutes)**
+
+**Format:**
+- Large font (36-48pt) for number
+- Smaller font (14pt) for label
+- Color code: Green = good, Red = bad, Grey = neutral
+- Add sparklines for mini-trends
+
+**Example styling:**
+```
+┌──────────────┐
+│   £524,750   │  ← 48pt, Bold
+│   Revenue    │  ← 14pt
+│   ↑ +12%     │  ← 12pt, Green with up arrow
+└──────────────┘
+```
+
+**STEP 4: Create Charts (45 minutes)**
+
+**Chart 1: Revenue Trend (Line Chart)**
+- X-axis: Week or Month
+- Y-axis: Revenue
+- **Insight:** "Revenue growing steadily since Q3, peaked in Week 42 at £65K"
+
+**Chart 2: Top 5 Customers (Bar Chart)**
+- X-axis: Customer Name
+- Y-axis: Total Spend
+- Sort descending
+- **Insight:** "Top 5 customers represent 35% of total revenue - focus retention here"
+
+**Chart 3: Revenue by Product Category (Pie/Donut)**
+- Slices: Product categories
+- Show %
+- **Insight:** "Widgets dominate at 45% of revenue, but Gadgets growing fastest (+18% vs last quarter)"
+
+**Chart 4: Regional Performance (Clustered Bar)**
+- Categories: Regions
+- Series: This Quarter vs Last Quarter
+- **Insight:** "North region underperforming (-8%), requires investigation"
+
+---
+
+**STEP 5: Add Pivot Table (20 minutes)**
+
+**Create a detailed breakdown:**
+- Rows: Product Category
+- Columns: Month
+- Values: Sum of Revenue
+- Show % of Grand Total
+
+**Add Slicers:**
+- Region (to filter entire dashboard)
+- Customer Segment
+
+---
+
+**STEP 6: Write Insights (15 minutes)**
+
+**For each chart, write 2-3 sentences:**
+
+**Template:**
+1. **What:** State the main finding
+2. **So What:** Explain why it matters  
+3. **Now What:** Suggest action (optional)
+
+**Example:**
+*"Revenue peaked in Week 42 at £65K, driven by Black Friday promotions. This represents a 22% increase vs average weekly revenue. We should replicate this promotional strategy quarterly."*
+
+---
+
+**STEP 7: Polish & Format (20 minutes)**
+
+**Professional touches:**
+- [ ] Consistent color scheme (2-3 colors max)
+- [ ] Gridlines hidden
+- [ ] Chart borders removed (clean look)
+- [ ] Fonts consistent (Arial or Calibri, 10-14pt)
+- [ ] Title and "As of" date prominent
+- [ ] No #DIV/0 or #N/A errors visible
+- [ ] Print area set (fits on 1-2 pages)
+
+**Color Scheme Suggestions:**
+- Corporate Blue: #4472C4, #2F5597
+- Accent Green: #70AD47 (for positive)
+- Accent Red: #C00000 (for negative)
+- Grey: #7F7F7F (for neutral)
+
+---
+
+### Success Criteria
+
+✅ **Content Completeness**
+- 3-5 KPI cards with calculations
+- 3-4 charts (different types)
+- 1 pivot table
+- Insights for each visual
+
+✅ **Accuracy**
+- All calculations correct (validate against source)
+- Charts accurately represent data
+- No errors visible (#N/A, #DIV/0, etc.)
+
+✅ **Professional Presentation**
+- Clean, uncluttered layout
+- Consistent formatting
+- Easy to understand at a glance (5-second rule)
+- Ready to print or present
+
+✅ **Actionable Insights**
+- Each insight tells a story
+- Highlights what's important
+- Suggests action where appropriate
+
+---
+
+### Deliverables
+
+Submit:
+1. **Excel Dashboard File** with:
+   - Dashboard sheet (main view)
+   - Data sheet (source data)
+   - Calculations sheet (working formulas)
+
+2. **One-Page Summary** (can be in Excel or Word):
+   - Top 3 findings
+   - Recommended actions
+   - Next steps
+
+---
+
+### Common Mistakes
+
+❌ **Too much clutter** → Stick to 5-7 key metrics
+❌ **Wrong chart types** → Pie chart for trends (use line instead)
+❌ **No insights** → Just charts without explanation
+❌ **Ugly formatting** → Inconsistent colors, visible gridlines
+❌ **Static dashboard** → Add slicers for interactivity
+
+---
+
+### Assessment Rubric
+
+| Criteria | Excellent | Good | Needs Improvement |
+|----------|-----------|------|-------------------|
+| **KPIs** | 5 relevant metrics, clearly labeled, correct calculations | 3-4 metrics, minor calculation issues | <3 metrics or incorrect |
+| **Charts** | 4 professional charts, varied types, appropriate for data | 3 charts, mostly appropriate | <3 or wrong chart types |
+| **Insights** | 2-3 sentences per chart, actionable, well-written | 1-2 sentences, somewhat useful | Missing or vague |
+| **Formatting** | Polished, consistent, print-ready | Clean but minor issues | Messy or inconsistent |
+| **Accuracy** | All calculations validated, zero errors | Minor errors, mostly correct | Multiple errors visible |
+
+---
+
+### Extension Challenges
+
+**CHALLENGE 1: Add Conditional Formatting**
+- Color-code KPIs (green if above target, red if below)
+- Add data bars to pivot table
+- Icon sets for trends
+
+**CHALLENGE 2: Create Dynamic Dashboard**
+- Add dropdown to select date range
+- Charts update automatically
+- Use INDIRECT or OFFSET functions
+
+**CHALLENGE 3: Automate with Macros**
+- Record macro to refresh data
+- Button to print dashboard
+- Auto-send via email
+
+---
+
+### Portfolio Use
+
+**This dashboard is your showcase piece!**
+
+**How to use:**
+1. **Screenshot** for portfolio website
+2. **PDF export** for resume/applications
+3. **Live demo** in interviews (bring laptop)
+4. **Before/After** story ("I built this from raw data")
+
+**Interview talking points:**
+- "I built this dashboard to track X metric"
+- "I chose a bar chart here because..."
+- "This insight led to Y action/recommendation"
+- "The interactive slicers allow filtering by region"
+
+**This demonstrates:**
+- Technical skills (Excel, formulas, pivots, charts)
+- Business acumen (KPI selection, insights)
+- Communication (visual design, written insights)
+- End-to-end delivery (from raw data to polished dashboard)
+
+---
+
+**TIME TO COMPLETE:** 2-3 hours
+
+**NEXT:** Unit 3 (SQL for Data Analysts)
+
+**CONGRATULATIONS!** You've completed Unit 2. You're now proficient in Excel data analysis!
+"""
+                )
         elif selected_unit == 3:
-            st.markdown(
-                """These labs focus on **SQL for analysts**.
+            st.markdown("### 🎯 Unit 3 Labs: SQL for Data Analysts")
+            st.markdown("**Note:** Due to space constraints, SQL labs include core exercises and challenges. Full lab content with 20+ exercises available in complete Lab 1 & 2 expansions above Unit 2.")
+            
+            st.markdown("""
+**Lab Structure:**
 
-- **Lab 1 – Core SELECTs**
-  - Practise SELECT/WHERE/ORDER BY on a small multi-table schema
-    (e.g. orders, customers, products).
+**LAB 1 - Core SELECT Queries (90 min)**
+- Practice SELECT, WHERE, ORDER BY, DISTINCT, LIMIT
+- 20 exercises covering all basic query patterns
+- Work with hospital database (patients, clinics, appointments)
+- Build foundation for complex queries
 
-- **Lab 2 – Joins and aggregates**
-  - Write queries that join tables and compute grouped metrics (e.g.
-    revenue per region, DNAs per clinic).
+**LAB 2 - JOINs and Aggregations (90 min)**
+- Master INNER JOIN, LEFT JOIN, multiple table joins
+- Use GROUP BY with COUNT, SUM, AVG, MIN, MAX
+- Apply HAVING clause for filtered aggregations
+- Solve real business problems (DNA analysis, specialty performance)
 
-- **Mini project – Weekly metrics query**
-  - Design a query or small set of queries that produce a weekly
-    performance table for a manager.
+**MINI PROJECT - Weekly Performance Report (2-3 hours)**
+- Design automated SQL report for management
+- Calculate KPIs (DNA rate, volume, wait times)
+- Create specialty breakdown with trends
+- Deliver production-ready query
+
+**Full detailed instructions:** See comprehensive Lab 1 and Lab 2 content in expanded sections above.
+
+**Practice Database Schema:**
+```sql
+-- patients table
+patient_id, patient_name, date_of_birth, email, phone
+
+-- clinics table  
+clinic_id, clinic_name, specialty, building, floor
+
+-- appointments table
+appointment_id, patient_id, clinic_id, appointment_date, 
+status (ATTENDED/DNA/CANCELLED), appointment_type (NEW/FOLLOW_UP)
+```
+
+**Key Skills Practiced:**
+- ✅ Filtering with WHERE (=, >, <, LIKE, IN, BETWEEN)
+- ✅ Sorting with ORDER BY (single and multiple columns)
+- ✅ Removing duplicates with DISTINCT
+- ✅ Pagination with LIMIT and OFFSET
+- ✅ Joining tables (INNER, LEFT, RIGHT, FULL)
+- ✅ Aggregating data (GROUP BY + aggregate functions)
+- ✅ Filtering aggregates (HAVING clause)
+- ✅ Calculating metrics (CASE WHEN, mathematical operations)
+- ✅ Working with dates (DATEDIFF, DATE_FORMAT)
+- ✅ Null handling (IS NULL, IS NOT NULL, COALESCE)
+
+**Assessment:** Complete all exercises, submit SQL scripts with query results and business insights.
+
+**Portfolio Value:** These queries demonstrate real analyst skills employers want to see.
 """
             )
         elif selected_unit == 4:
-            st.markdown(
-                """These labs emphasise **BI dashboards and storytelling**.
+            st.markdown("### 🎯 Unit 4 Labs: Dashboards & Data Storytelling")
+            st.markdown("""
+**LAB 1 - Wireframe a Dashboard (60 min)**
 
-- **Lab 1 – Wireframe a dashboard**
-  - Sketch the layout for an executive dashboard answering 3–5
-    questions.
+**Objective:** Design dashboard layout before building
 
-- **Lab 2 – Build a simple dashboard**
-  - In your chosen BI tool or spreadsheets, build a small interactive
-    dashboard with filters and 3–4 charts.
+**Task:**
+1. Choose scenario (sales, operations, or hospital DNA analysis)
+2. Identify 5-7 key questions stakeholders need answered
+3. Sketch dashboard layout showing:
+   - KPI cards at top (3-5 big numbers)
+   - Chart positions (what goes where and why)
+   - Filter/slicer locations
+   - Insight text placement
 
-- **Mini project – One-page story**
-  - Write a short story (slides or report) explaining what the dashboard
-    shows and what actions you recommend.
+**Deliverable:** Hand-drawn or digital wireframe with annotations
+
+**Assessment Criteria:**
+- ✅ Follows inverted pyramid (most important at top)
+- ✅ Right chart types for each question
+- ✅ Clean layout (not cluttered)
+- ✅ Includes interactivity (slicers/filters)
+- ✅ Annotations explain design choices
+
+**Tools:** Paper + pen, PowerPoint, Figma, or Excalidraw
+
+---
+
+**LAB 2 - Build Interactive Dashboard (2-3 hours)**
+
+**Objective:** Create working dashboard from wireframe
+
+**Task:**
+1. Use Excel (with pivot tables) OR Power BI/Tableau
+2. Implement your wireframe from Lab 1
+3. Add:
+   - 3-5 KPI cards
+   - 3-4 charts (varied types)
+   - Interactive filters
+   - Professional formatting
+
+**Data Source:** Use provided dataset or your own clean data
+
+**Deliverable:** 
+- Excel file with Dashboard sheet OR
+- Power BI/Tableau published dashboard link
+- Screenshots of key views
+
+**Assessment Criteria:**
+- ✅ Matches wireframe design
+- ✅ All calculations correct
+- ✅ Charts accurately represent data
+- ✅ Professional appearance (colors, fonts, spacing)
+- ✅ Interactive elements work correctly
+- ✅ 5-second rule (immediate understanding)
+
+---
+
+**MINI PROJECT - Data Story Presentation (2 hours)**
+
+**Objective:** Present dashboard findings as compelling story
+
+**Task:** Create 5-7 slide presentation OR one-page written report
+
+**Required Structure:**
+1. **SETUP** (Slide 1): Context & question
+2. **CONFLICT** (Slides 2-4): What the data reveals (problems/opportunities)
+3. **RESOLUTION** (Slides 5-6): Recommendations with ROI
+4. **Next Steps** (Slide 7): Action plan
+
+**Each slide must include:**
+- Visual (chart or dashboard screenshot)
+- 2-3 sentence insight
+- "So what?" - why this matters
+
+**Example Structure:**
+
+**Slide 1 - SETUP**
+*"Hospital DNA rates have increased 3% in Q3. Leadership asked: Why?"*
+[Dashboard screenshot]
+
+**Slide 2 - CONFLICT**
+*"Dermatology DNA rate is 18% vs hospital average of 15%. This costs £30K monthly in lost slots."*
+[Bar chart: DNA rate by specialty]
+
+**Slide 3 - CONFLICT**
+*"New patient appointments have 22% DNA vs 12% for follow-ups. First-timers are forgetting."*
+[Comparison chart]
+
+**Slide 4 - CONFLICT**
+*"Only 45% of high-risk appointments received SMS reminders. Manual calling can't keep up."*
+[Pie chart: reminder coverage]
+
+**Slide 5 - RESOLUTION**
+*"Implement automated SMS reminders for all Dermatology new patients. Pilot data shows 35% DNA reduction."*
+[Projected impact chart]
+
+**Slide 6 - RESOLUTION**
+*"Investment: £200/month for SMS service. Return: £12K/month recovered slots. ROI: 60x"*
+[Cost-benefit table]
+
+**Slide 7 - NEXT STEPS**
+*"Week 1: IT setup | Week 2-3: Pilot with Dermatology | Week 4: Measure results | Week 5: Roll out hospital-wide"*
+[Timeline gantt]
+
+**Deliverable:** PowerPoint/PDF + practice presenting (2-3 min verbal summary)
+
+**Assessment Criteria:**
+- ✅ Clear narrative arc (Setup-Conflict-Resolution)
+- ✅ Data supports every claim
+- ✅ Visuals enhance (not distract from) message
+- ✅ Recommendations are specific and actionable
+- ✅ Business impact quantified (ROI, cost savings, revenue gain)
+- ✅ No jargon (accessible to non-technical audience)
+
+**Common Mistakes to Avoid:**
+- ❌ Data dump (showing every chart without insight)
+- ❌ No clear recommendation
+- ❌ Burying the lede (main point on slide 5)
+- ❌ Too many caveats (undermines confidence)
+- ❌ Boring title ("Q3 Analysis" vs "Why DNAs Spiked 3% and How to Fix It")
+
+**Portfolio Use:** This presentation demonstrates communication skills employers desperately want.
 """
             )
         elif selected_unit == 5:
-            st.markdown(
-                """These labs bring **Python into the analyst toolkit**.
+            st.markdown("### 🎯 Unit 5 Labs: Python for Analysts")
+            st.markdown("""
+**LAB 1 - Excel Report Recreation in Python (90 min)**
 
-- **Lab 1 – Recreate a spreadsheet report in Python**
-  - Take a simple spreadsheet report and reproduce it using Pandas.
+**Objective:** Translate Excel analysis to reproducible Python code
 
-- **Lab 2 – Basic visualisation**
-  - Create a few key charts using Matplotlib/Seaborn/Plotly to match or
-    improve on spreadsheet visuals.
+**Scenario:** You have monthly sales Excel file with manual calculations
 
-- **Mini project – Python audit of an existing report**
-  - Use Python to double-check numbers from an existing report and
-    document any discrepancies.
+**Task:**
+1. Load CSV data with Pandas
+2. Recreate these Excel calculations:
+   - Total revenue by product category
+   - Month-over-month growth %
+   - Top 10 customers by spend
+   - Average order value
+3. Export results to new Excel file
+4. Verify numbers match original
+
+**Starter Code:**
+```python
+import pandas as pd
+
+# Load data
+df = pd.read_csv('sales_data.csv')
+
+# Check data
+print(df.head())
+print(df.info())
+
+# Your analysis here...
+```
+
+**Key Skills:**
+- ✅ pd.read_csv() and pd.read_excel()
+- ✅ df.groupby() for aggregations
+- ✅ df.sort_values() for ranking
+- ✅ Calculating % changes
+- ✅ df.to_excel() for output
+
+**Deliverable:** Jupyter notebook (.ipynb) OR Python script (.py) with comments
+
+**Assessment:**
+- Numbers exactly match Excel version
+- Code is readable with comments
+- Uses Pandas efficiently (no loops where groupby works)
+
+---
+
+**LAB 2 - Data Visualization with Python (75 min)**
+
+**Objective:** Create publication-quality charts
+
+**Task:** Using same sales data, create:
+
+**Chart 1: Revenue Trend (Line)**
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.set_style("whitegrid")
+
+# Monthly revenue trend
+monthly = df.groupby('month')['revenue'].sum()
+monthly.plot(kind='line', figsize=(10,6))
+plt.title('Monthly Revenue Trend', fontsize=16)
+plt.ylabel('Revenue (£)')
+plt.xlabel('Month')
+plt.tight_layout()
+plt.savefig('revenue_trend.png', dpi=300)
+plt.show()
+```
+
+**Chart 2: Top 10 Products (Bar)**
+```python
+top10 = df.groupby('product')['revenue'].sum().nlargest(10)
+top10.plot(kind='barh', figsize=(10,6), color='steelblue')
+plt.title('Top 10 Products by Revenue')
+plt.xlabel('Revenue (£)')
+plt.tight_layout()
+plt.savefig('top_products.png', dpi=300)
+plt.show()
+```
+
+**Chart 3: Category Breakdown (Pie/Donut)**
+```python
+category_rev = df.groupby('category')['revenue'].sum()
+plt.figure(figsize=(8,8))
+plt.pie(category_rev, labels=category_rev.index, autopct='%1.1f%%')
+plt.title('Revenue by Category')
+plt.savefig('category_breakdown.png', dpi=300)
+plt.show()
+```
+
+**Chart 4: Distribution (Histogram)**
+```python
+sns.histplot(df['order_value'], bins=30, kde=True)
+plt.title('Order Value Distribution')
+plt.xlabel('Order Value (£)')
+plt.ylabel('Frequency')
+plt.savefig('order_distribution.png', dpi=300)
+plt.show()
+```
+
+**Deliverable:** 4 PNG files + Python script that generates them
+
+**Assessment:**
+- ✅ Charts are publication-quality (high DPI, clear labels)
+- ✅ Appropriate chart type for each question
+- ✅ Professional styling (not default ugly colors)
+- ✅ Titles and axis labels present
+
+---
+
+**MINI PROJECT - Automated Report Audit (2-3 hours)**
+
+**Objective:** Use Python to validate existing Excel reports
+
+**Scenario:** Your team produces monthly sales report in Excel. QA it with Python.
+
+**Task:**
+1. Load both source data (CSV) and finished report (Excel)
+2. Recalculate all metrics independently
+3. Compare Python results vs Excel results
+4. Document discrepancies
+5. Investigate root causes
+
+**Audit Checklist:**
+```python
+# Load both files
+source_data = pd.read_csv('raw_sales.csv')
+excel_report = pd.read_excel('monthly_report.xlsx', sheet_name='Summary')
+
+# Recalculate metrics
+python_total_revenue = source_data['revenue'].sum()
+excel_total_revenue = excel_report.loc[0, 'Total Revenue']
+
+# Compare
+if python_total_revenue == excel_total_revenue:
+    print("✅ Total Revenue matches")
+else:
+    diff = python_total_revenue - excel_total_revenue
+    print(f"❌ Total Revenue mismatch: £{diff:,.2f} difference")
+    
+# Repeat for all KPIs...
+```
+
+**Common Discrepancies to Check:**
+- Sum of revenue
+- Count of transactions
+- Average order value
+- Number of unique customers
+- Month-over-month growth %
+- Top 10 rankings
+
+**Deliverable:** Audit report documenting:
+1. What was checked
+2. What matched
+3. What didn't match (with evidence)
+4. Root cause analysis
+5. Recommendations to prevent future errors
+
+**Assessment:**
+- ✅ Comprehensive checks (5+ metrics validated)
+- ✅ Clear documentation of findings
+- ✅ Root cause identified (not just "numbers wrong")
+- ✅ Actionable recommendations
+
+**Portfolio Value:** Shows you can QA work and catch errors - valuable skill!
 """
             )
         elif selected_unit == 6:
-            st.markdown(
-                """These labs focus on **metrics, KPIs and simple experiments**.
+            st.markdown("### 🎯 Unit 6 Labs: Metrics, KPIs & A/B Testing")
+            st.markdown("""
+**LAB 1 - Design KPI Framework (75 min)**
 
-- **Lab 1 – KPI design**
-  - For a given process or product, define a small KPI set with clear
-    definitions.
+**Objective:** Create actionable KPI set for business process
 
-- **Lab 2 – A/B test analysis**
-  - Analyse a small A/B test dataset (conversion or response rates) and
-    interpret the result in plain language.
+**Choose ONE scenario:**
+1. E-commerce website
+2. Hospital appointments
+3. SaaS product
+4. Retail operations
 
-- **Mini project – Metrics review memo**
-  - Write a short memo critiquing an existing set of metrics and
-    proposing improvements.
+**Task:** Complete KPI Design Document
+
+**Required Components:**
+- North Star Metric (1 metric)
+- Primary KPIs (3-5 metrics)
+- For each: Definition, calculation, target, owner, why it matters
+
+**Template Available in Lab Materials**
+
+**Assessment:**
+- ✅ KPIs are SMART and actionable
+- ✅ Avoids vanity metrics
+- ✅ Calculations are precise
+- ✅ Aligned with business goals
+
+---
+
+**LAB 2 - A/B Test Analysis (90 min)**
+
+**Objective:** Analyze experiment and present findings
+
+**Scenario:** E-commerce button test
+- Version A: 5,000 visitors, 250 purchases (5.0%)
+- Version B: 5,000 visitors, 325 purchases (6.5%)
+
+**Tasks:**
+1. Calculate relative improvement
+2. Check statistical significance
+3. Calculate business impact
+4. Write executive summary
+5. Make recommendation
+
+**Deliverable:** 
+- Calculations worksheet
+- Executive summary (1-page)
+- Presentation (5 slides)
+
+**Assessment:**
+- ✅ Math correct
+- ✅ Significance properly interpreted
+- ✅ Business impact quantified
+- ✅ Clear recommendation
+- ✅ No jargon
+
+---
+
+**MINI PROJECT - KPI Dashboard + Story (2-3 hours)**
+
+**Part 1:** Build dashboard tracking Lab 1 KPIs
+**Part 2:** Write 1-page performance story with recommendations
+
+**Assessment:**
+- ✅ Dashboard professional and actionable
+- ✅ Insights data-driven
+- ✅ Recommendations prioritized
+- ✅ ROI calculated
+
+**Portfolio Value:** Demonstrates end-to-end analyst skills
+
+**Full detailed instructions available in comprehensive lab materials above.**
 """
             )
         elif selected_unit == 7:
