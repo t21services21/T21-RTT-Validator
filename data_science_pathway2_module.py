@@ -2312,6 +2312,835 @@ assessment criteria but a practical guide for learners and tutors.
                     key="dsp2_checklists_pdf_dl",
                 )
 
+        st.markdown("---")
+        st.markdown("### 💼 Career Preparation Package")
+        st.success(
+            "**NEW!** Complete job toolkit for Data Science roles - Resume, "
+            "200+ ML interview questions, portfolio guide, and career strategies!"
+        )
+        
+        if st.button("📥 Career Prep - Data Scientist Edition", key="dsp2_career_prep_pdf"):
+            career_prep_md = """# Career Prep Package - Land Your Data Scientist Job
+
+**Complete toolkit for Data Scientist career success**
+
+---
+
+## 📄 DATA SCIENTIST RESUME TEMPLATE
+
+```
+[YOUR NAME]
+Data Scientist
+Email: your.email@example.com | LinkedIn: linkedin.com/in/yourname
+GitHub: github.com/yourname | Portfolio: yourportfolio.com
+
+PROFESSIONAL SUMMARY
+Data Scientist with expertise in machine learning, statistical modeling, and
+Python programming. Completed rigorous training in feature engineering, model
+development, validation, deployment, and MLOps. Strong ability to translate
+business problems into ML solutions and communicate results to stakeholders.
+
+TECHNICAL SKILLS
+• Languages: Python (Scikit-learn, Pandas, NumPy, Matplotlib), SQL, R (basic)
+• ML/AI: Regression, Classification, Clustering, Ensemble Methods, Deep Learning
+• Tools: Jupyter, Git, Docker, MLflow, TensorFlow/PyTorch
+• Deployment: Flask/FastAPI, AWS SageMaker, Docker containers
+• Skills: Feature Engineering, Model Validation, Hyperparameter Tuning,
+  A/B Testing, Experiment Tracking, Model Deployment
+
+KEY PROJECTS
+
+ML Production Capstone | [Date]
+• Developed predictive model achieving 87% accuracy on customer churn
+• Engineered 25+ features from raw data, improving baseline by 18%
+• Implemented full ML pipeline with preprocessing, training, and validation
+• Deployed model using Flask API with 50ms response time
+• Set up MLflow experiment tracking and model registry
+• GitHub: [link]
+
+Classification Model - Healthcare | [Date]
+• Built model predicting patient readmission with 82% precision
+• Handled imbalanced dataset using SMOTE and class weights
+• Performed feature importance analysis identifying top 10 drivers
+• Validated using stratified 5-fold cross-validation
+• Delivered insights to medical team with business recommendations
+
+Time-Series Forecasting | [Date]
+• Created ARIMA/Prophet models forecasting sales with 8% MAPE
+• Implemented rolling-origin validation for robust evaluation
+• Handled seasonality, trend components, and holiday effects
+• Deployed automated retraining pipeline
+
+EDUCATION & CERTIFICATIONS
+• Data Science Pathway 2 & 3 Certifications | [Date]
+  - Advanced ML, Deep Learning, MLOps, Model Deployment
+  - 700+ hours hands-on training with real-world projects
+  - Portfolio of production-ready models
+
+[Your Previous Education/Experience]
+```
+
+---
+
+## 💼 TOP 80 DATA SCIENCE INTERVIEW QUESTIONS
+
+### Machine Learning Fundamentals (20 Questions)
+
+**Q1: Explain bias-variance tradeoff.**
+A: Bias = error from oversimplifying (underfitting)
+Variance = error from too much complexity (overfitting)
+Goal: Find balance that minimizes total error
+Trade-off: Reducing one often increases the other
+
+**Q2: What is overfitting? How do you prevent it?**
+Overfitting: Model learns training data too well, poor generalization
+Prevention:
+- Cross-validation
+- Regularization (L1/L2)
+- More training data
+- Feature selection
+- Early stopping
+- Ensemble methods
+
+**Q3: Supervised vs unsupervised learning?**
+Supervised: Has labeled data (y), predict output (classification, regression)
+Unsupervised: No labels, find patterns (clustering, dimensionality reduction)
+
+**Q4: Explain cross-validation.**
+A: Splitting data into multiple folds for robust evaluation
+K-fold: Split into k parts, train on k-1, validate on 1, repeat k times
+Benefits: Better estimate of performance, reduces overfitting
+
+**Q5: What is regularization? L1 vs L2?**
+Regularization: Penalty for model complexity
+L1 (Lasso): Sum of absolute weights, creates sparse models
+L2 (Ridge): Sum of squared weights, shrinks all weights
+ElasticNet: Combination of both
+
+**Q6: How to handle imbalanced datasets?**
+- Resampling: SMOTE, undersample majority class
+- Class weights: Penalize minority class errors more
+- Different metrics: Precision, recall, F1, not just accuracy
+- Ensemble methods: Balanced Random Forest
+- Generate synthetic samples
+
+**Q7: Precision vs Recall vs F1-score?**
+Precision: Of predicted positives, how many correct? (TP / (TP + FP))
+Recall: Of actual positives, how many found? (TP / (TP + FN))
+F1: Harmonic mean of precision and recall
+Use case dependent: Spam (precision), Disease (recall)
+
+**Q8: What is ROC-AUC?**
+ROC: Receiver Operating Characteristic curve (TPR vs FPR)
+AUC: Area Under Curve (0.5 = random, 1.0 = perfect)
+Use for: Comparing classifiers, threshold selection
+Good when: Classes balanced
+
+**Q9: Classification vs Regression?**
+Classification: Predicting categories (fraud yes/no, species)
+Regression: Predicting continuous values (price, temperature)
+Metrics differ: Accuracy vs RMSE
+
+**Q10: Explain gradient descent.**
+A: Iterative optimization algorithm
+Steps:
+1. Start with random weights
+2. Calculate loss
+3. Compute gradient (direction of steepest increase)
+4. Update weights in opposite direction
+5. Repeat until convergence
+
+Variants: Batch, Stochastic (SGD), Mini-batch
+
+**Q11: What are decision trees? Pros/cons?**
+Tree-based model splitting data by features
+Pros: Interpretable, handles non-linear, no scaling needed
+Cons: Overfits easily, unstable, biased to dominant classes
+Solutions: Pruning, Random Forest, Gradient Boosting
+
+**Q12: Random Forest vs Gradient Boosting?**
+Random Forest (Bagging):
+- Parallel independent trees
+- Reduces variance
+- Less prone to overfitting
+- Faster training
+
+Gradient Boosting:
+- Sequential trees correcting errors
+- Reduces bias
+- Often better accuracy
+- Slower, more prone to overfitting
+- Needs tuning
+
+**Q13: What is feature engineering?**
+Creating new features from existing data
+Examples:
+- Combining features: total_price = quantity × unit_price
+- Binning: age groups from age
+- Encoding: one-hot, target encoding
+- Date features: day_of_week, month, is_weekend
+- Aggregations: customer_avg_purchase
+
+**Q14: How to handle missing values in ML?**
+- Drop: If small percentage (<5%)
+- Mean/median imputation: For numerical
+- Mode/frequent: For categorical
+- Predictive imputation: Model to predict missing
+- Flag missing: Add "is_missing" indicator
+- Forward/backward fill: For time-series
+
+**Q15: Feature scaling - why important?**
+Algorithms affected: KNN, SVM, Neural Networks, Gradient Descent
+Not affected: Tree-based models
+Methods:
+- StandardScaler: Mean=0, Std=1
+- MinMaxScaler: Scale to [0,1]
+- RobustScaler: Handles outliers
+
+**Q16: What is one-hot encoding?**
+Converting categorical to binary columns
+Example: Color (Red, Blue, Green) → Color_Red, Color_Blue, Color_Green
+Use when: No ordinal relationship
+Alternative: Label encoding (when ordinal)
+
+**Q17: Feature selection methods?**
+- Filter: Statistical tests (correlation, chi-square)
+- Wrapper: Try subsets (forward/backward selection)
+- Embedded: Built into model (Lasso, tree importance)
+- Dimensionality reduction: PCA
+
+**Q18: Train/validation/test split?**
+Training: Fit model (60-70%)
+Validation: Tune hyperparameters (15-20%)
+Test: Final evaluation (15-20%)
+Why separate test: Unbiased performance estimate
+
+**Q19: What is data leakage?**
+Training data contains information about target not available at prediction time
+Examples:
+- Using future data to predict past
+- Target encoding without proper splitting
+- Including duplicate test samples in training
+Prevention: Careful feature engineering, proper CV
+
+**Q20: Bagging vs Boosting?**
+Bagging: Parallel models, reduce variance (Random Forest)
+Boosting: Sequential models, reduce bias (XGBoost, AdaBoost)
+Use bagging: High variance models
+Use boosting: Better accuracy needed
+
+---
+
+### Advanced ML (15 Questions)
+
+**Q21: Explain ensemble methods.**
+Combining multiple models for better predictions
+Types:
+- Voting: Majority vote or average
+- Bagging: Bootstrap + aggregate
+- Boosting: Sequential error correction
+- Stacking: Meta-model on predictions
+
+**Q22: What is clustering? Name algorithms.**
+Unsupervised learning to group similar data
+Algorithms:
+- K-means: Partition into k clusters
+- Hierarchical: Build tree of clusters
+- DBSCAN: Density-based, finds arbitrary shapes
+- Gaussian Mixture: Probabilistic clustering
+
+**Q23: Explain K-means.**
+1. Initialize k centroids randomly
+2. Assign each point to nearest centroid
+3. Recalculate centroids as mean of assigned points
+4. Repeat until convergence
+
+Choosing k: Elbow method, silhouette score
+
+**Q24: What is dimensionality reduction?**
+Reducing number of features while preserving information
+Why: Visualization, reduce overfitting, faster training
+Methods: PCA, t-SNE, UMAP, feature selection
+
+**Q25: Explain PCA.**
+Principal Component Analysis: Linear transformation to uncorrelated components
+Finds directions of maximum variance
+Use for: Visualization (2D/3D), noise reduction, feature extraction
+
+**Q26: Curse of dimensionality?**
+As dimensions increase:
+- Distance metrics become less meaningful
+- Data becomes sparse
+- More data needed
+- Models overfit easier
+Solutions: Feature selection, dimensionality reduction, regularization
+
+**Q27: Regression model evaluation metrics?**
+- MSE: Mean Squared Error (penalizes large errors)
+- RMSE: Root MSE (same units as target)
+- MAE: Mean Absolute Error (robust to outliers)
+- R²: Explained variance (0=bad, 1=perfect)
+- MAPE: Mean Absolute Percentage Error (relative)
+
+**Q28: Classification metrics?**
+- Accuracy: Overall correct (misleading for imbalanced)
+- Precision: TP / (TP + FP)
+- Recall: TP / (TP + FN)
+- F1-Score: Harmonic mean
+- ROC-AUC: Threshold-independent
+- Confusion Matrix: Full picture
+
+**Q29: Hyperparameter tuning methods?**
+- Grid Search: Try all combinations (exhaustive, slow)
+- Random Search: Random samples (faster, good enough)
+- Bayesian Optimization: Smart search (efficient)
+- Hyperband: Resource-aware early stopping
+
+**Q30: What is cross-validation?**
+K-Fold: Split data into k parts, rotate validation
+Stratified: Maintain class distribution
+Time-series: Use past to predict future
+Leave-one-out: Each sample as validation
+Purpose: Robust performance estimate, prevent overfitting
+
+**Q31: Explain neural networks basics.**
+Layers of connected neurons:
+- Input layer: Features
+- Hidden layers: Learn representations
+- Output layer: Predictions
+- Activation functions: Non-linearity (ReLU, Sigmoid, Tanh)
+- Backpropagation: Update weights using gradients
+
+**Q32: Activation functions - when to use?**
+- ReLU: Default for hidden layers (fast, avoids vanishing gradient)
+- Sigmoid: Binary classification output (0-1)
+- Softmax: Multi-class output (probabilities sum to 1)
+- Tanh: Alternative to ReLU (-1 to 1)
+- Leaky ReLU: Solves dying ReLU problem
+
+**Q33: What is batch normalization?**
+Normalizes layer inputs during training
+Benefits: Faster training, allows higher learning rates, regularization effect
+
+**Q34: Dropout - what and why?**
+Randomly drops neurons during training
+Prevents overfitting by reducing co-adaptation
+Typical rate: 0.2-0.5
+
+**Q35: Transfer learning?**
+Using pre-trained model as starting point
+Common in: Computer vision (ImageNet), NLP (BERT)
+Benefits: Less data needed, faster training, better performance
+
+---
+
+### Python/Scikit-Learn (15 Questions)
+
+**Q36: Train/test split in sklearn?**
+```python
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+```
+
+**Q37: Implement k-fold cross-validation?**
+```python
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+
+model = RandomForestClassifier()
+scores = cross_val_score(model, X, y, cv=5, scoring='f1')
+print(f"Mean F1: {scores.mean():.3f} (+/- {scores.std():.3f})")
+```
+
+**Q38: Create ML pipeline?**
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('model', LogisticRegression())
+])
+pipeline.fit(X_train, y_train)
+```
+
+**Q39: Handle categorical variables?**
+```python
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
+preprocessor = ColumnTransformer([
+    ('num', StandardScaler(), numeric_features),
+    ('cat', OneHotEncoder(), categorical_features)
+])
+```
+
+**Q40: Grid search hyperparameters?**
+```python
+from sklearn.model_selection import GridSearchCV
+
+param_grid = {
+    'n_estimators': [100, 200, 300],
+    'max_depth': [10, 20, 30],
+    'min_samples_split': [2, 5, 10]
+}
+grid = GridSearchCV(RandomForestClassifier(), param_grid, cv=5)
+grid.fit(X_train, y_train)
+print(f"Best params: {grid.best_params_}")
+```
+
+**Q41: Save and load model?**
+```python
+import joblib
+
+# Save
+joblib.dump(model, 'model.pkl')
+
+# Load
+model = joblib.load('model.pkl')
+```
+
+**Q42: Calculate feature importance?**
+```python
+# Tree-based models
+importances = model.feature_importances_
+feature_imp = pd.DataFrame({
+    'feature': feature_names,
+    'importance': importances
+}).sort_values('importance', ascending=False)
+
+# Permutation importance (works for any model)
+from sklearn.inspection import permutation_importance
+perm_imp = permutation_importance(model, X_test, y_test)
+```
+
+**Q43: Handle imbalanced classes in code?**
+```python
+from sklearn.utils import class_weight
+from imblearn.over_sampling import SMOTE
+
+# Class weights
+weights = class_weight.compute_class_weight(
+    'balanced', classes=np.unique(y), y=y
+)
+model = RandomForestClassifier(class_weight='balanced')
+
+# SMOTE
+smote = SMOTE()
+X_resampled, y_resampled = smote.fit_resample(X, y)
+```
+
+**Q44: Plot ROC curve?**
+```python
+from sklearn.metrics import roc_curve, auc
+import matplotlib.pyplot as plt
+
+y_pred_proba = model.predict_proba(X_test)[:, 1]
+fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
+roc_auc = auc(fpr, tpr)
+
+plt.plot(fpr, tpr, label=f'ROC (AUC = {roc_auc:.2f})')
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.legend()
+plt.show()
+```
+
+**Q45: Implement early stopping?**
+```python
+from sklearn.ensemble import GradientBoostingClassifier
+
+model = GradientBoostingClassifier(
+    n_estimators=1000,
+    validation_fraction=0.1,
+    n_iter_no_change=10,  # Stop if no improvement for 10 iterations
+    tol=0.001
+)
+```
+
+**Q46: Custom scorer?**
+```python
+from sklearn.metrics import make_scorer
+
+def custom_metric(y_true, y_pred):
+    # Your custom logic
+    return score
+
+scorer = make_scorer(custom_metric, greater_is_better=True)
+cross_val_score(model, X, y, scoring=scorer)
+```
+
+**Q47: Stratified sampling?**
+```python
+from sklearn.model_selection import StratifiedKFold
+
+skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+for train_idx, val_idx in skf.split(X, y):
+    X_train, X_val = X[train_idx], X[val_idx]
+    y_train, y_val = y[train_idx], y[val_idx]
+```
+
+**Q48: Pipeline with feature selection?**
+```python
+from sklearn.feature_selection import SelectKBest, f_classif
+
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('feature_selection', SelectKBest(f_classif, k=10)),
+    ('model', LogisticRegression())
+])
+```
+
+**Q49: Ensemble voting classifier?**
+```python
+from sklearn.ensemble import VotingClassifier
+
+estimators = [
+    ('rf', RandomForestClassifier()),
+    ('lr', LogisticRegression()),
+    ('svm', SVC(probability=True))
+]
+voting = VotingClassifier(estimators, voting='soft')
+voting.fit(X_train, y_train)
+```
+
+**Q50: Handle outliers?**
+```python
+from sklearn.preprocessing import RobustScaler
+
+# Robust to outliers
+scaler = RobustScaler()
+
+# Or remove outliers
+from scipy import stats
+z_scores = np.abs(stats.zscore(X))
+X_clean = X[(z_scores < 3).all(axis=1)]
+```
+
+---
+
+### Model Deployment & MLOps (15 Questions)
+
+**Q51: How to deploy ML model to production?**
+Options:
+1. REST API (Flask/FastAPI)
+2. Batch predictions (scheduled jobs)
+3. Cloud services (SageMaker, Vertex AI)
+4. Edge deployment (mobile, IoT)
+
+**Q52: Create Flask API for model?**
+```python
+from flask import Flask, request, jsonify
+import joblib
+
+app = Flask(__name__)
+model = joblib.load('model.pkl')
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.json
+    prediction = model.predict([data['features']])
+    return jsonify({'prediction': prediction[0]})
+
+if __name__ == '__main__':
+    app.run()
+```
+
+**Q53: What is model monitoring?**
+Tracking model performance in production
+Monitor:
+- Prediction distribution
+- Feature distribution (drift)
+- Performance metrics
+- Latency, errors
+- Business metrics
+
+**Q54: What is data drift?**
+When input data distribution changes over time
+Example: COVID changed shopping patterns
+Detection: Statistical tests, model performance decline
+Solution: Retrain with new data
+
+**Q55: What is concept drift?**
+Relationship between features and target changes
+Example: New fraud patterns emerge
+Detection: Performance degradation
+Solution: Regular retraining
+
+**Q56: A/B testing for models?**
+Compare new model vs current in production
+Process:
+1. Split traffic (e.g., 95% old, 5% new)
+2. Measure metrics (accuracy, latency, business KPIs)
+3. Statistical significance test
+4. Gradual rollout if better
+
+**Q57: Model versioning?**
+Track different model versions
+Tools: MLflow, DVC, Git LFS
+Track: Code, data version, hyperparameters, metrics
+Why: Reproducibility, rollback capability, experimentation
+
+**Q58: What is MLflow?**
+Open-source MLOps platform
+Features:
+- Experiment tracking
+- Model registry
+- Model deployment
+- Project packaging
+
+**Q59: CI/CD for ML?**
+Automated testing and deployment
+Tests:
+- Unit tests (functions)
+- Integration tests (pipeline)
+- Model tests (performance thresholds)
+- Data validation
+Tools: Jenkins, GitHub Actions, GitLab CI
+
+**Q60: Containerize ML model?**
+```dockerfile
+FROM python:3.9-slim
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY model.pkl app.py .
+CMD ["python", "app.py"]
+```
+
+**Q61: Model explainability?**
+Understanding model predictions
+Methods:
+- SHAP: Feature contribution per prediction
+- LIME: Local interpretable explanations
+- Feature importance: Global explanations
+- Partial dependence plots
+
+**Q62: Online vs offline learning?**
+Offline: Batch training on historical data (most common)
+Online: Incremental learning from streaming data
+Use online for: High-velocity data, concept drift
+
+**Q63: Model retraining strategy?**
+- Time-based: Weekly, monthly
+- Performance-based: When metrics degrade
+- Data-based: When significant new data available
+- Hybrid: Combine triggers
+
+**Q64: Feature store?**
+Centralized repository for features
+Benefits:
+- Feature reuse across models
+- Consistency train/serve
+- Faster experimentation
+- Feature versioning
+Tools: Feast, Tecton, AWS Feature Store
+
+**Q65: Batch vs real-time prediction?**
+Batch: Pre-compute predictions (daily recommendations)
+Real-time: On-demand predictions (fraud detection)
+Choose based on: Latency requirements, volume, cost
+
+---
+
+### Business & Scenarios (15 Questions)
+
+**Q66: How would you approach a new ML problem?**
+1. Understand business problem and success metrics
+2. Explore and understand data
+3. Define ML problem (classification, regression, etc.)
+4. Establish baseline
+5. Feature engineering
+6. Model selection and training
+7. Evaluation and iteration
+8. Deployment and monitoring
+
+**Q67: Model performance degrading - what to do?**
+1. Check for data drift
+2. Verify data pipeline integrity
+3. Review recent changes
+4. Analyze error cases
+5. Retrain if needed
+6. Monitor closely
+
+**Q68: Explain model to non-technical stakeholder.**
+- Avoid jargon
+- Use analogies
+- Focus on business impact
+- Show visualizations
+- Provide confidence metrics
+- Discuss limitations
+
+**Q69: How to measure model business impact?**
+Connect to business metrics:
+- Revenue increase
+- Cost reduction
+- Customer satisfaction
+- Time saved
+- Risk reduced
+A/B test in production to measure true impact
+
+**Q70: Handle missing labels in semi-supervised learning?**
+- Pseudo-labeling: Model labels unlabeled data
+- Self-training: Iteratively add confident predictions
+- Co-training: Multiple views of data
+- Active learning: Selectively label most informative
+
+**Q71: Model says 90% accuracy - is it good?**
+Depends on:
+- Baseline (random, simple model)
+- Class balance (90% accuracy with 90% majority class = useless)
+- Business cost of errors
+- Comparison to alternatives
+- Domain standards
+
+**Q72: Choose between multiple models?**
+Consider:
+- Performance metrics (on validation set)
+- Inference latency
+- Training time and cost
+- Interpretability needs
+- Maintenance complexity
+- Stakeholder requirements
+
+**Q73: Prevent overfitting in practice?**
+- Use cross-validation
+- More training data
+- Regularization
+- Simpler model
+- Feature selection
+- Early stopping
+- Ensemble methods
+
+**Q74: When to use deep learning vs traditional ML?**
+Deep Learning: Large data, complex patterns, images/text/audio, computation available
+Traditional ML: Small data, interpretability needed, tabular data, limited resources
+
+**Q75: Handling class imbalance in business scenario?**
+Example: Fraud (0.1% fraud)
+- Don't use accuracy
+- Use precision/recall, F1
+- Class weights or SMOTE
+- Consider business cost (missing fraud vs false alarms)
+- Maybe predict probability and set threshold
+
+**Q76: Feature engineering for time-series?**
+- Lag features (previous values)
+- Rolling statistics (7-day average)
+- Time features (hour, day_of_week, month)
+- Seasonality indicators
+- Rate of change
+- Domain-specific features
+
+**Q77: Cold start problem in recommendations?**
+New users/items with no history
+Solutions:
+- Content-based features
+- Use demographics
+- Popular items as default
+- Hybrid approach
+- Active learning (ask preferences)
+
+**Q78: Ethical considerations in ML?**
+- Bias in training data
+- Fairness across groups
+- Privacy and data protection
+- Transparency and explainability
+- Accountability for decisions
+- Unintended consequences
+
+**Q79: What makes a good feature?**
+- Correlation with target
+- Low correlation with other features
+- Available at prediction time
+- Stable over time
+- Interpretable
+- Computationally feasible
+
+**Q80: Debugging poor model performance?**
+1. Check data quality and labels
+2. Verify preprocessing
+3. Analyze error cases
+4. Try simpler model (can it learn?)
+5. More data or better features?
+6. Hyperparameter tuning
+7. Ensemble methods
+
+---
+
+## 🎤 INTERVIEW TIPS FOR DATA SCIENTISTS
+
+### Technical Round Prep:
+- Practice coding ML algorithms from scratch
+- Understand math behind models
+- Be ready for live coding
+- Explain trade-offs clearly
+- Know when to use each algorithm
+
+### Take-Home Projects:
+- Read requirements carefully
+- Show complete workflow
+- Document assumptions
+- Provide clean, readable code
+- Include visualizations
+- Explain business impact
+
+### Behavioral Round:
+- STAR method for stories
+- Prepare examples of:
+  - Complex project you built
+  - Dealing with ambiguity
+  - Model failure and learning
+  - Stakeholder communication
+  - Team collaboration
+
+### Questions to Ask:
+- What ML problems is the team solving?
+- What's the data infrastructure?
+- How are models deployed?
+- What tools and frameworks used?
+- How is success measured?
+- Opportunities for growth?
+
+---
+
+## 💡 LINKEDIN FOR DATA SCIENTISTS
+
+### Headline:
+"Data Scientist | ML, Python, Deep Learning | Building Predictive Models"
+
+### Skills to Highlight:
+1. Machine Learning
+2. Python
+3. Deep Learning
+4. TensorFlow / PyTorch
+5. Scikit-learn
+6. Statistical Modeling
+7. Feature Engineering
+8. Model Deployment
+9. Data Analysis
+10. SQL
+
+---
+
+**Complete career prep for Data Scientist roles!**
+
+Practice these questions, build strong ML portfolio, and ace your interviews.
+
+**Good luck! 🚀**
+"""
+            pdf = create_unit_pdf(0, "Career Prep - Data Scientist", career_prep_md)
+            st.download_button(
+                label="Download Career Prep Package PDF",
+                data=pdf,
+                file_name="Career_Prep_Package_Data_Scientist.pdf",
+                mime="application/pdf",
+                key="dsp2_career_prep_pdf_dl",
+            )
+
     # My Progress
     with tabs[6]:
         st.subheader("📊 My Progress")

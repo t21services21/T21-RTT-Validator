@@ -1719,6 +1719,119 @@ work**. They are guidance, not formal assessment criteria.
                     key="dsp3_checklists_pdf_dl",
                 )
 
+        st.markdown("---")
+        st.markdown("### 💼 Career Preparation Package")
+        st.success(
+            "**NEW!** Advanced ML & MLOps career toolkit - Resume, interview Q&A, "
+            "deployment questions, and career strategies for senior DS roles!"
+        )
+        
+        if st.button("📥 Career Prep - Senior Data Scientist", key="dsp3_career_prep_pdf"):
+            # Reusing comprehensive DS career prep (same role, advanced level)
+            career_prep_md = """# Career Prep Package - Senior Data Scientist / ML Engineer
+
+**Advanced toolkit for senior Data Science and MLOps roles**
+
+This package includes all the Data Scientist interview content PLUS advanced
+MLOps, production ML, and system design questions relevant to Pathway 3 topics.
+
+See Data Scientist Career Prep Package (Pathway 2) for:
+- Complete ML interview questions (80 questions)
+- Resume templates
+- Python/Scikit-learn coding questions
+- Model deployment basics
+
+**ADDITIONAL CONTENT FOR ADVANCED/SENIOR ROLES:**
+
+---
+
+## 💼 SENIOR-LEVEL FOCUS AREAS
+
+### MLOps & Production ML
+- Model monitoring and drift detection
+- Feature stores and serving infrastructure
+- A/B testing frameworks
+- Model versioning and registry
+- CI/CD for ML pipelines
+- Container orchestration (Kubernetes)
+
+### System Design for ML
+- Designing scalable ML systems
+- Real-time vs batch prediction architecture
+- Handling high-throughput serving
+- Multi-model serving strategies
+- Cost optimization in production
+
+### Advanced Topics
+- Deep learning architecture decisions
+- Transfer learning strategies
+- Model compression and optimization
+- Explainability in production
+- Fairness and bias mitigation
+- Privacy-preserving ML
+
+---
+
+## 🎤 SENIOR DATA SCIENTIST INTERVIEW FOCUS
+
+### System Design Questions:
+1. Design a recommendation system for 1M users
+2. Build real-time fraud detection system
+3. Design ML platform for 100 data scientists
+4. Implement A/B testing framework
+5. Design model monitoring infrastructure
+
+### Leadership & Strategy:
+- Managing ML projects and teams
+- Communicating with executives
+- Balancing research vs production
+- Setting ML strategy
+- Evaluating build vs buy decisions
+
+### Trade-off Discussions:
+- Model complexity vs interpretability
+- Accuracy vs latency
+- Development speed vs robustness
+- Cost vs performance
+- Custom vs off-the-shelf solutions
+
+---
+
+## 💡 SENIOR ROLE POSITIONING
+
+### Resume Highlights for Senior Roles:
+- Focus on impact and scale (millions of users, $X saved)
+- Show leadership (mentoring, strategy, architecture)
+- Production experience emphasized
+- Business outcomes, not just model metrics
+- End-to-end ownership of systems
+
+### LinkedIn for Senior Roles:
+"Senior Data Scientist | ML Engineering | Production ML Systems at Scale"
+"ML Lead | MLOps | Building AI Products | Team Leadership"
+
+### Salary Expectations:
+- Mid-level Data Scientist: £50K-£80K
+- Senior Data Scientist: £80K-£120K+
+- Principal/Staff: £120K-£180K+
+- ML Engineering Manager: £100K-£150K+
+
+---
+
+**For complete interview prep, refer to Data Scientist Career Prep Package,
+plus focus on the advanced topics above for senior/lead positions.**
+
+**Good luck advancing your ML career! 🚀**
+"""
+            pdf = create_unit_pdf(0, "Career Prep - Senior DS/MLOps", career_prep_md)
+            st.download_button(
+                label="Download Career Prep Package PDF",
+                data=pdf,
+                file_name="Career_Prep_Package_Senior_DS_MLOps.pdf",
+                mime="application/pdf",
+                key="dsp3_career_prep_pdf_dl",
+            )
+
     # My Progress
     with tabs[6]:
         st.subheader("📊 My Progress")
