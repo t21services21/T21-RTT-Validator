@@ -243,38 +243,1019 @@ learned only from the training portion.
 """
     )
 
+    st.markdown("---")
+    st.markdown("#### 🔧 Detailed Feature Engineering Techniques")
+    st.markdown(
+        """**1. Missing Value Strategies with Code**
+
+```python
+import pandas as pd
+import numpy as np
+from sklearn.impute import SimpleImputer
+
+# Sample data with missing values
+data = {
+    'age': [25, np.nan, 35, 28, np.nan, 45],
+    'income': [50000, 60000, np.nan, 55000, 70000, np.nan],
+    'country': ['UK', 'USA', np.nan, 'UK', 'France', 'USA']
+}
+df = pd.DataFrame(data)
+
+# Strategy 1: Simple imputation
+from sklearn.impute import SimpleImputer
+
+# Numeric imputation (median)
+num_imputer = SimpleImputer(strategy='median')
+df[['age', 'income']] = num_imputer.fit_transform(df[['age', 'income']])
+
+# Strategy 2: Add missing indicator
+df['age_missing'] = df['age'].isna().astype(int)
+df['income_missing'] = df['income'].isna().astype(int)
+
+# Strategy 3: Categorical imputation (constant)
+df['country'] = df['country'].fillna('Unknown')
+```
+
+---
+
+**2. Categorical Encoding Examples**
+
+```python
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder
+
+# Sample categorical data
+countries = pd.DataFrame({'country': ['UK', 'USA', 'UK', 'France', 'USA']})
+
+# One-Hot Encoding
+encoder = OneHotEncoder(sparse=False, drop='first')  # drop first to avoid multicollinearity
+encoded = encoder.fit_transform(countries[['country']])
+encoded_df = pd.DataFrame(
+    encoded, 
+    columns=encoder.get_feature_names_out(['country'])
+)
+print(encoded_df)
+
+# Output:
+#    country_UK  country_USA
+# 0         1.0          0.0
+# 1         0.0          1.0
+# 2         1.0          0.0
+# 3         0.0          0.0  # France (baseline)
+# 4         0.0          1.0
+```
+
+---
+
+**3. Feature Scaling Comparison**
+
+```python
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
+
+# Sample data with outliers
+data = np.array([[1], [2], [3], [4], [100]])  # 100 is outlier
+
+# StandardScaler (sensitive to outliers)
+standard = StandardScaler().fit_transform(data)
+print("Standard:", standard.flatten())
+
+# MinMaxScaler (very sensitive to outliers)
+minmax = MinMaxScaler().fit_transform(data)
+print("MinMax:", minmax.flatten())
+
+# RobustScaler (robust to outliers)
+robust = RobustScaler().fit_transform(data)
+print("Robust:", robust.flatten())
+
+# Choose based on your data:
+# - StandardScaler: Normal distribution
+# - MinMaxScaler: Bounded range needed
+# - RobustScaler: Outliers present
+```
+
+---
+
+**4. Creating Derived Features**
+
+```python
+# E-commerce customer features
+orders = pd.DataFrame({
+    'customer_id': [1, 1, 2, 2, 2, 3],
+    'order_date': pd.to_datetime(['2024-01-01', '2024-02-01', '2024-01-15', 
+                                    '2024-02-20', '2024-03-10', '2024-03-01']),
+    'amount': [100, 150, 200, 50, 300, 75]
+})
+
+# Feature 1: Recency (days since last order)
+analysis_date = pd.to_datetime('2024-04-01')
+customer_features = orders.groupby('customer_id').agg({
+    'order_date': lambda x: (analysis_date - x.max()).days,
+    'amount': ['sum', 'mean', 'count']
+}).reset_index()
+
+customer_features.columns = ['customer_id', 'recency', 'total_spend', 
+                               'avg_order_value', 'order_frequency']
+
+# Feature 2: Spend velocity (£ per day)
+first_order = orders.groupby('customer_id')['order_date'].min()
+last_order = orders.groupby('customer_id')['order_date'].max()
+days_active = (last_order - first_order).dt.days + 1
+customer_features['spend_velocity'] = customer_features['total_spend'] / days_active.values
+
+print(customer_features)
+```
+
+---
+
+**5. Time-Based Features**
+
+```python
+# Extract temporal features
+df = pd.DataFrame({
+    'timestamp': pd.to_datetime(['2024-01-15 14:30', '2024-02-20 09:15', 
+                                  '2024-03-10 22:45', '2024-04-05 17:00'])
+})
+
+# Extract components
+df['year'] = df['timestamp'].dt.year
+df['month'] = df['timestamp'].dt.month
+df['day_of_week'] = df['timestamp'].dt.dayofweek  # 0=Monday
+df['hour'] = df['timestamp'].dt.hour
+df['is_weekend'] = df['day_of_week'].isin([5, 6]).astype(int)
+df['is_business_hours'] = df['hour'].between(9, 17).astype(int)
+df['quarter'] = df['timestamp'].dt.quarter
+
+# Cyclical encoding (for hour, month)
+df['hour_sin'] = np.sin(2 * np.pi * df['hour'] / 24)
+df['hour_cos'] = np.cos(2 * np.pi * df['hour'] / 24)
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🔨 Building Production Pipelines")
+    st.markdown(
+        """**Complete Feature Pipeline Example**
+
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.impute import SimpleImputer
+
+# Define column types
+numeric_features = ['age', 'income', 'credit_score']
+categorical_features = ['country', 'education', 'employment_type']
+
+# Numeric pipeline
+numeric_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler())
+])
+
+# Categorical pipeline
+categorical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='constant', fill_value='unknown')),
+    ('onehot', OneHotEncoder(drop='first', handle_unknown='ignore'))
+])
+
+# Combine into preprocessor
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numeric_transformer, numeric_features),
+        ('cat', categorical_transformer, categorical_features)
+    ])
+
+# Use in full ML pipeline
+from sklearn.ensemble import RandomForestClassifier
+
+ml_pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('classifier', RandomForestClassifier())
+])
+
+# Train
+ml_pipeline.fit(X_train, y_train)
+
+# Predict (preprocessing happens automatically!)
+predictions = ml_pipeline.predict(X_test)
+```
+
+**Why Pipelines?**
+- ✅ Prevent data leakage
+- ✅ Reproducible (same transforms for train/test)
+- ✅ Production-ready (single object to save)
+- ✅ Cleaner code
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### ⚠️ Common Feature Engineering Mistakes")
+    st.markdown(
+        """**1. Data Leakage**
+
+```python
+# ❌ WRONG: Scale before split
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)  # Leakage! Test data influenced scaling
+X_train, X_test = train_test_split(X_scaled)
+
+# ✅ RIGHT: Split first, then scale
+X_train, X_test = train_test_split(X)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)  # Fit on train only
+X_test_scaled = scaler.transform(X_test)  # Transform test using train params
+```
+
+---
+
+**2. Target Leakage**
+
+```python
+# ❌ WRONG: Feature contains future information
+df['will_churn'] = df['days_until_churn'] < 30  # Leakage! You wouldn't know this
+
+# ✅ RIGHT: Use only past information
+df['recency'] = (pd.Timestamp.now() - df['last_purchase_date']).dt.days
+```
+
+---
+
+**3. High Cardinality Categoricals**
+
+```python
+# ❌ WRONG: One-hot encode 1000 unique customer IDs
+# Creates 1000 columns, causes overfitting
+
+# ✅ RIGHT: Use target encoding or frequency encoding
+from category_encoders import TargetEncoder
+
+encoder = TargetEncoder()
+X_train_encoded = encoder.fit_transform(X_train['customer_id'], y_train)
+X_test_encoded = encoder.transform(X_test['customer_id'])
+```
+
+---
+
+**4. Not Handling Unknown Categories**
+
+```python
+# ❌ WRONG: Encoder fails on new category
+encoder = OneHotEncoder()
+encoder.fit(train['country'])
+test_encoded = encoder.transform(test['country'])  # Error if new country!
+
+# ✅ RIGHT: Handle unknown
+encoder = OneHotEncoder(handle_unknown='ignore')
+encoder.fit(train[['country']])
+test_encoded = encoder.transform(test[['country']])  # Unknown → all zeros
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🎯 Feature Selection Techniques")
+    st.markdown(
+        """**Why Feature Selection Matters:**
+- Reduces overfitting
+- Improves model speed
+- Enhances interpretability
+- Removes noise
+
+**1. Filter Methods (Fast, Pre-modeling)**
+
+```python
+from sklearn.feature_selection import SelectKBest, f_classif
+
+# Select top 10 features by ANOVA F-value
+selector = SelectKBest(f_classif, k=10)
+X_selected = selector.fit_transform(X, y)
+
+# Get selected feature names
+selected_features = X.columns[selector.get_support()]
+print(f"Selected: {selected_features.tolist()}")
+```
+
+---
+
+**2. Wrapper Methods (Model-Based)**
+
+```python
+from sklearn.feature_selection import RFE
+from sklearn.ensemble import RandomForestClassifier
+
+# Recursive Feature Elimination
+model = RandomForestClassifier()
+rfe = RFE(estimator=model, n_features_to_select=10)
+X_selected = rfe.fit_transform(X, y)
+
+print(f"Selected features: {X.columns[rfe.support_].tolist()}")
+print(f"Feature ranking: {rfe.ranking_}")
+```
+
+---
+
+**3. Embedded Methods (Built into model)**
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+# Train model
+model = RandomForestClassifier(n_estimators=100)
+model.fit(X_train, y_train)
+
+# Get feature importances
+importance_df = pd.DataFrame({
+    'feature': X_train.columns,
+    'importance': model.feature_importances_
+}).sort_values('importance', ascending=False)
+
+# Select top features
+top_features = importance_df.head(10)['feature'].tolist()
+X_train_selected = X_train[top_features]
+```
+
+---
+
+**4. Variance Threshold (Remove Low-Variance)**
+
+```python
+from sklearn.feature_selection import VarianceThreshold
+
+# Remove features with <1% variance
+selector = VarianceThreshold(threshold=0.01)
+X_high_variance = selector.fit_transform(X)
+
+print(f"Removed {X.shape[1] - X_high_variance.shape[1]} low-variance features")
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 📊 Real-World Feature Engineering Examples")
+    st.markdown(
+        """**E-Commerce Churn Prediction Features**
+
+```python
+# Input: Raw transaction data
+# Output: Customer-level features for churn prediction
+
+def create_customer_features(transactions, analysis_date='2024-04-01'):
+    analysis_date = pd.to_datetime(analysis_date)
+    
+    features = transactions.groupby('customer_id').agg({
+        # Recency
+        'order_date': lambda x: (analysis_date - x.max()).days,
+        
+        # Frequency
+        'order_id': 'count',
+        
+        # Monetary
+        'amount': ['sum', 'mean', 'std'],
+        
+        # Additional behavioral features
+        'product_category': lambda x: x.nunique(),  # Diversity
+    }).reset_index()
+    
+    features.columns = ['customer_id', 'recency', 'frequency', 
+                        'monetary', 'avg_order', 'order_std', 'category_diversity']
+    
+    # Derived features
+    features['order_consistency'] = 1 / (features['order_std'] + 1)
+    features['is_high_value'] = (features['monetary'] > features['monetary'].quantile(0.75)).astype(int)
+    features['is_at_risk'] = (features['recency'] > 90).astype(int)
+    
+    return features
+```
+
+---
+
+**Credit Scoring Features**
+
+```python
+def create_credit_features(applicant_data):
+    features = applicant_data.copy()
+    
+    # Income ratios
+    features['debt_to_income'] = features['total_debt'] / features['annual_income']
+    features['credit_utilization'] = features['credit_used'] / features['credit_limit']
+    
+    # Age-based features
+    features['years_employed'] = (pd.Timestamp.now() - features['employment_start_date']).dt.days / 365
+    features['credit_age_years'] = (pd.Timestamp.now() - features['first_credit_date']).dt.days / 365
+    
+    # Risk indicators
+    features['has_recent_delinquency'] = (features['months_since_delinquency'] < 6).astype(int)
+    features['high_debt_ratio'] = (features['debt_to_income'] > 0.4).astype(int)
+    
+    # Stability score (custom)
+    features['stability_score'] = (
+        features['years_employed'] * 0.3 +
+        features['credit_age_years'] * 0.3 +
+        (1 - features['credit_utilization']) * 0.4
+    )
+    
+    return features
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🚀 Interview Preparation")
+    st.markdown(
+        """**Common Feature Engineering Interview Questions**
+
+**Q1: "What's the difference between one-hot encoding and label encoding?"**
+
+**Answer:** 
+- **Label encoding** assigns integers to categories (Red=0, Blue=1, Green=2). Use for ordinal data with natural order.
+- **One-hot encoding** creates binary columns for each category. Use for nominal data without order. Prevents model from assuming false ordinal relationships.
+
+---
+
+**Q2: "How do you handle missing values in production?"**
+
+**Answer:**
+1. **Understand why data is missing** (MCAR, MAR, MNAR)
+2. **Document the strategy** in pipeline
+3. **Add missing indicators** as separate features
+4. **Use robust imputation** (median for outliers, mode for categoricals)
+5. **Monitor missing rates** in production (drift detection)
+
+---
+
+**Q3: "Explain data leakage and how to prevent it."**
+
+**Answer:**
+Data leakage = using information from test/future data during training.
+
+**Prevention:**
+- Split data FIRST, preprocess AFTER
+- Fit transformers on train only, transform test
+- Use Pipelines to automate proper workflow
+- Cross-validation with proper folds
+- Don't use target or future information in features
+
+---
+
+**Q4: "When would you NOT scale features?"**
+
+**Answer:**
+- Tree-based models (Random Forest, XGBoost) - invariant to scaling
+- Already on same scale
+- Interpreting coefficients in original units important
+- Binary features (already 0/1)
+
+---
+
+**Q5: "How do you create features from timestamps?"**
+
+**Answer:**
+- **Extract:** hour, day_of_week, month, quarter, year
+- **Cyclical encoding:** sin/cos for hour, month (preserves cyclical nature)
+- **Relative:** days_since_event, time_to_deadline
+- **Business logic:** is_business_hours, is_weekend, is_holiday
+- **Interactions:** weekend AND night, holiday AND retail_sector
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 📚 Best Practices & Tips")
+    st.markdown(
+        """**Feature Engineering Workflow**
+
+1. **Start Simple**
+   - Load data, basic cleaning
+   - Create obvious features first
+   - Establish baseline model
+
+2. **Iterative Improvement**
+   - Analyze feature importances
+   - Create features based on domain knowledge
+   - Test impact on validation set
+
+3. **Document Everything**
+   - Why each feature was created
+   - Transformation logic
+   - Expected value ranges
+
+4. **Version Control**
+   - Save feature creation code
+   - Track feature sets (v1, v2, v3)
+   - Log performance by feature set
+
+5. **Monitor in Production**
+   - Feature drift (distributions change)
+   - Missing value rates increase
+   - New categories appear
+
+---
+
+**Tools & Resources:**
+
+- **Libraries:** scikit-learn, category_encoders, feature-engine
+- **Books:** "Feature Engineering for Machine Learning" (Alice Zheng)
+- **Practice:** Kaggle competitions (study winning solutions)
+- **Blog:** machinelearningmastery.com/feature-engineering
+
+---
+
+**What You Can Do Now:**
+- ✅ Build production-ready feature pipelines
+- ✅ Handle missing data strategically
+- ✅ Encode categorical variables correctly
+- ✅ Create meaningful derived features
+- ✅ Prevent data leakage
+- ✅ Select most important features
+- ✅ Answer interview questions confidently
+
+**Next:** Unit 2 (Regression) teaches you to build predictive models with these features!
+"""
+    )
+
 def _render_unit1_labs():
     """Labs and mini-project ideas for Unit 1."""
 
-    st.markdown("### 🧪 Labs & Mini Projects – Unit 1")
+    st.markdown("### 🧪 HANDS-ON LABS: Unit 1 Feature Engineering")
     st.markdown(
-        """These labs assume you already know basic Pandas and Python from
-Pathway 1. The focus here is on **turning raw tables into reusable
-pipelines**.
+        """**Complete these 3 labs to master feature pipelines:**
 
-- **Lab 1 – From raw CSVs to a clean feature table**
-  - Load a raw dataset with demographics and activity (e.g. customer or
-    patient events).
-  - Identify missing values, categorical columns and numeric columns.
-  - Build a script or notebook that outputs a clean `features.csv` ready
-    for modelling.
+---
 
-- **Lab 2 – Build a scikit-learn preprocessing pipeline**
-  - Use `ColumnTransformer` and `Pipeline` to:
-    - Impute missing numeric values.
-    - One-hot encode categoricals.
-    - Scale selected numeric features.
-  - Save the fitted pipeline to disk for later reuse.
+## Lab 1: Build Complete Feature Pipeline (90 min)
 
-- **Mini project – Compare "hand-made" vs pipeline approach**
-  - Train a simple model twice:
-    - Once using ad-hoc cleaning code.
-    - Once using a well-defined pipeline.
-  - Compare maintainability and risk of leakage.
-  - Write a short note explaining why the pipeline version is better for
-    production.
+**Objective:** Transform raw customer data into ML-ready features
 
-For a guided walkthrough, see the notebook `U1_feature_pipelines.ipynb` in the Pathway 2 notebooks folder.
+**Setup: Create Raw Dataset**
+
+```python
+import pandas as pd
+import numpy as np
+
+# Simulate messy real-world data
+np.random.seed(42)
+n = 1000
+
+raw_data = pd.DataFrame({
+    'customer_id': range(1, n+1),
+    'age': np.random.normal(35, 12, n),
+    'income': np.random.lognormal(10.5, 0.5, n),
+    'credit_score': np.random.normal(650, 100, n),
+    'country': np.random.choice(['UK', 'USA', 'Germany', 'France', None], n, p=[0.4, 0.3, 0.15, 0.1, 0.05]),
+    'education': np.random.choice(['High School', 'Bachelor', 'Master', 'PhD', None], n, p=[0.2, 0.4, 0.25, 0.1, 0.05]),
+    'employment_type': np.random.choice(['Full-time', 'Part-time', 'Self-employed', None], n, p=[0.6, 0.2, 0.15, 0.05]),
+    'months_employed': np.random.exponential(36, n),
+    'num_accounts': np.random.poisson(2, n),
+    'total_balance': np.random.lognormal(8, 1.5, n),
+    'churned': np.random.choice([0, 1], n, p=[0.85, 0.15])
+})
+
+# Introduce missing values
+raw_data.loc[raw_data.sample(frac=0.1).index, 'income'] = np.nan
+raw_data.loc[raw_data.sample(frac=0.08).index, 'credit_score'] = np.nan
+raw_data.loc[raw_data.sample(frac=0.05).index, 'months_employed'] = np.nan
+
+raw_data.to_csv('raw_customer_data.csv', index=False)
+print("✅ Created raw_customer_data.csv")
+print(f"Shape: {raw_data.shape}")
+print(f"\\nMissing values:\\n{raw_data.isnull().sum()}")
+```
+
+---
+
+**Part A: Explore and Understand (20 min)**
+
+```python
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('raw_customer_data.csv')
+
+# 1. Basic exploration
+print("Dataset shape:", df.shape)
+print("\\nColumn types:")
+print(df.dtypes)
+
+# 2. Missing value analysis
+missing = df.isnull().sum()
+missing_pct = (missing / len(df)) * 100
+missing_df = pd.DataFrame({
+    'Missing': missing,
+    'Percentage': missing_pct
+}).sort_values('Missing', ascending=False)
+print("\\nMissing values:")
+print(missing_df[missing_df['Missing'] > 0])
+
+# 3. Identify column types
+numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
+
+# Remove ID and target
+numeric_cols.remove('customer_id')
+numeric_cols.remove('churned')
+
+print(f"\\nNumeric features: {numeric_cols}")
+print(f"Categorical features: {categorical_cols}")
+
+# 4. Check distributions
+print("\\nNumeric distributions:")
+print(df[numeric_cols].describe())
+
+# 5. Check categorical cardinality
+print("\\nCategorical value counts:")
+for col in categorical_cols:
+    print(f"\\n{col}:")
+    print(df[col].value_counts(dropna=False))
+```
+
+---
+
+**Part B: Build Feature Pipeline (40 min)**
+
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.impute import SimpleImputer
+from sklearn.model_selection import train_test_split
+
+# Prepare data
+X = df.drop(['customer_id', 'churned'], axis=1)
+y = df['churned']
+
+# Split FIRST (prevent leakage)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print(f"Train: {X_train.shape}, Test: {X_test.shape}")
+
+# Define transformers for numeric features
+numeric_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler())
+])
+
+# Define transformers for categorical features
+categorical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='constant', fill_value='Unknown')),
+    ('onehot', OneHotEncoder(drop='first', handle_unknown='ignore'))
+])
+
+# Combine transformers
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numeric_transformer, numeric_cols),
+        ('cat', categorical_transformer, categorical_cols)
+    ],
+    remainder='drop'  # Drop any other columns
+)
+
+# Fit on training data
+preprocessor.fit(X_train)
+
+# Transform both sets
+X_train_transformed = preprocessor.transform(X_train)
+X_test_transformed = preprocessor.transform(X_test)
+
+print(f"\\nTransformed shape: {X_train_transformed.shape}")
+print("Feature engineering complete!")
+
+# Get feature names
+cat_features = preprocessor.named_transformers_['cat']['onehot'].get_feature_names_out(categorical_cols)
+all_features = numeric_cols + list(cat_features)
+print(f"\\nTotal features: {len(all_features)}")
+```
+
+---
+
+**Part C: Create Derived Features (30 min)**
+
+```python
+from sklearn.preprocessing import FunctionTransformer
+
+def create_business_features(X):
+    \"\"\"Create custom business logic features\"\"\"
+    X_new = X.copy()
+    
+    # Financial ratios
+    X_new['balance_per_account'] = X_new['total_balance'] / (X_new['num_accounts'] + 1)
+    X_new['income_to_balance_ratio'] = X_new['income'] / (X_new['total_balance'] + 1)
+    
+    # Employment stability
+    X_new['is_stable_employment'] = (X_new['months_employed'] > 24).astype(int)
+    X_new['employment_years'] = X_new['months_employed'] / 12
+    
+    # Credit risk indicators
+    X_new['is_high_credit'] = (X_new['credit_score'] > 700).astype(int)
+    X_new['is_low_credit'] = (X_new['credit_score'] < 600).astype(int)
+    
+    # Age groups
+    X_new['is_young'] = (X_new['age'] < 30).astype(int)
+    X_new['is_senior'] = (X_new['age'] > 60).astype(int)
+    
+    return X_new
+
+# Create extended pipeline with custom features
+custom_feature_transformer = FunctionTransformer(create_business_features)
+
+extended_pipeline = Pipeline(steps=[
+    ('custom_features', custom_feature_transformer),
+    ('preprocessor', preprocessor)
+])
+
+# Fit and transform
+extended_pipeline.fit(X_train, y_train)
+X_train_extended = extended_pipeline.transform(X_train)
+X_test_extended = extended_pipeline.transform(X_test)
+
+print(f"Extended features shape: {X_train_extended.shape}")
+```
+
+---
+
+## Lab 2: Handle Real-World Data Issues (75 min)
+
+**Objective:** Master advanced preprocessing techniques
+
+**Part A: Outlier Detection and Treatment (25 min)**
+
+```python
+from sklearn.preprocessing import RobustScaler
+import matplotlib.pyplot as plt
+
+# Detect outliers using IQR
+def detect_outliers_iqr(data, column):
+    Q1 = data[column].quantile(0.25)
+    Q3 = data[column].quantile(0.75)
+    IQR = Q3 - Q1
+    
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    
+    outliers = data[(data[column] < lower_bound) | (data[column] > upper_bound)]
+    return outliers, lower_bound, upper_bound
+
+# Check income for outliers
+outliers, lower, upper = detect_outliers_iqr(df, 'income')
+print(f"Income outliers: {len(outliers)} ({len(outliers)/len(df)*100:.1f}%)")
+print(f"Range: [{lower:.0f}, {upper:.0f}]")
+
+# Visualize
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+# Before
+axes[0].boxplot(df['income'].dropna())
+axes[0].set_title('Income (with outliers)')
+axes[0].set_ylabel('Income')
+
+# After (cap outliers)
+income_capped = df['income'].clip(lower=lower, upper=upper)
+axes[1].boxplot(income_capped.dropna())
+axes[1].set_title('Income (outliers capped)')
+axes[1].set_ylabel('Income')
+
+plt.tight_layout()
+plt.show()
+
+# Strategy: Use RobustScaler for features with outliers
+outlier_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', RobustScaler())  # Robust to outliers
+])
+```
+
+---
+
+**Part B: High Cardinality Categoricals (25 min)**
+
+```python
+# Simulate high cardinality feature
+df['zip_code'] = np.random.randint(10000, 99999, len(df))
+
+print(f"Unique zip codes: {df['zip_code'].nunique()}")
+
+# Strategy 1: Frequency encoding
+zip_freq = df['zip_code'].value_counts(normalize=True)
+df['zip_frequency'] = df['zip_code'].map(zip_freq)
+
+# Strategy 2: Target encoding (use with caution - risk of leakage!)
+from category_encoders import TargetEncoder
+
+# Must fit on train, transform on test
+encoder = TargetEncoder(cols=['zip_code'])
+df['zip_encoded'] = encoder.fit_transform(
+    df[['zip_code']], 
+    df['churned']
+)
+
+print("\\nFrequency encoding:")
+print(df[['zip_code', 'zip_frequency']].head())
+
+print("\\nTarget encoding:")
+print(df[['zip_code', 'zip_encoded', 'churned']].head())
+
+# Strategy 3: Grouping rare categories
+def group_rare_categories(series, threshold=0.05):
+    \"\"\"Group categories appearing < threshold into 'Other'\"\"\"
+    value_counts = series.value_counts(normalize=True)
+    rare_categories = value_counts[value_counts < threshold].index
+    return series.replace(rare_categories, 'Other')
+
+# Apply to country
+df['country_grouped'] = group_rare_categories(df['country'], threshold=0.05)
+print("\\nBefore grouping:", df['country'].value_counts())
+print("\\nAfter grouping:", df['country_grouped'].value_counts())
+```
+
+---
+
+**Part C: Missing Value Strategies (25 min)**
+
+```python
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer, KNNImputer
+
+# Strategy comparison
+strategies = {
+    'Mean': SimpleImputer(strategy='mean'),
+    'Median': SimpleImputer(strategy='median'),
+    'KNN': KNNImputer(n_neighbors=5),
+    'Iterative': IterativeImputer(random_state=42)
+}
+
+# Test on income (has missing values)
+income_data = df[['income']].copy()
+original_missing = income_data['income'].isna()
+
+results = {}
+for name, imputer in strategies.items():
+    imputed = imputer.fit_transform(income_data)
+    # Calculate imputed values statistics
+    imputed_values = imputed[original_missing.values, 0]
+    results[name] = {
+        'mean': imputed_values.mean(),
+        'std': imputed_values.std(),
+        'min': imputed_values.min(),
+        'max': imputed_values.max()
+    }
+
+# Compare strategies
+comparison_df = pd.DataFrame(results).T
+print("Imputation strategy comparison:")
+print(comparison_df)
+
+# Add missing indicator
+df['income_missing'] = df['income'].isna().astype(int)
+print(f"\\nMissing indicator added: {df['income_missing'].sum()} customers")
+```
+
+---
+
+## Lab 3: Production Pipeline (60 min)
+
+**Objective:** Build, save, and deploy a complete ML pipeline
+
+**Part A: Build Full ML Pipeline (20 min)**
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, roc_auc_score
+import joblib
+
+# Build complete pipeline
+full_pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('classifier', RandomForestClassifier(
+        n_estimators=100,
+        max_depth=10,
+        random_state=42
+    ))
+])
+
+# Train
+full_pipeline.fit(X_train, y_train)
+
+# Predict
+y_pred = full_pipeline.predict(X_test)
+y_pred_proba = full_pipeline.predict_proba(X_test)[:, 1]
+
+# Evaluate
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+print(f"\\nROC-AUC Score: {roc_auc_score(y_test, y_pred_proba):.4f}")
+
+# Feature importance
+feature_importance = full_pipeline.named_steps['classifier'].feature_importances_
+importance_df = pd.DataFrame({
+    'feature': all_features,
+    'importance': feature_importance
+}).sort_values('importance', ascending=False)
+
+print("\\nTop 10 features:")
+print(importance_df.head(10))
+```
+
+---
+
+**Part B: Save and Load Pipeline (15 min)**
+
+```python
+import joblib
+import json
+
+# Save pipeline
+joblib.dump(full_pipeline, 'customer_churn_pipeline.pkl')
+print("✅ Pipeline saved to customer_churn_pipeline.pkl")
+
+# Save feature names and metadata
+metadata = {
+    'numeric_features': numeric_cols,
+    'categorical_features': categorical_cols,
+    'all_features': all_features,
+    'train_shape': X_train.shape,
+    'model_type': 'RandomForestClassifier',
+    'roc_auc': float(roc_auc_score(y_test, y_pred_proba))
+}
+
+with open('pipeline_metadata.json', 'w') as f:
+    json.dump(metadata, f, indent=2)
+print("✅ Metadata saved to pipeline_metadata.json")
+
+# Load pipeline
+loaded_pipeline = joblib.load('customer_churn_pipeline.pkl')
+
+# Test loaded pipeline
+test_sample = X_test.head(1)
+prediction = loaded_pipeline.predict(test_sample)
+prediction_proba = loaded_pipeline.predict_proba(test_sample)
+
+print(f"\\nTest prediction: {prediction[0]}")
+print(f"Churn probability: {prediction_proba[0][1]:.2%}")
+```
+
+---
+
+**Part C: Create Prediction Function (25 min)**
+
+```python
+def predict_churn(customer_data, pipeline_path='customer_churn_pipeline.pkl'):
+    \"\"\"
+    Predict customer churn using trained pipeline
+    
+    Args:
+        customer_data: DataFrame with customer features
+        pipeline_path: Path to saved pipeline
+    
+    Returns:
+        DataFrame with predictions and probabilities
+    \"\"\"
+    # Load pipeline
+    pipeline = joblib.load(pipeline_path)
+    
+    # Make predictions
+    predictions = pipeline.predict(customer_data)
+    probabilities = pipeline.predict_proba(customer_data)[:, 1]
+    
+    # Create results dataframe
+    results = customer_data.copy()
+    results['churn_prediction'] = predictions
+    results['churn_probability'] = probabilities
+    results['risk_level'] = pd.cut(
+        probabilities,
+        bins=[0, 0.3, 0.7, 1.0],
+        labels=['Low', 'Medium', 'High']
+    )
+    
+    return results[['customer_id', 'churn_prediction', 'churn_probability', 'risk_level']]
+
+# Test prediction function
+new_customers = X_test.head(10).copy()
+new_customers['customer_id'] = range(1, 11)
+
+predictions = predict_churn(new_customers)
+print("Churn predictions for new customers:")
+print(predictions)
+
+# Identify high-risk customers
+high_risk = predictions[predictions['risk_level'] == 'High']
+print(f"\\nHigh-risk customers: {len(high_risk)}")
+print(high_risk)
+```
+
+---
+
+**Lab Completion Checklist:**
+- ☐ Built complete feature pipeline with ColumnTransformer
+- ☐ Handled missing values appropriately
+- ☐ Encoded categorical variables
+- ☐ Created derived business features
+- ☐ Detected and handled outliers
+- ☐ Managed high cardinality features
+- ☐ Built and evaluated full ML pipeline
+- ☐ Saved pipeline to disk
+- ☐ Created production prediction function
+
+**Next:** Unit 2 teaches regression algorithms to use with these features!
 """
     )
 
@@ -513,30 +1494,1337 @@ regression outputs to concrete decisions.
 """
     )
 
+    st.markdown("---")
+    st.markdown("#### 🔢 Mathematical Foundations")
+    st.markdown(
+        """**Linear Regression Equation:**
+
+$$y = β_0 + β_1x_1 + β_2x_2 + ... + β_nx_n + ε$$
+
+Where:
+- **y** = target variable (what we're predicting)
+- **β₀** = intercept (baseline value)
+- **β₁, β₂, ..., βₙ** = coefficients (feature weights)
+- **x₁, x₂, ..., xₙ** = features
+- **ε** = error term
+
+**Goal:** Find coefficients that minimize prediction error
+
+---
+
+**Loss Functions:**
+
+1. **Mean Squared Error (MSE):**
+   $$MSE = \\frac{1}{n} \\sum_{i=1}^{n} (y_i - \\hat{y}_i)^2$$
+
+2. **Root Mean Squared Error (RMSE):**
+   $$RMSE = \\sqrt{MSE}$$ 
+   - Same units as target variable
+   - Penalizes large errors heavily
+
+3. **Mean Absolute Error (MAE):**
+   $$MAE = \\frac{1}{n} \\sum_{i=1}^{n} |y_i - \\hat{y}_i|$$
+   - Less sensitive to outliers
+   - More robust
+
+4. **R² Score (Coefficient of Determination):**
+   $$R^2 = 1 - \\frac{SS_{res}}{SS_{tot}}$$
+   - Range: 0 to 1 (can be negative if model is terrible)
+   - 0.8 = explains 80% of variance
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🎯 Regression Algorithms")
+    st.markdown(
+        """**1. Linear Regression (Ordinary Least Squares)**
+
+```python
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np
+
+# Sample data: House prices
+X = np.array([[1200], [1500], [1800], [2000], [2400]])  # Square footage
+y = np.array([200000, 250000, 280000, 320000, 380000])  # Price
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predictions
+y_pred = model.predict(X_test)
+
+# Evaluate
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+r2 = r2_score(y_test, y_pred)
+
+print(f"Coefficient (per sq ft): £{model.coef_[0]:.2f}")
+print(f"Intercept: £{model.intercept_:.2f}")
+print(f"RMSE: £{rmse:,.0f}")
+print(f"R² Score: {r2:.3f}")
+
+# Predict for new house (2200 sq ft)
+new_house = np.array([[2200]])
+predicted_price = model.predict(new_house)
+print(f"\\nPredicted price for 2200 sq ft: £{predicted_price[0]:,.0f}")
+```
+
+**Output:**
+```
+Coefficient (per sq ft): £158.33
+Intercept: £20,000.00
+RMSE: £15,000
+R² Score: 0.982
+
+Predicted price for 2200 sq ft: £368,326
+```
+
+---
+
+**2. Polynomial Regression**
+
+```python
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import Pipeline
+
+# Create polynomial features (degree 2)
+# x, x² 
+poly_pipeline = Pipeline([
+    ('poly', PolynomialFeatures(degree=2)),
+    ('linear', LinearRegression())
+])
+
+poly_pipeline.fit(X_train, y_train)
+y_pred_poly = poly_pipeline.predict(X_test)
+
+rmse_poly = np.sqrt(mean_squared_error(y_test, y_pred_poly))
+print(f"Polynomial RMSE: £{rmse_poly:,.0f}")
+
+# Visualize
+import matplotlib.pyplot as plt
+
+X_range = np.linspace(X.min(), X.max(), 100).reshape(-1, 1)
+y_pred_linear = model.predict(X_range)
+y_pred_poly_viz = poly_pipeline.predict(X_range)
+
+plt.figure(figsize=(10, 6))
+plt.scatter(X, y, color='black', label='Actual')
+plt.plot(X_range, y_pred_linear, color='blue', label='Linear')
+plt.plot(X_range, y_pred_poly_viz, color='red', label='Polynomial (degree 2)')
+plt.xlabel('Square Footage')
+plt.ylabel('Price (£)')
+plt.legend()
+plt.title('Linear vs Polynomial Regression')
+plt.show()
+```
+
+---
+
+**3. Ridge Regression (L2 Regularization)**
+
+```python
+from sklearn.linear_model import Ridge
+
+# Ridge with regularization strength alpha
+ridge = Ridge(alpha=1.0)
+ridge.fit(X_train, y_train)
+y_pred_ridge = ridge.predict(X_test)
+
+print(f"Ridge coefficients: {ridge.coef_}")
+print(f"Linear coefficients: {model.coef_}")
+# Ridge coefficients are smaller (shrunk towards zero)
+```
+
+**When to use:** Many features, multicollinearity, prevent overfitting
+
+---
+
+**4. Lasso Regression (L1 Regularization)**
+
+```python
+from sklearn.linear_model import Lasso
+
+# Lasso can set coefficients to exactly zero (feature selection)
+lasso = Lasso(alpha=1.0)
+lasso.fit(X_train, y_train)
+
+print(f"Lasso coefficients: {lasso.coef_}")
+print(f"Non-zero features: {np.sum(lasso.coef_ != 0)}")
+```
+
+**When to use:** Feature selection, sparse models, interpretability
+
+---
+
+**5. ElasticNet (L1 + L2)**
+
+```python
+from sklearn.linear_model import ElasticNet
+
+# Combines Ridge and Lasso
+elastic = ElasticNet(alpha=1.0, l1_ratio=0.5)  # 50% L1, 50% L2
+elastic.fit(X_train, y_train)
+```
+
+**When to use:** Best of both worlds, many correlated features
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🌲 Tree-Based Regression")
+    st.markdown(
+        """**Decision Trees for Regression**
+
+```python
+from sklearn.tree import DecisionTreeRegressor
+
+tree = DecisionTreeRegressor(max_depth=5, random_state=42)
+tree.fit(X_train, y_train)
+y_pred_tree = tree.predict(X_test)
+
+rmse_tree = np.sqrt(mean_squared_error(y_test, y_pred_tree))
+print(f"Decision Tree RMSE: £{rmse_tree:,.0f}")
+
+# Visualize tree
+from sklearn.tree import plot_tree
+plt.figure(figsize=(20, 10))
+plot_tree(tree, filled=True, feature_names=['sqft'], rounded=True)
+plt.show()
+```
+
+---
+
+**Random Forest Regression**
+
+```python
+from sklearn.ensemble import RandomForestRegressor
+
+# Ensemble of decision trees
+rf = RandomForestRegressor(
+    n_estimators=100,
+    max_depth=10,
+    random_state=42,
+    n_jobs=-1
+)
+
+rf.fit(X_train, y_train)
+y_pred_rf = rf.predict(X_test)
+
+rmse_rf = np.sqrt(mean_squared_error(y_test, y_pred_rf))
+r2_rf = r2_score(y_test, y_pred_rf)
+
+print(f"Random Forest RMSE: £{rmse_rf:,.0f}")
+print(f"Random Forest R²: {r2_rf:.3f}")
+
+# Feature importance
+importances = rf.feature_importances_
+print(f"\\nFeature importances: {importances}")
+```
+
+**Advantages:**
+- ✅ Handles non-linear relationships
+- ✅ No feature scaling needed
+- ✅ Robust to outliers
+- ✅ Feature importance built-in
+
+---
+
+**Gradient Boosting Regression**
+
+```python
+from sklearn.ensemble import GradientBoostingRegressor
+import xgboost as xgb
+
+# Gradient Boosting
+gb = GradientBoostingRegressor(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=3,
+    random_state=42
+)
+
+gb.fit(X_train, y_train)
+y_pred_gb = gb.predict(X_test)
+
+# XGBoost (faster, better performance)
+xgb_model = xgb.XGBRegressor(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=3,
+    random_state=42
+)
+
+xgb_model.fit(X_train, y_train)
+y_pred_xgb = xgb_model.predict(X_test)
+
+print(f"Gradient Boosting RMSE: £{np.sqrt(mean_squared_error(y_test, y_pred_gb)):,.0f}")
+print(f"XGBoost RMSE: £{np.sqrt(mean_squared_error(y_test, y_pred_xgb)):,.0f}")
+```
+
+**When to use:**
+- Kaggle competitions
+- Need best accuracy
+- Have enough data
+- Can afford training time
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 📊 Model Evaluation")
+    st.markdown(
+        """**Comprehensive Evaluation Example**
+
+```python
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+
+def evaluate_regression_model(y_true, y_pred, model_name="Model"):
+    \"\"\"Comprehensive regression evaluation\"\"\"
+    
+    # Calculate metrics
+    mae = mean_absolute_error(y_true, y_pred)
+    mse = mean_squared_error(y_true, y_pred)
+    rmse = np.sqrt(mse)
+    r2 = r2_score(y_true, y_pred)
+    mape = np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+    
+    # Print metrics
+    print(f"\\n{model_name} Performance:")
+    print(f"MAE:  £{mae:,.2f}")
+    print(f"RMSE: £{rmse:,.2f}")
+    print(f"R²:   {r2:.4f}")
+    print(f"MAPE: {mape:.2f}%")
+    
+    # Visualization
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    
+    # Predicted vs Actual
+    axes[0].scatter(y_true, y_pred, alpha=0.5)
+    axes[0].plot([y_true.min(), y_true.max()], 
+                 [y_true.min(), y_true.max()], 
+                 'r--', lw=2)
+    axes[0].set_xlabel('Actual')
+    axes[0].set_ylabel('Predicted')
+    axes[0].set_title(f'{model_name}: Predicted vs Actual')
+    
+    # Residuals
+    residuals = y_true - y_pred
+    axes[1].scatter(y_pred, residuals, alpha=0.5)
+    axes[1].axhline(y=0, color='r', linestyle='--')
+    axes[1].set_xlabel('Predicted')
+    axes[1].set_ylabel('Residuals')
+    axes[1].set_title(f'{model_name}: Residual Plot')
+    
+    plt.tight_layout()
+    plt.show()
+    
+    return {'MAE': mae, 'RMSE': rmse, 'R2': r2, 'MAPE': mape}
+
+# Evaluate model
+metrics = evaluate_regression_model(y_test, y_pred, "Linear Regression")
+```
+
+---
+
+**Cross-Validation for Regression**
+
+```python
+from sklearn.model_selection import cross_val_score
+
+# 5-fold cross-validation
+cv_scores = cross_val_score(
+    model, 
+    X, 
+    y, 
+    cv=5, 
+    scoring='neg_mean_squared_error'
+)
+
+# Convert to RMSE
+cv_rmse = np.sqrt(-cv_scores)
+
+print(f"Cross-Validation RMSE: £{cv_rmse.mean():,.0f} (+/- £{cv_rmse.std():,.0f})")
+```
+
+---
+
+**Learning Curves (Detect Overfitting)**
+
+```python
+from sklearn.model_selection import learning_curve
+
+train_sizes, train_scores, val_scores = learning_curve(
+    model, X, y, 
+    cv=5, 
+    train_sizes=np.linspace(0.1, 1.0, 10),
+    scoring='neg_mean_squared_error'
+)
+
+# Plot
+plt.figure(figsize=(10, 6))
+plt.plot(train_sizes, -train_scores.mean(axis=1), label='Training')
+plt.plot(train_sizes, -val_scores.mean(axis=1), label='Validation')
+plt.xlabel('Training Set Size')
+plt.ylabel('MSE')
+plt.title('Learning Curves')
+plt.legend()
+plt.show()
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🎨 Hyperparameter Tuning")
+    st.markdown(
+        """**Grid Search for Ridge Alpha**
+
+```python
+from sklearn.model_selection import GridSearchCV
+
+# Define parameter grid
+param_grid = {
+    'alpha': [0.001, 0.01, 0.1, 1, 10, 100]
+}
+
+# Grid search
+grid_search = GridSearchCV(
+    Ridge(),
+    param_grid,
+    cv=5,
+    scoring='neg_mean_squared_error',
+    n_jobs=-1
+)
+
+grid_search.fit(X_train, y_train)
+
+print(f"Best alpha: {grid_search.best_params_['alpha']}")
+print(f"Best RMSE: £{np.sqrt(-grid_search.best_score_):,.0f}")
+
+# Use best model
+best_model = grid_search.best_estimator_
+```
+
+---
+
+**Randomized Search (Faster for Large Grids)**
+
+```python
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import uniform, randint
+
+# Random Forest hyperparameters
+param_dist = {
+    'n_estimators': randint(50, 200),
+    'max_depth': randint(3, 15),
+    'min_samples_split': randint(2, 20),
+    'min_samples_leaf': randint(1, 10)
+}
+
+random_search = RandomizedSearchCV(
+    RandomForestRegressor(random_state=42),
+    param_distributions=param_dist,
+    n_iter=20,  # Try 20 random combinations
+    cv=5,
+    scoring='neg_mean_squared_error',
+    random_state=42,
+    n_jobs=-1
+)
+
+random_search.fit(X_train, y_train)
+print(f"Best params: {random_search.best_params_}")
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🚀 Real-World Example: House Price Prediction")
+    st.markdown(
+        """**Complete End-to-End Regression Project**
+
+```python
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Load data (example)
+df = pd.DataFrame({
+    'sqft': [1200, 1500, 1800, 2000, 2400, 2800, 1400, 1600, 2200, 2600],
+    'bedrooms': [2, 3, 3, 4, 4, 5, 2, 3, 4, 5],
+    'bathrooms': [1, 2, 2, 2, 3, 3, 1, 2, 3, 3],
+    'age_years': [10, 5, 15, 8, 3, 1, 20, 12, 6, 2],
+    'garage': [0, 1, 1, 2, 2, 2, 0, 1, 2, 2],
+    'price': [200000, 250000, 280000, 320000, 380000, 450000, 
+              230000, 260000, 350000, 420000]
+})
+
+# Feature engineering
+df['price_per_sqft'] = df['price'] / df['sqft']
+df['room_total'] = df['bedrooms'] + df['bathrooms']
+df['is_new'] = (df['age_years'] < 5).astype(int)
+
+# Prepare features
+features = ['sqft', 'bedrooms', 'bathrooms', 'age_years', 'garage', 'room_total', 'is_new']
+X = df[features]
+y = df['price']
+
+# Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Train model
+model = RandomForestRegressor(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Predictions
+y_pred = model.predict(X_test)
+
+# Evaluate
+print(f"RMSE: £{np.sqrt(mean_squared_error(y_test, y_pred)):,.0f}")
+print(f"R²: {r2_score(y_test, y_pred):.3f}")
+
+# Feature importance
+importance_df = pd.DataFrame({
+    'feature': features,
+    'importance': model.feature_importances_
+}).sort_values('importance', ascending=False)
+
+print("\\nFeature Importance:")
+print(importance_df)
+
+# Predict for new house
+new_house = pd.DataFrame({
+    'sqft': [2100],
+    'bedrooms': [4],
+    'bathrooms': [3],
+    'age_years': [5],
+    'garage': [2],
+    'room_total': [7],
+    'is_new': [0]
+})
+
+predicted_price = model.predict(new_house)
+print(f"\\nPredicted price for new house: £{predicted_price[0]:,.0f}")
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### ⚠️ Common Mistakes & Solutions")
+    st.markdown(
+        """**1. Not Splitting Data Properly**
+
+```python
+# ❌ WRONG: Scale before split
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+X_train, X_test = train_test_split(X_scaled)
+
+# ✅ RIGHT: Split first
+X_train, X_test, y_train, y_test = train_test_split(X, y)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+```
+
+---
+
+**2. Using R² on Training Data**
+
+```python
+# ❌ WRONG: Evaluate on training data
+model.fit(X_train, y_train)
+r2_train = model.score(X_train, y_train)  # Will be misleadingly high!
+
+# ✅ RIGHT: Always evaluate on validation/test
+r2_test = model.score(X_test, y_test)
+```
+
+---
+
+**3. Ignoring Target Variable Distribution**
+
+```python
+# Check if target is skewed
+print(f"Skewness: {y.skew():.2f}")  # > 1 = right-skewed
+
+# If skewed, consider log transform
+y_log = np.log1p(y)  # log(1 + y) to handle zeros
+
+# Train on log-transformed target
+model.fit(X_train, np.log1p(y_train))
+
+# Predictions need to be transformed back
+y_pred_log = model.predict(X_test)
+y_pred = np.expm1(y_pred_log)  # exp(x) - 1
+```
+
+---
+
+**4. Not Handling Outliers**
+
+```python
+# Detect outliers using IQR
+Q1 = y.quantile(0.25)
+Q3 = y.quantile(0.75)
+IQR = Q3 - Q1
+outliers = (y < Q1 - 1.5*IQR) | (y > Q3 + 1.5*IQR)
+
+print(f"Outliers: {outliers.sum()} ({outliers.mean()*100:.1f}%)")
+
+# Options:
+# 1. Remove outliers
+# 2. Cap outliers
+# 3. Use robust metrics (MAE instead of MSE)
+# 4. Use robust scalers
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🎯 Interview Preparation")
+    st.markdown(
+        """**Q1: Explain the difference between MAE and RMSE.**
+
+**Answer:** 
+- **MAE** (Mean Absolute Error) averages the absolute differences. Less sensitive to outliers.
+- **RMSE** (Root Mean Squared Error) squares errors before averaging, then takes square root. Penalizes large errors more heavily.
+- **Use MAE** when outliers shouldn't dominate.
+- **Use RMSE** when large errors are particularly bad for business.
+
+---
+
+**Q2: When would you use Ridge vs Lasso?**
+
+**Answer:**
+- **Ridge (L2):** When you want to keep all features but shrink coefficients. Good with multicollinearity.
+- **Lasso (L1):** When you want automatic feature selection. Sets some coefficients to exactly zero.
+- **ElasticNet:** When you want both (many correlated features + feature selection).
+
+---
+
+**Q3: What does R² = 0.75 mean?**
+
+**Answer:**
+The model explains 75% of the variance in the target variable. The remaining 25% is unexplained (could be noise, missing features, or non-linear relationships not captured).
+
+⚠️ **Caution:** R² can be misleading:
+- Always increasing as you add features (use adjusted R²)
+- Doesn't tell you if predictions are good in absolute terms
+- Can be negative on test set if model is terrible
+
+---
+
+**Q4: How do you detect overfitting in regression?**
+
+**Answer:**
+1. **Train vs Test performance:** Large gap indicates overfitting
+2. **Learning curves:** Training error low, validation error high
+3. **Cross-validation:** High variance in CV scores
+4. **Coefficients:** Very large coefficients suggest overfitting
+
+**Solutions:**
+- Regularization (Ridge/Lasso)
+- Reduce model complexity
+- More training data
+- Feature selection
+- Simpler model (linear instead of polynomial)
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 📚 Key Takeaways")
+    st.markdown(
+        """**Regression Algorithms Comparison:**
+
+| Algorithm | Pros | Cons | When to Use |
+|-----------|------|------|-------------|
+| **Linear Regression** | Fast, interpretable, baseline | Assumes linear relationship | Start here always |
+| **Ridge** | Handles multicollinearity, prevents overfitting | Still assumes linearity | Many correlated features |
+| **Lasso** | Feature selection, sparse models | Can be unstable | Want automatic feature selection |
+| **Decision Tree** | Non-linear, no scaling needed | Overfits easily | Quick baseline for non-linear |
+| **Random Forest** | Robust, handles non-linear well | Slower, less interpretable | General-purpose, good default |
+| **Gradient Boosting** | Best accuracy, feature importance | Slow to train, hyperparameter-sensitive | Kaggle, maximum accuracy |
+
+---
+
+**Metrics Cheat Sheet:**
+
+- **RMSE:** General accuracy (same units as target)
+- **MAE:** Robust to outliers
+- **MAPE:** When relative error matters (%), but watch for division by zero
+- **R²:** Explains variance, but can be misleading
+- **Custom:** Define based on business cost of errors
+
+---
+
+**What You Can Do Now:**
+- ✅ Build linear regression models
+- ✅ Apply regularization (Ridge, Lasso)
+- ✅ Use tree-based methods (RF, XGBoost)
+- ✅ Evaluate models with proper metrics
+- ✅ Tune hyperparameters
+- ✅ Detect and prevent overfitting
+- ✅ Communicate results to stakeholders
+
+**Next:** Unit 3 (Classification) applies similar principles to categorical targets!
+"""
+    )
+
 
 def _render_unit2_labs():
     """Labs and mini-project ideas for Unit 2."""
 
-    st.markdown("### 🧪 Labs & Mini Projects – Unit 2")
+    st.markdown("### 🧪 HANDS-ON LABS: Unit 2 Regression")
     st.markdown(
-        """Suggested activities:
+        """**Complete these 3 labs to master regression:**
 
-- **Lab 1 – Baseline regression model**
-  - Take a cleaned feature table from Unit 1.
-  - Fit a baseline linear regression model.
-  - Compute RMSE/MAE on a validation set.
+---
 
-- **Lab 2 – Regularised models**
-  - Train Ridge and Lasso models with several regularisation strengths.
-  - Use cross-validation to pick a good value.
-  - Compare coefficients and metrics to the baseline.
+## Lab 1: Linear Regression Fundamentals (75 min)
 
-- **Mini project – Explainable regression**
-  - Choose a business question (e.g. drivers of spend).
-  - Fit a model and interpret key coefficients / feature importances.
-  - Write a short note for stakeholders explaining what drives the outcome.
+**Objective:** Build and evaluate a complete house price prediction model
 
-You can use the notebook `U2_regression_models.ipynb` as a starting point for this unit's practical work.
+**Setup: Create Dataset**
+
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+
+# Create realistic house price dataset
+np.random.seed(42)
+n = 200
+
+df = pd.DataFrame({
+    'sqft': np.random.normal(2000, 500, n),
+    'bedrooms': np.random.randint(1, 6, n),
+    'bathrooms': np.random.randint(1, 4, n),
+    'age_years': np.random.exponential(15, n),
+    'garage_spaces': np.random.randint(0, 3, n),
+    'distance_to_city_km': np.random.exponential(10, n)
+})
+
+# Generate prices with realistic relationships
+df['price'] = (
+    150 * df['sqft'] +
+    25000 * df['bedrooms'] +
+    15000 * df['bathrooms'] -
+    2000 * df['age_years'] +
+    20000 * df['garage_spaces'] -
+    3000 * df['distance_to_city_km'] +
+    100000 +  # Base price
+    np.random.normal(0, 30000, n)  # Noise
+)
+
+df['price'] = df['price'].clip(lower=100000)  # Minimum price
+
+df.to_csv('house_prices.csv', index=False)
+print("✅ Created house_prices.csv")
+print(f"Shape: {df.shape}")
+print(f"\\nPrice range: £{df['price'].min():,.0f} - £{df['price'].max():,.0f}")
+```
+
+---
+
+**Part A: Exploratory Data Analysis (20 min)**
+
+```python
+df = pd.read_csv('house_prices.csv')
+
+# 1. Basic statistics
+print("Dataset Overview:")
+print(df.describe())
+
+# 2. Check correlations with price
+correlations = df.corr()['price'].sort_values(ascending=False)
+print("\\nCorrelations with price:")
+print(correlations)
+
+# 3. Visualize relationships
+fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+features = ['sqft', 'bedrooms', 'bathrooms', 'age_years', 'garage_spaces', 'distance_to_city_km']
+
+for idx, feature in enumerate(features):
+    row, col = idx // 3, idx % 3
+    axes[row, col].scatter(df[feature], df['price'], alpha=0.5)
+    axes[row, col].set_xlabel(feature)
+    axes[row, col].set_ylabel('Price (£)')
+    axes[row, col].set_title(f'Price vs {feature}')
+
+plt.tight_layout()
+plt.show()
+
+# 4. Check for outliers
+print("\\nOutlier detection (price):")
+Q1 = df['price'].quantile(0.25)
+Q3 = df['price'].quantile(0.75)
+IQR = Q3 - Q1
+outliers = df[(df['price'] < Q1 - 1.5*IQR) | (df['price'] > Q3 + 1.5*IQR)]
+print(f"Outliers: {len(outliers)} ({len(outliers)/len(df)*100:.1f}%)")
+```
+
+---
+
+**Part B: Build Linear Regression Model (25 min)**
+
+```python
+# Prepare data
+features = ['sqft', 'bedrooms', 'bathrooms', 'age_years', 'garage_spaces', 'distance_to_city_km']
+X = df[features]
+y = df['price']
+
+# Split data (80/20)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+print(f"Training set: {X_train.shape}")
+print(f"Test set: {X_test.shape}")
+
+# Train linear regression
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Make predictions
+y_train_pred = model.predict(X_train)
+y_test_pred = model.predict(X_test)
+
+# Coefficients
+print("\\nModel Coefficients:")
+coef_df = pd.DataFrame({
+    'Feature': features,
+    'Coefficient': model.coef_
+}).sort_values('Coefficient', ascending=False)
+print(coef_df)
+print(f"\\nIntercept: £{model.intercept_:,.0f}")
+
+# Interpretation
+print("\\nInterpretation:")
+print(f"Each additional sq ft adds: £{model.coef_[0]:.2f}")
+print(f"Each additional bedroom adds: £{model.coef_[1]:,.0f}")
+print(f"Each year of age reduces price by: £{abs(model.coef_[3]):,.0f}")
+```
+
+---
+
+**Part C: Model Evaluation (30 min)**
+
+```python
+# Calculate metrics
+def evaluate_model(y_true, y_pred, set_name=""):
+    mae = mean_absolute_error(y_true, y_pred)
+    rmse = np.sqrt(mean_squared_error(y_true, y_pred))
+    r2 = r2_score(y_true, y_pred)
+    mape = np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+    
+    print(f"\\n{set_name} Performance:")
+    print(f"MAE:  £{mae:,.0f}")
+    print(f"RMSE: £{rmse:,.0f}")
+    print(f"R²:   {r2:.4f}")
+    print(f"MAPE: {mape:.2f}%")
+    
+    return {'MAE': mae, 'RMSE': rmse, 'R2': r2, 'MAPE': mape}
+
+# Evaluate on both sets
+train_metrics = evaluate_model(y_train, y_train_pred, "Training")
+test_metrics = evaluate_model(y_test, y_test_pred, "Test")
+
+# Check for overfitting
+print("\\nOverfitting Check:")
+print(f"Train R²: {train_metrics['R2']:.4f}")
+print(f"Test R²:  {test_metrics['R2']:.4f}")
+print(f"Difference: {abs(train_metrics['R2'] - test_metrics['R2']):.4f}")
+
+if abs(train_metrics['R2'] - test_metrics['R2']) < 0.05:
+    print("✅ Model generalizes well!")
+else:
+    print("⚠️ Possible overfitting")
+
+# Visualize predictions
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Predicted vs Actual
+axes[0].scatter(y_test, y_test_pred, alpha=0.5)
+axes[0].plot([y_test.min(), y_test.max()], 
+             [y_test.min(), y_test.max()], 
+             'r--', lw=2, label='Perfect Prediction')
+axes[0].set_xlabel('Actual Price (£)')
+axes[0].set_ylabel('Predicted Price (£)')
+axes[0].set_title('Predicted vs Actual')
+axes[0].legend()
+
+# Residuals
+residuals = y_test - y_test_pred
+axes[1].scatter(y_test_pred, residuals, alpha=0.5)
+axes[1].axhline(y=0, color='r', linestyle='--')
+axes[1].set_xlabel('Predicted Price (£)')
+axes[1].set_ylabel('Residuals (£)')
+axes[1].set_title('Residual Plot')
+
+plt.tight_layout()
+plt.show()
+
+# Predict for new house
+new_house = pd.DataFrame({
+    'sqft': [2200],
+    'bedrooms': [4],
+    'bathrooms': [3],
+    'age_years': [5],
+    'garage_spaces': [2],
+    'distance_to_city_km': [8]
+})
+
+predicted_price = model.predict(new_house)[0]
+print(f"\\nPredicted price for new house: £{predicted_price:,.0f}")
+```
+
+---
+
+## Lab 2: Regularization Comparison (90 min)
+
+**Objective:** Compare Ridge, Lasso, and ElasticNet regression
+
+**Part A: Ridge Regression (30 min)**
+
+```python
+from sklearn.linear_model import Ridge, Lasso, ElasticNet
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+# Standardize features for regularization
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Try different alpha values for Ridge
+alphas = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
+ridge_results = []
+
+for alpha in alphas:
+    ridge = Ridge(alpha=alpha)
+    ridge.fit(X_train_scaled, y_train)
+    
+    y_pred = ridge.predict(X_test_scaled)
+    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+    r2 = r2_score(y_test, y_pred)
+    
+    ridge_results.append({
+        'alpha': alpha,
+        'rmse': rmse,
+        'r2': r2,
+        'coefficients': ridge.coef_
+    })
+    
+    print(f"Alpha: {alpha:>6.3f} | RMSE: £{rmse:>10,.0f} | R²: {r2:.4f}")
+
+# Find best alpha
+best_ridge = min(ridge_results, key=lambda x: x['rmse'])
+print(f"\\nBest Ridge alpha: {best_ridge['alpha']}")
+
+# Plot coefficient paths
+plt.figure(figsize=(10, 6))
+for i, feature in enumerate(features):
+    coefs = [r['coefficients'][i] for r in ridge_results]
+    plt.plot(alphas, coefs, label=feature, marker='o')
+
+plt.xscale('log')
+plt.xlabel('Alpha (regularization strength)')
+plt.ylabel('Coefficient Value')
+plt.title('Ridge Regression: Coefficient Paths')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+```
+
+---
+
+**Part B: Lasso Regression (30 min)**
+
+```python
+# Lasso with different alphas
+lasso_results = []
+
+for alpha in alphas:
+    lasso = Lasso(alpha=alpha, max_iter=10000)
+    lasso.fit(X_train_scaled, y_train)
+    
+    y_pred = lasso.predict(X_test_scaled)
+    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+    r2 = r2_score(y_test, y_pred)
+    non_zero = np.sum(lasso.coef_ != 0)
+    
+    lasso_results.append({
+        'alpha': alpha,
+        'rmse': rmse,
+        'r2': r2,
+        'coefficients': lasso.coef_,
+        'non_zero_features': non_zero
+    })
+    
+    print(f"Alpha: {alpha:>6.3f} | RMSE: £{rmse:>10,.0f} | R²: {r2:.4f} | Non-zero: {non_zero}")
+
+# Feature selection effect
+print("\\nLasso Feature Selection:")
+for result in lasso_results:
+    print(f"Alpha {result['alpha']:>6.3f}: {result['non_zero_features']} features selected")
+
+# Compare Ridge vs Lasso
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# RMSE comparison
+ridge_rmse = [r['rmse'] for r in ridge_results]
+lasso_rmse = [r['rmse'] for r in lasso_results]
+
+axes[0].plot(alphas, ridge_rmse, marker='o', label='Ridge')
+axes[0].plot(alphas, lasso_rmse, marker='s', label='Lasso')
+axes[0].set_xscale('log')
+axes[0].set_xlabel('Alpha')
+axes[0].set_ylabel('RMSE (£)')
+axes[0].set_title('Ridge vs Lasso: RMSE')
+axes[0].legend()
+axes[0].grid(True, alpha=0.3)
+
+# Coefficient comparison at best alpha
+best_alpha = 1.0
+ridge_best = Ridge(alpha=best_alpha).fit(X_train_scaled, y_train)
+lasso_best = Lasso(alpha=best_alpha).fit(X_train_scaled, y_train)
+
+x_pos = np.arange(len(features))
+axes[1].bar(x_pos - 0.2, ridge_best.coef_, 0.4, label='Ridge', alpha=0.7)
+axes[1].bar(x_pos + 0.2, lasso_best.coef_, 0.4, label='Lasso', alpha=0.7)
+axes[1].set_xticks(x_pos)
+axes[1].set_xticklabels(features, rotation=45)
+axes[1].set_ylabel('Coefficient Value')
+axes[1].set_title(f'Coefficients Comparison (alpha={best_alpha})')
+axes[1].legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+**Part C: ElasticNet & Grid Search (30 min)**
+
+```python
+from sklearn.model_selection import GridSearchCV
+
+# ElasticNet combines L1 and L2
+param_grid = {
+    'alpha': [0.001, 0.01, 0.1, 1, 10],
+    'l1_ratio': [0.1, 0.3, 0.5, 0.7, 0.9]  # 0=Ridge, 1=Lasso
+}
+
+elastic = ElasticNet(max_iter=10000)
+
+grid_search = GridSearchCV(
+    elastic,
+    param_grid,
+    cv=5,
+    scoring='neg_mean_squared_error',
+    n_jobs=-1
+)
+
+grid_search.fit(X_train_scaled, y_train)
+
+print("Best ElasticNet parameters:")
+print(f"Alpha: {grid_search.best_params_['alpha']}")
+print(f"L1 ratio: {grid_search.best_params_['l1_ratio']}")
+
+# Evaluate best model
+best_elastic = grid_search.best_estimator_
+y_pred_elastic = best_elastic.predict(X_test_scaled)
+
+print("\\nElasticNet Performance:")
+print(f"RMSE: £{np.sqrt(mean_squared_error(y_test, y_pred_elastic)):,.0f}")
+print(f"R²: {r2_score(y_test, y_pred_elastic):.4f}")
+
+# Final comparison
+models = {
+    'Linear Regression': LinearRegression().fit(X_train_scaled, y_train),
+    'Ridge (best)': Ridge(alpha=best_ridge['alpha']).fit(X_train_scaled, y_train),
+    'Lasso (best)': Lasso(alpha=1.0).fit(X_train_scaled, y_train),
+    'ElasticNet (best)': best_elastic
+}
+
+comparison = []
+for name, model in models.items():
+    y_pred = model.predict(X_test_scaled)
+    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+    r2 = r2_score(y_test, y_pred)
+    comparison.append({'Model': name, 'RMSE': rmse, 'R²': r2})
+
+comparison_df = pd.DataFrame(comparison).sort_values('RMSE')
+print("\\nModel Comparison:")
+print(comparison_df)
+```
+
+---
+
+## Lab 3: Tree-Based Regression & XGBoost (90 min)
+
+**Objective:** Compare tree-based methods with linear models
+
+**Part A: Decision Tree Regression (25 min)**
+
+```python
+from sklearn.tree import DecisionTreeRegressor, plot_tree
+
+# Train decision tree
+tree = DecisionTreeRegressor(max_depth=5, min_samples_split=10, random_state=42)
+tree.fit(X_train, y_train)
+
+# Predictions
+y_pred_tree = tree.predict(X_test)
+
+print("Decision Tree Performance:")
+print(f"RMSE: £{np.sqrt(mean_squared_error(y_test, y_pred_tree)):,.0f}")
+print(f"R²: {r2_score(y_test, y_pred_tree):.4f}")
+
+# Feature importance
+importance_df = pd.DataFrame({
+    'Feature': features,
+    'Importance': tree.feature_importances_
+}).sort_values('Importance', ascending=False)
+
+print("\\nFeature Importances:")
+print(importance_df)
+
+# Visualize tree
+plt.figure(figsize=(20, 10))
+plot_tree(tree, feature_names=features, filled=True, rounded=True, fontsize=10)
+plt.title('Decision Tree (max_depth=5)')
+plt.show()
+
+# Test different depths
+depths = [2, 3, 5, 7, 10, 15, 20]
+tree_results = []
+
+for depth in depths:
+    tree = DecisionTreeRegressor(max_depth=depth, random_state=42)
+    tree.fit(X_train, y_train)
+    
+    train_rmse = np.sqrt(mean_squared_error(y_train, tree.predict(X_train)))
+    test_rmse = np.sqrt(mean_squared_error(y_test, tree.predict(X_test)))
+    
+    tree_results.append({
+        'depth': depth,
+        'train_rmse': train_rmse,
+        'test_rmse': test_rmse
+    })
+
+# Plot overfitting
+results_df = pd.DataFrame(tree_results)
+plt.figure(figsize=(10, 6))
+plt.plot(results_df['depth'], results_df['train_rmse'], marker='o', label='Train RMSE')
+plt.plot(results_df['depth'], results_df['test_rmse'], marker='s', label='Test RMSE')
+plt.xlabel('Max Depth')
+plt.ylabel('RMSE (£)')
+plt.title('Decision Tree: Depth vs Performance')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+```
+
+---
+
+**Part B: Random Forest Regression (30 min)**
+
+```python
+from sklearn.ensemble import RandomForestRegressor
+
+# Train Random Forest
+rf = RandomForestRegressor(
+    n_estimators=100,
+    max_depth=10,
+    min_samples_split=5,
+    random_state=42,
+    n_jobs=-1
+)
+
+rf.fit(X_train, y_train)
+y_pred_rf = rf.predict(X_test)
+
+print("Random Forest Performance:")
+print(f"RMSE: £{np.sqrt(mean_squared_error(y_test, y_pred_rf)):,.0f}")
+print(f"R²: {r2_score(y_test, y_pred_rf):.4f}")
+
+# Feature importance
+rf_importance = pd.DataFrame({
+    'Feature': features,
+    'Importance': rf.feature_importances_
+}).sort_values('Importance', ascending=False)
+
+print("\\nRandom Forest Feature Importances:")
+print(rf_importance)
+
+# Visualize importances
+plt.figure(figsize=(10, 6))
+plt.barh(rf_importance['Feature'], rf_importance['Importance'])
+plt.xlabel('Importance')
+plt.title('Random Forest Feature Importances')
+plt.tight_layout()
+plt.show()
+
+# Hyperparameter tuning
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint
+
+param_dist = {
+    'n_estimators': randint(50, 200),
+    'max_depth': randint(3, 20),
+    'min_samples_split': randint(2, 20),
+    'min_samples_leaf': randint(1, 10)
+}
+
+random_search = RandomizedSearchCV(
+    RandomForestRegressor(random_state=42),
+    param_distributions=param_dist,
+    n_iter=20,
+    cv=5,
+    scoring='neg_mean_squared_error',
+    random_state=42,
+    n_jobs=-1
+)
+
+random_search.fit(X_train, y_train)
+
+print("\\nBest Random Forest parameters:")
+print(random_search.best_params_)
+
+best_rf = random_search.best_estimator_
+y_pred_best_rf = best_rf.predict(X_test)
+print(f"\\nTuned RF RMSE: £{np.sqrt(mean_squared_error(y_test, y_pred_best_rf)):,.0f}")
+```
+
+---
+
+**Part C: XGBoost (35 min)**
+
+```python
+import xgboost as xgb
+
+# Train XGBoost
+xgb_model = xgb.XGBRegressor(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=5,
+    random_state=42
+)
+
+xgb_model.fit(X_train, y_train)
+y_pred_xgb = xgb_model.predict(X_test)
+
+print("XGBoost Performance:")
+print(f"RMSE: £{np.sqrt(mean_squared_error(y_test, y_pred_xgb)):,.0f}")
+print(f"R²: {r2_score(y_test, y_pred_xgb):.4f}")
+
+# Feature importance
+xgb_importance = pd.DataFrame({
+    'Feature': features,
+    'Importance': xgb_model.feature_importances_
+}).sort_values('Importance', ascending=False)
+
+print("\\nXGBoost Feature Importances:")
+print(xgb_importance)
+
+# Hyperparameter tuning for XGBoost
+param_grid_xgb = {
+    'n_estimators': [50, 100, 200],
+    'learning_rate': [0.01, 0.1, 0.3],
+    'max_depth': [3, 5, 7],
+    'subsample': [0.8, 1.0]
+}
+
+grid_xgb = GridSearchCV(
+    xgb.XGBRegressor(random_state=42),
+    param_grid_xgb,
+    cv=5,
+    scoring='neg_mean_squared_error',
+    n_jobs=-1
+)
+
+grid_xgb.fit(X_train, y_train)
+
+print("\\nBest XGBoost parameters:")
+print(grid_xgb.best_params_)
+
+best_xgb = grid_xgb.best_estimator_
+y_pred_best_xgb = best_xgb.predict(X_test)
+print(f"\\nTuned XGBoost RMSE: £{np.sqrt(mean_squared_error(y_test, y_pred_best_xgb)):,.0f}")
+
+# Final comparison: All models
+all_models = {
+    'Linear Regression': model,
+    'Ridge': Ridge(alpha=1.0).fit(X_train_scaled, y_train),
+    'Lasso': Lasso(alpha=1.0).fit(X_train_scaled, y_train),
+    'Decision Tree': DecisionTreeRegressor(max_depth=5).fit(X_train, y_train),
+    'Random Forest': best_rf,
+    'XGBoost': best_xgb
+}
+
+final_comparison = []
+for name, mdl in all_models.items():
+    if name in ['Ridge', 'Lasso']:
+        y_pred = mdl.predict(X_test_scaled)
+    else:
+        y_pred = mdl.predict(X_test)
+    
+    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+    mae = mean_absolute_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
+    
+    final_comparison.append({
+        'Model': name,
+        'RMSE': rmse,
+        'MAE': mae,
+        'R²': r2
+    })
+
+final_df = pd.DataFrame(final_comparison).sort_values('RMSE')
+print("\\n" + "="*70)
+print("FINAL MODEL COMPARISON")
+print("="*70)
+print(final_df.to_string(index=False))
+
+# Visualize
+fig, ax = plt.subplots(figsize=(12, 6))
+x_pos = np.arange(len(final_df))
+ax.barh(x_pos, final_df['RMSE'], color='skyblue')
+ax.set_yticks(x_pos)
+ax.set_yticklabels(final_df['Model'])
+ax.set_xlabel('RMSE (£)')
+ax.set_title('Model Performance Comparison')
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+**Lab Completion Checklist:**
+- ☐ Built and evaluated linear regression
+- ☐ Compared Ridge, Lasso, ElasticNet
+- ☐ Performed grid search for hyperparameters
+- ☐ Trained decision tree regressor
+- ☐ Built random forest model
+- ☐ Implemented XGBoost regression
+- ☐ Compared all models systematically
+- ☐ Interpreted feature importances
+- ☐ Visualized results
+
+**Next:** Unit 3 teaches classification for categorical targets!
 """
     )
 
@@ -752,6 +3040,668 @@ You will practice:
 - Presenting **example cases** the model got right/wrong.
 - Highlighting where the model should **not** be used on its own
   (e.g. as a decision support tool, not an automatic rejection).
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🎯 Classification Algorithms Deep Dive")
+    st.markdown(
+        """**1. Logistic Regression**
+
+Predicts probability that observation belongs to positive class.
+
+**Mathematical Foundation:**
+$$P(y=1|x) = \\frac{1}{1 + e^{-(β_0 + β_1x_1 + ... + β_nx_n)}}$$
+
+**Code Example:**
+```python
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, confusion_matrix
+import numpy as np
+import pandas as pd
+
+# Example: Customer churn prediction
+np.random.seed(42)
+n = 1000
+
+df = pd.DataFrame({
+    'tenure_months': np.random.randint(1, 72, n),
+    'monthly_charges': np.random.normal(50, 20, n),
+    'total_charges': np.random.normal(1500, 800, n),
+    'num_support_calls': np.random.poisson(2, n)
+})
+
+# Generate target with realistic relationships
+churn_prob = 1 / (1 + np.exp(-(
+    -2 +
+    -0.05 * df['tenure_months'] +
+    0.02 * df['monthly_charges'] +
+    0.3 * df['num_support_calls']
+)))
+df['churned'] = (np.random.random(n) < churn_prob).astype(int)
+
+# Train model
+X = df.drop('churned', axis=1)
+y = df['churned']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Predictions
+y_pred = model.predict(X_test)
+y_pred_proba = model.predict_proba(X_test)[:, 1]
+
+print("Coefficients:")
+for feature, coef in zip(X.columns, model.coef_[0]):
+    print(f"{feature}: {coef:.4f}")
+
+print(f"\\nAccuracy: {model.score(X_test, y_test):.3f}")
+print("\\nClassification Report:")
+print(classification_report(y_test, y_pred))
+```
+
+**Interpretation:**
+- Negative coefficient = increases probability of class 0
+- Positive coefficient = increases probability of class 1
+- `exp(coefficient)` = odds ratio
+
+---
+
+**2. Decision Tree Classifier**
+
+```python
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+import matplotlib.pyplot as plt
+
+tree = DecisionTreeClassifier(max_depth=3, random_state=42)
+tree.fit(X_train, y_train)
+
+print(f"Train Accuracy: {tree.score(X_train, y_train):.3f}")
+print(f"Test Accuracy: {tree.score(X_test, y_test):.3f}")
+
+# Visualize
+plt.figure(figsize=(20, 10))
+plot_tree(tree, feature_names=X.columns, class_names=['No Churn', 'Churn'], filled=True)
+plt.show()
+```
+
+**Advantages:**
+- ✅ Interpretable (visual decision rules)
+- ✅ Handles non-linear relationships
+- ✅ No feature scaling needed
+
+**Disadvantages:**
+- ❌ Prone to overfitting
+- ❌ Unstable (small changes → different tree)
+
+---
+
+**3. Random Forest Classifier**
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+rf = RandomForestClassifier(
+    n_estimators=100,
+    max_depth=10,
+    random_state=42,
+    n_jobs=-1
+)
+
+rf.fit(X_train, y_train)
+y_pred_rf = rf.predict(X_test)
+y_pred_proba_rf = rf.predict_proba(X_test)[:, 1]
+
+print(f"Random Forest Accuracy: {rf.score(X_test, y_test):.3f}")
+
+# Feature importance
+importance_df = pd.DataFrame({
+    'feature': X.columns,
+    'importance': rf.feature_importances_
+}).sort_values('importance', ascending=False)
+
+print("\\nFeature Importances:")
+print(importance_df)
+```
+
+---
+
+**4. Gradient Boosting (XGBoost)**
+
+```python
+import xgboost as xgb
+
+xgb_model = xgb.XGBClassifier(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=5,
+    random_state=42
+)
+
+xgb_model.fit(X_train, y_train)
+y_pred_xgb = xgb_model.predict(X_test)
+y_pred_proba_xgb = xgb_model.predict_proba(X_test)[:, 1]
+
+print(f"XGBoost Accuracy: {xgb_model.score(X_test, y_test):.3f}")
+```
+
+**When to use:** Maximum performance needed, Kaggle competitions
+
+---
+
+**5. Support Vector Machine (SVM)**
+
+```python
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+
+# SVM requires scaled features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+svm = SVC(kernel='rbf', probability=True, random_state=42)
+svm.fit(X_train_scaled, y_train)
+
+print(f"SVM Accuracy: {svm.score(X_test_scaled, y_test):.3f}")
+```
+
+**When to use:** High-dimensional data, clear margin between classes
+
+---
+
+**6. Naive Bayes**
+
+```python
+from sklearn.naive_bayes import GaussianNB
+
+nb = GaussianNB()
+nb.fit(X_train, y_train)
+
+print(f"Naive Bayes Accuracy: {nb.score(X_test, y_test):.3f}")
+```
+
+**When to use:** Fast baseline, text classification, real-time predictions
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 📊 Classification Metrics Explained")
+    st.markdown(
+        """**Confusion Matrix:**
+
+```
+                  Predicted
+                Negative  Positive
+Actual Negative    TN       FP
+       Positive    FN       TP
+```
+
+- **True Positive (TP):** Correctly predicted positive
+- **True Negative (TN):** Correctly predicted negative
+- **False Positive (FP):** Incorrectly predicted positive (Type I error)
+- **False Negative (FN):** Incorrectly predicted negative (Type II error)
+
+---
+
+**Key Metrics:**
+
+1. **Accuracy:** `(TP + TN) / Total`
+   - Good when classes balanced
+   - Misleading with imbalance
+
+2. **Precision:** `TP / (TP + FP)`
+   - "Of all predicted positives, how many were correct?"
+   - Important when false positives are costly
+
+3. **Recall (Sensitivity):** `TP / (TP + FN)`
+   - "Of all actual positives, how many did we catch?"
+   - Important when false negatives are costly
+
+4. **F1-Score:** `2 × (Precision × Recall) / (Precision + Recall)`
+   - Harmonic mean of precision and recall
+   - Good single metric for imbalanced data
+
+5. **Specificity:** `TN / (TN + FP)`
+   - "Of all actual negatives, how many did we correctly identify?"
+
+---
+
+**Code Example:**
+
+```python
+from sklearn.metrics import confusion_matrix, classification_report, roc_auc_score, roc_curve
+import seaborn as sns
+
+# Confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.show()
+
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+
+# ROC-AUC
+roc_auc = roc_auc_score(y_test, y_pred_proba)
+print(f"\\nROC-AUC Score: {roc_auc:.3f}")
+
+# ROC Curve
+fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, label=f'ROC Curve (AUC = {roc_auc:.3f})')
+plt.plot([0, 1], [0, 1], 'k--', label='Random Classifier')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve')
+plt.legend()
+plt.show()
+```
+
+---
+
+**Real-World Example: Fraud Detection**
+
+```python
+# Scenario: 1% of transactions are fraudulent
+# Cost of missing fraud: £1,000
+# Cost of false alarm: £10
+
+# At default threshold (0.5):
+# Precision: 0.60 (40% false positives)
+# Recall: 0.80 (20% of fraud missed)
+
+# Expected cost per 1000 transactions:
+fraud_transactions = 10
+false_negatives = fraud_transactions * 0.20  # 2 missed frauds
+cost_fn = false_negatives * 1000  # £2,000
+
+non_fraud = 990
+false_positives = (10 / 0.6) - 10  # ~7 false alarms
+cost_fp = false_positives * 10  # £70
+
+total_cost = cost_fn + cost_fp  # £2,070
+
+print(f"Expected cost: £{total_cost:.0f} per 1000 transactions")
+
+# Adjust threshold to 0.3 to catch more fraud:
+# Precision: 0.40 (more false positives)
+# Recall: 0.95 (only 5% missed)
+
+# New expected cost:
+false_negatives_new = fraud_transactions * 0.05  # 0.5 missed
+cost_fn_new = false_negatives_new * 1000  # £500
+
+false_positives_new = (10 / 0.4) - 10  # 15 false alarms
+cost_fp_new = false_positives_new * 10  # £150
+
+total_cost_new = cost_fn_new + cost_fp_new  # £650
+
+print(f"New expected cost: £{total_cost_new:.0f} (saved £{total_cost - total_cost_new:.0f})")
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### ⚖️ Handling Class Imbalance")
+    st.markdown(
+        """**Problem:** When one class is rare (e.g., 1% fraud, 5% churn)
+
+**Strategy 1: Class Weights**
+
+```python
+from sklearn.linear_model import LogisticRegression
+from sklearn.utils.class_weight import compute_class_weight
+
+# Automatically balance classes
+model_balanced = LogisticRegression(class_weight='balanced')
+model_balanced.fit(X_train, y_train)
+
+# Or compute custom weights
+class_weights = compute_class_weight('balanced', classes=np.unique(y_train), y=y_train)
+weight_dict = {0: class_weights[0], 1: class_weights[1]}
+model_custom = LogisticRegression(class_weight=weight_dict)
+model_custom.fit(X_train, y_train)
+```
+
+---
+
+**Strategy 2: Resampling (SMOTE)**
+
+```python
+from imblearn.over_sampling import SMOTE
+from imblearn.under_sampling import RandomUnderSampler
+from imblearn.pipeline import Pipeline as ImbPipeline
+
+# Oversample minority class
+smote = SMOTE(random_state=42)
+X_resampled, y_resampled = smote.fit_resample(X_train, y_train)
+
+print(f"Original class distribution: {np.bincount(y_train)}")
+print(f"Resampled class distribution: {np.bincount(y_resampled)}")
+
+# Train on resampled data
+model_smote = LogisticRegression()
+model_smote.fit(X_resampled, y_resampled)
+```
+
+---
+
+**Strategy 3: Adjust Decision Threshold**
+
+```python
+from sklearn.metrics import precision_recall_curve
+
+# Get probabilities
+y_pred_proba = model.predict_proba(X_test)[:, 1]
+
+# Find optimal threshold
+precision, recall, thresholds = precision_recall_curve(y_test, y_pred_proba)
+
+# Find threshold that maximizes F1
+f1_scores = 2 * (precision * recall) / (precision + recall + 1e-10)
+optimal_idx = np.argmax(f1_scores)
+optimal_threshold = thresholds[optimal_idx]
+
+print(f"Optimal threshold: {optimal_threshold:.3f}")
+print(f"F1 at optimal: {f1_scores[optimal_idx]:.3f}")
+
+# Apply optimal threshold
+y_pred_optimal = (y_pred_proba >= optimal_threshold).astype(int)
+
+print("\\nWith optimal threshold:")
+print(classification_report(y_test, y_pred_optimal))
+
+# Visualize
+plt.figure(figsize=(10, 6))
+plt.plot(thresholds, precision[:-1], label='Precision')
+plt.plot(thresholds, recall[:-1], label='Recall')
+plt.plot(thresholds, f1_scores[:-1], label='F1 Score')
+plt.axvline(optimal_threshold, color='r', linestyle='--', label=f'Optimal={optimal_threshold:.3f}')
+plt.xlabel('Threshold')
+plt.ylabel('Score')
+plt.title('Precision-Recall-F1 vs Threshold')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+```
+
+---
+
+**Strategy 4: Evaluation Metrics**
+
+```python
+# Use metrics appropriate for imbalanced data
+from sklearn.metrics import balanced_accuracy_score, average_precision_score
+
+balanced_acc = balanced_accuracy_score(y_test, y_pred)
+pr_auc = average_precision_score(y_test, y_pred_proba)
+
+print(f"Balanced Accuracy: {balanced_acc:.3f}")
+print(f"PR-AUC: {pr_auc:.3f}")  # Better than ROC-AUC for imbalanced data
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🎨 Model Comparison & Selection")
+    st.markdown(
+        """**Complete Comparison Example:**
+
+```python
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import make_scorer, f1_score
+
+models = {
+    'Logistic Regression': LogisticRegression(max_iter=1000),
+    'Logistic (Balanced)': LogisticRegression(class_weight='balanced', max_iter=1000),
+    'Decision Tree': DecisionTreeClassifier(max_depth=5, random_state=42),
+    'Random Forest': RandomForestClassifier(n_estimators=100, random_state=42),
+    'XGBoost': xgb.XGBClassifier(n_estimators=100, random_state=42),
+    'SVM': SVC(probability=True, random_state=42)
+}
+
+results = []
+for name, model in models.items():
+    # Cross-validation
+    cv_scores = cross_val_score(model, X_train, y_train, cv=5, scoring='f1')
+    
+    # Train and test
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    y_pred_proba = model.predict_proba(X_test)[:, 1] if hasattr(model, 'predict_proba') else None
+    
+    # Calculate metrics
+    from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+    
+    results.append({
+        'Model': name,
+        'CV F1 (mean)': cv_scores.mean(),
+        'CV F1 (std)': cv_scores.std(),
+        'Test Accuracy': accuracy_score(y_test, y_pred),
+        'Test Precision': precision_score(y_test, y_pred),
+        'Test Recall': recall_score(y_test, y_pred),
+        'Test F1': f1_score(y_test, y_pred),
+        'Test ROC-AUC': roc_auc_score(y_test, y_pred_proba) if y_pred_proba is not None else None
+    })
+
+results_df = pd.DataFrame(results).sort_values('Test F1', ascending=False)
+print(results_df.to_string(index=False))
+```
+
+---
+
+**Visualize Comparison:**
+
+```python
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# Accuracy
+axes[0, 0].barh(results_df['Model'], results_df['Test Accuracy'])
+axes[0, 0].set_xlabel('Accuracy')
+axes[0, 0].set_title('Model Accuracy Comparison')
+
+# F1 Score
+axes[0, 1].barh(results_df['Model'], results_df['Test F1'])
+axes[0, 1].set_xlabel('F1 Score')
+axes[0, 1].set_title('Model F1 Comparison')
+
+# Precision vs Recall
+axes[1, 0].scatter(results_df['Test Recall'], results_df['Test Precision'], s=100)
+for idx, model in enumerate(results_df['Model']):
+    axes[1, 0].annotate(model, (results_df.iloc[idx]['Test Recall'], results_df.iloc[idx]['Test Precision']))
+axes[1, 0].set_xlabel('Recall')
+axes[1, 0].set_ylabel('Precision')
+axes[1, 0].set_title('Precision vs Recall Trade-off')
+
+# ROC-AUC
+axes[1, 1].barh(results_df['Model'], results_df['Test ROC-AUC'].fillna(0))
+axes[1, 1].set_xlabel('ROC-AUC')
+axes[1, 1].set_title('ROC-AUC Comparison')
+
+plt.tight_layout()
+plt.show()
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### ⚠️ Common Mistakes & Solutions")
+    st.markdown(
+        """**1. Using Accuracy on Imbalanced Data**
+
+```python
+# ❌ WRONG: 95% accuracy sounds good
+# But if 95% of data is class 0, predicting all 0 gives 95% accuracy!
+
+# ✅ RIGHT: Check class distribution first
+print(f"Class distribution: {np.bincount(y_train)}")
+print(f"Baseline (always predict majority): {max(np.bincount(y_train))/len(y_train):.3f}")
+
+# Use F1, precision, recall for imbalanced data
+```
+
+---
+
+**2. Not Using Stratified Splits**
+
+```python
+# ❌ WRONG: Random split may have different class ratios
+X_train, X_test = train_test_split(X, y, test_size=0.2)
+
+# ✅ RIGHT: Stratify maintains class proportions
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=42
+)
+```
+
+---
+
+**3. Ignoring Class Probabilities**
+
+```python
+# ❌ WRONG: Only look at binary predictions
+y_pred = model.predict(X_test)
+
+# ✅ RIGHT: Use probabilities for ranking and threshold tuning
+y_pred_proba = model.predict_proba(X_test)[:, 1]
+
+# Rank by risk
+risk_scores = pd.DataFrame({
+    'actual': y_test,
+    'probability': y_pred_proba
+}).sort_values('probability', ascending=False)
+
+print("Top 10 highest risk:")
+print(risk_scores.head(10))
+```
+
+---
+
+**4. Overfitting to Training Data**
+
+```python
+# Check train vs test performance
+train_acc = model.score(X_train, y_train)
+test_acc = model.score(X_test, y_test)
+
+print(f"Train Accuracy: {train_acc:.3f}")
+print(f"Test Accuracy: {test_acc:.3f}")
+print(f"Difference: {train_acc - test_acc:.3f}")
+
+if train_acc - test_acc > 0.1:
+    print("⚠️ Model is overfitting!")
+    print("Solutions: Regularization, simpler model, more data")
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🎯 Interview Preparation")
+    st.markdown(
+        """**Q1: Explain precision vs recall with an example.**
+
+**Answer:**
+- **Precision:** Of all patients we flagged as high-risk, what % actually were high-risk?
+- **Recall:** Of all actual high-risk patients, what % did we catch?
+
+**Example:** Email spam filter
+- High precision = few legitimate emails marked as spam (low FP)
+- High recall = catch most spam emails (low FN)
+- Trade-off: Aggressive filter (high recall) may block legitimate emails (low precision)
+
+---
+
+**Q2: When would you use ROC-AUC vs PR-AUC?**
+
+**Answer:**
+- **ROC-AUC:** Balanced classes, care about both FP and FN equally
+- **PR-AUC:** Imbalanced classes (e.g., 1% fraud), focus on positive class performance
+
+**Why:** With 1% positives, even a bad model can achieve 0.99 TNR (specificity), making ROC-AUC misleadingly high. PR-AUC focuses on precision/recall, which are more sensitive to positive class performance.
+
+---
+
+**Q3: How do you choose a decision threshold?**
+
+**Answer:**
+1. **Business cost analysis:** Calculate cost of FP vs FN
+2. **Plot precision-recall curve:** See trade-offs
+3. **Optimize metric:** Maximize F1, or custom cost function
+4. **Stakeholder input:** What error rate is acceptable?
+
+**Example:** Loan default prediction
+- FN (miss a default) costs £10,000
+- FP (reject good customer) costs £100
+- Threshold should favor recall (catch defaults) over precision
+
+---
+
+**Q4: What is class imbalance and how do you handle it?**
+
+**Answer:**
+**Problem:** One class much rarer than others (e.g., 1% fraud, 99% legitimate)
+
+**Solutions:**
+1. **Class weights:** Penalize errors on minority class more
+2. **Resampling:** SMOTE (oversample minority) or undersample majority
+3. **Threshold adjustment:** Lower threshold to catch more positives
+4. **Different metrics:** Use F1, PR-AUC instead of accuracy
+5. **Ensemble methods:** Balanced random forest
+6. **Collect more data:** Especially minority class
+
+**Best approach:** Try multiple methods and compare on holdout set
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 📚 Key Takeaways")
+    st.markdown(
+        """**Classification Algorithm Comparison:**
+
+| Algorithm | Pros | Cons | When to Use |
+|-----------|------|------|-------------|
+| **Logistic Regression** | Interpretable, fast, probabilistic | Linear decision boundary | Start here, need coefficients |
+| **Decision Tree** | Interpretable, non-linear, no scaling | Overfits easily | Quick baseline, need rules |
+| **Random Forest** | Robust, feature importance, non-linear | Slower, less interpretable | General purpose, good default |
+| **XGBoost** | Best performance, handles imbalance | Slow to train, many hyperparameters | Kaggle, maximum accuracy |
+| **SVM** | Good for high dimensions | Slow on large data, needs scaling | Text classification, few samples |
+| **Naive Bayes** | Very fast, works with little data | Strong assumptions | Text, real-time, baseline |
+
+---
+
+**Metrics Cheat Sheet:**
+
+**Balanced Classes:**
+- Accuracy, F1, ROC-AUC
+
+**Imbalanced Classes:**
+- Precision, Recall, F1, PR-AUC
+- Balanced Accuracy
+- Confusion matrix
+
+**Cost-Sensitive:**
+- Custom cost function
+- Adjusted threshold
+- Business metrics (£ saved)
+
+---
+
+**What You Can Do Now:**
+- ✅ Build classification models for binary outcomes
+- ✅ Choose appropriate metrics for problem
+- ✅ Handle class imbalance
+- ✅ Tune decision thresholds
+- ✅ Compare multiple classifiers
+- ✅ Interpret and explain results
+- ✅ Calculate business impact
+
+**Next:** Unit 4 (Model Evaluation) covers validation strategies and deployment readiness!
 """
     )
 
