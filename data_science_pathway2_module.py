@@ -343,6 +343,56 @@ def _render_unit1_quiz():
             "answer": 1,
             "explanation": "Days since last appointment relates to engagement or risk.",
         },
+        {
+            "text": "What is the purpose of a ColumnTransformer in scikit-learn?",
+            "options": [
+                "To drop columns",
+                "To apply different transformations to different columns",
+                "To rename columns",
+                "To sort columns",
+            ],
+            "answer": 1,
+            "explanation": "ColumnTransformer lets you apply different preprocessing steps to different column groups.",
+        },
+        {
+            "text": "Why should you fit transformers only on training data?",
+            "options": [
+                "To make the code run faster",
+                "To prevent data leakage from validation/test sets",
+                "It doesn't matter",
+                "To use less memory",
+            ],
+            "answer": 1,
+            "explanation": "Fitting on training data only prevents information from validation/test sets leaking into your model.",
+        },
+        {
+            "text": "Which technique handles missing numeric values by replacing them with the column mean?",
+            "options": ["One-hot encoding", "Mean imputation", "Scaling", "Dropping rows"],
+            "answer": 1,
+            "explanation": "Mean imputation fills missing values with the average of non-missing values.",
+        },
+        {
+            "text": "What does StandardScaler do?",
+            "options": [
+                "Removes outliers",
+                "Transforms features to have mean 0 and standard deviation 1",
+                "Encodes categorical variables",
+                "Drops missing values",
+            ],
+            "answer": 1,
+            "explanation": "StandardScaler standardizes features by removing the mean and scaling to unit variance.",
+        },
+        {
+            "text": "Which is a sign of feature leakage?",
+            "options": [
+                "Using last year's data to predict this year",
+                "Using future information or target-derived features in training",
+                "Using too many features",
+                "Using cross-validation",
+            ],
+            "answer": 1,
+            "explanation": "Leakage occurs when information that wouldn't be available at prediction time is used during training.",
+        },
     ]
 
     answers = []
@@ -546,12 +596,62 @@ def _render_unit2_quiz():
             "text": "In a stakeholder summary, which statement best explains RMSE of 50 on next-month spend?",
             "options": [
                 "\"The model is 50% accurate.\"",
-                "\"On average, our predictions are about \u00a350 away from the true monthly spend.\"",
-                "\"The model never makes errors greater than \u00a350.\"",
+                "\"On average, our predictions are about £50 away from the true monthly spend.\"",
+                "\"The model never makes errors greater than £50.\"",
                 "\"The coefficients are small so the model is good.\"",
             ],
             "answer": 1,
             "explanation": "RMSE can be translated into an average error in the same units as the target.",
+        },
+        {
+            "text": "What is the main difference between Lasso and Ridge regression?",
+            "options": [
+                "Lasso can shrink coefficients to exactly zero; Ridge cannot",
+                "Ridge is always better",
+                "Lasso cannot handle categorical features",
+                "They are the same",
+            ],
+            "answer": 0,
+            "explanation": "Lasso (L1) can eliminate features by setting coefficients to zero; Ridge (L2) only shrinks them.",
+        },
+        {
+            "text": "Which metric is most sensitive to outliers?",
+            "options": ["MAE", "MSE", "Median Absolute Error", "R-squared"],
+            "answer": 1,
+            "explanation": "MSE squares errors, making it very sensitive to large outliers.",
+        },
+        {
+            "text": "What does R-squared measure?",
+            "options": [
+                "The number of features",
+                "The proportion of variance in the target explained by the model",
+                "The training time",
+                "The number of outliers",
+            ],
+            "answer": 1,
+            "explanation": "R-squared indicates how much of the target's variance is captured by the model.",
+        },
+        {
+            "text": "When should you use cross-validation instead of a single train/test split?",
+            "options": [
+                "Never",
+                "When you want a more robust estimate of model performance",
+                "Only for classification",
+                "Only when you have millions of rows",
+            ],
+            "answer": 1,
+            "explanation": "Cross-validation gives a more reliable performance estimate by testing on multiple folds.",
+        },
+        {
+            "text": "What is the purpose of a residual plot in regression?",
+            "options": [
+                "To show the training time",
+                "To diagnose patterns in prediction errors and check model assumptions",
+                "To count the number of features",
+                "To display the dataset",
+            ],
+            "answer": 1,
+            "explanation": "Residual plots help identify non-linearity, heteroscedasticity, and other issues.",
         },
     ]
 
@@ -737,6 +837,61 @@ def _render_unit3_quiz():
             ],
             "answer": 1,
             "explanation": "Lowering the threshold marks more cases as positive, catching more true positives but also more false positives.",
+        },
+        {
+            "text": "What does ROC-AUC measure?",
+            "options": [
+                "The training time",
+                "The model's ability to rank positive cases higher than negative cases",
+                "The number of features",
+                "The dataset size",
+            ],
+            "answer": 1,
+            "explanation": "ROC-AUC measures how well the model separates classes across all thresholds.",
+        },
+        {
+            "text": "In a confusion matrix, what are false positives?",
+            "options": [
+                "Cases predicted positive that are actually positive",
+                "Cases predicted positive that are actually negative",
+                "Cases predicted negative that are actually positive",
+                "Cases predicted negative that are actually negative",
+            ],
+            "answer": 1,
+            "explanation": "False positives are incorrectly predicted as positive when they are actually negative.",
+        },
+        {
+            "text": "Why use stratified splitting for classification?",
+            "options": [
+                "To make the code run faster",
+                "To ensure each split has similar class proportions",
+                "To remove outliers",
+                "It is only for regression",
+            ],
+            "answer": 1,
+            "explanation": "Stratified splitting maintains class balance across train/validation/test sets.",
+        },
+        {
+            "text": "What is the F1-score?",
+            "options": [
+                "The average of precision and recall",
+                "The harmonic mean of precision and recall",
+                "The product of precision and recall",
+                "The difference between precision and recall",
+            ],
+            "answer": 1,
+            "explanation": "F1-score is the harmonic mean, giving equal weight to precision and recall.",
+        },
+        {
+            "text": "When would you prioritize recall over precision?",
+            "options": [
+                "When false negatives are very costly (e.g., missing a disease diagnosis)",
+                "When false positives are very costly",
+                "When the classes are balanced",
+                "Never",
+            ],
+            "answer": 0,
+            "explanation": "High recall is crucial when missing positive cases has serious consequences.",
         },
     ]
 
@@ -928,6 +1083,61 @@ def _render_unit4_quiz():
             ],
             "answer": 1,
             "explanation": "Very low recall on the minority class means the model is missing almost all of the cases we care about.",
+        },
+        {
+            "text": "What is overfitting?",
+            "options": [
+                "When a model performs poorly on both training and test data",
+                "When a model performs well on training data but poorly on test data",
+                "When a model is too simple",
+                "When the dataset is too large",
+            ],
+            "answer": 1,
+            "explanation": "Overfitting means the model has learned the training data too well, including noise.",
+        },
+        {
+            "text": "What is the purpose of hyperparameter tuning?",
+            "options": [
+                "To find the best model configuration for validation performance",
+                "To increase the training set size",
+                "To remove features",
+                "To guarantee perfect accuracy",
+            ],
+            "answer": 0,
+            "explanation": "Hyperparameter tuning searches for the configuration that performs best on validation data.",
+        },
+        {
+            "text": "Why use stratified k-fold cross-validation for classification?",
+            "options": [
+                "To make training faster",
+                "To ensure each fold has similar class proportions",
+                "To remove outliers",
+                "It is only for regression",
+            ],
+            "answer": 1,
+            "explanation": "Stratified CV maintains class balance in each fold, giving more reliable estimates.",
+        },
+        {
+            "text": "What is a learning curve?",
+            "options": [
+                "A plot showing model performance vs training set size",
+                "A plot of feature importance",
+                "A confusion matrix",
+                "A scatter plot of predictions",
+            ],
+            "answer": 0,
+            "explanation": "Learning curves show how performance changes as you add more training data.",
+        },
+        {
+            "text": "When should you use the test set?",
+            "options": [
+                "Throughout model development to check progress",
+                "Only once at the very end to report final performance",
+                "Never",
+                "To tune hyperparameters",
+            ],
+            "answer": 1,
+            "explanation": "The test set should be used only once at the end to avoid overfitting to it.",
         },
     ]
 

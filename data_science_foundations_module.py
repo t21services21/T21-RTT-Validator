@@ -901,6 +901,51 @@ def render_data_science_foundations_module():
                     "answer": 1,
                     "explanation": "Evaluation checks performance against the business goals before deployment.",
                 },
+                {
+                    "text": "Which of the following is an example of algorithmic bias?",
+                    "options": [
+                        "A model that performs equally well for all demographic groups",
+                        "A model that systematically underperforms for certain demographic groups",
+                        "A model with high accuracy",
+                        "A model trained on balanced data",
+                    ],
+                    "answer": 1,
+                    "explanation": "Algorithmic bias occurs when a model systematically treats certain groups unfairly, often due to biased training data.",
+                },
+                {
+                    "text": "What is the difference between a Data Analyst and a Data Scientist?",
+                    "options": [
+                        "They are exactly the same role",
+                        "Analysts focus on reporting and dashboards; Scientists build predictive models",
+                        "Scientists never use SQL",
+                        "Analysts always earn more",
+                    ],
+                    "answer": 1,
+                    "explanation": "Data Analysts typically focus on descriptive analytics and reporting, while Data Scientists build predictive and prescriptive models.",
+                },
+                {
+                    "text": "Which law requires organizations in the EU to protect personal data?",
+                    "options": ["HIPAA", "GDPR", "SOX", "FERPA"],
+                    "answer": 1,
+                    "explanation": "GDPR (General Data Protection Regulation) is the EU law governing data privacy and protection.",
+                },
+                {
+                    "text": "In the data lifecycle, which comes first?",
+                    "options": ["Data Collection", "Problem Definition", "Model Deployment", "Data Cleaning"],
+                    "answer": 1,
+                    "explanation": "You must define the problem and understand business needs before collecting or analyzing data.",
+                },
+                {
+                    "text": "Which is a key principle of responsible AI?",
+                    "options": [
+                        "Maximize profit at any cost",
+                        "Ensure fairness, transparency, and accountability",
+                        "Hide model decisions from users",
+                        "Ignore ethical considerations if accuracy is high",
+                    ],
+                    "answer": 1,
+                    "explanation": "Responsible AI emphasizes fairness, transparency, accountability, and consideration of societal impact.",
+                },
             ],
             2: [
                 {
@@ -937,6 +982,51 @@ def render_data_science_foundations_module():
                     ],
                     "answer": 1,
                     "explanation": "A clean, readable notebook with dead code removed is easier for others (and you) to understand.",
+                },
+                {
+                    "text": "What does the following code do? x = [i**2 for i in range(5)]",
+                    "options": [
+                        "Creates a list of numbers 0 to 4",
+                        "Creates a list of squares: [0, 1, 4, 9, 16]",
+                        "Raises an error",
+                        "Creates a dictionary",
+                    ],
+                    "answer": 1,
+                    "explanation": "This is a list comprehension that squares each number from 0 to 4.",
+                },
+                {
+                    "text": "Which is the correct way to import pandas?",
+                    "options": ["import pandas", "import pandas as pd", "from pandas import *", "include pandas"],
+                    "answer": 1,
+                    "explanation": "The standard convention is 'import pandas as pd' for brevity and clarity.",
+                },
+                {
+                    "text": "What is the output of: print(type([1, 2, 3]))?",
+                    "options": ["<class 'tuple'>", "<class 'list'>", "<class 'dict'>", "<class 'set'>"],
+                    "answer": 1,
+                    "explanation": "Square brackets [] define a list in Python.",
+                },
+                {
+                    "text": "Which statement about Python functions is true?",
+                    "options": [
+                        "Functions can only return one value",
+                        "Functions can return multiple values as a tuple",
+                        "Functions cannot have default parameters",
+                        "Functions must always have a return statement",
+                    ],
+                    "answer": 1,
+                    "explanation": "Python functions can return multiple values, which are automatically packed into a tuple.",
+                },
+                {
+                    "text": "What is the purpose of the 'with' statement when opening files?",
+                    "options": [
+                        "It makes the code run faster",
+                        "It automatically closes the file after the block executes",
+                        "It encrypts the file",
+                        "It is only for writing files",
+                    ],
+                    "answer": 1,
+                    "explanation": "The 'with' statement ensures proper resource management by automatically closing the file.",
                 },
             ],
             3: [
@@ -980,6 +1070,56 @@ def render_data_science_foundations_module():
                     "answer": 1,
                     "explanation": "df.drop_duplicates() is appropriate when duplicates are genuine repeats of the same record.",
                 },
+                {
+                    "text": "What does df.isnull().sum() return?",
+                    "options": [
+                        "The total number of rows",
+                        "The count of missing values per column",
+                        "The sum of all numeric columns",
+                        "A boolean array",
+                    ],
+                    "answer": 1,
+                    "explanation": "df.isnull().sum() counts missing values in each column.",
+                },
+                {
+                    "text": "Which method would you use to combine two DataFrames side-by-side based on a common key?",
+                    "options": ["df.concat()", "df.merge()", "df.append()", "df.join()"],
+                    "answer": 1,
+                    "explanation": "df.merge() performs SQL-style joins based on common columns.",
+                },
+                {
+                    "text": "What is the result of df['price'].mean()?",
+                    "options": [
+                        "The median price",
+                        "The average price across all rows",
+                        "The most common price",
+                        "The total sum of prices",
+                    ],
+                    "answer": 1,
+                    "explanation": "The .mean() method calculates the arithmetic average.",
+                },
+                {
+                    "text": "How do you select rows where age > 30 in a DataFrame?",
+                    "options": [
+                        "df[age > 30]",
+                        "df[df['age'] > 30]",
+                        "df.select(age > 30)",
+                        "df.filter(age > 30)",
+                    ],
+                    "answer": 1,
+                    "explanation": "Boolean indexing with df[df['age'] > 30] filters rows based on conditions.",
+                },
+                {
+                    "text": "What does df.describe() provide?",
+                    "options": [
+                        "Column names only",
+                        "Summary statistics for numeric columns",
+                        "The first 5 rows",
+                        "Data types of columns",
+                    ],
+                    "answer": 1,
+                    "explanation": "df.describe() shows count, mean, std, min, quartiles, and max for numeric columns.",
+                },
             ],
             4: [
                 {
@@ -1016,6 +1156,40 @@ def render_data_science_foundations_module():
                     ],
                     "answer": 2,
                     "explanation": "SELECT with WHERE filters rows and returns matching records; it does not change the data.",
+                },
+                {
+                    "text": "Which aggregate function counts non-NULL values?",
+                    "options": ["SUM()", "COUNT()", "AVG()", "MAX()"],
+                    "answer": 1,
+                    "explanation": "COUNT() counts the number of non-NULL values in a column.",
+                },
+                {
+                    "text": "What is the difference between WHERE and HAVING?",
+                    "options": [
+                        "They are the same",
+                        "WHERE filters rows before grouping; HAVING filters groups after aggregation",
+                        "HAVING is faster",
+                        "WHERE only works with numbers",
+                    ],
+                    "answer": 1,
+                    "explanation": "WHERE filters individual rows; HAVING filters aggregated groups.",
+                },
+                {
+                    "text": "Which SQL statement would you use to add a new row to a table?",
+                    "options": ["UPDATE", "INSERT", "ALTER", "SELECT"],
+                    "answer": 1,
+                    "explanation": "INSERT adds new rows to a table.",
+                },
+                {
+                    "text": "What does DISTINCT do in a SELECT statement?",
+                    "options": [
+                        "Sorts the results",
+                        "Removes duplicate rows from the result set",
+                        "Counts the rows",
+                        "Joins tables",
+                    ],
+                    "answer": 1,
+                    "explanation": "DISTINCT eliminates duplicate rows, returning only unique combinations.",
                 },
             ],
             5: [
@@ -1069,6 +1243,46 @@ def render_data_science_foundations_module():
                     "answer": 1,
                     "explanation": "Hypothesis tests compare groups or conditions, such as A vs B conversion rates.",
                 },
+                {
+                    "text": "What is the median of the dataset [1, 3, 5, 7, 9]?",
+                    "options": ["3", "5", "7", "4"],
+                    "answer": 1,
+                    "explanation": "The median is the middle value when data is sorted: 5 is in the middle position.",
+                },
+                {
+                    "text": "Which statistical test would you use to compare means of two groups?",
+                    "options": ["Chi-square test", "T-test", "Correlation", "ANOVA"],
+                    "answer": 1,
+                    "explanation": "A t-test compares the means of two groups to see if they differ significantly.",
+                },
+                {
+                    "text": "What does a confidence interval tell you?",
+                    "options": [
+                        "The exact true value",
+                        "A range where the true value likely falls",
+                        "The sample size",
+                        "The p-value",
+                    ],
+                    "answer": 1,
+                    "explanation": "A confidence interval gives a range of plausible values for a population parameter.",
+                },
+                {
+                    "text": "Which measure is most affected by outliers?",
+                    "options": ["Median", "Mean", "Mode", "Range"],
+                    "answer": 1,
+                    "explanation": "The mean is sensitive to extreme values; median is more robust to outliers.",
+                },
+                {
+                    "text": "What is statistical power in hypothesis testing?",
+                    "options": [
+                        "The probability of correctly rejecting a false null hypothesis",
+                        "The sample size",
+                        "The p-value threshold",
+                        "The confidence level",
+                    ],
+                    "answer": 0,
+                    "explanation": "Statistical power is the probability of detecting an effect when it truly exists.",
+                },
             ],
             6: [
                 {
@@ -1115,6 +1329,56 @@ def render_data_science_foundations_module():
                     ],
                     "answer": 1,
                     "explanation": "Titles that state the main message help non-technical audiences understand quickly.",
+                },
+                {
+                    "text": "What is the purpose of using color in data visualization?",
+                    "options": [
+                        "To make charts look pretty",
+                        "To highlight important patterns and guide attention",
+                        "To confuse the audience",
+                        "Color should never be used",
+                    ],
+                    "answer": 1,
+                    "explanation": "Color should be used purposefully to draw attention to key insights and patterns.",
+                },
+                {
+                    "text": "Which chart type is generally NOT recommended for showing proportions?",
+                    "options": ["Pie chart", "Stacked bar chart", "Line chart", "Treemap"],
+                    "answer": 2,
+                    "explanation": "Line charts show trends over time, not proportions of a whole.",
+                },
+                {
+                    "text": "What is the main advantage of interactive dashboards over static reports?",
+                    "options": [
+                        "They look more modern",
+                        "Users can explore data and drill down into details",
+                        "They are always faster to create",
+                        "They never need updates",
+                    ],
+                    "answer": 1,
+                    "explanation": "Interactive dashboards allow users to filter, drill down, and explore data dynamically.",
+                },
+                {
+                    "text": "When presenting to non-technical stakeholders, which is most important?",
+                    "options": [
+                        "Show all the code you wrote",
+                        "Focus on insights and recommendations in plain language",
+                        "Use as much technical jargon as possible",
+                        "Only show raw data tables",
+                    ],
+                    "answer": 1,
+                    "explanation": "Non-technical audiences need clear insights and actionable recommendations, not technical details.",
+                },
+                {
+                    "text": "What does 'data storytelling' mean?",
+                    "options": [
+                        "Making up data",
+                        "Presenting data in a narrative that guides the audience to insights and actions",
+                        "Only using text, no charts",
+                        "Hiding negative results",
+                    ],
+                    "answer": 1,
+                    "explanation": "Data storytelling combines data, visuals, and narrative to communicate insights effectively.",
                 },
             ],
             7: [
@@ -1167,6 +1431,107 @@ def render_data_science_foundations_module():
                     "options": [
                         "A README explaining the problem, data, methods and results",
                         "Your full employment history",
+                        "A list of all Python packages ever installed",
+                        "Nothing, code speaks for itself",
+                    ],
+                    "answer": 0,
+                    "explanation": "A clear README helps others understand your project quickly and shows communication skills.",
+                },
+                {
+                    "text": "What should be the first section of your capstone report?",
+                    "options": [
+                        "The code",
+                        "Problem definition and business context",
+                        "The conclusion",
+                        "Your CV",
+                    ],
+                    "answer": 1,
+                    "explanation": "Start with the problem and context so readers understand why the work matters.",
+                },
+                {
+                    "text": "Which is a sign of a strong capstone project?",
+                    "options": [
+                        "Using every machine learning algorithm you know",
+                        "Clear problem, appropriate methods, honest results and limitations",
+                        "The longest possible report",
+                        "Hiding any negative findings",
+                    ],
+                    "answer": 1,
+                    "explanation": "Strong capstones are focused, honest, and demonstrate good judgment in method selection.",
+                },
+                {
+                    "text": "Why include visualizations in your capstone?",
+                    "options": [
+                        "To make it look colorful",
+                        "To communicate patterns and insights more effectively than tables alone",
+                        "Because all projects must have exactly 10 charts",
+                        "Visualizations are not useful",
+                    ],
+                    "answer": 1,
+                    "explanation": "Good visualizations help communicate findings clearly and make reports more accessible.",
+                },
+                {
+                    "text": "What is the purpose of a capstone project in your learning journey?",
+                    "options": [
+                        "To pass time",
+                        "To demonstrate end-to-end data science skills to potential employers",
+                        "To memorize formulas",
+                        "To avoid learning theory",
+                    ],
+                    "answer": 1,
+                    "explanation": "Capstones showcase your ability to tackle real problems independently from start to finish.",
+                },
+                {
+                    "text": "Which is better for a capstone: depth or breadth?",
+                    "options": [
+                        "Breadth - try to cover everything superficially",
+                        "Depth - do one problem well with clear methods and honest evaluation",
+                        "Neither matters",
+                        "Only breadth matters",
+                    ],
+                    "answer": 1,
+                    "explanation": "Employers value depth and rigor over superficial coverage of many topics.",
+                },
+            ],
+        }
+
+        selected_quiz_unit = st.selectbox(
+            "Choose a unit:",
+            options=list(quiz_bank.keys()),
+            format_func=lambda x: f"Unit {x}: {UNITS[x]['name']}",
+            key="ds_foundations_quiz_unit",
+        )
+
+        questions = quiz_bank.get(selected_quiz_unit, [])
+        if not questions:
+            st.info("No quiz available for this unit yet.")
+            return
+
+        answers = []
+        for idx, q in enumerate(questions, start=1):
+            st.markdown(f"**Q{idx}. {q['text']}**")
+            choice = st.radio(
+                label=f"q{idx}",
+                options=list(range(len(q["options"]))),
+                format_func=lambda i, opts=q["options"]: opts[i],
+                key=f"ds_foundations_q{selected_quiz_unit}_{idx}",
+            )
+            answers.append(choice)
+
+        if st.button("Mark quiz", key="ds_foundations_quiz_mark"):
+            score = sum(1 for ua, q in zip(answers, questions) if ua == q["answer"])
+            total = len(questions)
+            st.success(f"You scored {score} out of {total} on Unit {selected_quiz_unit}.")
+
+            if total:
+                for idx, (ua, q) in enumerate(zip(answers, questions), start=1):
+                    if ua != q["answer"]:
+                        correct = q["options"][q["answer"]]
+                        explanation = q.get("explanation", "")
+                        st.warning(f"Q{idx}: Correct answer is '{correct}'. {explanation}")
+
+            if total > 0 and score == total:
+                st.balloons()
                         "A list of all Python errors you saw",
                         "Random notes with no structure",
                     ],
