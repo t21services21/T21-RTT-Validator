@@ -1622,6 +1622,26 @@ By the end of this pathway you will be able to:
             )
 
         st.markdown("---")
+        if st.button("📥 Download unit theory summary as PDF", key="ds_p2_unit_pdf"):
+            unit = UNITS[selected_unit]
+            content_lines = [f"# Unit {selected_unit}: {unit['name']}", ""]
+            content_lines.append("This PDF summarises the high-level theory for this unit.")
+            content_lines.append("Refer to the in-app materials, labs and notebooks for full detail.")
+            markdown_content = "\n".join(content_lines)
+            pdf_buffer = create_unit_pdf(
+                selected_unit,
+                unit["name"],
+                markdown_content,
+            )
+            st.download_button(
+                label="📥 Download Unit Summary PDF",
+                data=pdf_buffer,
+                file_name=f"Data_Science_Pathway2_Unit_{selected_unit}.pdf",
+                mime="application/pdf",
+                key="ds_p2_unit_pdf_dl",
+            )
+
+        st.markdown("---")
         st.markdown("### 📺 Session recordings for this unit")
         st.caption(
             "Videos added in the global Video Library for this week/unit will appear here. "

@@ -789,6 +789,24 @@ def render_data_science_foundations_module():
 
         _render_unit_content(selected_unit, unit)
 
+        # Suggest the corresponding notebook for hands-on work, where available.
+        notebook_map = {
+            1: "U1_intro_exploration.ipynb",
+            2: "U2_python_basics.ipynb",
+            3: "U3_pandas_cleaning_uk_retail.ipynb",
+            4: "U4_sql_queries_foundations_db.ipynb",
+            5: "U5_ab_testing_web.ipynb",
+            6: "U6_basic_charts.ipynb",
+            7: "U7_capstone_template.ipynb",
+        }
+
+        nb_name = notebook_map.get(selected_unit)
+        if nb_name:
+            st.info(
+                f"For hands-on practice, use the notebook `{nb_name}` in the "
+                "`data_science_pathway1/notebooks` folder as a starting point."
+            )
+
         st.markdown("---")
         st.markdown("### 🧪 Suggested lab structure")
         st.markdown(
@@ -1255,8 +1273,64 @@ uploaded into the central LMS document library:
             if st.button("📥 Study plan (8 weeks) PDF", key="dsf_study_plan_pdf"):
                 study_plan_md = """# Data Science Foundations (Pathway 1) – 8 Week Study Plan
 
-Week-by-week guide covering Units 1–7 with reading, labs and reflection tasks.
-Refer to the in-app study plan document for full details.
+This plan assumes **8 weeks** of part-time study. Tutors can stretch or
+compress it depending on learner background.
+
+---
+
+## Week 1 – Unit 1: Intro to Data & the Role of the Data Scientist
+
+- Read Unit 1 learning materials in the app.
+- Explore at least one public dataset (e.g. open government, NHS, World Bank).
+- Map CRISP-DM phases to a simple project idea.
+- Complete Unit 1 quick-check quiz.
+
+## Week 2 – Unit 2: Python Programming for Data
+
+- Work through the Python basics notebook(s) provided by your tutor.
+- Practise loading CSVs and computing simple summaries.
+- Implement a few small helper functions for data cleaning.
+- Complete Unit 2 quick-check quiz.
+
+## Week 3 – Unit 3: Working with Data using Pandas & NumPy
+
+- Read the Pandas & NumPy theory sections.
+- In notebooks, practise:
+  - Loading multiple CSVs.
+  - Joining tables and handling missing values.
+  - Building a reusable cleaning pipeline.
+- Complete Unit 3 quick-check quiz.
+
+## Week 4 – Unit 4: SQL & Relational Databases for Analysis
+
+- Review SQL theory topics (SELECT, WHERE, JOIN, GROUP BY, HAVING).
+- Practise queries on a sample multi-table schema.
+- Write at least 5 queries that answer realistic business questions.
+- Complete Unit 4 quick-check quiz.
+
+## Week 5 – Unit 5: Statistics & Probability for Data Science
+
+- Study distributions, summary statistics and correlation.
+- Run a small A/B test analysis in Python or a notebook.
+- Interpret p-values in plain language.
+- Complete Unit 5 quick-check quiz.
+
+## Week 6 – Unit 6: Data Visualisation & Storytelling
+
+- Read the visualisation and storytelling guidance.
+- Build a small dashboard or report (at least 4 charts) for a chosen dataset.
+- Write short narratives for each key chart.
+- Complete Unit 6 quick-check quiz.
+
+## Weeks 7–8 – Unit 7: Foundations Capstone Project
+
+- Select a realistic dataset and define clear questions.
+- Complete an end-to-end analysis using the CRISP-DM mindset.
+- Prepare a notebook/script plus a short report or slide deck.
+- Share a draft portfolio/GitHub repo with peers or tutors for feedback.
+
+Learners may also choose to spend **extra time** on the capstone if they
+want a standout portfolio project.
 """
                 pdf = create_unit_pdf(0, "Study Plan (8 Weeks)", study_plan_md)
                 st.download_button(
@@ -1271,8 +1345,59 @@ Refer to the in-app study plan document for full details.
             if st.button("📥 Unit checklists PDF", key="dsf_checklists_pdf"):
                 checklists_md = """# Data Science Foundations (Pathway 1) – Unit Checklists
 
-Tick-box knowledge and skills checklists for Units 1–7 to support learner and
-tutor progress tracking.
+Use these checklists to track progress. They are **not** formal assessment
+criteria but a practical guide.
+
+---
+
+## Unit 1 – Intro to Data & the Role of the Data Scientist
+
+- [ ] I can explain what data science is in one or two sentences.
+- [ ] I can name the main data roles (analyst, scientist, engineer, ML engineer).
+- [ ] I understand the CRISP-DM lifecycle at a high level.
+- [ ] I can give at least one example of data ethics/privacy concern.
+
+## Unit 2 – Python Programming for Data
+
+- [ ] I can write simple Python scripts and functions.
+- [ ] I can load CSV files and print basic summaries.
+- [ ] I understand lists, dictionaries and control flow.
+- [ ] I can keep a notebook tidy and readable.
+
+## Unit 3 – Working with Data using Pandas & NumPy
+
+- [ ] I can create and manipulate Pandas DataFrames.
+- [ ] I can handle missing values and duplicates sensibly.
+- [ ] I can join multiple tables and compute grouped metrics.
+- [ ] I can build a small, reusable cleaning notebook or script.
+
+## Unit 4 – SQL & Relational Databases for Analysis
+
+- [ ] I can explain what a relational database and schema are.
+- [ ] I can write SELECT, WHERE, ORDER BY, GROUP BY and simple JOIN queries.
+- [ ] I understand the idea of primary keys and foreign keys.
+- [ ] I can answer realistic questions using SQL queries.
+
+## Unit 5 – Statistics & Probability for Data Science
+
+- [ ] I can describe mean, median, standard deviation and distributions.
+- [ ] I know that correlation does not imply causation.
+- [ ] I can interpret a simple A/B test result and p-value.
+- [ ] I can explain what a confidence interval means in plain language.
+
+## Unit 6 – Data Visualisation & Storytelling
+
+- [ ] I can pick appropriate chart types for different questions.
+- [ ] I avoid common chart junk and misleading visual choices.
+- [ ] I can write short narrative summaries to go with charts.
+- [ ] I can build a small, coherent visual story or dashboard.
+
+## Unit 7 – Foundations Capstone Project
+
+- [ ] I have chosen a realistic dataset and clear problem statement.
+- [ ] I have documented my data sources and basic cleaning steps.
+- [ ] I have built an end-to-end analysis answering the key questions.
+- [ ] I have written a short report or slide deck with conclusions and next steps.
 """
                 pdf = create_unit_pdf(0, "Unit Checklists", checklists_md)
                 st.download_button(
@@ -1287,8 +1412,57 @@ tutor progress tracking.
             if st.button("📥 Portfolio guide PDF", key="dsf_portfolio_pdf"):
                 portfolio_md = """# Data Science Foundations (Pathway 1) – Portfolio Guide
 
-Overview of how to turn your Pathway 1 labs and capstone project into a
-job-ready portfolio on GitHub, plus guidance on CV and LinkedIn links.
+This guide explains how to turn your Pathway 1 work into a **job-ready
+portfolio** that stands out in the UK, US and global markets.
+
+---
+
+## 1. Core artefacts to include
+
+- At least one **clean, well-documented notebook** per major unit (Python,
+  Pandas, SQL, statistics, visualisation).
+- A strong **capstone project** notebook and report.
+- A short `README.md` in each project folder explaining:
+  - Problem and context.
+  - Data sources.
+  - Methods and key results.
+  - How to run the code.
+
+## 2. Structuring your GitHub repository
+
+Suggested structure:
+
+- `foundations_capstone/`
+  - `notebooks/`
+  - `data/` (small sample or synthetic data only)
+  - `README.md`
+- `unit_labs/`
+  - `python_basics/`
+  - `pandas_cleaning/`
+  - `sql_exercises/`
+  - `visualisation_story/`
+
+Make sure you remove credentials and do **not** publish sensitive data.
+
+## 3. Writing a strong README
+
+Every portfolio project should have a README that answers:
+
+1. What problem are you solving and why does it matter?
+2. What data did you use and how did you clean it?
+3. What methods and tools did you apply?
+4. What are the main findings or recommendations?
+5. How can someone run or reproduce your work?
+
+## 4. Connecting portfolio to CV and LinkedIn
+
+- Add a short "Projects" section to your CV with 2–3 bullet points per
+  project and a link to GitHub.
+- On LinkedIn, add links to key repositories in your About section and
+  Experience/Projects entries.
+
+Your goal is that a recruiter or hiring manager can open **one link** and
+quickly see that you can take a realistic dataset from question to insight.
 """
                 pdf = create_unit_pdf(0, "Portfolio Guide", portfolio_md)
                 st.download_button(
