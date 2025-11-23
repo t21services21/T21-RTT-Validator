@@ -116,209 +116,3964 @@ def _render_unit_learning_materials(unit_number: int):
     )
 
     if unit_number == 1:
-        st.markdown("#### 📘 What does a data analyst do?")
+        st.markdown("#### 📘 What is Data Analysis? The Complete Foundation")
         st.markdown(
-            """This unit introduces the **day-to-day work** of data analysts in
-healthcare, retail, finance and other sectors:
+            """Data analysis is the systematic process of inspecting, cleaning, transforming, 
+and modeling data to discover useful information, draw conclusions, and support 
+decision-making. As a data analyst, you're not just crunching numbers—you're 
+translating business problems into analytical questions, then translating analytical 
+findings back into actionable business recommendations.
 
-- Turning business questions into measurable metrics.
-- Working with stakeholders to clarify what success looks like.
-- Choosing the right data sources and tools for a question.
+**Your Core Role as a Data Analyst:**
 
-You will see how analysts act as a **bridge** between raw data and
-decisions, not just "report builders".
+You are the **bridge between data and decisions**. This means:
+- Understanding what stakeholders really need (not just what they ask for)
+- Knowing where data lives and how to access it
+- Cleaning and preparing data for analysis
+- Performing the actual analysis (queries, calculations, visualizations)
+- Communicating findings in business language
+- Recommending specific actions based on data
+
+**Real-World Example:**
+
+Imagine you're a Data Analyst at a hospital trust. A clinic manager approaches you:
+
+*"We're getting too many DNAs (Did Not Attends). Can you help?"*
+
+A weak analyst response:
+*"Sure, I'll pull the DNA numbers."*
+
+A strong analyst response:
+*"Let me make sure I understand what you need. Are you asking:*
+- *What % of appointments are DNAs overall?*
+- *Which clinics or specialties have the highest DNA rates?*
+- *Are there patterns by day of week, time of day, or patient demographics?*
+- *Has this rate changed over time?*
+- *What's the impact on waiting lists and capacity?"*
+
+See the difference? You're clarifying the actual business problem before diving into data.
+
+**The Data Analysis Process (Your Daily Workflow):**
+
+1. **Understand the Question** (30% of your time)
+   - Meet with stakeholders
+   - Clarify vague requests
+   - Define success metrics
+   - Agree on timeframes and scope
+
+2. **Find and Access Data** (20% of your time)
+   - Identify data sources
+   - Get necessary permissions
+   - Understand data structure
+   - Check data quality
+
+3. **Clean and Prepare Data** (40% of your time - YES, really!)
+   - Handle missing values
+   - Fix inconsistencies
+   - Merge data from multiple sources
+   - Create calculated fields
+
+4. **Analyze** (5% of your time)
+   - Run queries
+   - Create visualizations
+   - Identify patterns
+   - Test hypotheses
+
+5. **Communicate Results** (5% of your time)
+   - Create clear visuals
+   - Write executive summaries
+   - Present findings
+   - Recommend actions
+
+**Notice:** Most of your time is BEFORE and AFTER the actual analysis!
 """
         )
 
-        st.markdown("#### 🎯 From vague requests to clear questions")
+        st.markdown("#### 🎯 From Vague Requests to Clear, Measurable Questions")
         st.markdown(
-            """Stakeholders rarely speak in perfect analytics language. You will
-practise rewriting vague requests such as:
+            """One of your most valuable skills is **requirements clarification**. 
+Stakeholders rarely know how to ask analytical questions perfectly. They'll say:
 
 - "Why are we so busy?"
 - "Marketing isn't working."
+- "Sales are down."
+- "Can you check the numbers?"
 
-into concrete, measurable questions with clear definitions and time
-frames.
+Your job is to transform these into **SMART questions** (Specific, Measurable, 
+Actionable, Relevant, Time-bound).
+
+**Transformation Framework:**
+
+**Vague Request:** "Why are we so busy?"
+
+**Your Clarifying Questions:**
+- Busy compared to what? (need a baseline)
+- Which department/clinic/team?
+- Busy = more patients, longer hours, or overwhelmed staff?
+- What time period are we talking about?
+- What would 'not busy' look like in numbers?
+
+**Refined Question:**
+*"Has patient volume in the Outpatient Dermatology clinic increased compared 
+to the same quarter last year? If so, by how much, and which appointment types 
+are driving the increase?"*
+
+Now THAT'S answerable with data!
+
+**More Examples:**
+
+| Vague Request | Problem | Better Question |
+|---------------|---------|----------------|
+| "Marketing isn't working" | No metrics defined | "Has our email campaign conversion rate changed? Comparing this month vs last month, segmented by customer type" |
+| "Sales are down" | No timeframe, no segment | "What % has revenue decreased in Q4 vs Q3? Which product lines show the biggest decline?" |
+| "Customers are unhappy" | Subjective, no data | "What's our Net Promoter Score this quarter vs last? Which service areas receive the most complaints?" |
+| "We need more staff" | No evidence | "What's our current appointments-per-staff ratio? How does it compare to industry benchmarks? Where are the bottlenecks?" |
+
+**The SMART Framework Applied:**
+
+Always refine requests to include:
+
+**S - Specific:** Which department? Which metric? Which customer segment?
+
+**M - Measurable:** Can we express this as a number, %, rate, or count?
+
+**A - Actionable:** Will the answer lead to a decision or action?
+
+**R - Relevant:** Does this align with business priorities?
+
+**T - Time-bound:** What's the time period? Need a comparison period?
+
+**Practice Exercise (You'll do this in labs):**
+
+Take this request: *"The website is slow."*
+
+Refine it into 3 measurable questions:
+1. What is the current average page load time, and has it increased compared to last month?
+2. Which pages have load times exceeding our 3-second target?
+3. What % of users are experiencing load times > 5 seconds, broken down by device type?
+
+See how each question is now answerable with data?
+
 """
         )
 
-        st.markdown("#### 🧩 Mapping questions to data sources")
+        st.markdown("#### 🧩 Mapping Questions to Data Sources: Where Does the Data Actually Live?")
         st.markdown(
-            """You will think about where data actually lives:
+            """Once you have a clear question, you need to know **where to find the data**. 
+This requires understanding your organization's data landscape.
 
-- Transactional systems (bookings, EHR, sales).
-- CRM / marketing tools.
-- Spreadsheets and manual trackers.
+**Common Data Sources in Organizations:**
 
-The focus is on **practical reasoning**: what tables or files do we need
-to answer this question reliably?
+**1. Transactional Systems (Operational Databases)**
+- **What:** Systems that run daily operations
+- **Examples:**
+  - Hospital: Electronic Health Records (EHR), appointment scheduling system
+  - Retail: Point of Sale (POS), inventory management
+  - E-commerce: Order management, customer accounts
+- **Data:** Usually in SQL databases (PostgreSQL, MySQL, SQL Server)
+- **Access:** Need credentials, sometimes restricted
+- **Quality:** Generally good (validated at entry)
+
+**2. CRM & Marketing Tools**
+- **What:** Customer relationship and marketing campaign data
+- **Examples:**
+  - Salesforce, HubSpot, Mailchimp
+  - Google Analytics, Facebook Ads Manager
+- **Data:** Some have SQL access, many are API or CSV exports
+- **Access:** Often need admin permissions
+- **Quality:** Variable (depends on how users maintain it)
+
+**3. Data Warehouses / Business Intelligence Systems**
+- **What:** Centralized repository combining multiple sources
+- **Examples:**
+  - Snowflake, Redshift, BigQuery
+  - Tableau Server, Power BI Service
+- **Data:** Pre-cleaned and structured for analysis
+- **Access:** This is YOUR best friend as an analyst
+- **Quality:** Usually good (ETL processes clean it)
+
+**4. Spreadsheets & Manual Trackers**
+- **What:** Excel/Google Sheets maintained by teams
+- **Examples:**
+  - Budget trackers
+  - Project status logs
+  - Customer feedback spreadsheets
+- **Data:** Highly variable formats
+- **Access:** Usually on shared drives or Google Drive
+- **Quality:** Often messy, needs cleaning
+
+**5. External Data Sources**
+- **What:** Data from outside your organization
+- **Examples:**
+  - Government statistics (ONS, NHS Digital)
+  - Weather data
+  - Market research reports
+- **Data:** Various formats (CSV, API, PDF reports)
+- **Access:** Some free, some paid
+- **Quality:** Variable
+
+**Mapping Exercise: DNA (Did Not Attend) Analysis**
+
+Question: *"Which clinics have the highest DNA rates, and are there patterns by 
+patient demographics?"*
+
+**Data Needed:**
+- Appointment data (appointment_id, clinic_id, patient_id, appointment_date, 
+  appointment_time, status [attended/DNA])
+- Patient demographics (patient_id, age, gender, postcode, deprivation_index)
+- Clinic information (clinic_id, specialty, location)
+
+**Where to Find It:**
+- Appointments: Electronic Scheduling System → appointments table
+- Demographics: Patient Administration System → patients table
+- Clinics: Reference Data → clinics table
+
+**Join Logic:**
+```sql
+SELECT 
+    c.clinic_name,
+    c.specialty,
+    COUNT(*) as total_appointments,
+    SUM(CASE WHEN a.status = 'DNA' THEN 1 ELSE 0 END) as dna_count,
+    ROUND(100.0 * SUM(CASE WHEN a.status = 'DNA' THEN 1 ELSE 0 END) / COUNT(*), 2) as dna_rate
+FROM appointments a
+JOIN clinics c ON a.clinic_id = c.clinic_id
+WHERE a.appointment_date >= '2024-01-01'
+GROUP BY c.clinic_name, c.specialty
+ORDER BY dna_rate DESC;
+```
+
+See how we mapped the question to actual tables and fields?
+
+**Data Source Checklist:**
+
+For ANY analysis, ask yourself:
+
+- [ ] Where does this data live? (system name, table name)
+- [ ] Do I have access? (credentials, permissions)
+- [ ] How current is the data? (real-time, daily batch, weekly?)
+- [ ] What's the data quality like? (known issues, missing values?)
+- [ ] Do I need to join multiple sources? (what's the join key?)
+- [ ] Are there any GDPR/privacy considerations? (PII, patient data?)
+- [ ] What's the historical depth? (how far back can I query?)
+
+**Practical Tip:** Create a "Data Source Inventory"
+
+Maintain a personal reference document:
+
+| Data Domain | System | Access Method | Key Tables | Join Keys | Known Issues |
+|-------------|--------|---------------|------------|-----------|-------------|
+| Appointments | ScheduleDB | SQL (read-only) | appointments, patients, clinics | patient_id, clinic_id | DNS before 2020 unreliable |
+| Sales | SalesApp | API (daily extract) | orders, products, customers | customer_id, product_id | Returns not always logged |
+| Marketing | HubSpot | CSV export | campaigns, contacts, engagements | contact_id | Duplicates common |
+
+This becomes your analytical playbook!
 """
         )
     elif unit_number == 2:
-        st.markdown("#### 📘 Why spreadsheets still matter")
+        st.markdown("#### 📘 Why Spreadsheets Still Matter (And Always Will)")
         st.markdown(
-            """Most organisations still rely heavily on Excel/Sheets. This unit
-focuses on **practical spreadsheet skills** for cleaning, exploring and
-summarising data.
+            """Despite the rise of Python, SQL, and advanced BI tools, **spreadsheets remain 
+the most widely used data analysis tool in business**. Why?
 
-You will treat spreadsheets as a serious analysis tool, not just a place
-to store lists.
+**Universal Accessibility:**
+- Everyone has Excel or Google Sheets
+- No installation, no IT approval needed
+- Non-technical stakeholders can open and understand them
+- Quick ad-hoc analysis without waiting for data team
+
+**Real-World Reality:**
+- 90% of businesses run on spreadsheets
+- Financial models, budgets, forecasts → all in Excel
+- Small to medium datasets (< 1M rows) → spreadsheets are fastest
+- Many data sources export to CSV by default
+
+**Your Role as an Analyst:**
+
+You need to be EXCELLENT at spreadsheets because:
+1. Stakeholders will send you data in Excel
+2. You'll need to quickly clean and explore data
+3. Many of your outputs will be Excel deliverables
+4. It's the common language of business
+
+**This unit treats spreadsheets as a SERIOUS analytical tool**, not just a calculator.
+
+**What Makes Someone "Excel-Proficient" vs "Excel Expert"?**
+
+| Skill Level | What They Can Do | Time to Complete Task |
+|-------------|------------------|---------------------|
+| **Basic User** | Enter data, basic SUM, simple charts | Manual work, error-prone, 2 hours |
+| **Proficient Analyst** | Clean data, VLOOKUP, Pivot Tables, conditional logic | Semi-automated, 30 minutes |
+| **Excel Expert** | Complex nested formulas, Power Query, dynamic dashboards | Fully automated, 5 minutes + reusable |
+
+**Your goal:** Reach "Proficient Analyst" level (minimum for job-readiness)
+
+**Common Analyst Tasks You'll Master:**
+
+1. **Data Cleaning** (40% of your Excel time)
+   - Remove duplicates
+   - Fix inconsistent formats
+   - Handle missing values
+   - Standardize text (proper case, trim spaces)
+
+2. **Data Transformation** (30%)
+   - Lookups (joining data from multiple sheets)
+   - Calculations (formulas across rows/columns)
+   - Aggregations (summing, averaging, counting)
+
+3. **Analysis & Visualization** (20%)
+   - Pivot tables for summarization
+   - Charts for communication
+   - Conditional formatting for patterns
+
+4. **Delivery** (10%)
+   - Format for stakeholder consumption
+   - Add context and annotations
+   - Ensure reproducibility
 """
         )
 
-        st.markdown("#### 🧹 Cleaning and structuring data")
+        st.markdown("#### 🧹 Data Cleaning in Excel: From Messy to Analysis-Ready")
         st.markdown(
-            """You will practise:
+            """**The #1 Rule of Data Analysis:** Garbage in = Garbage out
 
-- Removing duplicates and obvious errors.
-- Handling blanks and inconsistent formats.
-- Turning "report-style" sheets into clean tables suitable for
-  analysis.
+Most data you receive will be MESSY. You must clean it before analysis.
+
+**Common Data Quality Issues (You'll See These Daily):**
+
+**1. Duplicates**
+
+**The Problem:**
+```
+| Customer ID | Name      |
+|-------------|-----------|
+| 001         | John Doe  |
+| 001         | John Doe  |  ← Duplicate
+| 002         | Jane Smith|
+```
+
+**The Fix:**
+- Excel: Data → Remove Duplicates
+- Google Sheets: Data → Data cleanup → Remove duplicates
+- CHECK FIRST: Are they true duplicates or legitimate repeat entries?
+
+**Best Practice:** Always keep original data, create "cleaned" version
+
+---
+
+**2. Inconsistent Formatting**
+
+**The Problem:**
+```
+| Date       | Amount  |
+|------------|---------|
+| 01/05/2024 | £1,234  |
+| 5-Jan-2024 | 1234    |  ← Mixed formats
+| 2024-01-05 | $1,234  |
+```
+
+**The Fix:**
+- Dates: Use `TEXT(date, "YYYY-MM-DD")` to standardize
+- Currency: Use `VALUE()` to strip symbols, format cells consistently
+- Formula: `=TEXT(A2,"YYYY-MM-DD")` converts any date to standard format
+
+---
+
+**3. Extra Spaces (The Silent Killer)**
+
+**The Problem:**
+```
+"John Doe"   ← Has trailing spaces, won't match "John Doe"
+" Jane Smith" ← Leading space
+```
+
+These look the same but VLOOKUP will fail!
+
+**The Fix:**
+```excel
+=TRIM(A2)  ← Removes leading, trailing, and extra internal spaces
+```
+
+**Always TRIM text data before analysis!**
+
+---
+
+**4. Inconsistent Capitalization**
+
+**The Problem:**
+```
+| Product    |
+|------------|
+| Widget     |
+| widget     |  ← Won't group together in Pivot Table
+| WIDGET     |
+```
+
+**The Fix:**
+```excel
+=PROPER(A2)  ← Widget (capitalizes first letter of each word)
+=UPPER(A2)   ← WIDGET (all caps)
+=LOWER(A2)   ← widget (all lowercase)
+```
+
+---
+
+**5. Merged Cells (Your Enemy)**
+
+**The Problem:**
+Report-style formatting with merged cells breaks data analysis
+
+```
+[Merged Cell: Region: North]
+Sales  Revenue
+100    1000
+200    2000
+```
+
+**The Fix:**
+1. Select all → Home → Merge & Center → Unmerge
+2. Fill down the values that were in merged cells
+3. Now you have proper tabular data
+
+**Rule:** Never use merged cells in data tables. Only in presentation layers.
+
+---
+
+**6. Missing Values**
+
+**The Problem:**
+```
+| Customer | Sales | Region |
+|----------|-------|--------|
+| John     | 100   | North  |
+| Jane     |       | South  |  ← Missing sales value
+| Bob      | 150   |        |  ← Missing region
+```
+
+**The Fix (depends on context):**
+
+**Option 1: Remove rows with missing critical data**
+```excel
+=IF(ISBLANK(B2),"DELETE","KEEP")  ← Flag rows to delete
+```
+
+**Option 2: Fill with default value**
+```excel
+=IF(ISBLANK(B2),0,B2)  ← Replace blanks with 0
+=IF(ISBLANK(C2),"Unknown",C2)  ← Replace blanks with "Unknown"
+```
+
+**Option 3: Impute (fill with average/median)**
+```excel
+=IF(ISBLANK(B2),AVERAGE(B:B),B2)  ← Fill with column average
+```
+
+**Business Rule:** ALWAYS document how you handled missing values!
+
+---
+
+**7. Text Stored as Numbers (or vice versa)**
+
+**The Problem:**
+```
+| Product Code |
+|--------------|
+| 001          |  ← Excel strips leading zero → shows as "1"
+| 002          |
+```
+
+**The Fix:**
+- Pre-format column as Text before pasting
+- Or use formula: `=TEXT(A2,"000")` to add leading zeros back
+
+---
+
+**DATA CLEANING WORKFLOW (Your Step-by-Step Process):**
+
+**STEP 1: Save Original** (Always!)
+- Copy raw data to new sheet "Raw Data"
+- Never work directly on original
+
+**STEP 2: Create "Cleaned" Sheet**
+- Copy to new sheet "Cleaned Data"
+- Document what you changed
+
+**STEP 3: Remove Obvious Junk**
+- Delete empty rows/columns
+- Remove headers/footers from report exports
+- Unmerge cells
+
+**STEP 4: Standardize Formats**
+- Fix dates (one format)
+- Fix currency (remove symbols, consistent decimals)
+- TRIM all text columns
+
+**STEP 5: Handle Missing Values**
+- Identify blanks
+- Decide: delete, fill, or flag
+- Document decision
+
+**STEP 6: Remove Duplicates**
+- Check for true duplicates
+- Remove if appropriate
+
+**STEP 7: Validate**
+- Count rows (did you lose data?)
+- Check key columns (do values make sense?)
+- Spot check 10-20 random rows
+
+**STEP 8: Document**
+- Add "Data Dictionary" sheet explaining each column
+- Note any assumptions or decisions made
 """
         )
 
-        st.markdown("#### 🔢 Formulas, lookups and pivot tables")
+        st.markdown("#### 🔢 Essential Excel Formulas for Data Analysts")
         st.markdown(
-            """Key analyst skills include:
+            """**These formulas solve 80% of analyst problems. Master them.**
 
-- Conditional aggregates (e.g. `SUMIFS`, `COUNTIFS`).
-- Lookups/joins (`XLOOKUP`, `VLOOKUP`, `INDEX/MATCH`).
-- Pivot tables for quick grouped summaries.
+---
 
-You will use these to answer realistic questions from small datasets.
+### 1. CONDITIONAL AGGREGATIONS (Your Daily Bread)
+
+**SUMIF / SUMIFS - Conditional Summing**
+
+**Business Question:** "What's total revenue for the North region?"
+
+**Single Condition (SUMIF):**
+```excel
+=SUMIF(region_range, "North", revenue_range)
+=SUMIF(B:B, "North", C:C)
+```
+
+**Multiple Conditions (SUMIFS):**
+
+**Business Question:** "What's total revenue for North region in January?"
+
+```excel
+=SUMIFS(sum_range, criteria_range1, criteria1, criteria_range2, criteria2)
+=SUMIFS(D:D, B:B, "North", C:C, "January")
+```
+
+**Real Example:**
+```
+=SUMIFS(Sales!$E:$E, Sales!$B:$B, "North", Sales!$C:$C, ">=2024-01-01", Sales!$C:$C, "<=2024-01-31")
+```
+Sums sales for North region between Jan 1-31, 2024
+
+---
+
+**COUNTIF / COUNTIFS - Conditional Counting**
+
+**Business Question:** "How many customers are in the North region?"
+
+```excel
+=COUNTIF(B:B, "North")
+```
+
+**Multiple Conditions:**
+"How many high-value (>£1000) customers in North region?"
+
+```excel
+=COUNTIFS(B:B, "North", C:C, ">1000")
+```
+
+---
+
+**AVERAGEIF / AVERAGEIFS - Conditional Averaging**
+
+**Business Question:** "What's the average order value for the North region?"
+
+```excel
+=AVERAGEIF(B:B, "North", C:C)
+```
+
+---
+
+### 2. LOOKUPS (Joining Data From Different Sheets)
+
+**VLOOKUP - The Classic (Vertical Lookup)**
+
+**Business Scenario:** You have customer IDs in one sheet, need to add customer names from another sheet.
+
+**Syntax:**
+```excel
+=VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])
+```
+
+**Example:**
+```excel
+=VLOOKUP(A2, Customers!A:C, 2, FALSE)
+```
+
+Looks for value in A2, searches in Customers sheet columns A:C, returns value from column 2, exact match
+
+**Common VLOOKUP Mistakes:**
+- ❌ Lookup column not first in range
+- ❌ Using TRUE (approximate match) when you want FALSE (exact match)
+- ❌ Hardcoding column numbers instead of using COLUMN() function
+- ✅ Always use FALSE for exact match in business data
+
+---
+
+**XLOOKUP - The Modern Replacement (Excel 365 / Google Sheets)**
+
+**Why Better:** Searches any column, returns any column, handles errors better
+
+**Syntax:**
+```excel
+=XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found], [match_mode])
+```
+
+**Example:**
+```excel
+=XLOOKUP(A2, Customers!A:A, Customers!B:B, "Not Found")
+```
+
+**Advantages:**
+- Can search left or right
+- Built-in error handling
+- Faster
+- More readable
+
+---
+
+**INDEX MATCH - The Flexible Powerhouse**
+
+**Why Use:** Most flexible, works everywhere, better for large datasets
+
+**Syntax:**
+```excel
+=INDEX(return_range, MATCH(lookup_value, lookup_range, 0))
+```
+
+**Example:**
+```excel
+=INDEX(Customers!B:B, MATCH(A2, Customers!A:A, 0))
+```
+
+Reads as: "Return value from column B where column A matches A2"
+
+**When to Use:**
+- VLOOKUP limitations (lookup column not first)
+- Two-way lookups (find row AND column)
+- Large datasets (faster than VLOOKUP)
+
+---
+
+### 3. CONDITIONAL LOGIC
+
+**IF Statements - Decision Making**
+
+**Simple IF:**
+```excel
+=IF(condition, value_if_true, value_if_false)
+=IF(A2>1000, "High Value", "Normal")
+```
+
+**Nested IF (Multiple Conditions):**
+```excel
+=IF(A2>5000, "Premium", IF(A2>1000, "High", "Normal"))
+```
+
+**Better Alternative - IFS (Excel 365):**
+```excel
+=IFS(A2>5000, "Premium", A2>1000, "High", A2>0, "Normal", TRUE, "Error")
+```
+
+---
+
+**AND / OR - Combining Conditions**
+
+**Business Question:** "Is this a high-value customer in a priority region?"
+
+```excel
+=IF(AND(B2="North", C2>1000), "Priority", "Standard")
+```
+
+**OR Example:**
+```excel
+=IF(OR(B2="North", B2="South"), "Covered", "Not Covered")
+```
+
+---
+
+### 4. TEXT MANIPULATION
+
+**CONCATENATE / CONCAT / & - Combining Text**
+
+**Joining First and Last Name:**
+```excel
+=A2&" "&B2  ← Fastest way
+=CONCAT(A2," ",B2)  ← Function way
+```
+
+**Building Addresses:**
+```excel
+=A2&", "&B2&", "&C2&" "&D2
+```
+Results: "123 Main St, London, UK SW1A 1AA"
+
+---
+
+**LEFT, RIGHT, MID - Extracting Parts of Text**
+
+**Extract First 3 Characters:**
+```excel
+=LEFT(A2, 3)
+```
+
+**Extract Last 4 Characters (e.g., last 4 of phone number):**
+```excel
+=RIGHT(A2, 4)
+```
+
+**Extract Middle Characters:**
+```excel
+=MID(A2, 5, 3)  ← Start at position 5, extract 3 characters
+```
+
+**Real Example - Extract Postcode District:**
+```excel
+=LEFT(A2, FIND(" ", A2)-1)  ← Extracts "SW1A" from "SW1A 1AA"
+```
+
+---
+
+### 5. DATE FORMULAS
+
+**TODAY() / NOW()**
+```excel
+=TODAY()  ← Current date
+=NOW()    ← Current date and time
+```
+
+**Age Calculation:**
+```excel
+=DATEDIF(birthdate, TODAY(), "Y")  ← Years
+```
+
+**Days Between Dates:**
+```excel
+=B2-A2  ← Simple subtraction works!
+```
+
+**Month/Year Extraction:**
+```excel
+=MONTH(A2)  ← Returns month number (1-12)
+=YEAR(A2)   ← Returns year
+=TEXT(A2, "MMMM")  ← Returns month name (e.g., "January")
+```
+
+---
+
+**ANALYST TIP:** Build a "Formula Cheat Sheet"
+
+Create a reference sheet with:
+- Common formulas you use
+- Examples with your actual data
+- Notes on when to use each
+
+This becomes your personal playbook for fast analysis.
+"""
+        )
+
+        st.markdown("#### 📊 Pivot Tables - Your Secret Weapon for Fast Insights")
+        st.markdown(
+            """**Pivot Tables let you analyze thousands of rows in seconds without formulas.**
+
+**When to Use Pivot Tables:**
+- Need to summarize large datasets quickly
+- Want to see data from multiple angles
+- Stakeholder asks "What's X broken down by Y?"
+- Exploring data to find patterns
+
+**Common Business Questions Pivot Tables Answer:**
+- Total sales by region?
+- Average order value by customer segment?
+- Count of appointments by clinic and month?
+- Revenue by product category and sales rep?
+
+**ALL of these → 30 seconds with Pivot Table**
+
+---
+
+**Creating Your First Pivot Table:**
+
+**STEP 1: Select Your Data**
+- Click anywhere in your data table
+- Data → Pivot Table → Create
+
+**STEP 2: Choose What to Analyze**
+- Drag fields to 4 areas:
+  - **ROWS:** What you want to group by (e.g., Region, Product, Month)
+  - **COLUMNS:** Secondary grouping (optional, creates crosstab)
+  - **VALUES:** What you want to calculate (e.g., Sum of Sales, Count of Orders)
+  - **FILTERS:** Limit data shown (e.g., only show 2024 data)
+
+**Example Setup:**
+
+**Question:** "What's total sales by region and product category?"
+
+- **ROWS:** Region
+- **COLUMNS:** Product Category  
+- **VALUES:** Sum of Sales
+- **FILTERS:** Year = 2024
+
+**Result:**
+```
+              Electronics  Clothing  Home
+North         £50,000      £30,000   £20,000
+South         £40,000      £35,000   £25,000
+East          £45,000      £28,000   £22,000
+```
+
+---
+
+**Common Pivot Table Tricks:**
+
+**1. Calculated Fields (Add Your Own Metrics)**
+
+Want to calculate Profit Margin in Pivot Table?
+
+- Right-click in Pivot → Calculated Field
+- Name: "Profit Margin"
+- Formula: `= (Revenue - Cost) / Revenue`
+- Now you can pivot by Profit Margin!
+
+**2. Grouping Dates (Monthly, Quarterly)**
+
+Have daily data but want monthly summary?
+
+- Right-click on date field → Group
+- Select: Months, Quarters, Years
+- Instant monthly aggregation!
+
+**3. Show Values As % of Total**
+
+Want to see each region's % of total sales?
+
+- Click value → Value Field Settings
+- "Show Values As" → % of Grand Total
+- Now shows: North = 35%, South = 30%, etc.
+
+**4. Slicers (Visual Filters for Stakeholders)**
+
+Make filtering easy for non-technical users:
+
+- Pivot Table → Insert → Slicer
+- Choose field (e.g., Region, Product)
+- Click buttons to filter instantly
+- Perfect for interactive dashboards!
+
+---
+
+**Pivot Table Best Practices:**
+
+✅ **DO:**
+- Refresh Pivot Table when source data changes (Right-click → Refresh)
+- Use clear field names (rename if needed)
+- Sort by values (largest to smallest)
+- Add Grand Totals for context
+
+❌ **DON'T:**
+- Manually edit Pivot Table values (they'll be overwritten)
+- Use Pivot Tables as data storage (they're for analysis only)
+- Forget to document what filters are applied
+- Make Pivot Tables from Pivot Tables (refresh original data instead)
+
+---
+
+**Real-World Example:**
+
+**Scenario:** Hospital wants to understand appointment DNA patterns
+
+**Your Process:**
+
+1. **Get Data:** Export appointment data to Excel
+2. **Clean:** Remove cancelled appointments, fix date formats
+3. **Create Pivot Table:**
+   - ROWS: Clinic Specialty
+   - COLUMNS: Month
+   - VALUES: COUNT of Appointment Status
+   - FILTERS: Status = "DNA"
+
+4. **Add Calculated Field:**
+   - DNA Rate = DNAs / Total Appointments
+
+5. **Sort:** By DNA Rate descending
+
+6. **Result:** Instantly see which clinics have highest DNA rates by month
+
+**Time to insight:** 5 minutes (vs hours of manual formulas)
+
+**Delivery:** Copy Pivot Table to PowerPoint, add 2-3 sentence summary, done!
 """
         )
     elif unit_number == 3:
-        st.markdown("#### 📘 Why SQL matters for analysts")
+        st.markdown("#### 📘 Why SQL is THE Essential Skill for Data Analysts")
         st.markdown(
-            """Most organisational data lives in relational databases. SQL lets
-you query, filter and aggregate data directly without waiting for
-someone else to export it for you.
+            """**SQL (Structured Query Language) is the universal language of data.**
+
+If you learn ONE technical skill as a data analyst, make it SQL.
+
+**Why SQL Matters:**
+
+**1. Where the Data Actually Lives**
+- 90%+ of organizational data is in relational databases
+- Customer records, transactions, inventory, appointments → all in databases
+- Excel has row limits (1M rows), databases handle billions
+- SQL lets you access data DIRECTLY without waiting for exports
+
+**2. Independence & Speed**
+- Without SQL: "Hey IT, can you export last month's sales?" (2 days wait)
+- With SQL: Write query, get answer in 30 seconds
+- Become self-sufficient analyst, don't depend on engineers
+
+**3. Universal Skill**
+- Works with: PostgreSQL, MySQL, SQL Server, Oracle, Snowflake, BigQuery
+- Syntax 95% the same across all systems
+- Learn once, use everywhere
+
+**4. Job Requirement**
+- "SQL required" in 95%+ of data analyst job descriptions
+- Often the deciding factor between candidates
+- Salary bump: SQL skills = £5K-£10K higher starting salary
+
+**Real-World Example:**
+
+**Without SQL:**
+Manager: "How many appointments did we have last month by clinic?"
+You: "Let me request a data export... I'll have this by Wednesday."
+*Two days later, you receive a 50MB CSV, clean it in Excel, create pivot table*
+**Total time: 2 days**
+
+**With SQL:**
+Manager: "How many appointments did we have last month by clinic?"
+You: *Opens SQL tool, writes query*
+```sql
+SELECT 
+    clinic_name,
+    COUNT(*) as appointment_count
+FROM appointments
+WHERE appointment_date >= '2024-10-01' 
+  AND appointment_date < '2024-11-01'
+GROUP BY clinic_name
+ORDER BY appointment_count DESC;
+```
+**Total time: 2 minutes**
+
+**That's the power of SQL.**
+
+---
+
+**What is a Relational Database?**
+
+Think of it as multiple Excel sheets (tables) that are connected (related) to each other.
+
+**Example: Hospital Database**
+
+**Table 1: patients**
+| patient_id | patient_name | dob        | postcode |
+|------------|--------------|------------|----------|
+| 1          | John Doe     | 1980-05-15 | SW1A 1AA |
+| 2          | Jane Smith   | 1975-08-22 | E1 6AN   |
+
+**Table 2: appointments**
+| appointment_id | patient_id | clinic_id | appointment_date | status |
+|----------------|------------|-----------|------------------|--------|
+| 101            | 1          | 10        | 2024-11-01       | Attended |
+| 102            | 2          | 10        | 2024-11-01       | DNA      |
+
+**Table 3: clinics**
+| clinic_id | clinic_name     | specialty    |
+|-----------|-----------------|--------------|
+| 10        | Dermatology     | Dermatology  |
+| 11        | Cardiology      | Cardiology   |
+
+**Key Concept:** `patient_id` connects patients to appointments. `clinic_id` connects appointments to clinics.
+
+This is how real databases organize data - avoiding duplication and maintaining relationships.
 """
         )
 
-        st.markdown("#### 🔍 Core SELECT queries")
+        st.markdown("#### 🔍 Core SELECT Queries: Your Foundation")
         st.markdown(
-            """You will practise:
+            """**Every SQL query starts with SELECT.**
 
-- SELECT, WHERE, ORDER BY for filtering and sorting.
-- Basic aggregates (COUNT, SUM, AVG, MIN, MAX).
-- GROUP BY for grouped summaries.
+---
+
+### 1. Basic SELECT - Get All Columns
+
+**Business Question:** "Show me all patient records"
+
+```sql
+SELECT * 
+FROM patients;
+```
+
+**What this does:**
+- `SELECT *` = get all columns
+- `FROM patients` = from the patients table
+
+**Output:**
+```
+| patient_id | patient_name | dob        | postcode |
+|------------|--------------|------------|----------|
+| 1          | John Doe     | 1980-05-15 | SW1A 1AA |
+| 2          | Jane Smith   | 1975-08-22 | E1 6AN   |
+... all rows returned
+```
+
+⚠️ **WARNING:** `SELECT *` on big tables returns millions of rows! Always add `LIMIT` when exploring:
+
+```sql
+SELECT * 
+FROM patients
+LIMIT 10;  -- Only return 10 rows
+```
+
+---
+
+### 2. SELECT Specific Columns - Get What You Need
+
+**Business Question:** "Show me just patient names and postcodes"
+
+```sql
+SELECT 
+    patient_name,
+    postcode
+FROM patients;
+```
+
+**Output:**
+```
+| patient_name | postcode |
+|--------------|----------|
+| John Doe     | SW1A 1AA |
+| Jane Smith   | E1 6AN   |
+```
+
+**Best Practice:** Only select columns you need. Faster queries, less data transfer.
+
+---
+
+### 3. WHERE Clause - Filtering Rows
+
+**Business Question:** "Show me appointments from November 2024"
+
+```sql
+SELECT *
+FROM appointments
+WHERE appointment_date >= '2024-11-01'
+  AND appointment_date < '2024-12-01';
+```
+
+**Common WHERE Operators:**
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `=` | Equals | `status = 'Attended'` |
+| `!=` or `<>` | Not equals | `status != 'Cancelled'` |
+| `>` | Greater than | `age > 65` |
+| `>=` | Greater than or equal | `appointment_date >= '2024-01-01'` |
+| `<` | Less than | `waiting_days < 7` |
+| `<=` | Less than or equal | `price <= 100` |
+| `BETWEEN` | Range | `age BETWEEN 18 AND 65` |
+| `IN` | Multiple values | `status IN ('Attended', 'DNA')` |
+| `LIKE` | Pattern match | `patient_name LIKE 'John%'` |
+| `IS NULL` | Missing value | `email IS NULL` |
+| `IS NOT NULL` | Has value | `phone IS NOT NULL` |
+
+**Multiple Conditions with AND/OR:**
+
+```sql
+-- Both conditions must be true
+SELECT *
+FROM appointments
+WHERE status = 'DNA'
+  AND appointment_date >= '2024-11-01';
+
+-- Either condition can be true
+SELECT *
+FROM patients
+WHERE postcode LIKE 'SW%'
+   OR postcode LIKE 'E%';
+```
+
+**Pattern Matching with LIKE:**
+
+```sql
+-- Find patients whose name starts with 'John'
+SELECT *
+FROM patients
+WHERE patient_name LIKE 'John%';  -- % = any characters
+
+-- Find patients with 'Smith' anywhere in name
+SELECT *
+FROM patients
+WHERE patient_name LIKE '%Smith%';
+
+-- Find postcodes starting with SW1
+SELECT *
+FROM patients
+WHERE postcode LIKE 'SW1%';
+```
+
+---
+
+### 4. ORDER BY - Sorting Results
+
+**Business Question:** "Show me patients ordered by date of birth, oldest first"
+
+```sql
+SELECT 
+    patient_name,
+    dob
+FROM patients
+ORDER BY dob ASC;  -- ASC = ascending (oldest to newest)
+```
+
+**Descending order (newest first):**
+
+```sql
+SELECT 
+    patient_name,
+    dob
+FROM patients
+ORDER BY dob DESC;  -- DESC = descending
+```
+
+**Multiple sort columns:**
+
+```sql
+-- Sort by postcode, then by name within each postcode
+SELECT 
+    patient_name,
+    postcode
+FROM patients
+ORDER BY postcode, patient_name;
+```
+
+---
+
+### 5. DISTINCT - Remove Duplicates
+
+**Business Question:** "What unique postcodes do our patients come from?"
+
+```sql
+SELECT DISTINCT postcode
+FROM patients
+ORDER BY postcode;
+```
+
+**With COUNT:**
+
+```sql
+-- How many unique clinics do we have?
+SELECT COUNT(DISTINCT clinic_id) as unique_clinics
+FROM appointments;
+```
+
+---
+
+### 6. LIMIT - Control Result Size
+
+**Business Question:** "Show me the 10 most recent appointments"
+
+```sql
+SELECT *
+FROM appointments
+ORDER BY appointment_date DESC
+LIMIT 10;
+```
+
+**Pagination (skip first 10, show next 10):**
+
+```sql
+SELECT *
+FROM appointments
+ORDER BY appointment_date DESC
+LIMIT 10 OFFSET 10;  -- Skip first 10 results
+```
+
+---
+
+### Putting It All Together - Real Business Query
+
+**Business Question:** "Show me the 20 most recent DNA appointments in Dermatology clinics, including patient names"
+
+```sql
+SELECT 
+    a.appointment_date,
+    p.patient_name,
+    c.clinic_name,
+    a.status
+FROM appointments a
+JOIN patients p ON a.patient_id = p.patient_id
+JOIN clinics c ON a.clinic_id = c.clinic_id
+WHERE a.status = 'DNA'
+  AND c.specialty = 'Dermatology'
+  AND a.appointment_date >= '2024-01-01'
+ORDER BY a.appointment_date DESC
+LIMIT 20;
+```
+
+*(JOINs explained in next section!)*
 """
         )
 
-        st.markdown("#### 🔗 Joins and multi-table queries")
+        st.markdown("#### 📊 Aggregations: Summarizing Data")
         st.markdown(
-            """Real questions usually need data from multiple tables. You will:
+            """**Aggregation functions let you calculate summaries: totals, averages, counts, etc.**
 
-- Use INNER JOIN, LEFT JOIN to combine tables.
-- Understand keys and relationships.
-- Write queries that answer realistic business questions.
+---
+
+### 1. COUNT - Counting Rows
+
+**Business Question:** "How many appointments do we have?"
+
+```sql
+SELECT COUNT(*) as total_appointments
+FROM appointments;
+```
+
+**Output:**
+```
+| total_appointments |
+|--------------------|
+| 15234              |
+```
+
+**Count non-null values in specific column:**
+
+```sql
+-- How many patients have email addresses?
+SELECT COUNT(email) as patients_with_email
+FROM patients;
+```
+
+**Count unique values:**
+
+```sql
+-- How many unique patients had appointments?
+SELECT COUNT(DISTINCT patient_id) as unique_patients
+FROM appointments;
+```
+
+---
+
+### 2. SUM - Adding Up Values
+
+**Business Question:** "What's total revenue from appointments?"
+
+```sql
+SELECT SUM(appointment_fee) as total_revenue
+FROM appointments;
+```
+
+**With WHERE clause:**
+
+```sql
+-- Total revenue from November 2024
+SELECT SUM(appointment_fee) as november_revenue
+FROM appointments
+WHERE appointment_date >= '2024-11-01'
+  AND appointment_date < '2024-12-01';
+```
+
+---
+
+### 3. AVG - Average Values
+
+**Business Question:** "What's the average patient age?"
+
+```sql
+SELECT AVG(YEAR(CURRENT_DATE) - YEAR(dob)) as average_age
+FROM patients;
+```
+
+**More readable with ROUND:**
+
+```sql
+SELECT ROUND(AVG(waiting_days), 1) as avg_waiting_days
+FROM appointments;
+```
+
+**Output:**
+```
+| avg_waiting_days |
+|------------------|
+| 42.3             |
+```
+
+---
+
+### 4. MIN and MAX - Minimum and Maximum
+
+**Business Question:** "What's the longest and shortest waiting time?"
+
+```sql
+SELECT 
+    MIN(waiting_days) as shortest_wait,
+    MAX(waiting_days) as longest_wait
+FROM appointments;
+```
+
+**Output:**
+```
+| shortest_wait | longest_wait |
+|---------------|--------------|
+| 1             | 180          |
+```
+
+---
+
+### 5. GROUP BY - Aggregating by Category
+
+**This is where SQL becomes POWERFUL.**
+
+**Business Question:** "How many appointments per clinic?"
+
+```sql
+SELECT 
+    clinic_id,
+    COUNT(*) as appointment_count
+FROM appointments
+GROUP BY clinic_id
+ORDER BY appointment_count DESC;
+```
+
+**Output:**
+```
+| clinic_id | appointment_count |
+|-----------|-------------------|
+| 10        | 1234              |
+| 11        | 987               |
+| 12        | 856               |
+```
+
+**With meaningful names (using JOIN):**
+
+```sql
+SELECT 
+    c.clinic_name,
+    COUNT(*) as appointment_count
+FROM appointments a
+JOIN clinics c ON a.clinic_id = c.clinic_id
+GROUP BY c.clinic_name
+ORDER BY appointment_count DESC;
+```
+
+**Multiple aggregations:**
+
+```sql
+-- Appointments per clinic with DNA rate
+SELECT 
+    c.clinic_name,
+    COUNT(*) as total_appointments,
+    SUM(CASE WHEN a.status = 'DNA' THEN 1 ELSE 0 END) as dna_count,
+    ROUND(100.0 * SUM(CASE WHEN a.status = 'DNA' THEN 1 ELSE 0 END) / COUNT(*), 2) as dna_rate
+FROM appointments a
+JOIN clinics c ON a.clinic_id = c.clinic_id
+WHERE a.appointment_date >= '2024-01-01'
+GROUP BY c.clinic_name
+ORDER BY dna_rate DESC;
+```
+
+**Output:**
+```
+| clinic_name  | total_appointments | dna_count | dna_rate |
+|--------------|--------------------|-----------| ---------|
+| Dermatology  | 1234               | 185       | 14.99    |
+| Cardiology   | 987                | 118       | 11.95    |
+```
+
+---
+
+### 6. HAVING - Filtering Aggregated Results
+
+**Difference:**
+- `WHERE` filters rows BEFORE aggregation
+- `HAVING` filters results AFTER aggregation
+
+**Business Question:** "Which clinics have more than 1000 appointments?"
+
+```sql
+SELECT 
+    clinic_name,
+    COUNT(*) as appointment_count
+FROM appointments a
+JOIN clinics c ON a.clinic_id = c.clinic_id
+GROUP BY clinic_name
+HAVING COUNT(*) > 1000  -- Filter AFTER counting
+ORDER BY appointment_count DESC;
+```
+
+**Complex example - High DNA clinics:**
+
+```sql
+-- Clinics with >100 appointments AND DNA rate >15%
+SELECT 
+    c.clinic_name,
+    COUNT(*) as total_appointments,
+    ROUND(100.0 * SUM(CASE WHEN a.status = 'DNA' THEN 1 ELSE 0 END) / COUNT(*), 2) as dna_rate
+FROM appointments a
+JOIN clinics c ON a.clinic_id = c.clinic_id
+WHERE a.appointment_date >= '2024-01-01'
+GROUP BY c.clinic_name
+HAVING COUNT(*) > 100
+   AND 100.0 * SUM(CASE WHEN a.status = 'DNA' THEN 1 ELSE 0 END) / COUNT(*) > 15
+ORDER BY dna_rate DESC;
+```
+
+This finds problematic clinics (high volume + high DNA rate).
+"""
+        )
+
+        st.markdown("#### 🔗 JOINs: Combining Data from Multiple Tables")
+        st.markdown(
+            """**Real business questions need data from multiple tables. JOINs connect them.**
+
+---
+
+### Understanding Keys
+
+**Primary Key:** Unique identifier for each row
+- `patient_id` in patients table
+- `appointment_id` in appointments table
+
+**Foreign Key:** References primary key in another table
+- `patient_id` in appointments table (references patients table)
+- `clinic_id` in appointments table (references clinics table)
+
+---
+
+### INNER JOIN - Only Matching Rows
+
+**Business Question:** "Show me appointments with patient names"
+
+**Without JOIN (incomplete):**
+```sql
+SELECT * FROM appointments;
+-- Only shows patient_id (e.g., 1, 2, 3)
+-- We can't see patient names!
+```
+
+**With INNER JOIN:**
+```sql
+SELECT 
+    a.appointment_date,
+    p.patient_name,
+    a.status
+FROM appointments a
+INNER JOIN patients p ON a.patient_id = p.patient_id;
+```
+
+**What happens:**
+1. For each row in `appointments`
+2. Find matching row in `patients` where IDs match
+3. Combine columns from both tables
+4. Only include rows that have matches in BOTH tables
+
+**Visual:**
+```
+appointments             patients              RESULT
+-----------             --------              ------
+appt_id | patient_id   patient_id | name    appt_id | name | ...
+--------|------------  -----------|------   ---------|------|----
+101     | 1            1          | John    101      | John | ...
+102     | 2            2          | Jane    102      | Jane | ...
+103     | 9            3          | Bob     (103 not included - no patient #9)
+```
+
+---
+
+### LEFT JOIN - Keep All from Left Table
+
+**Business Question:** "Show me all patients, whether they have appointments or not"
+
+```sql
+SELECT 
+    p.patient_name,
+    COUNT(a.appointment_id) as appointment_count
+FROM patients p
+LEFT JOIN appointments a ON p.patient_id = a.patient_id
+GROUP BY p.patient_name;
+```
+
+**What happens:**
+- Keep ALL patients
+- If patient has appointments, show them
+- If patient has NO appointments, show NULL (which we count as 0)
+
+**Result:**
+```
+| patient_name | appointment_count |
+|--------------|-------------------|
+| John Doe     | 5                 |
+| Jane Smith   | 3                 |
+| Bob Johnson  | 0                 | ← Left JOIN keeps this
+```
+
+**Use case:** Finding patients who NEVER had appointments (for outreach)
+
+```sql
+SELECT 
+    p.patient_name,
+    p.email
+FROM patients p
+LEFT JOIN appointments a ON p.patient_id = a.patient_id
+WHERE a.appointment_id IS NULL;  -- No appointments
+```
+
+---
+
+### RIGHT JOIN - Keep All from Right Table
+
+**Rarely used** (just reverse your tables and use LEFT JOIN instead)
+
+```sql
+-- These are equivalent:
+SELECT * FROM appointments a LEFT JOIN patients p ...
+SELECT * FROM patients p RIGHT JOIN appointments a ...
+```
+
+---
+
+### Multiple JOINs - Real-World Complexity
+
+**Business Question:** "Show me DNA appointments with patient names, clinic names, and specialty"
+
+```sql
+SELECT 
+    a.appointment_date,
+    p.patient_name,
+    c.clinic_name,
+    c.specialty,
+    a.status
+FROM appointments a
+INNER JOIN patients p ON a.patient_id = p.patient_id
+INNER JOIN clinics c ON a.clinic_id = c.clinic_id
+WHERE a.status = 'DNA'
+  AND a.appointment_date >= '2024-11-01'
+ORDER BY a.appointment_date DESC;
+```
+
+**Joins 3 tables:**
+1. appointments → patients (get patient names)
+2. appointments → clinics (get clinic info)
+
+---
+
+### Common JOIN Patterns for Analysts
+
+**1. One-to-Many (Most Common)**
+
+Example: One patient, many appointments
+
+```sql
+-- How many appointments per patient?
+SELECT 
+    p.patient_name,
+    COUNT(a.appointment_id) as num_appointments
+FROM patients p
+LEFT JOIN appointments a ON p.patient_id = a.patient_id
+GROUP BY p.patient_name
+ORDER BY num_appointments DESC;
+```
+
+**2. Many-to-Many (via Junction Table)**
+
+Example: Patients can have many doctors, doctors can have many patients
+
+```sql
+-- Requires junction table: patient_doctor
+SELECT 
+    p.patient_name,
+    d.doctor_name
+FROM patients p
+JOIN patient_doctor pd ON p.patient_id = pd.patient_id
+JOIN doctors d ON pd.doctor_id = d.doctor_id;
+```
+
+**3. Self-JOIN (Comparing Rows in Same Table)**
+
+Example: Find patients in same postcode area
+
+```sql
+SELECT 
+    p1.patient_name as patient_1,
+    p2.patient_name as patient_2,
+    p1.postcode
+FROM patients p1
+JOIN patients p2 ON p1.postcode = p2.postcode
+    AND p1.patient_id < p2.patient_id;  -- Avoid duplicates
+```
+
+---
+
+### JOIN Best Practices
+
+✅ **DO:**
+- Always specify join condition (`ON table1.id = table2.id`)
+- Use table aliases (`appointments a`, `patients p`) for readability
+- Join on indexed columns (primary/foreign keys) for performance
+- Think about which JOIN type you need (INNER vs LEFT)
+
+❌ **DON'T:**
+- Forget the join condition (creates Cartesian product - millions of rows!)
+- Join on non-key columns without understanding implications
+- Use SELECT * in complex joins (hard to debug)
+
+---
+
+### Real Business Example - Complete Analysis
+
+**Business Question:** "What's the DNA rate by specialty for November 2024, for clinics with >50 appointments?"
+
+```sql
+SELECT 
+    c.specialty,
+    COUNT(*) as total_appointments,
+    SUM(CASE WHEN a.status = 'DNA' THEN 1 ELSE 0 END) as dna_count,
+    ROUND(100.0 * SUM(CASE WHEN a.status = 'DNA' THEN 1 ELSE 0 END) / COUNT(*), 2) as dna_rate_percent
+FROM appointments a
+INNER JOIN clinics c ON a.clinic_id = c.clinic_id
+WHERE a.appointment_date >= '2024-11-01'
+  AND a.appointment_date < '2024-12-01'
+GROUP BY c.specialty
+HAVING COUNT(*) > 50
+ORDER BY dna_rate_percent DESC;
+```
+
+**This one query:**
+- Joins 2 tables
+- Filters by date
+- Groups by specialty
+- Calculates percentages
+- Filters aggregated results
+- Sorts by DNA rate
+
+**Time to write:** 2 minutes
+**Business value:** Immediate identification of problem areas
+
+**THIS is why SQL is powerful.**
 """
         )
     elif unit_number == 4:
-        st.markdown("#### 📘 Why BI dashboards?")
+        st.markdown("#### 📘 Why BI Dashboards Matter (And How to Build Great Ones)")
         st.markdown(
-            """Dashboards let decision-makers see key metrics at a glance and
-drill down when needed. This unit focuses on designing dashboards that
-are clear, actionable and not cluttered.
+            """**Dashboards are how stakeholders consume your analysis.**
+
+You can have the perfect SQL query, but if your dashboard is confusing, **nobody will use it**.
+
+**What is a BI Dashboard?**
+
+A Business Intelligence dashboard is a visual display of key metrics and data points,
+designed to help decision-makers understand performance at a glance.
+
+**Think:** Car dashboard
+- Speedometer: How fast are you going RIGHT NOW?
+- Fuel gauge: How much fuel left?
+- Warning lights: Any problems?
+
+**Business dashboard:**
+- Revenue: £500K this month (vs £450K target) ✅
+- Customer satisfaction: 4.2/5 (down from 4.5 last month) ⚠️
+- Website traffic: 50K visitors (up 20% vs last month) ✅
+
+**One glance = understand business health**
+
+---
+
+**Why Dashboards Are Crucial:**
+
+**1. Executive Time is Limited**
+- C-suite spends 5-10 minutes reviewing dashboards
+- No time to read 20-page reports
+- Need instant insight: "Are we OK or not?"
+
+**2. Democratize Data**
+- Non-technical stakeholders can self-serve
+- No need to request custom reports
+- Answer own questions through filters
+
+**3. Drive Action**
+- Red metrics = immediate investigation
+- Trends = strategic planning
+- Patterns = process improvements
+
+**4. Align Teams**
+- Everyone sees same metrics
+- Shared understanding of priorities
+- No more "what's the latest number?" emails
+
+---
+
+**Dashboard Design Philosophy:**
+
+**GOOD Dashboard:**
+- Answers the question: "How are we doing?"
+- Immediately highlights problems
+- Intuitive (no training needed)
+- Actionable (drives decisions)
+
+**BAD Dashboard:**
+- Displays ALL available data
+- Confusing layout
+- Unclear what's good vs bad
+- Just "data vomit" on screen
+
+**Your Goal:** Design dashboards that **tell a story** and **drive action**
 """
         )
 
-        st.markdown("#### 🎨 Dashboard design principles")
+        st.markdown("#### 🎨 Dashboard Design Principles: The Rules That Separate Good from Great")
         st.markdown(
-            """You will learn:
+            """### 1. The 5-Second Rule
 
-- How to choose the right chart type for each question.
-- Layout and filtering strategies.
-- Avoiding chart junk and misleading visuals.
+**Can someone understand your dashboard in 5 seconds?**
+
+If not, it's too complex.
+
+**Test:** Show dashboard to someone unfamiliar. Ask:
+- "What's this about?"
+- "Are we doing well or badly?"
+- "What stands out?"
+
+If they can't answer in 5 seconds, **redesign**.
+
+---
+
+### 2. The Inverted Pyramid (Most Important → Least Important)
+
+**Top of dashboard:** Executive summary (3-4 key numbers)  
+**Middle:** Supporting details (charts showing trends)  
+**Bottom:** Detailed data (tables, filters)
+
+**Example Layout:**
+
+```
+┌─────────────────────────────────────────┐
+│ REVENUE | CUSTOMERS | SATISFACTION      │ ← Key Metrics
+│ £500K   | 1,234     | 4.2/5            │
+│ ↑ 12%   | ↑ 8%      | ↓ 6%    ⚠️       │
+├─────────────────────────────────────────┤
+│ [Revenue Trend Chart]  [Customer Chart] │ ← Visualizations
+├─────────────────────────────────────────┤
+│ [Detailed Table with Filters]          │ ← Details
+└─────────────────────────────────────────┘
+```
+
+**Most executives only look at top section!**
+
+---
+
+### 3. Choose the Right Chart Type
+
+**This is CRITICAL.** Wrong chart = confusion.
+
+| Question | Best Chart | Why |
+|----------|-----------|-----|
+| "How much?" (single number) | **Big Number (KPI card)** | Immediate impact, no interpretation needed |
+| "How has it changed over time?" | **Line Chart** | Shows trends, patterns, seasonality |
+| "How do categories compare?" | **Bar Chart** | Easy to compare lengths |
+| "What's the breakdown?" | **Pie Chart** | Shows proportions (use sparingly!) |
+| "What's the distribution?" | **Histogram** | Shows data spread |
+| "What's the relationship?" | **Scatter Plot** | Shows correlation |
+| "What's the geographic pattern?" | **Map** | Spatial patterns visible |
+| "How do 2 metrics compare over time?" | **Dual-Axis Line Chart** | Compare trends |
+
+**Chart Selection Decision Tree:**
+
+```
+Start: What question are you answering?
+
+├─ Comparing categories?
+│  ├─ Few categories (2-7)? → BAR CHART
+│  └─ Many categories (8+)? → TABLE or GROUPED BAR CHART
+│
+├─ Showing trend over time?
+│  ├─ One metric? → LINE CHART
+│  └─ Multiple metrics? → MULTI-LINE CHART or AREA CHART
+│
+├─ Showing composition (parts of whole)?
+│  ├─ At one point in time? → PIE CHART (if 2-5 slices) or BAR CHART
+│  └─ Over time? → STACKED AREA CHART
+│
+└─ Showing relationship between variables?
+   └─ → SCATTER PLOT
+```
+
+---
+
+### 4. Use Color Purposefully
+
+**Color Rules:**
+
+**GREEN = Good** (above target, positive)  
+**RED = Bad** (below target, negative, warning)  
+**AMBER/YELLOW = Caution** (approaching threshold)  
+**GREY/BLUE = Neutral** (informational)
+
+**Example: Sales Dashboard**
+
+```
+Revenue: £500K (+12%) [GREEN background]
+Profit:  £50K  (-5%)  [RED background]
+Costs:   £450K (+8%)  [AMBER background]
+```
+
+**Mistakes to Avoid:**
+
+❌ Using color just because it's pretty  
+❌ Red/green for non-performance data (accessibility issue!)  
+❌ Too many colors (rainbow dashboard = confusion)  
+✅ Limit to 3-4 colors maximum  
+✅ Consider color-blind users (use patterns too)
+
+---
+
+### 5. Reduce Cognitive Load
+
+**Every element on dashboard requires mental energy to process.**
+
+**Minimize:**
+- Gridlines (use sparingly)
+- Borders (only if needed)
+- 3D effects (NEVER use these)
+- Shadows and gradients
+- Decorative elements
+- Unnecessary labels
+
+**Maximize:**
+- White space (breathing room)
+- Clear titles
+- Data-to-ink ratio (more data, less decoration)
+
+**Before (Bad):**
+```
+┌──────────────────────────┐
+│ Sales by Region 📊      │
+│ ┌────────────────┐      │
+│ │░░░░░░░░░░░░░░░│      │ ← Heavy gridlines
+│ │░░North░░░░░░░│      │ ← 3D effects
+│ │░░░░░░░░░░░░░░░│      │ ← Gradients
+│ └────────────────┘      │
+│ [Complex Legend]        │ ← Too much text
+└──────────────────────────┘
+```
+
+**After (Good):**
+```
+┌──────────────────────────┐
+│ Sales by Region         │
+│                         │
+│ North  ████████ £200K  │ ← Clean bars
+│ South  ██████ £150K    │ ← Direct labels
+│ East   ████ £100K      │
+│                         │
+└──────────────────────────┘
+```
+
+---
+
+### 6. Make It Actionable
+
+**Every dashboard should answer: "So what should I do?"**
+
+**Add:**
+- Targets/goals (so viewers know what's good)
+- Comparisons (vs last month, vs plan, vs benchmark)
+- Context (why did this change?)
+- Recommendations (what action to take)
+
+**Example:**
+
+**Bad Dashboard:**
+```
+Revenue: £500K
+```
+
+**Good Dashboard:**
+```
+Revenue: £500K
+Target: £450K ✅ (+11% vs target)
+Last Month: £470K ↑
+Recommendation: Maintain current marketing spend
+```
+
+Now stakeholder knows:
+1. Current state (£500K)
+2. Is it good? (Yes, above target)
+3. Trend direction (Up from last month)
+4. What to do (Keep doing what we're doing)
+
+---
+
+### 7. Design for Your Audience
+
+**Different audiences need different dashboards:**
+
+**Executive Dashboard:**
+- 3-5 key metrics maximum
+- High-level trends
+- Red/yellow/green indicators
+- No detail tables
+- Mobile-friendly
+
+**Manager Dashboard:**
+- 8-12 metrics
+- Ability to filter by team/region
+- Drill-down capability
+- Week-over-week comparisons
+- Some detail available
+
+**Analyst Dashboard:**
+- 15+ metrics
+- Raw data tables
+- Export functionality
+- Multiple filters
+- Technical detail OK
+
+**Don't try to make one dashboard serve all audiences!**
 """
         )
 
-        st.markdown("#### 📖 Storytelling with data")
+        st.markdown("#### 📖 Data Storytelling: Making Numbers Memorable")
         st.markdown(
-            """Numbers alone do not drive action. You will practise writing
-short narratives that explain what the data shows and what should happen
-next.
+            """**Data doesn't speak for itself. You need to tell the story.**
+
+**Why Storytelling Matters:**
+
+Humans remember:
+- 10% of statistics
+- 65% of stories
+
+**Your job:** Wrap data in narrative so people remember AND act.
+
+---
+
+### The Data Story Structure
+
+**Every good data story has 3 parts:**
+
+**1. SETUP (Context)**
+- What's the situation?
+- Why does this matter?
+- What question are we answering?
+
+**2. CONFLICT (The Finding)**
+- What did the data show?
+- Was it expected or surprising?
+- What changed?
+
+**3. RESOLUTION (The Action)**
+- What does this mean?
+- What should we do?
+- What happens if we don't act?
+
+---
+
+### Example: Bad vs Good Data Presentation
+
+**BAD (Just Numbers):**
+
+"DNA rate is 15%. Last month was 12%. Dermatology is 18%."
+
+*No story, no action, forgettable*
+
+---
+
+**GOOD (With Story):**
+
+**"We have a growing problem with missed appointments, and it's costing us."**
+
+SETUP:
+"Our DNA (Did Not Attend) rate has increased from 12% to 15% over the past month. At our current volume of 10,000 appointments per month, that's 300 wasted appointment slots—equivalent to £30,000 in lost revenue."
+
+CONFLICT:
+"What's driving this? I analyzed by specialty and found Dermatology is the outlier at 18% DNA rate, compared to 12-14% for other specialties. When I looked at appointment types, NEW patient appointments have 22% DNA rate vs 10% for follow-ups."
+
+RESOLUTION:
+"Here's what I recommend:
+1. Implement SMS reminders specifically for Dermatology new patients (evidence shows this reduces DNA by 30-40%)
+2. Trial this for 1 month
+3. Expected impact: Save 60 appointment slots, £6,000 revenue
+4. Cost: £200 for SMS service
+5. ROI: 30x
+
+Can I proceed with implementing this?"
+
+---
+
+### Storytelling Techniques
+
+**1. Start with the Punchline**
+
+Don't bury the lead. State conclusion FIRST.
+
+❌ "I analyzed 10,000 appointments across 5 specialties over 3 months..."  
+✅ "We can save £30K/month by fixing our appointment reminder system."
+
+**2. Use Concrete Numbers, Not Percentages**
+
+Percentages are abstract. Convert to tangible impact.
+
+❌ "Sales increased 15%"  
+✅ "Sales increased 15%, bringing in an extra £75,000 this quarter—enough to hire 2 new team members"
+
+**3. Compare to Familiar Reference Points**
+
+Make scale understandable.
+
+❌ "We process 10TB of data"  
+✅ "We process 10TB of data—equivalent to 2.5 million songs or 2,000 hours of HD video"
+
+**4. Show Before/After**
+
+Visual contrast drives home the change.
+
+```
+BEFORE: [Chart showing declining trend]
+AFTER:  [Chart showing recovery]
+
+"After implementing the new process, we reversed the declining trend and exceeded our target by 20%."
+```
+
+**5. Use Analogies**
+
+Make complex concepts accessible.
+
+❌ "Our churn rate is 5% monthly"  
+✅ "Our churn rate is 5% monthly—imagine a bucket with a leak. We're adding customers through the top, but losing 5% through a hole at the bottom. We need to patch that leak."
+
+---
+
+### The "So What?" Test
+
+For every chart/number in your presentation, ask:
+
+**"So what?"**
+
+If you can't answer clearly, **remove it.**
+
+**Example:**
+
+**Data Point:** "Website traffic increased 20%"
+
+**So what?** "More potential customers are finding us"
+
+**So what?** "This should lead to more sales"
+
+**So what?** "We need to ensure our sales team is ready to handle increased leads"
+
+**So what?** "I recommend hiring 1 additional sales rep to handle 40% more lead volume"
+
+**NOW it's actionable!**
+
+---
+
+### Presenting to Different Audiences
+
+**To Executives:**
+- Lead with business impact (revenue, cost, risk)
+- Keep it to 3 key points
+- Have backup slides for questions
+- End with clear recommendation
+- Time limit: 5-10 minutes
+
+**To Technical Teams:**
+- Show methodology
+- Explain assumptions
+- Include statistical tests
+- Share code/queries if relevant
+- Time limit: 20-30 minutes
+
+**To Cross-Functional Teams:**
+- Use simple language (no jargon)
+- Heavy on visuals
+- Interactive (get input)
+- Focus on practical implications
+- Time limit: 15-20 minutes
+
+---
+
+### Common Storytelling Mistakes
+
+❌ **Data Dump**
+Showing every analysis you did instead of the key insights
+
+✅ **FIX:** Show 3 key findings, put rest in appendix
+
+❌ **No Clear Conclusion**
+Presenting data but expecting audience to figure out what it means
+
+✅ **FIX:** Explicitly state "What this means is..." and "My recommendation is..."
+
+❌ **Too Many Caveats**
+"This might not be accurate because X, Y, Z..."
+
+✅ **FIX:** Acknowledge limitations but don't undermine your findings
+
+❌ **Boring Titles**
+"Sales Analysis Q3 2024"
+
+✅ **FIX:** "Q3 Sales Exceeded Target by 15% Due to New Email Campaign"
+
+---
+
+### Your Data Story Template
+
+Use this for any analysis presentation:
+
+**SLIDE 1: The Hook**
+- One sentence: Why this matters
+- One visual: Showing the problem or opportunity
+
+**SLIDE 2: The Context**
+- What question were we trying to answer?
+- Why is this important now?
+- Brief methodology note
+
+**SLIDE 3-4: The Findings**
+- Key finding #1 (with visual)
+- Key finding #2 (with visual)
+- Key finding #3 (with visual)
+
+**SLIDE 5: So What?**
+- What does this mean for the business?
+- What's the impact if we do nothing?
+
+**SLIDE 6: Recommendations**
+- Specific action #1 (with owner and timeline)
+- Specific action #2 (with owner and timeline)
+- Expected outcomes
+
+**SLIDE 7: Next Steps**
+- Decision needed today
+- Follow-up actions
+- How you'll measure success
+
+**TOTAL: 7 slides, 10-minute presentation**
+
+---
+
+### Practice Exercise
+
+Take this raw data and turn it into a story:
+
+**DATA:**
+- Customer satisfaction score: 3.8/5 (was 4.2 last quarter)
+- Support ticket volume: Up 40%
+- Average resolution time: 48 hours (was 24 hours)
+- Top complaint: "Slow response times"
+
+**YOUR TASK:** Write a 1-paragraph story using the SETUP-CONFLICT-RESOLUTION structure.
+
+**EXAMPLE ANSWER:**
+
+"We're at risk of losing customers due to deteriorating support experience. **(SETUP: Stakes established)** 
+
+Our customer satisfaction has dropped from 4.2 to 3.8 in one quarter while support tickets increased 40% and resolution time doubled to 48 hours. The root cause is clear: we're understaffed for current ticket volume. **(CONFLICT: Problem diagnosed)** 
+
+I recommend immediately hiring 2 additional support agents (£60K cost) to handle increased volume. This should restore 24-hour resolution times and satisfaction to 4.2+ within 2 months. The alternative—continued decline—could cost us 10-15% of customers (£200K+ annual revenue impact). **(RESOLUTION: Clear action and consequences)**"
+
+**See how data becomes a compelling story?**
 """
         )
     elif unit_number == 5:
-        st.markdown("#### 📘 When to use Python as an analyst")
+        st.markdown("#### 📘 Python for Analysts: When and Why to Level Up")
         st.markdown(
-            """Python complements spreadsheets and SQL when:
+            """**Python isn't replacing Excel or SQL—it's complementing them.**
 
-- Datasets are too large for Excel.
-- You need to automate repetitive reports.
-- Transformations are complex or need version control.
+As an analyst, you'll continue using Excel and SQL daily. Python is your **power tool** for tasks they can't handle.
+
+---
+
+**When Excel/SQL Aren't Enough:**
+
+**1. Dataset Size**
+- Excel limit: 1,048,576 rows
+- Your data: 10 million rows
+- **Solution: Python (handles billions of rows)**
+
+**2. Repetitive Tasks**
+- Weekly report: Same steps every time
+- Excel: Manual clicks (20 minutes)
+- **Solution: Python script (30 seconds, automated)**
+
+**3. Complex Transformations**
+- Need to apply ML model predictions
+- Need to call external APIs
+- Need advanced text processing
+- **Solution: Python (unlimited capability)**
+
+**4. Version Control & Collaboration**
+- Excel: "Final_v2_ACTUAL_USE_THIS.xlsx"
+- **Python: Git version control, code reviews**
+
+**5. Reproducibility**
+- Excel: "How did you calculate this?"
+- **Python: Code documents every step**
+
+---
+
+**Real-World Example:**
+
+**TASK:** Generate weekly sales report
+- Pull data from SQL database
+- Clean and transform data
+- Calculate complex metrics
+- Create visualizations
+- Email report to 20 stakeholders
+
+**Excel Approach:** 45 minutes of manual work every week  
+**Python Approach:** 5 minutes to write script once, then 30 seconds to run weekly
+
+**Time saved:** 44.5 minutes × 52 weeks = **38 hours per year**
+
+---
+
+**The Analyst's Tech Stack:**
+
+```
+Excel:  Quick analysis, sharing with non-technical stakeholders
+SQL:    Getting data from databases  
+Python: Heavy processing, automation, advanced analysis
+BI Tools: Dashboards and monitoring
+
+ALL work together!
+```
+
+**You're not choosing one—you're mastering all four.**
+
+---
+
+**Common Misconception:**
+
+"I need to be a programmer to use Python."
+
+**FALSE.** You need to know:
+- How to load data
+- How to filter and transform
+- How to calculate summaries
+- How to make charts
+
+That's it. You don't need to build web apps or AI models (unless you want to!).
+
+**Analyst Python ≠ Software Engineer Python**
 """
         )
 
-        st.markdown("#### 🐼 Pandas for data wrangling")
+        st.markdown("#### 🐼 Pandas: Excel on Steroids")
         st.markdown(
-            """You will use Pandas to:
+            """**Pandas is Python's data analysis library. Think of it as programmable Excel.**
 
-- Load CSVs and SQL results.
-- Clean, filter and reshape data.
-- Compute grouped metrics similar to SQL or pivot tables.
+### What is Pandas?
+
+**Pandas provides two main data structures:**
+
+**1. Series** (like a single Excel column)
+```python
+import pandas as pd
+
+ages = pd.Series([25, 30, 35, 40])
+```
+
+**2. DataFrame** (like an Excel spreadsheet)
+```python
+df = pd.DataFrame({
+    'name': ['John', 'Jane', 'Bob', 'Alice'],
+    'age': [25, 30, 35, 40],
+    'salary': [50000, 60000, 55000, 70000]
+})
+```
+
+**Output:**
+```
+    name  age  salary
+0   John   25   50000
+1   Jane   30   60000
+2    Bob   35   55000
+3  Alice   40   70000
+```
+
+---
+
+### Loading Data
+
+**From CSV:**
+```python
+df = pd.read_csv('sales_data.csv')
+```
+
+**From Excel:**
+```python
+df = pd.read_excel('sales_data.xlsx', sheet_name='Sheet1')
+```
+
+**From SQL:**
+```python
+import sqlite3
+conn = sqlite3.connect('database.db')
+df = pd.read_sql_query("SELECT * FROM sales", conn)
+```
+
+**From Clipboard** (quick copy-paste from Excel):
+```python
+df = pd.read_clipboard()
+```
+
+---
+
+### First Steps: Exploring Your Data
+
+**See first 5 rows:**
+```python
+df.head()
+```
+
+**See last 5 rows:**
+```python
+df.tail()
+```
+
+**Get basic info:**
+```python
+df.info()
+# Shows: column names, data types, non-null counts
+```
+
+**Get statistics:**
+```python
+df.describe()
+# Shows: count, mean, std, min, max, quartiles
+```
+
+**See column names:**
+```python
+df.columns
+# Output: ['name', 'age', 'salary']
+```
+
+**See shape (rows, columns):**
+```python
+df.shape
+# Output: (4, 3)  → 4 rows, 3 columns
+```
+
+---
+
+### Selecting Data
+
+**Select single column:**
+```python
+df['salary']  # Returns Series
+df[['salary']]  # Returns DataFrame (keeps 2D structure)
+```
+
+**Select multiple columns:**
+```python
+df[['name', 'salary']]
+```
+
+**Select rows by position:**
+```python
+df.iloc[0]  # First row
+df.iloc[0:3]  # First 3 rows
+```
+
+**Select rows by condition** (filtering):
+```python
+# Filter: salary > 55000
+df[df['salary'] > 55000]
+
+# Multiple conditions
+df[(df['salary'] > 55000) & (df['age'] < 40)]
+```
+
+**Equivalent to SQL:**
+```sql
+SELECT * FROM df 
+WHERE salary > 55000 AND age < 40
+```
+
+---
+
+### Common Data Operations
+
+**1. Adding New Columns** (calculated fields)
+
+```python
+# Add bonus column (10% of salary)
+df['bonus'] = df['salary'] * 0.10
+
+# Add total compensation
+df['total_comp'] = df['salary'] + df['bonus']
+```
+
+**2. Renaming Columns**
+
+```python
+df = df.rename(columns={'name': 'employee_name', 'salary': 'annual_salary'})
+```
+
+**3. Sorting**
+
+```python
+# Sort by salary (ascending)
+df.sort_values('salary')
+
+# Sort by salary (descending)
+df.sort_values('salary', ascending=False)
+
+# Sort by multiple columns
+df.sort_values(['age', 'salary'], ascending=[True, False])
+```
+
+**4. Removing Duplicates**
+
+```python
+df = df.drop_duplicates()
+
+# Remove duplicates based on specific column
+df = df.drop_duplicates(subset=['employee_id'])
+```
+
+**5. Handling Missing Values**
+
+```python
+# Check for missing values
+df.isnull().sum()
+
+# Drop rows with ANY missing values
+df = df.dropna()
+
+# Drop rows where specific column is missing
+df = df.dropna(subset=['salary'])
+
+# Fill missing values
+df['salary'] = df['salary'].fillna(0)  # Fill with 0
+df['salary'] = df['salary'].fillna(df['salary'].mean())  # Fill with average
+```
+
+---
+
+### Aggregations (GROUP BY in Pandas)
+
+**SQL Equivalent:**
+```sql
+SELECT department, AVG(salary), COUNT(*)
+FROM employees
+GROUP BY department
+```
+
+**Pandas:**
+```python
+df.groupby('department').agg({
+    'salary': 'mean',
+    'employee_id': 'count'
+})
+```
+
+**Common Aggregation Functions:**
+- `sum()` - Total
+- `mean()` - Average
+- `count()` - Count
+- `min()` / `max()` - Min/Max
+- `std()` - Standard deviation
+- `nunique()` - Count unique values
+
+**Multiple Aggregations:**
+```python
+df.groupby('department')['salary'].agg(['mean', 'min', 'max', 'count'])
+```
+
+**Output:**
+```
+             mean    min    max  count
+department                            
+Sales       55000  50000  60000      5
+Marketing   58000  52000  65000      4
+IT          70000  65000  80000      6
+```
+
+---
+
+### Joining DataFrames (Like SQL JOINs)
+
+**Two DataFrames:**
+```python
+employees = pd.DataFrame({
+    'emp_id': [1, 2, 3],
+    'name': ['John', 'Jane', 'Bob']
+})
+
+salaries = pd.DataFrame({
+    'emp_id': [1, 2, 4],
+    'salary': [50000, 60000, 55000]
+})
+```
+
+**Inner Join** (only matching rows):
+```python
+result = employees.merge(salaries, on='emp_id', how='inner')
+```
+
+**Left Join** (keep all from left):
+```python
+result = employees.merge(salaries, on='emp_id', how='left')
+```
+
+**SQL Equivalent:**
+```sql
+SELECT * FROM employees e
+LEFT JOIN salaries s ON e.emp_id = s.emp_id
+```
+
+---
+
+### Real-World Example: Sales Analysis
+
+```python
+import pandas as pd
+
+# Load data
+sales = pd.read_csv('sales_data.csv')
+
+# Check data
+print(sales.head())
+print(sales.info())
+
+# Clean data
+sales = sales.drop_duplicates()
+sales = sales.dropna(subset=['revenue'])
+
+# Add calculated field
+sales['profit'] = sales['revenue'] - sales['cost']
+
+# Filter to recent data
+sales_2024 = sales[sales['date'] >= '2024-01-01']
+
+# Group by product category
+summary = sales_2024.groupby('category').agg({
+    'revenue': 'sum',
+    'profit': 'sum',
+    'order_id': 'count'
+}).rename(columns={'order_id': 'num_orders'})
+
+# Sort by revenue
+summary = summary.sort_values('revenue', ascending=False)
+
+# Calculate profit margin
+summary['profit_margin'] = (summary['profit'] / summary['revenue']) * 100
+
+# Save results
+summary.to_csv('sales_summary_2024.csv')
+print("Analysis complete!")
+```
+
+**This replaces 30+ minutes of Excel work with a 30-second script.**
 """
         )
 
-        st.markdown("#### 📊 Basic visualisation in Python")
+        st.markdown("#### 📊 Data Visualization in Python")
         st.markdown(
-            """You will create charts using libraries like Matplotlib, Seaborn
-or Plotly, and understand when Python visuals are better than
-spreadsheet charts.
+            """**Python creates publication-quality charts programmatically.**
+
+### Three Main Libraries
+
+**1. Matplotlib** - Basic, fully customizable  
+**2. Seaborn** - Beautiful statistical plots  
+**3. Plotly** - Interactive dashboards
+
+**For analysts, Seaborn is usually best** (built on Matplotlib, better defaults).
+
+---
+
+### Basic Plotting with Pandas
+
+**Line Chart** (trend over time):
+```python
+import matplotlib.pyplot as plt
+
+df.plot(x='date', y='revenue', kind='line')
+plt.title('Revenue Over Time')
+plt.xlabel('Date')
+plt.ylabel('Revenue (£)')
+plt.show()
+```
+
+**Bar Chart** (comparing categories):
+```python
+df.plot(x='category', y='sales', kind='bar')
+plt.title('Sales by Category')
+plt.show()
+```
+
+**Histogram** (distribution):
+```python
+df['age'].plot(kind='hist', bins=20)
+plt.title('Age Distribution')
+plt.xlabel('Age')
+plt.show()
+```
+
+---
+
+### Seaborn for Better Visuals
+
+```python
+import seaborn as sns
+
+# Set style
+sns.set_style("whitegrid")
+
+# Bar plot with error bars
+sns.barplot(data=df, x='category', y='revenue', ci=95)
+plt.title('Average Revenue by Category')
+plt.show()
+
+# Box plot (shows distribution)
+sns.boxplot(data=df, x='category', y='salary')
+plt.title('Salary Distribution by Category')
+plt.show()
+
+# Heatmap (correlation matrix)
+correlation = df[['revenue', 'cost', 'profit']].corr()
+sns.heatmap(correlation, annot=True, cmap='coolwarm')
+plt.title('Correlation Matrix')
+plt.show()
+
+# Scatter plot with regression line
+sns.regplot(data=df, x='marketing_spend', y='revenue')
+plt.title('Marketing Spend vs Revenue')
+plt.show()
+```
+
+---
+
+### When to Use Python vs Excel Charts
+
+**Use Excel Charts When:**
+- Sharing with non-technical stakeholders
+- One-off analysis
+- Simple bar/line charts
+- Need to embed in PowerPoint
+
+**Use Python Charts When:**
+- Automating weekly reports
+- Creating complex multi-panel figures
+- Statistical visualizations (confidence intervals, distributions)
+- Need reproducibility
+- Publishing/research quality needed
+
+---
+
+### Automated Report Example
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime
+
+# Load data
+sales = pd.read_csv('sales_data.csv')
+
+# Create figure with multiple subplots
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+fig.suptitle(f'Weekly Sales Report - {datetime.now().strftime("%Y-%m-%d")}', 
+             fontsize=16)
+
+# Plot 1: Revenue trend
+sales.groupby('date')['revenue'].sum().plot(ax=axes[0,0])
+axes[0,0].set_title('Daily Revenue Trend')
+axes[0,0].set_ylabel('Revenue (£)')
+
+# Plot 2: Top products
+top_products = sales.groupby('product')['revenue'].sum().nlargest(10)
+top_products.plot(kind='barh', ax=axes[0,1])
+axes[0,1].set_title('Top 10 Products by Revenue')
+
+# Plot 3: Sales by category
+sns.barplot(data=sales, x='category', y='revenue', ax=axes[1,0])
+axes[1,0].set_title('Revenue by Category')
+axes[1,0].tick_params(axis='x', rotation=45)
+
+# Plot 4: Profit margin distribution
+sales['profit_margin'] = (sales['profit'] / sales['revenue']) * 100
+sns.histplot(sales['profit_margin'], bins=30, ax=axes[1,1])
+axes[1,1].set_title('Profit Margin Distribution')
+axes[1,1].set_xlabel('Profit Margin (%)')
+
+# Adjust layout and save
+plt.tight_layout()
+plt.savefig(f'weekly_report_{datetime.now().strftime("%Y%m%d")}.png', dpi=300)
+print("Report generated!")
+```
+
+**Run this script every Monday = Instant professional report.**
+
+---
+
+### Python + SQL + Excel Workflow
+
+**The Complete Analyst Workflow:**
+
+```python
+# 1. Get data from SQL
+import pandas as pd
+import sqlite3
+
+conn = sqlite3.connect('company_db.db')
+query = """
+SELECT 
+    date,
+    product_category,
+    SUM(revenue) as total_revenue,
+    SUM(cost) as total_cost
+FROM sales
+WHERE date >= '2024-01-01'
+GROUP BY date, product_category
+"""
+df = pd.read_sql_query(query, conn)
+
+# 2. Process in Python
+df['profit'] = df['total_revenue'] - df['total_cost']
+df['profit_margin'] = (df['profit'] / df['total_revenue']) * 100
+
+# 3. Create visualizations
+import matplotlib.pyplot as plt
+df.pivot_table(values='total_revenue', 
+               index='date', 
+               columns='product_category').plot(figsize=(12,6))
+plt.title('Revenue by Category Over Time')
+plt.savefig('revenue_trend.png')
+
+# 4. Export to Excel for sharing
+with pd.ExcelWriter('sales_analysis.xlsx') as writer:
+    df.to_excel(writer, sheet_name='Raw Data', index=False)
+    
+    summary = df.groupby('product_category').agg({
+        'total_revenue': 'sum',
+        'profit': 'sum',
+        'profit_margin': 'mean'
+    })
+    summary.to_excel(writer, sheet_name='Summary')
+
+print("Analysis complete! Check sales_analysis.xlsx")
+```
+
+**Result:** Professional analysis in minutes, not hours.
+
+---
+
+### Learning Python as an Analyst
+
+**You Don't Need to Learn Everything!**
+
+**Focus on:**
+✅ Pandas (data manipulation)  
+✅ Basic plotting (Matplotlib/Seaborn)  
+✅ Loading/saving data  
+✅ Control flow (if/for loops)  
+
+**Skip (for now):**
+❌ Web development  
+❌ Deep learning  
+❌ System programming  
+❌ Advanced algorithms  
+
+**80% of analyst Python = Pandas + plotting**
+
+---
+
+### Your First Python Project
+
+**Assignment:** Automate your most repetitive Excel task
+
+**Steps:**
+1. Identify a task you do weekly in Excel
+2. Break it into steps (load, clean, analyze, visualize, export)
+3. Write Python script for each step
+4. Test and refine
+5. Schedule to run automatically
+
+**Common first projects:**
+- Weekly sales report generation
+- Data cleaning pipeline
+- Merging multiple Excel files
+- Creating standard charts
+
+**Time investment:** 2-4 hours to build  
+**Time saved:** 30-60 minutes per week  
+**Payback:** 4-8 weeks  
+
+**After that? Free time every week forever.**
 """
         )
     elif unit_number == 6:
-        st.markdown("#### 📘 Designing good metrics and KPIs")
+        st.markdown("#### 📘 Designing Good Metrics and KPIs: The Foundation of Data-Driven Decisions")
         st.markdown(
-            """Not all metrics are useful. You will learn to design KPIs that:
+            """**"What gets measured gets managed." - Peter Drucker**
 
-- Tie directly to business outcomes.
-- Are measurable and actionable.
-- Can be tracked over time.
+KPIs (Key Performance Indicators) are the metrics that tell you whether your business is succeeding or failing.
+
+**Bad KPIs = Bad decisions = Failed business**  
+**Good KPIs = Clear priorities = Success**
+
+---
+
+**What Makes a Good KPI?**
+
+Not all metrics are created equal. A good KPI must be:
+
+**1. Aligned with Business Goals**
+- Directly connected to strategic objectives
+- If this improves, the business improves
+
+**2. Actionable**
+- Can influence through your actions
+- Not just "nice to know"
+
+**3. Measurable**
+- Clearly defined calculation
+- Can be tracked consistently
+
+**4. Understandable**
+- Everyone knows what it means
+- No confusion about interpretation
+
+**5. Timely**
+- Can be measured frequently enough to act
+- Not too delayed (e.g., monthly better than yearly)
+
+---
+
+### The KPI Hierarchy
+
+**North Star Metric** (1 metric)
+↓
+**Primary KPIs** (3-5 metrics)
+↓
+**Secondary Metrics** (10-15 metrics)
+↓
+**Operational Metrics** (many)
+
+**Example: E-commerce Company**
+
+**North Star:** Revenue (the ultimate goal)
+
+**Primary KPIs:**
+- Monthly Active Users (MAU)
+- Conversion Rate
+- Average Order Value (AOV)
+- Customer Acquisition Cost (CAC)
+
+**Secondary Metrics:**
+- Cart abandonment rate
+- Repeat purchase rate
+- Email open rate
+- Website bounce rate
+
+**Operational Metrics:**
+- Daily new signups
+- Customer support tickets
+- Server uptime
+- Inventory levels
+
+**You focus on Primary KPIs. They drive the North Star.**
+
+---
+
+### Vanity Metrics vs Actionable Metrics
+
+**VANITY METRICS** (look good, don't help)
+
+❌ **Total Page Views**
+- Problem: Doesn't measure engagement or value
+- Can increase while business fails
+- Not actionable
+
+❌ **Total Registered Users**
+- Problem: Includes inactive users
+- Doesn't reflect actual usage
+- Misleading growth signal
+
+❌ **Social Media Followers**
+- Problem: Doesn't equal customers
+- Can be bought or fake
+- No revenue correlation
+
+**ACTIONABLE METRICS** (drive decisions)
+
+✅ **Conversion Rate** (visitors → customers)
+- Problem: Can be improved through A/B testing
+- Direct revenue impact
+- Clear optimization target
+
+✅ **Active Users (last 30 days)**
+- Shows actual engagement
+- Can increase through product improvements
+- Predicts revenue
+
+✅ **Net Promoter Score (NPS)**
+- Measures satisfaction
+- Predicts retention
+- Can improve through service changes
+
+---
+
+### Designing KPIs: The Framework
+
+**STEP 1: Start with Business Goals**
+
+"We want to grow revenue by 20% this year."
+
+**STEP 2: Break Down into Levers**
+
+Revenue = Customers × Average Purchase Value × Purchase Frequency
+
+**STEP 3: Identify What You Can Control**
+
+- ✅ Marketing spend (affects customer acquisition)
+- ✅ Product features (affects purchase frequency)
+- ✅ Pricing strategy (affects purchase value)
+- ❌ Economic conditions (can't control)
+
+**STEP 4: Define Specific Metrics**
+
+**Primary KPIs:**
+1. Customer Acquisition Rate (new customers/month)
+2. Average Order Value (£ per transaction)
+3. Purchase Frequency (transactions per customer per year)
+
+**STEP 5: Set Targets**
+
+- Customer Acquisition: 500 new/month (vs 400 current)
+- Average Order Value: £75 (vs £70 current)
+- Purchase Frequency: 3.2x/year (vs 3.0 current)
+
+**STEP 6: Assign Owners**
+
+- Customer Acquisition → Marketing Team
+- Average Order Value → Product Team
+- Purchase Frequency → Retention Team
+
+---
+
+### Real-World KPI Examples by Industry
+
+**Healthcare (Hospital):**
+- DNA (Did Not Attend) rate: <12%
+- Average waiting time: <18 weeks
+- Patient satisfaction: >4.2/5
+- Readmission rate: <8%
+- Bed occupancy: 85-90%
+
+**SaaS Company:**
+- Monthly Recurring Revenue (MRR): growth >10%/month
+- Churn rate: <5%/month
+- Customer Acquisition Cost (CAC): <£500
+- Lifetime Value (LTV): >£3,000
+- LTV:CAC ratio: >3:1
+
+**Retail Store:**
+- Same-store sales growth: >5% YoY
+- Inventory turnover: >6x/year
+- Gross margin: >40%
+- Customer foot traffic: trend up
+- Average transaction value: trend up
+
+---
+
+### Common KPI Mistakes
+
+**MISTAKE 1: Too Many KPIs**
+
+Problem: "Dashboard paralysis" - can't focus on what matters
+
+Solution: Max 5 primary KPIs. If everything is important, nothing is important.
+
+**MISTAKE 2: Lagging Indicators Only**
+
+Problem: Revenue is a lagging indicator (tells you what happened)
+
+Solution: Balance with leading indicators (predict what will happen)
+
+Example:
+- Lagging: Revenue this month
+- Leading: Sales pipeline value (predicts future revenue)
+
+**MISTAKE 3: Not Segmenting**
+
+Problem: "Average customer spends £50" hides that:
+- VIP customers spend £500
+- Regular customers spend £30
+
+Solution: Always segment (by customer type, product, region, etc.)
+
+**MISTAKE 4: No Comparison Baseline**
+
+Problem: "We had 10,000 visitors this month" - is that good?
+
+Solution: Always compare (vs last month, vs target, vs last year)
+
+**MISTAKE 5: Metrics Not Aligned with Incentives**
+
+Problem: Call center measured on "calls per hour"
+Result: Agents rush customers off phone, satisfaction drops
+
+Solution: Measure "customer satisfaction" and "first-call resolution"
 """
         )
 
-        st.markdown("#### 🧪 A/B testing for analysts")
+        st.markdown("#### 🧪 A/B Testing for Analysts: Making Evidence-Based Decisions")
         st.markdown(
-            """You will understand:
+            """**A/B testing lets you PROVE what works instead of guessing.**
 
-- What an A/B test is and when to use it.
-- How to interpret conversion rates and statistical significance.
-- How to communicate test results to non-technical stakeholders.
+### What is A/B Testing?
+
+**Definition:** Comparing two versions of something to see which performs better.
+
+**The Process:**
+
+1. **Version A (Control):** Current version
+2. **Version B (Variant):** New version you want to test
+3. **Split traffic:** 50% see A, 50% see B
+4. **Measure results:** Which version has better metric?
+5. **Choose winner:** Implement the better version
+
+---
+
+### Real-World Example
+
+**Scenario:** E-commerce checkout button
+
+**Version A (Current):** Button says "Buy Now" (green)
+**Version B (Test):** Button says "Complete Purchase" (blue)
+
+**Hypothesis:** Blue button with clearer text will increase purchases
+
+**Test Setup:**
+- 1,000 visitors to Version A
+- 1,000 visitors to Version B
+- Measure: Conversion rate (% who complete purchase)
+
+**Results:**
+- Version A: 50 purchases / 1,000 visitors = **5.0% conversion**
+- Version B: 65 purchases / 1,000 visitors = **6.5% conversion**
+
+**Conclusion:** Version B wins! +1.5 percentage points = 30% improvement
+
+**Business Impact:** 
+- Current: 10,000 monthly visitors × 5% = 500 purchases
+- With B: 10,000 visitors × 6.5% = 650 purchases
+- **Extra 150 purchases/month = £15,000 extra revenue** (if avg order = £100)
+
+**ROI of this test: £180K/year from one button change!**
+
+---
+
+### When to Use A/B Testing
+
+**GOOD Use Cases:**
+
+✅ **Website/App Changes**
+- Button colors, text, placement
+- Page layouts
+- Checkout flows
+
+✅ **Marketing Campaigns**
+- Email subject lines
+- Ad copy variations
+- Landing page designs
+
+✅ **Pricing Strategies**
+- Different price points
+- Discount levels
+- Subscription tiers
+
+**BAD Use Cases:**
+
+❌ **Major Rebrands**
+- Too big, affects everything
+- Confusing for users to see different brands
+
+❌ **Long-Term Behavior Changes**
+- Need weeks/months to measure
+- A/B tests work best for immediate actions
+
+❌ **When You Don't Have Traffic**
+- Need minimum 100-1000 conversions per variant
+- Small samples = unreliable results
+
+---
+
+### Statistical Significance: Did We Really Win?
+
+**The Question:** Is Version B actually better, or just lucky?
+
+**Example:**
+- Version A: 50 clicks / 1,000 visitors = 5.0%
+- Version B: 55 clicks / 1,000 visitors = 5.5%
+
+**Is 5.5% significantly better than 5.0%?**
+
+**Statistical Significance tells you:**
+- How confident we are that B is truly better
+- Standard: 95% confidence level (p-value < 0.05)
+
+**Translation:**
+- "95% confident" = Only 5% chance this is random luck
+- "Not significant" = Could be random variation, need more data
+
+---
+
+### How to Calculate (Simplified)
+
+**Use an A/B test calculator** (many free online tools)
+
+**Inputs:**
+- Visitors to A: 1,000
+- Conversions from A: 50 (5%)
+- Visitors to B: 1,000
+- Conversions from B: 65 (6.5%)
+
+**Output:**
+- **P-value: 0.03** (3% chance of random luck)
+- **Confidence: 97%** (significant!)
+- **Conclusion: Version B is significantly better** ✅
+
+**Rule of Thumb:**
+- p-value < 0.05 = Significant (trust the result)
+- p-value > 0.05 = Not significant (need more data)
+
+---
+
+### How Long to Run A/B Test?
+
+**Minimum Requirements:**
+
+**1. Sample Size:**
+- At least 100 conversions per variant
+- Ideally 1,000+ for reliable results
+
+**2. Time Duration:**
+- Minimum 1 week (captures weekly patterns)
+- Ideally 2-4 weeks for confidence
+- DON'T stop early just because one is winning!
+
+**3. Full Business Cycles:**
+- E-commerce: Include weekend + weekday
+- B2B: Include full work week
+- Seasonal: Account for seasonality
+
+**Early Stopping Trap:**
+
+Day 3: "B is winning 8% vs 5%! Let's stop!"
+Problem: Could be random daily variation
+Solution: Wait for full test duration + statistical significance
+
+---
+
+### Communicating A/B Test Results
+
+**BAD Way:**
+
+"Version B had a p-value of 0.03 with 97% confidence."
+
+*Non-technical stakeholders confused*
+
+**GOOD Way:**
+
+**Setup:** "We tested two checkout button designs."
+
+**Results:** "Version B (blue 'Complete Purchase' button) had **6.5% conversion** vs Version A's **5.0% conversion**."
+
+**Significance:** "This is a **30% improvement** and statistically reliable (97% confidence)."
+
+**Impact:** "If we implement Version B, we'll gain **150 extra purchases per month**."
+
+**Revenue:** "That's **£15,000 extra monthly revenue** or **£180K annually**."
+
+**Recommendation:** "I recommend we launch Version B immediately."
+
+**See the difference? No jargon, clear business impact.**
+
+---
+
+### Common A/B Testing Mistakes
+
+**MISTAKE 1: Testing Too Many Things at Once**
+
+Problem: Changed button color AND text AND placement
+Can't tell which change caused improvement
+
+Solution: Test one variable at a time
+
+**MISTAKE 2: Peeking at Results Early**
+
+Problem: Checking every day and stopping when "winning"
+Increases false positives
+
+Solution: Define test duration upfront, wait until end
+
+**MISTAKE 3: Not Segmenting Results**
+
+Problem: Overall B won, but maybe it only won for mobile users?
+
+Solution: Always analyze by segment (device, new vs returning, etc.)
+
+**MISTAKE 4: Ignoring Practical Significance**
+
+Problem: "B is 0.1% better and statistically significant!"
+But 0.1% = 1 extra customer per month = not worth implementing
+
+Solution: Consider both statistical AND practical significance
+
+**MISTAKE 5: Not Having a Hypothesis**
+
+Problem: Testing random changes hoping something works
+
+Solution: Form hypothesis first: "If we do X because of Y, we expect Z to improve"
 """
         )
 
-        st.markdown("#### 📐 Avoiding common metric pitfalls")
+        st.markdown("#### 📐 Avoiding Common Metric Pitfalls")
         st.markdown(
-            """You will discuss:
+            """**Even good analysts fall into these traps. Learn to avoid them.**
 
-- Vanity metrics vs actionable metrics.
-- Simpson's paradox and segmentation issues.
-- How to critique and improve existing KPI sets.
+---
+
+### 1. Simpson's Paradox: When Aggregates Lie
+
+**The Trap:** Overall trend shows one thing, but every segment shows the opposite.
+
+**Real Example:**
+
+**Hospital Scenario:** Comparing two hospitals' success rates
+
+**Overall Results:**
+- Hospital A: 90% success rate (900/1000 surgeries)
+- Hospital B: 85% success rate (850/1000 surgeries)
+
+**Looks like Hospital A is better, right? WRONG.**
+
+**Segmented by Surgery Type:**
+
+**Easy Surgeries:**
+- Hospital A: 95% success (760/800)
+- Hospital B: 98% success (588/600) ← Better!
+
+**Difficult Surgeries:**
+- Hospital A: 70% success (140/200)
+- Hospital B: 65.5% success (262/400) ← Better!
+
+**What happened?**
+- Hospital B takes more difficult cases (400 vs 200)
+- Hospital B is actually better at BOTH types
+- But overall rate looks worse due to case mix
+
+**Lesson:** ALWAYS segment your data. Don't trust aggregates alone.
+
+---
+
+### 2. Survivorship Bias: Only Seeing Winners
+
+**The Trap:** Analyzing only data that "survived" a selection process.
+
+**Classic Example:**
+
+World War II: Military analyzed planes returning from combat to see where to add armor.
+
+**Bullet holes appeared on:**
+- Wings
+- Fuselage
+- Tail
+
+**Wrong Conclusion:** "Add armor to wings, fuselage, tail"
+
+**Right Conclusion:** "Add armor to engines and cockpit"
+
+**Why?** Planes shot in engines/cockpit DIDN'T RETURN. You're only seeing survivors!
+
+**Business Example:**
+
+"Let's analyze what makes successful startups" (by studying current successful companies)
+
+**Problem:** You're ignoring the 90% that failed. Maybe successful companies just got lucky?
+
+**Solution:** Study BOTH successes and failures to find real patterns.
+
+---
+
+### 3. Correlation ≠ Causation
+
+**The Trap:** Assuming because two things move together, one causes the other.
+
+**Example 1:**
+
+**Finding:** Ice cream sales and drowning deaths are correlated
+
+**Wrong Conclusion:** Ice cream causes drowning!
+
+**Right Conclusion:** Hot weather causes both (people eat ice cream AND swim more)
+
+**Example 2:**
+
+**Finding:** Companies with more meetings have higher revenue
+
+**Wrong Conclusion:** More meetings = more revenue!
+
+**Right Conclusion:** Larger companies have both more meetings AND more revenue
+
+---
+
+**How to Think About Causation:**
+
+**Ask these questions:**
+1. **Could it be reverse causation?** (B causes A, not A causes B)
+2. **Could there be a third variable?** (C causes both A and B)
+3. **Is there a plausible mechanism?** (HOW would A cause B?)
+4. **Can we test it experimentally?** (A/B test!)
+
+**Gold Standard:** Randomized experiment (A/B test)
+
+---
+
+### 4. Base Rate Fallacy: Ignoring Context
+
+**The Trap:** Focusing on specific data without considering baseline rates.
+
+**Example:**
+
+**Scenario:** Medical test for rare disease (affects 1 in 1,000 people)
+- Test accuracy: 99% (detects disease 99% of time)
+- You test positive
+
+**Question:** What's the chance you have the disease?
+
+**Intuitive Answer:** 99% (test is 99% accurate!)
+
+**Correct Answer:** ~9% (you probably DON'T have it)
+
+**Why?**
+
+Out of 10,000 people:
+- 10 actually have disease → 9-10 test positive ✓
+- 9,990 don't have disease → 100 false positives (1% of 9,990)
+
+**Total positives: 110**
+**True positives: 10**
+**Your chance: 10/110 = 9%**
+
+**Business Example:**
+
+"Our new ad has 10% click rate!" (sounds great)
+
+**But:** Industry average is 15%
+Your ad is actually UNDERPERFORMING
+
+**Lesson:** Always know the baseline/benchmark.
+
+---
+
+### 5. Metric Gaming: When People Cheat the System
+
+**Goodhart's Law:** "When a measure becomes a target, it ceases to be a good measure."
+
+**Example 1: Call Centers**
+
+**Metric:** Average call time (want it low)
+
+**Result:** Agents rush customers off phone
+Actual problem not solved
+Customer calls back multiple times
+
+**Better Metric:** First-call resolution rate
+
+**Example 2: Sales Team**
+
+**Metric:** Number of sales calls made
+
+**Result:** Agents make many short, low-quality calls
+No actual sales increase
+
+**Better Metric:** Qualified leads generated OR sales closed
+
+**Example 3: Software Development**
+
+**Metric:** Lines of code written
+
+**Result:** Developers write unnecessarily verbose code
+Quality suffers
+
+**Better Metric:** Features delivered OR bugs per feature
+
+**How to Prevent Gaming:**
+
+1. **Use multiple metrics** (one alone can be gamed)
+2. **Include quality metrics** alongside quantity
+3. **Review regularly** for unintended behaviors
+4. **Listen to teams** about perverse incentives
+
+---
+
+### 6. The Streetlight Effect: Measuring What's Easy, Not What Matters
+
+**The Story:** 
+Person looks for lost keys under streetlight, not where they dropped them.
+"Why?" 
+"Because the light is better here!"
+
+**Business Translation:**
+Measuring easy-to-track metrics instead of important ones.
+
+**Examples:**
+
+**Easy to Measure:**
+- Website traffic
+- Email opens
+- Social media likes
+
+**Hard to Measure (but more important):**
+- Customer satisfaction
+- Product quality
+- Team morale
+
+**Solution:** Invest in measuring what matters, even if harder.
+
+---
+
+### Creating a Balanced KPI Dashboard
+
+**Include Mix of:**
+
+**1. Input Metrics** (what you control)
+- Marketing spend
+- Number of sales calls
+- Product features shipped
+
+**2. Output Metrics** (results)
+- Revenue
+- New customers
+- Market share
+
+**3. Leading Indicators** (predict future)
+- Sales pipeline value
+- Customer satisfaction
+- Product usage trends
+
+**4. Lagging Indicators** (confirm past)
+- Revenue growth
+- Profit margin
+- Customer retention
+
+**5. Internal Metrics** (operations)
+- Team productivity
+- System uptime
+- Bug count
+
+**6. External Metrics** (market)
+- Market share
+- Competitor pricing
+- Industry benchmarks
+
+**Balance ensures you're not blindsided.**
+
+---
+
+### Your Metric Design Checklist
+
+For each proposed metric, ask:
+
+- [ ] Does it align with a strategic goal?
+- [ ] Can we actually influence it?
+- [ ] Is the calculation clearly defined?
+- [ ] Can we measure it reliably and frequently?
+- [ ] Will people understand it without explanation?
+- [ ] Is it immune to gaming?
+- [ ] Have we considered segments? (not just aggregates)
+- [ ] Do we have a baseline/benchmark?
+- [ ] Is there a specific target?
+- [ ] Is someone accountable for it?
+
+**If yes to all 10, you have a GOOD metric.**
 """
         )
     elif unit_number == 7:
-        st.markdown("#### 📘 Capstone goals")
+        st.markdown("#### 📘 Data Analyst Capstone Project: Your Portfolio Showpiece")
         st.markdown(
-            """The Data Analyst capstone lets you demonstrate end-to-end
-ownership of a realistic analysis project, from question to dashboard and
-story.
+            """**The capstone is your chance to prove you can do the job.**
+
+This isn't a theoretical exercise—it's a **real-world analysis project** that demonstrates 
+every skill you've learned. Done well, this project becomes your **portfolio centerpiece** 
+that gets you hired.
+
+---
+
+**What is the Capstone?**
+
+An end-to-end data analysis project where you:
+1. Define a business problem
+2. Gather and clean data
+3. Perform analysis
+4. Create visualizations
+5. Tell the story
+6. Make recommendations
+
+**Duration:** 2-4 weeks  
+**Output:** Professional analysis deliverable
+
+---
+
+**Why It Matters:**
+
+**For Learning:**
+- Synthesizes all skills (SQL, Excel, Python, visualization, storytelling)
+- Builds confidence in your abilities
+- Identifies knowledge gaps to address
+
+**For Job Search:**
+- Portfolio piece to show employers
+- Talking point in interviews
+- Proof you can deliver results
+
+**Hiring managers want to see:**
+- "Can this person solve our problems?"
+- Capstone answers: "YES, here's proof."
+
+---
+
+**Capstone vs Coursework:**
+
+| Coursework | Capstone |
+|------------|----------|
+| Prescribed problem | You choose the problem |
+| Clean data provided | You find and clean data |
+| Single skill focus | All skills integrated |
+| Short (1-2 hours) | Extended (2-4 weeks) |
+| Grade-focused | Portfolio-focused |
+
+**Capstone is YOUR project. Own it.**
 """
         )
 
-        st.markdown("#### 🧱 Suggested capstone structure")
+        st.markdown("#### 🧱 Capstone Structure: The Framework for Success")
         st.markdown(
-            """A typical structure:
+            """**Follow this structure for a professional deliverable:**
 
-1. Problem & stakeholders (who needs this and why).
-2. Data sources and cleaning approach.
-3. Analysis and key findings.
-4. Dashboard or report.
-5. Recommendations and limitations.
+---
+
+### 1. EXECUTIVE SUMMARY (1 page)
+
+**Purpose:** Busy stakeholders read ONLY this. Make it count.
+
+**Include:**
+- **Business Problem** (2 sentences): What question are you answering? Why does it matter?
+- **Key Findings** (3 bullet points): What did you discover?
+- **Recommendation** (1 paragraph): What should be done?
+- **Impact** (1 sentence): What's the expected outcome?
+
+**Example:**
+
+*"Hospital DNA (Did Not Attend) rates have increased from 12% to 15% over 6 months, 
+costing approximately £30,000 in lost revenue monthly. Analysis reveals Dermatology 
+and new patient appointments drive this increase. Implementing SMS reminders for 
+these segments is projected to reduce DNAs by 30-40%, recovering £9,000-£12,000 
+monthly at a cost of only £200. Immediate implementation recommended."*
+
+---
+
+### 2. BUSINESS CONTEXT (1-2 pages)
+
+**Purpose:** Frame the problem and its importance
+
+**2.1 Problem Statement**
+- What's the specific question?
+- Why is this important NOW?
+- Who are the stakeholders?
+- What decision will this inform?
+
+**2.2 Success Criteria**
+- What would "good" look like?
+- What's the target/benchmark?
+- How will we measure success?
+
+**2.3 Scope & Constraints**
+- What's included? (time period, departments, etc.)
+- What's excluded?
+- Any data limitations?
+- Timeline for this analysis
+
+**Example Section:**
+
+*"The Outpatient Department has seen DNA rates increase from 12% to 15% between 
+January and June 2024. This represents 300 wasted appointment slots monthly and 
+approximately £30,000 in lost revenue. The Head of Operations needs to understand:*
+
+*1. Which clinics/specialties are most affected?*
+*2. Are there patterns (day of week, appointment type, patient demographics)?*
+*3. What interventions would be most effective?*
+
+*This analysis will inform a £10,000 investment in appointment reminder systems. 
+Success means reducing DNA rates to <12% within 3 months of implementation."*
+
+---
+
+### 3. DATA & METHODOLOGY (2-3 pages)
+
+**Purpose:** Document your approach (reproducibility!)
+
+**3.1 Data Sources**
+- Where did data come from? (databases, files, APIs)
+- Date range covered
+- Number of records
+- Key fields used
+
+**3.2 Data Quality Assessment**
+- Missing values found (how handled?)
+- Duplicates (removed?)
+- Outliers (investigated?)
+- Data transformations applied
+
+**3.3 Analytical Approach**
+- What methods did you use? (SQL queries, Python scripts, Excel)
+- Why these methods?
+- Any assumptions made?
+
+**Include code snippets or query examples** to show technical competence
+
+**Example:**
+
+*"Data extracted from hospital appointment database covering Jan-Jun 2024:*
+- *23,456 total appointments across 12 specialties*
+- *Key fields: appointment_date, specialty, patient_age, appointment_type, status*
+- *Removed 234 cancelled appointments (1% of total)*
+- *Found 12 duplicate records due to rebooking (removed)*
+- *No missing values in critical fields*
+
+*Analysis performed using:*
+- *SQL for data extraction and grouping*
+- *Python (Pandas) for deeper segmentation analysis*
+- *Excel for final visualizations and dashboard"*
+
+---
+
+### 4. ANALYSIS & FINDINGS (3-5 pages)
+
+**Purpose:** Show what you discovered
+
+**Organize by Key Questions/Findings** (not by method!)
+
+**For Each Finding:**
+- Visualization (chart/graph)
+- Interpretation (what does it mean?)
+- Supporting data (numbers/percentages)
+
+**Finding Format:**
+
+**FINDING 1: DNA rates vary significantly by specialty**
+
+[INSERT CHART: Bar chart of DNA rate by specialty]
+
+*"Dermatology shows the highest DNA rate at 18%, significantly above the hospital 
+average of 15%. Cardiology (14%) and Orthopedics (12%) are closer to average. 
+This represents a 6 percentage point difference between highest and lowest, 
+suggesting specialty-specific factors at play."*
+
+**Why this matters:** *Dermatology handles 2,000 appointments monthly, so 18% DNA rate = 
+360 wasted slots vs 240 if at hospital average. Targeting Dermatology could recover 
+120 appointment slots monthly.*
+
+**Do this for 3-5 key findings.**
+
+---
+
+### 5. DASHBOARD / VISUAL SUMMARY (1-2 pages)
+
+**Purpose:** Interactive or static dashboard summarizing key metrics
+
+**Include:**
+- KPI cards (main numbers)
+- Trend charts (over time)
+- Comparison charts (by category)
+- Filters (if interactive)
+
+**This becomes your** ***visual portfolio piece***
+
+---
+
+### 6. RECOMMENDATIONS & NEXT STEPS (1-2 pages)
+
+**Purpose:** Turn insights into action
+
+**For Each Recommendation:**
+
+**RECOMMENDATION 1: Implement SMS reminders for Dermatology new patients**
+
+**Rationale:** This segment shows highest DNA rate (22%)
+
+**Expected Impact:**
+- Research shows SMS reminders reduce DNA by 30-40%
+- Applied to Dermatology: 18% → 11-13% DNA rate
+- Recovers 100-140 appointment slots monthly
+- Revenue impact: £10,000-£14,000/month
+
+**Implementation:**
+- Cost: £200/month for SMS service
+- Timeline: 2 weeks to set up
+- Owner: Dermatology Department Manager
+
+**ROI:** 50-70x (£12,000 benefit vs £200 cost monthly)
+
+**Do this for 2-4 recommendations** (prioritized)
+
+---
+
+### 7. LIMITATIONS & FUTURE WORK (1 page)
+
+**Purpose:** Show critical thinking
+
+**Acknowledge:**
+- What couldn't you analyze? (missing data, time constraints)
+- What assumptions did you make?
+- What would you do differently with more time/data?
+- What future questions emerged?
+
+**Example:**
+
+*"This analysis has limitations:*
+
+*1. Only 6 months of data available; longer time series would reveal seasonal patterns*
+*2. Patient demographic data limited (no deprivation index, ethnicity)*
+*3. No data on reminder method currently used (SMS vs phone vs none)*
+*4. Couldn't analyze travel time/distance to hospital*
+
+*Future work should:*
+- *A/B test SMS reminders vs current approach*
+- *Analyze geographic patterns using full postcode data*
+- *Survey patients who DNA to understand reasons"*
+
+---
+
+### 8. APPENDIX (Optional)
+
+**Include:**
+- Full SQL queries
+- Python code
+- Detailed tables
+- Additional charts
+- Data dictionary
+
+---
+
+**Total Length:** 10-15 pages (not including appendix)
+
+**Format:** PDF for portfolio, PowerPoint for presentation
+"""
+        )
+
+        st.markdown("#### 🎯 Capstone Project Ideas & Examples")
+        st.markdown(
+            """**Choose a project that showcases your skills AND interests a potential employer.**
+
+---
+
+### Healthcare Projects
+
+**1. Emergency Department Wait Time Analysis**
+- Question: What factors contribute to long ED wait times?
+- Data: ED visits, arrival times, triage codes, discharge times
+- Analysis: Identify bottlenecks, peak periods, staffing gaps
+- Recommendation: Staffing optimization plan
+
+**2. Readmission Rate Reduction**
+- Question: Which patients are most likely to be readmitted?
+- Data: Patient demographics, diagnoses, length of stay, readmissions
+- Analysis: Identify high-risk profiles
+- Recommendation: Targeted follow-up program
+
+---
+
+### Retail/E-commerce Projects
+
+**3. Customer Segmentation & Targeting**
+- Question: How should we segment customers for marketing?
+- Data: Purchase history, demographics, browsing behavior
+- Analysis: RFM analysis (Recency, Frequency, Monetary value)
+- Recommendation: Segment-specific marketing strategy
+
+**4. Product Performance Analysis**
+- Question: Which products drive profitability? Which should we discontinue?
+- Data: Sales, costs, inventory, returns
+- Analysis: Profit margin by product, inventory turnover
+- Recommendation: Product portfolio optimization
+
+---
+
+### SaaS/Technology Projects
+
+**5. Churn Prediction & Prevention**
+- Question: Why are customers canceling subscriptions?
+- Data: Usage logs, customer support tickets, payment history
+- Analysis: Identify churn signals, usage patterns
+- Recommendation: At-risk customer intervention plan
+
+**6. Feature Adoption Analysis**
+- Question: Which new features are users actually using?
+- Data: Feature usage logs, user cohorts, feedback
+- Analysis: Adoption rates, correlation with retention
+- Recommendation: Product roadmap priorities
+
+---
+
+### Financial Services Projects
+
+**7. Loan Default Risk Analysis**
+- Question: Which applicant profiles are high-risk for default?
+- Data: Credit scores, income, employment, loan history
+- Analysis: Default rates by segment, risk factors
+- Recommendation: Lending criteria refinement
+
+---
+
+### Marketing Projects
+
+**8. Campaign Performance Optimization**
+- Question: Which marketing channels deliver best ROI?
+- Data: Campaign spend, conversions, customer acquisition cost
+- Analysis: ROI by channel, audience segment performance
+- Recommendation: Budget reallocation plan
+
+---
+
+**How to Choose YOUR Project:**
+
+1. **Pick your target industry** (where do you want to work?)
+2. **Choose realistic data** (publicly available or simulatable)
+3. **Ensure it showcases ALL skills** (SQL, visualization, storytelling)
+4. **Make it impressive** (real business impact, clear recommendations)
+"""
+        )
+
+        st.markdown("#### ✅ Capstone Assessment Rubric")
+        st.markdown(
+            """**Use this to self-assess before submission:**
+
+---
+
+| Criteria | Excellent (A) | Good (B) | Needs Improvement (C) |
+|----------|---------------|----------|----------------------|
+| **Business Problem** | Clearly defined, relevant, impactful | Defined but could be more specific | Vague or unclear |
+| **Data Quality** | Comprehensive cleaning documented, all issues addressed | Adequate cleaning, minor gaps | Insufficient cleaning or undocumented |
+| **Analysis Depth** | Multiple angles explored, segmented, insightful | Basic analysis done, some depth | Surface-level only |
+| **Visualizations** | Professional, clear, tell story | Adequate but could be better | Confusing or amateur |
+| **Insights** | Novel, actionable, well-supported | Solid but predictable | Obvious or not supported |
+| **Recommendations** | Specific, prioritized, ROI calculated | General but reasonable | Vague or impractical |
+| **Communication** | Executive summary perfect, flows logically | Good structure, minor improvements needed | Hard to follow |
+| **Technical Skill** | Advanced techniques, efficient code | Solid fundamentals demonstrated | Basic skills only |
+| **Professionalism** | Portfolio-ready, no errors | Minor polish needed | Sloppy or incomplete |
+
+---
+
+**Target:** All criteria at "Excellent" or "Good" level
+
+**This is your portfolio piece—make it PERFECT.**
+"""
+        )
+
+        st.markdown("#### 💼 Turning Your Capstone into Job Offers")
+        st.markdown(
+            """**Your capstone should directly lead to interviews. Here's how:**
+
+---
+
+### 1. Portfolio Presentation
+
+**Create:**
+- **GitHub repository** with code and README
+- **PDF report** (polished, professional)
+- **Presentation deck** (10-15 slides)
+- **2-minute video** walkthrough (optional but powerful)
+
+**Portfolio Website:**
+- Dedicate a page to this project
+- Include visualizations
+- Link to GitHub
+- Show the impact
+
+---
+
+### 2. Resume Entry
+
+**BEFORE (weak):**
+*"Completed data analysis capstone project"*
+
+**AFTER (strong):**
+*"Analyzed 20,000+ hospital appointment records to identify DNA rate drivers, resulting in recommendation projected to save £180,000 annually through SMS reminder optimization"*
+
+**Format:**
+- Lead with impact/result
+- Include scale (data size, timeframe)
+- Mention methods (SQL, Python)
+- Quantify benefit
+
+---
+
+### 3. LinkedIn Post
+
+**Announce your project:**
+
+*"I just completed a deep-dive analysis of hospital appointment DNA (Did Not Attend) rates 📊*
+
+*Using SQL and Python, I analyzed 23,000 appointments and uncovered that Dermatology new patient appointments have 22% DNA rates—costing £15,000/month in lost revenue.*
+
+*My recommendation: Implement targeted SMS reminders, projected to reduce DNAs by 35% and save £180K annually at minimal cost.*
+
+*This project taught me that data analysis isn't just about numbers—it's about driving real business impact.*
+
+*Full analysis: [link to GitHub]*
+
+*#DataAnalytics #Healthcare #DataScience"*
+
+**Include:** Chart or dashboard image
+
+---
+
+### 4. Interview Talking Points
+
+**Prepare to discuss:**
+- **Problem:** "The hospital was losing £30K monthly..."
+- **Approach:** "I used SQL to extract data, Python for segmentation..."
+- **Challenge:** "The data had duplicates from rebookings, so I..."
+- **Finding:** "I discovered that 22% of new Dermatology appointments..."
+- **Impact:** "My recommendation could save £180K annually..."
+- **Learning:** "This taught me the importance of segmentation..."
+
+**Practice this story until smooth (2-3 minutes)**
+
+---
+
+### 5. Follow-Up After Applications
+
+**If applying to similar industry (e.g., healthcare analytics):**
+
+*"I noticed your company works with hospital data. I recently completed an analysis of appointment DNA rates that identified opportunities to save £180K annually. I'd love to discuss how similar analysis could benefit [Company Name]. May I share my findings?"*
+
+**Attach your capstone PDF**
+
+**Response rate:** 10-20% (vs <1% for generic applications)
+
+---
+
+**Your capstone isn't just coursework—it's your BEST SALES TOOL for landing your first data analyst role.**
+
+**Make it count.**
 """
         )
 
@@ -478,28 +4233,854 @@ By the end of this pathway you will be able to:
         st.markdown(f"### Unit {selected_unit}: {UNITS[selected_unit]['name']}")
 
         if selected_unit == 1:
-            st.markdown(
-                """These labs focus on understanding business questions and
-translating them into concrete analysis tasks.
+            st.markdown("### 🎯 Unit 1 Labs: Business Questions & Requirements")
+            
+            st.markdown("---")
+            st.markdown("## 📝 LAB 1: Rewriting Vague Requests into SMART Questions")
+            st.markdown("**Duration:** 60-90 minutes | **Difficulty:** Beginner")
+            
+            with st.expander("🎯 Lab 1 - Click to expand full instructions"):
+                st.markdown(
+                    """
+### Learning Objectives
 
-- **Lab 1 – Rewrite vague requests**
-  - Take 5–10 example stakeholder questions (e.g. "Why are DNAs high?",
-    "Which campaigns are working?").
-  - Rewrite each as a clear, measurable question with timeframe and
-    metric.
+By the end of this lab, you will be able to:
+- Identify the problems with vague analytical requests
+- Apply the SMART framework to refine questions
+- Extract measurable metrics from business language
+- Define appropriate timeframes and comparison periods
+- Communicate refined questions back to stakeholders
 
-- **Lab 2 – Map questions to data**
-  - For each refined question, list which tables/files/fields you would
-    need.
-  - Identify any data quality risks or gaps.
+---
 
-- **Mini project – Question-to-metric map**
-  - Choose one domain (e.g. outpatient clinics, online shop, call
-    centre).
-  - Create a one-page "question-to-metric" map that a manager could
-    sign off.
+### Prerequisites
+
+- Understanding of SMART framework (Specific, Measurable, Actionable, Relevant, Time-bound)
+- Basic business terminology
+- No technical skills required yet
+
+---
+
+### Materials Needed
+
+- Word processor or spreadsheet for documenting your work
+- Access to the provided stakeholder scenarios (below)
+- Reference: Unit 1 learning materials on requirements clarification
+
+---
+
+### Part 1: Analyzing Vague Requests (20 minutes)
+
+**STEP 1:** Read each of the following stakeholder requests. For each one, identify:
+- What's vague or unclear?
+- What assumptions would you need to make?
+- What questions would you ask to clarify?
+
+**Scenario 1: Hospital Clinic Manager**
+*"We're getting too many DNAs. Can you look into it?"*
+
+**Scenario 2: E-commerce Marketing Director**
+*"Our marketing campaigns aren't working. What's going on?"*
+
+**Scenario 3: Retail Store Manager**
+*"Sales are down. We need to know why."*
+
+**Scenario 4: Call Center Manager**
+*"We're too busy lately. Can you check the numbers?"*
+
+**Scenario 5: SaaS Product Manager**
+*"Customers are churning. Help!"*
+
+**YOUR TASK:** Create a table like this for each scenario:
+
+| Original Request | Problems Identified | Questions to Ask Stakeholder |
+|------------------|---------------------|----------------------------|
+| "We're getting too many DNAs" | - What's "too many"? No baseline<br>- Which clinics?<br>- Compared to when? | - What DNA rate would be acceptable?<br>- Is this for all clinics or specific specialties?<br>- Compared to last month, last year, or another benchmark? |
+
+**STEP 2:** Compare your analysis with the example below.
+
+**Example Analysis - Scenario 1:**
+
+| Problem Type | Details |
+|--------------|---------|
+| **No baseline** | "Too many" compared to what? Need historical rate or target |
+| **No scope** | All clinics? Specific specialty? Inpatient vs outpatient? |
+| **No timeframe** | Last week? Last month? Last year? |
+| **No metric** | Count of DNAs? % DNA rate? Cost impact? |
+| **No causality** | Asking "why" but haven't established "what" and "how much" first |
+
+---
+
+### Part 2: Applying SMART Framework (30 minutes)
+
+**STEP 3:** For each of the 5 scenarios, rewrite the request using the SMART framework.
+
+**Template to use:**
+
+```
+ORIGINAL: [vague request]
+
+REFINED QUESTION:
+[Specific metric] for [specific scope] during [timeframe] 
+compared to [baseline], broken down by [relevant segments]
+
+SMART CHECK:
+✓ Specific: [what exactly are we measuring]
+✓ Measurable: [how will we quantify it]
+✓ Actionable: [what decision will this inform]
+✓ Relevant: [why does this matter to business goals]
+✓ Time-bound: [what period and comparison]
+```
+
+**STEP 4:** Here's an example for Scenario 1. Use this as your template:
+
+**ORIGINAL:** "We're getting too many DNAs. Can you look into it?"
+
+**REFINED QUESTION:**
+"What is the DNA rate (% of scheduled appointments that result in Did Not Attend) 
+for Outpatient clinics in Q4 2024 compared to Q4 2023, broken down by specialty 
+and appointment type (first appointment vs follow-up)?"
+
+**SMART CHECK:**
+✓ **Specific:** DNA rate for Outpatient clinics, segmented by specialty and appointment type
+✓ **Measurable:** Percentage calculation: (DNAs / Total Scheduled) × 100
+✓ **Actionable:** Will help identify which specialties/appointment types need intervention
+✓ **Relevant:** DNAs waste capacity and increase waiting lists (key trust priority)
+✓ **Time-bound:** Q4 2024 vs Q4 2023 (year-over-year comparison)
+
+**Additional follow-up questions to consider:**
+- What's the financial impact? (revenue lost per DNA)
+- Are there patterns by day of week or time of day?
+- What's our SMS reminder strategy?
+
+---
+
+**STEP 5:** Now refine the remaining 4 scenarios yourself.
+
+**Scenario 2 Example Solution (try yours first before looking!):**
+
+<details>
+<summary>Click to reveal example answer</summary>
+
+**REFINED QUESTION:**
+"What is the email campaign conversion rate (% of recipients who clicked through 
+AND made a purchase) for each of our 3 main customer segments (New, Returning, VIP) 
+in November 2024 compared to November 2023, broken down by campaign type 
+(promotional vs educational)?"
+
+**SMART CHECK:**
+✓ **Specific:** Email conversion rate by segment and campaign type
+✓ **Measurable:** (Purchases from email / Email recipients) × 100
+✓ **Actionable:** Will identify which segments/campaigns are underperforming
+✓ **Relevant:** Email is primary customer acquisition channel
+✓ **Time-bound:** November 2024 vs November 2023
+
+</details>
+
+---
+
+### Part 3: Stakeholder Communication (20 minutes)
+
+**STEP 6:** For Scenario 1 (DNAs), write an email response to the stakeholder presenting your refined question.
+
+**Your email should include:**
+1. Acknowledgment of their concern
+2. Your refined, specific question
+3. The metrics you'll calculate
+4. The timeframe for delivering results
+5. A request for confirmation that this addresses their need
+
+**Example Email Template:**
+
+```
+Subject: Re: DNA analysis request - Confirming scope
+
+Hi [Manager Name],
+
+Thanks for raising the DNA concern. Before I dive into the data, I want to 
+make sure I'm analyzing the right thing.
+
+Based on our conversation, I understand you're concerned about DNA rates 
+affecting clinic capacity. Here's what I propose to analyze:
+
+**QUESTION:** What is the DNA rate (% DNAs / scheduled appointments) for 
+Outpatient clinics in Q4 2024 vs Q4 2023, broken down by:
+- Specialty (Dermatology, Cardiology, etc.)
+- Appointment type (New vs Follow-up)
+
+**METRICS I'll CALCULATE:**
+- Overall DNA rate and trend
+- DNA rate by specialty (top 10)
+- DNA rate by appointment type
+- Estimated appointment slots lost due to DNAs
+- Day-of-week patterns (if helpful)
+
+**DELIVERABLE:** A 1-page summary with charts showing where DNAs are 
+highest, plus recommendations for which clinics to prioritize.
+
+**TIMELINE:** I can have initial findings by [date].
+
+**QUESTION FOR YOU:** Does this address what you need? Any other dimensions 
+you'd like me to include (e.g., patient age groups, referral source)?
+
+Let me know if I should proceed with this scope.
+
+Thanks,
+[Your Name]
+```
+
+**STEP 7:** Write similar emails for scenarios 2 and 3.
+
+---
+
+### Part 4: Identifying Data Gaps (15 minutes)
+
+**STEP 8:** For each refined question, list what data you would need and potential issues.
+
+**Template:**
+
+| Data Required | Likely Source | Potential Issues |
+|---------------|---------------|------------------|
+| Appointment scheduling data | Scheduling system DB | May not capture patient-initiated cancellations vs true DNAs |
+| Patient demographics | Patient admin system | May have data quality issues (missing postcodes, etc.) |
+
+**STEP 9:** Complete this for Scenario 1 (DNAs).
+
+**Example:**
+
+| Data Required | Likely Source | Potential Issues |
+|---------------|---------------|------------------|
+| Scheduled appointments | Scheduling DB: appointments table | - Need to filter out cancelled appointments<br>- Distinguish between cancellations and DNAs |
+| Appointment outcomes | Scheduling DB: status field | - Check if DNA is reliably recorded<br>- May have multiple codes (DNA, cancelled late, etc.) |
+| Clinic/specialty | Reference data: clinics table | - Should be clean |
+| Appointment type | Scheduling DB: appointment_type field | - May need to join to appointment_type_lookup table |
+| Historical data | Same as above | - Need at least 2 years for YoY comparison<br>- Check if system changed in that period |
+
+---
+
+### Success Criteria
+
+You've successfully completed this lab when you can:
+
+- [ ] Identify at least 3 problems in each vague request
+- [ ] Refine each request into a SMART question
+- [ ] List specific metrics, timeframes, and segments
+- [ ] Write a professional stakeholder confirmation email
+- [ ] Identify potential data sources and quality issues
+- [ ] Explain why your refined question is better than the original
+
+---
+
+### Common Mistakes to Avoid
+
+❌ **Being too technical too soon**
+"We need to run a regression analysis on DNA predictors"
+→ Stakeholder doesn't care about methods, they care about answers
+
+❌ **Not defining comparison periods**
+"What's the DNA rate?" (compared to what?)
+→ Always include a baseline or target
+
+❌ **Forgetting to segment**
+"Overall sales are down" (for all products? all regions?)
+→ Aggregated numbers hide important patterns
+
+❌ **Making assumptions**
+"I'll assume you mean all clinics"
+→ Always confirm scope with stakeholder
+
+✅ **INSTEAD:** Ask clarifying questions, confirm scope, be specific
+
+---
+
+### Extension Challenges (Optional)
+
+If you finish early or want extra practice:
+
+1. **Challenge 1:** Find 3 real vague analytical requests from online forums 
+   (Reddit, Twitter, LinkedIn) and refine them
+
+2. **Challenge 2:** Create a "requirements clarification template" you could 
+   use for future stakeholder meetings
+
+3. **Challenge 3:** Role-play with a classmate: one person gives vague 
+   requests, other person asks clarifying questions
+
+---
+
+### Deliverable
+
+Submit a document containing:
+1. Your refined SMART questions for all 5 scenarios
+2. Your stakeholder confirmation email for scenario 1
+3. Data requirements table for scenario 1
+4. Reflection: What did you learn? What was challenging?
+
+**Expected length:** 3-5 pages
+
+---
+
+### Assessment Rubric
+
+| Criteria | Excellent (90-100%) | Good (70-89%) | Needs Improvement (<70%) |
+|----------|---------------------|---------------|-------------------------|
+| **SMART Questions** | All questions specific, measurable, with clear timeframes and segments | Most questions well-defined, minor ambiguity | Questions still vague or missing key elements |
+| **Stakeholder Communication** | Professional email, confirms scope, requests feedback | Email adequate but may miss some elements | Email too technical or doesn't confirm scope |
+| **Data Identification** | Correctly identifies sources and potential issues | Identifies most sources, may miss some issues | Unclear about data needs |
+| **Business Understanding** | Shows strong understanding of business context | Adequate business awareness | Lacks business perspective |
+
+---
+
+**TIME TO COMPLETE:** Approximately 90 minutes
+
+**NEXT:** Once you've completed Lab 1, move on to Lab 2 (Mapping questions to data sources)
 """
-            )
+                )
+            
+            st.markdown("---")
+            st.markdown("## 📝 LAB 2: Mapping Questions to Data Sources")
+            st.markdown("**Duration:** 90 minutes | **Difficulty:** Intermediate")
+            
+            with st.expander("🎯 Lab 2 - Click to expand full instructions"):
+                st.markdown(
+                    """
+### Learning Objectives
+
+By the end of this lab, you will be able to:
+- Trace business questions to the specific data sources that can answer them
+- Identify primary keys, foreign keys, and join relationships between tables
+- Assess data quality issues and plan cleaning strategies
+- Document a complete data source inventory for analysis projects
+- Create a data lineage diagram showing how data flows from sources to insights
+
+---
+
+### Prerequisites
+
+**Before starting this lab, you should have:**
+- ✅ Completed Lab 1 (SMART Questions)
+- ✅ Basic understanding of databases and tables
+- ✅ Familiarity with joins (covered in Unit 3 theory)
+
+---
+
+### Materials Needed
+
+- Spreadsheet software (Excel or Google Sheets)
+- Lab 2 data dictionary (provided below)
+- Drawing tool for diagrams (PowerPoint, Lucidchart, or paper/pen)
+
+---
+
+### Scenario: Hospital Appointment System Analysis
+
+**Context:**
+
+You're a Data Analyst at Westside Hospital. The Head of Operations has asked you to analyze 
+appointment DNA (Did Not Attend) rates. In Lab 1, you refined this into SMART questions. 
+Now you need to identify WHERE the data lives and HOW to access it.
+
+**Your Lab 1 Output (refined questions):**
+1. What is the DNA rate by specialty for appointments scheduled in the last 6 months?
+2. How does DNA rate differ between new patient vs follow-up appointments?
+3. Which day of week has the highest DNA rate?
+4. What percentage of DNA appointments had reminder calls sent?
+
+**Your Task:** Map each question to specific data sources and design the data retrieval strategy.
+
+---
+
+### Part 1: Understanding the Data Landscape (20 minutes)
+
+#### Step 1.1: Review the Data Dictionary
+
+**Hospital has 4 main systems:**
+
+**SYSTEM 1: Appointments Database (AppointmentDB)**
+- **Table:** `appointments`
+- **Description:** All scheduled appointments
+- **Key fields:**
+  - `appointment_id` (Primary Key)
+  - `patient_id` (Foreign Key → patients table)
+  - `clinic_id` (Foreign Key → clinics table)
+  - `appointment_date`
+  - `appointment_type` (NEW or FOLLOW_UP)
+  - `status` (ATTENDED, DNA, CANCELLED)
+  - `reminder_sent` (YES or NO)
+  - `created_timestamp`
+
+**SYSTEM 2: Patient Records System (PatientDB)**
+- **Table:** `patients`
+- **Description:** Patient demographics
+- **Key fields:**
+  - `patient_id` (Primary Key)
+  - `patient_name`
+  - `date_of_birth`
+  - `postcode`
+  - `phone_number`
+  - `email`
+  - `registration_date`
+
+**SYSTEM 3: Clinic Management System (ClinicDB)**
+- **Table:** `clinics`
+- **Description:** Clinic and specialty information
+- **Key fields:**
+  - `clinic_id` (Primary Key)
+  - `clinic_name`
+  - `specialty` (Dermatology, Cardiology, etc.)
+  - `building`
+  - `floor`
+
+**SYSTEM 4: Communication Log (CommsSystem)**
+- **Table:** `reminder_logs`
+- **Description:** Record of all reminder communications
+- **Key fields:**
+  - `reminder_id` (Primary Key)
+  - `appointment_id` (Foreign Key → appointments table)
+  - `reminder_date`
+  - `reminder_method` (SMS, PHONE, EMAIL)
+  - `delivery_status` (SENT, FAILED, BOUNCED)
+
+---
+
+#### Step 1.2: Create Your Data Source Inventory
+
+**TASK:** Complete this table for each system
+
+| System Name | Access Method | Update Frequency | Owner/Contact | Known Issues |
+|-------------|---------------|------------------|---------------|--------------|
+| AppointmentDB | SQL (read-only) | Real-time | IT Team (ext 5555) | None known |
+| PatientDB | ? | ? | ? | ? |
+| ClinicDB | ? | ? | ? | ? |
+| CommsSystem | ? | ? | ? | ? |
+
+**Fill in the "?" based on realistic assumptions.**
+
+**Example Answer for PatientDB:**
+- Access Method: SQL (read-only)
+- Update Frequency: Daily (batch update at 2am)
+- Owner/Contact: Data Governance Team (ext 4444)
+- Known Issues: Historic records before 2020 may have missing postcodes
+
+---
+
+### Part 2: Mapping Questions to Tables (25 minutes)
+
+#### Step 2.1: Question-to-Table Mapping
+
+**TASK:** For each refined question, identify which tables are needed.
+
+**QUESTION 1:** *"What is the DNA rate by specialty for appointments scheduled in the last 6 months?"*
+
+**Tables Needed:**
+- `appointments` (for: status, appointment_date)
+- `clinics` (for: specialty)
+
+**Join Logic:**
+```sql
+FROM appointments a
+JOIN clinics c ON a.clinic_id = c.clinic_id
+WHERE a.status = 'DNA'
+  AND a.appointment_date >= DATE_SUB(CURRENT_DATE, INTERVAL 6 MONTH)
+```
+
+**Calculation:**
+```
+DNA Rate = (COUNT appointments WHERE status='DNA') / (COUNT all appointments) × 100
+Group by: specialty
+```
+
+---
+
+**YOUR TURN:** Complete for Questions 2-4
+
+**QUESTION 2:** *"How does DNA rate differ between new patient vs follow-up appointments?"*
+
+**Tables Needed:**
+- _______________
+- _______________
+
+**Join Logic:**
+```sql
+FROM _______________ 
+WHERE _______________
+```
+
+**Calculation:**
+```
+DNA Rate = _______________
+Group by: _______________
+```
+
+---
+
+**QUESTION 3:** *"Which day of week has the highest DNA rate?"*
+
+**Tables Needed:**
+- _______________
+
+**Join Logic:**
+```sql
+FROM _______________ 
+WHERE _______________
+```
+
+**Calculation:**
+```
+DNA Rate = _______________
+Group by: _______________
+```
+
+**HINT:** Use `DAYOFWEEK(appointment_date)` to extract day
+
+---
+
+**QUESTION 4:** *"What percentage of DNA appointments had reminder calls sent?"*
+
+**Tables Needed:**
+- _______________
+- _______________
+
+**Join Logic:**
+```sql
+FROM _______________ 
+LEFT JOIN _______________ ON _______________
+WHERE _______________
+```
+
+**Calculation:**
+```
+Reminder Rate = _______________
+```
+
+---
+
+#### Step 2.2: Identify Join Keys
+
+**TASK:** Document the relationships between tables
+
+**Example:**
+
+```
+appointments.clinic_id = clinics.clinic_id
+(Many appointments → One clinic)
+```
+
+**YOUR TURN:** Complete these relationships
+
+```
+appointments.patient_id = patients._______________
+(_____ appointments → _____ patient)
+
+appointments._______________ = reminder_logs._______________
+(_____ appointment → _____ reminder logs)
+```
+
+---
+
+### Part 3: Data Quality Assessment (20 minutes)
+
+#### Step 3.1: Identify Potential Data Issues
+
+**TASK:** For each table, list potential data quality issues
+
+**Example for `appointments` table:**
+
+| Potential Issue | Impact | How to Check | Mitigation Strategy |
+|----------------|---------|--------------|---------------------|
+| Duplicate appointment_ids | Inflates counts | `SELECT appointment_id, COUNT(*) FROM appointments GROUP BY appointment_id HAVING COUNT(*) > 1` | Remove duplicates, keep earliest |
+| Missing clinic_id | Can't group by specialty | `SELECT COUNT(*) FROM appointments WHERE clinic_id IS NULL` | Exclude or flag |
+| Status values inconsistent (DNA vs Did Not Attend) | Wrong filtering | `SELECT DISTINCT status FROM appointments` | Standardize before analysis |
+
+---
+
+**YOUR TURN:** Complete for `patients` table
+
+| Potential Issue | Impact | How to Check | Mitigation Strategy |
+|----------------|---------|--------------|---------------------|
+| Missing phone/email | Can't contact | ? | ? |
+| Duplicate patient records | ? | ? | ? |
+| Date of birth in future | ? | ? | ? |
+
+---
+
+#### Step 3.2: Plan Data Cleaning Steps
+
+**TASK:** List the cleaning steps you'll perform BEFORE analysis
+
+**Cleaning Checklist:**
+
+- [ ] Remove cancelled appointments (status = 'CANCELLED')
+- [ ] Remove test/training appointments (patient_name LIKE 'TEST%')
+- [ ] Standardize status values (DNA vs Did Not Attend → 'DNA')
+- [ ] _______________
+- [ ] _______________
+- [ ] _______________
+
+**Add 3 more cleaning steps based on your data quality assessment**
+
+---
+
+### Part 4: Create Data Lineage Diagram (25 minutes)
+
+#### Step 4.1: Draw the Data Flow
+
+**TASK:** Create a visual diagram showing how data flows from sources to final analysis
+
+**Your diagram should show:**
+1. Source systems (rectangles)
+2. Tables (rounded rectangles)
+3. Join relationships (arrows with labels)
+4. Final output (highlighted box)
+
+**Example Structure:**
+
+```
+[AppointmentDB System]
+    └── appointments table
+            ├── appointment_id (PK)
+            ├── clinic_id (FK) ────────┐
+            ├── patient_id (FK) ───┐   │
+            ├── status             │   │
+            └── appointment_date   │   │
+                                  │   │
+[PatientDB System]                │   │
+    └── patients table            │   │
+            ├── patient_id (PK) ◄──┘   │
+            └── patient_name           │
+                                      │
+[ClinicDB System]                     │
+    └── clinics table                 │
+            ├── clinic_id (PK) ◄───────┘
+            └── specialty
+
+                    ↓
+                    
+[ANALYSIS OUTPUT]
+- DNA Rate by Specialty
+- DNA Rate by Appointment Type
+- DNA Rate by Day of Week
+- Reminder Coverage Analysis
+```
+
+**Tools you can use:**
+- PowerPoint (shapes + connectors)
+- Lucidchart or draw.io (online diagramming)
+- Paper and pen (take photo)
+
+---
+
+### Part 5: Document Your Data Access Plan (10 minutes)
+
+#### Step 5.1: Write the Data Retrieval Strategy
+
+**TASK:** Document HOW you'll get the data
+
+**Template:**
+
+**DATA ACCESS PLAN**
+
+**Date:** _______________  
+**Analyst:** _______________  
+**Project:** Hospital DNA Rate Analysis
+
+**Step 1: Request Access**
+- [ ] Request read-only SQL access to AppointmentDB, PatientDB, ClinicDB
+- [ ] Contact: IT Team (ext 5555)
+- [ ] Expected turnaround: 2 business days
+
+**Step 2: Extract Data**
+```sql
+-- Main query combining all needed tables
+SELECT 
+    a.appointment_id,
+    a.appointment_date,
+    a.appointment_type,
+    a.status,
+    c.specialty,
+    DAYOFWEEK(a.appointment_date) as day_of_week,
+    CASE WHEN r.reminder_id IS NOT NULL THEN 'YES' ELSE 'NO' END as reminder_sent
+FROM appointments a
+JOIN clinics c ON a.clinic_id = c.clinic_id
+LEFT JOIN reminder_logs r ON a.appointment_id = r.appointment_id
+WHERE a.appointment_date >= DATE_SUB(CURRENT_DATE, INTERVAL 6 MONTH)
+  AND a.status IN ('ATTENDED', 'DNA');
+```
+
+**Step 3: Save and Clean**
+- [ ] Export to CSV: `appointments_6months.csv`
+- [ ] Apply cleaning steps (see Part 3.2)
+- [ ] Save cleaned version: `appointments_6months_clean.csv`
+
+**Step 4: Validate**
+- [ ] Row count check (expect ~20,000-30,000 appointments)
+- [ ] Date range check (min date ~6 months ago, max date ~today)
+- [ ] No nulls in critical fields (status, specialty, appointment_date)
+
+---
+
+### Success Criteria
+
+**You've successfully completed Lab 2 if you can:**
+
+✅ **Mapping Accuracy**
+- All 4 questions correctly mapped to required tables
+- Join relationships identified (patient_id, clinic_id, appointment_id)
+- Primary keys and foreign keys documented
+
+✅ **Data Quality Awareness**
+- At least 5 potential data quality issues identified
+- Mitigation strategy for each issue
+- Cleaning checklist with 6+ steps
+
+✅ **Visual Communication**
+- Data lineage diagram created
+- Shows relationships between 3+ tables
+- Clear flow from sources to analysis output
+
+✅ **Documentation Quality**
+- Data access plan is complete and actionable
+- SQL query is syntactically correct
+- Validation steps included
+
+---
+
+### Common Mistakes to Avoid
+
+❌ **Missing Required Joins**
+- Forgetting that `appointments` alone doesn't have specialty (need `clinics` table)
+- Not recognizing when LEFT JOIN vs INNER JOIN matters
+
+❌ **Unclear Join Logic**
+- Writing "join tables" without specifying ON condition
+- Joining on non-key fields
+
+❌ **Ignoring Data Quality**
+- Assuming data is perfect
+- Not checking for duplicates, nulls, or inconsistencies
+
+❌ **Incomplete Documentation**
+- Missing the "how to check" column in data quality assessment
+- Vague mitigation strategies ("fix it")
+
+---
+
+### Extension Challenges (Optional)
+
+Want to go deeper? Try these:
+
+**CHALLENGE 1: Handle Missing Reminders**
+- What if `reminder_logs` doesn't have records for some appointments?
+- Is that because no reminder was sent, or because the log is incomplete?
+- How would you distinguish these cases?
+
+**CHALLENGE 2: Time Zone Issues**
+- `appointment_date` is stored in UTC
+- Clinics operate in GMT (UK time)
+- How do you ensure "day of week" is calculated in clinic's local time?
+
+**CHALLENGE 3: Slow Query Optimization**
+- Your query takes 5 minutes to run on 2 years of data
+- How would you optimize it? (Hint: indexes, date filtering, reducing joins)
+
+---
+
+### Deliverables
+
+**Submit the following:**
+
+1. **Completed Question-to-Table Mapping** (Part 2)
+   - All 4 questions mapped
+   - Tables, joins, and calculations documented
+
+2. **Data Quality Assessment** (Part 3)
+   - Issue identification table for `appointments` and `patients`
+   - Cleaning checklist with 6+ steps
+
+3. **Data Lineage Diagram** (Part 4)
+   - Visual showing relationships
+   - Can be hand-drawn or digital
+
+4. **Data Access Plan** (Part 5)
+   - Complete document with SQL query
+   - Validation steps included
+
+---
+
+### Assessment Rubric
+
+| Criteria | Excellent (A) | Good (B) | Needs Improvement (C) |
+|----------|---------------|----------|----------------------|
+| **Question Mapping** | All 4 questions correctly mapped to exact tables needed, joins clearly specified | 3-4 questions mapped, minor errors in join logic | <3 questions mapped or major errors |
+| **Join Relationships** | All PKs/FKs correctly identified, join types (INNER/LEFT) appropriate | Most relationships correct, minor confusion on join types | Significant gaps in understanding joins |
+| **Data Quality** | 5+ issues identified with realistic checks and mitigation | 3-4 issues identified with some strategies | <3 issues or vague mitigations |
+| **Data Lineage Diagram** | Clear visual with 3+ tables, relationships labeled, professional | Shows main tables and relationships, adequate | Confusing or incomplete |
+| **Documentation** | Data access plan is production-ready, SQL is correct and executable | Plan is complete but minor syntax errors | Incomplete or non-actionable |
+| **Critical Thinking** | Identifies non-obvious issues (timezones, missing data interpretation) | Solid understanding, catches main issues | Surface-level only |
+
+**Target:** Achieve "Excellent" or "Good" on all criteria
+
+---
+
+**TIME TO COMPLETE:** Approximately 90 minutes
+
+**NEXT:** After completing Lab 2, proceed to the Unit 1 Mini Project (Question-to-Metric Map)
+
+---
+
+### Example Answer Key (Use After Attempting)
+
+<details>
+<summary><b>Click to reveal answers (only after attempting yourself!)</b></summary>
+
+**Question 2 Mapping:**
+- Tables: `appointments`
+- Join: None needed (appointment_type is in appointments table)
+- Calculation: DNA Rate = COUNT(WHERE status='DNA') / COUNT(*) × 100, GROUP BY appointment_type
+
+**Question 3 Mapping:**
+- Tables: `appointments`
+- Join: None needed
+- Calculation: DNA Rate = COUNT(WHERE status='DNA') / COUNT(*) × 100, GROUP BY DAYOFWEEK(appointment_date)
+
+**Question 4 Mapping:**
+- Tables: `appointments`, `reminder_logs`
+- Join: LEFT JOIN reminder_logs ON appointments.appointment_id = reminder_logs.appointment_id
+- Calculation: Reminder Rate = COUNT(WHERE reminder_id IS NOT NULL) / COUNT(*) × 100, WHERE status='DNA'
+
+**Join Keys:**
+- `appointments.patient_id = patients.patient_id` (Many-to-One)
+- `appointments.appointment_id = reminder_logs.appointment_id` (One-to-Many)
+
+**Data Quality Issues for `patients`:**
+- Missing phone/email → Can't send reminders → Check with `WHERE phone IS NULL OR email IS NULL` → Flag for manual review
+- Duplicate patient records → Inflates patient count → Check with `GROUP BY patient_name, date_of_birth HAVING COUNT(*) > 1` → Merge duplicates
+- Future DOB → Invalid data → Check with `WHERE date_of_birth > CURRENT_DATE` → Exclude or correct
+
+</details>
+"""
+                )
+            
+            st.markdown("---")
+            st.markdown("## 📝 MINI PROJECT: Question-to-Metric Map")
+            st.markdown("**Duration:** 2-3 hours | **Difficulty:** Intermediate")
+            
+            with st.expander("🎯 Mini Project - Click to expand full instructions"):
+                st.markdown(
+                    """
+*This is your Unit 1 capstone - a one-page analytical framework document.*
+
+**Coming soon:** Full project requirements and template
+
+**Brief overview:**
+- Choose a business domain (healthcare, retail, etc.)
+- Create a comprehensive question-to-metric mapping
+- Include data sources, calculation logic, and refresh frequency
+- Design for stakeholder sign-off
+
+**Deliverable:** One-page professional document suitable for manager approval
+"""
+                )
         elif selected_unit == 2:
             st.markdown(
                 """These labs emphasise **hands-on spreadsheet skills**.
