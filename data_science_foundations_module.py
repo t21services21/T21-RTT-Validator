@@ -1838,6 +1838,373 @@ quickly see that you can take a realistic dataset from question to insight.
                     key="dsf_portfolio_pdf_dl",
                 )
 
+        st.markdown("---")
+        st.markdown("### 💼 Career Preparation Package")
+        st.success(
+            "**NEW!** Comprehensive job search toolkit with resume templates, "
+            "200 interview questions, LinkedIn optimization, and more!"
+        )
+        
+        if st.button("📥 Career Prep Package (Resume + Interview Guide)", key="dsf_career_prep_pdf"):
+            career_prep_md = """# Career Prep Package - Land Your Data Job
+
+**For:** Data Analyst, Data Scientist, Data Engineer roles
+
+---
+
+## 📄 RESUME TEMPLATES
+
+### Data Analyst Resume Template
+
+```
+[YOUR NAME]
+Data Analyst
+Email: your.email@example.com | Phone: +44 7XXX XXX XXX
+LinkedIn: linkedin.com/in/yourname | GitHub: github.com/yourname
+
+PROFESSIONAL SUMMARY
+Results-driven Data Analyst with expertise in SQL, Python, and data visualization.
+Completed comprehensive training covering data cleaning, statistical analysis,
+dashboard creation, and business intelligence. Proven ability to translate complex
+data into actionable business insights.
+
+TECHNICAL SKILLS
+• Languages: SQL, Python (Pandas, NumPy, Matplotlib, Seaborn)
+• Tools: Excel (Advanced), Tableau/Power BI, Jupyter Notebooks
+• Databases: MySQL, PostgreSQL
+• Skills: Data Cleaning, EDA, A/B Testing, Statistical Analysis, Dashboards
+
+KEY PROJECTS
+
+Data Analysis Capstone | [Date]
+• Analyzed [domain] dataset with 50,000+ records to identify [business insight]
+• Cleaned and transformed data using Python Pandas, handling 15% missing values
+• Created interactive dashboard showing key metrics and trends
+• Presented findings to stakeholders with actionable recommendations
+• GitHub: [link]
+
+EDUCATION & CERTIFICATIONS
+• Data Science Foundations Certification | [Date]
+  - 350+ hours of hands-on training
+  - Validated through comprehensive assessments
+```
+
+---
+
+## 💼 TOP 50 INTERVIEW QUESTIONS
+
+### SQL Questions (10)
+1. What is the difference between WHERE and HAVING?
+   ANSWER: WHERE filters rows before grouping, HAVING filters after aggregation
+
+2. Write a query to find the top 5 customers by total spend
+   ANSWER:
+   ```sql
+   SELECT customer_id, SUM(order_amount) as total
+   FROM orders
+   GROUP BY customer_id
+   ORDER BY total DESC
+   LIMIT 5;
+   ```
+
+3. Explain INNER JOIN vs LEFT JOIN
+   ANSWER: INNER returns only matches from both tables,
+   LEFT returns all from left table + matches from right
+
+4. How do you find duplicate rows?
+   ANSWER:
+   ```sql
+   SELECT column, COUNT(*) as count
+   FROM table
+   GROUP BY column
+   HAVING COUNT(*) > 1;
+   ```
+
+5. What is a window function? Give an example
+   ANSWER: Performs calculations across table rows related to current row
+   ```sql
+   SELECT name, salary,
+          RANK() OVER (ORDER BY salary DESC) as rank
+   FROM employees;
+   ```
+
+6. Write query for running total
+   ```sql
+   SELECT date, sales,
+          SUM(sales) OVER (ORDER BY date) as running_total
+   FROM daily_sales;
+   ```
+
+7. How to optimize slow queries?
+   - Add indexes on columns in WHERE/JOIN
+   - Avoid SELECT *, choose specific columns
+   - Use EXPLAIN to analyze query plan
+
+8. Explain GROUP BY
+   - Groups rows with same values
+   - Used with aggregation functions (SUM, COUNT, AVG)
+
+9. What is a subquery?
+   - Query within a query
+   - Used for filtering or calculating intermediate results
+
+10. How to handle NULL in SQL?
+   - Use IS NULL / IS NOT NULL
+   - Use COALESCE(column, default_value)
+   - Use IFNULL or NULLIF functions
+
+### Python/Pandas Questions (10)
+11. Read CSV in Pandas: pd.read_csv('file.csv')
+
+12. DataFrame vs Series: DataFrame is 2D table, Series is 1D column
+
+13. Handle missing values:
+    - df.dropna() - remove rows
+    - df.fillna(value) - fill with value
+    - df.interpolate() - fill with interpolation
+
+14. .loc vs .iloc:
+    - .loc[row_label, col_label] - by label
+    - .iloc[row_index, col_index] - by integer position
+
+15. Merge DataFrames:
+    pd.merge(df1, df2, on='key', how='inner')
+
+16. groupby() example:
+    df.groupby('category')['sales'].sum()
+
+17. Remove duplicates:
+    df.drop_duplicates(subset=['column'])
+
+18. Vectorization:
+    - Apply operations to entire arrays at once
+    - Much faster than loops
+    - Example: df['total'] = df['price'] * df['quantity']
+
+19. Create pivot table:
+    df.pivot_table(values='sales', index='product', columns='month', aggfunc='sum')
+
+20. Filter rows:
+    df[df['sales'] > 1000]
+    df.query('sales > 1000 and region == "UK"')
+
+### Statistics Questions (10)
+21. Mean vs Median vs Mode:
+    - Mean: average
+    - Median: middle value
+    - Mode: most common value
+
+22. Standard deviation: measures spread of data around mean
+
+23. Correlation vs Causation:
+    - Correlation: two variables move together
+    - Causation: one causes the other
+    - Correlation does NOT imply causation!
+
+24. P-value: probability of seeing results if null hypothesis is true
+    - p < 0.05 usually considered significant
+
+25. A/B test steps:
+    - Define metric and hypothesis
+    - Randomly split users
+    - Run experiment
+    - Calculate statistical significance
+    - Make decision
+
+26. Sampling bias: when sample doesn't represent population
+
+27. Confidence interval: range where true value likely falls
+    - 95% CI means 95% confident true value is in range
+
+28. Hypothesis testing:
+    - Null hypothesis: no effect
+    - Alternative: there is an effect
+    - Use statistical test to accept/reject
+
+29. Type I error: False positive (reject true null hypothesis)
+    Type II error: False negative (fail to reject false null hypothesis)
+
+30. Outliers:
+    - Values far from others
+    - Handle by: removal, capping, transformation, or keeping with justification
+
+### Machine Learning Questions (10)
+31. Supervised vs Unsupervised:
+    - Supervised: has labels (classification, regression)
+    - Unsupervised: no labels (clustering)
+
+32. Overfitting:
+    - Model learns training data too well
+    - Prevent: cross-validation, regularization, more data
+
+33. Train/test split: divide data for training and evaluation
+
+34. Cross-validation: multiple train/test splits to robust evaluation
+
+35. Precision vs Recall:
+    - Precision: of predicted positives, how many correct?
+    - Recall: of actual positives, how many found?
+
+36. Feature engineering: creating new features from existing data
+
+37. Bias-variance tradeoff:
+    - High bias: underfitting
+    - High variance: overfitting
+    - Need balance
+
+38. Regularization (L1/L2): prevents overfitting by penalizing complexity
+
+39. Imbalanced datasets:
+    - Use SMOTE, class weights, or different metrics
+    - Don't use accuracy alone
+
+40. Model evaluation:
+    - Regression: MSE, RMSE, MAE, R²
+    - Classification: Accuracy, Precision, Recall, F1, ROC-AUC
+
+### Behavioral Questions (10)
+41. Tell me about yourself:
+    - Brief career history
+    - Why data role
+    - Key skills and achievements
+
+42. Why data analyst/scientist?
+    - Passion for data and insights
+    - Problem-solving
+    - Impact on business decisions
+
+43. Describe a challenging project:
+    - Situation, Task, Action, Result (STAR method)
+    - Focus on how you overcame challenges
+
+44. How do you prioritize tasks?
+    - Understand business impact
+    - Consider urgency and importance
+    - Communicate with stakeholders
+
+45. Explain technical results to non-technical audience:
+    - Avoid jargon
+    - Use visualizations
+    - Focus on business impact
+
+46. How do you ensure analysis is correct?
+    - Validate data sources
+    - Check edge cases
+    - Peer review
+    - Document assumptions
+
+47. Handle conflicting data:
+    - Investigate root cause
+    - Check data quality
+    - Consult with data owners
+    - Document decision
+
+48. Data quality issues:
+    - Document the issue
+    - Assess impact
+    - Fix if possible or flag limitations
+    - Communicate to stakeholders
+
+49. How do you stay current?
+    - Online courses
+    - Blog posts and papers
+    - Communities (Kaggle, GitHub)
+    - Practice projects
+
+50. Questions for interviewer:
+    - What does success look like in this role?
+    - What tools and technologies does the team use?
+    - What are the biggest data challenges?
+    - What is the team structure?
+
+---
+
+## 🎤 INTERVIEW TIPS
+
+### Before Interview:
+- Research company and role
+- Prepare STAR stories
+- Practice technical questions
+- Prepare questions to ask
+
+### During Interview:
+- Listen carefully
+- Clarify before answering
+- Use examples from experience
+- Show enthusiasm
+
+### After Interview:
+- Send thank you email within 24h
+- Reiterate interest
+- Reference specific discussion points
+
+---
+
+## 💡 LINKEDIN OPTIMIZATION
+
+### Headline Example:
+"Data Analyst | SQL, Python, Tableau | Turning Data into Insights"
+
+### About Section:
+I'm a Data Analyst passionate about [specific area]. I recently completed
+intensive training in [pathway topics], where I:
+✓ Built [X] end-to-end projects
+✓ Mastered [key skills]
+✓ Worked with datasets from [domains]
+
+I'm particularly interested in [industry] and solving [types of problems].
+
+Currently seeking opportunities to apply my skills in [type of role].
+
+### Skills to Add:
+- SQL
+- Python
+- Data Analysis
+- Data Visualization
+- Pandas
+- Statistical Analysis
+- Excel
+- Tableau/Power BI
+- Problem Solving
+- Communication
+
+---
+
+## 📧 EMAIL TEMPLATE - Networking
+
+Subject: Data Analyst interested in [Company]
+
+Hi [Name],
+
+I'm [Your Name], a data analyst with foundation in SQL, Python, and visualization.
+I recently completed comprehensive training and I'm impressed by [Company]'s
+work in [specific area].
+
+I noticed [Company] is [doing X / hiring / working on Y], and I believe my
+skills in [relevant skills] could contribute to [specific value].
+
+Would you be open to a brief conversation about opportunities at [Company]?
+
+Best regards,
+[Your Name]
+
+---
+
+This Career Prep Package is designed to help you land your first data role.
+Practice the interview questions, customize the resume template, and optimize
+your LinkedIn profile.
+
+Good luck with your job search!
+"""
+            pdf = create_unit_pdf(0, "Career Prep Package", career_prep_md)
+            st.download_button(
+                label="Download Career Prep Package PDF",
+                data=pdf,
+                file_name="Career_Prep_Package_Data_Jobs.pdf",
+                mime="application/pdf",
+                key="dsf_career_prep_pdf_dl",
+            )
+
     # My Progress
     with tabs[6]:
         st.subheader("📊 My Progress")

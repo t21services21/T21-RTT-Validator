@@ -1554,6 +1554,599 @@ engineering portfolio.
                     key="da_portfolio_pdf_dl",
                 )
 
+        st.markdown("---")
+        st.markdown("### 💼 Career Preparation Package")
+        st.success(
+            "**NEW!** Data Engineer job toolkit - Resume, interview questions, "
+            "system design, LinkedIn guide, and career strategies!"
+        )
+        
+        if st.button("📥 Career Prep - Data Engineer Edition", key="de_career_prep_pdf"):
+            career_prep_md = """# Career Prep Package - Land Your Data Engineer Job
+
+**Complete toolkit for Data Engineer career success**
+
+---
+
+## 📄 DATA ENGINEER RESUME TEMPLATE
+
+```
+[YOUR NAME]
+Data Engineer
+Email: your.email@example.com | LinkedIn: linkedin.com/in/yourname
+GitHub: github.com/yourname
+
+PROFESSIONAL SUMMARY
+Data Engineer with expertise in building scalable data pipelines, ETL processes,
+and data infrastructure. Proficient in Python, SQL, Spark, and cloud platforms.
+Completed comprehensive training in batch/stream processing, data warehousing,
+orchestration, and production data systems.
+
+TECHNICAL SKILLS
+• Languages: Python, SQL, Bash
+• Big Data: Apache Spark, Kafka, Airflow
+• Cloud: AWS (S3, EC2, Lambda, Glue, Redshift) / Azure / GCP
+• Databases: PostgreSQL, MySQL, Redshift, data warehousing
+• Tools: Docker, Git, CI/CD, Terraform
+• Skills: ETL/ELT, Data Pipelines, Data Modeling, Orchestration, Monitoring,
+  Data Quality, Stream Processing
+
+KEY PROJECTS
+
+Data Pipeline Capstone | [Date]
+• Built end-to-end pipeline processing 100K+ daily records
+• Implemented star schema data warehouse with 5 fact tables
+• Orchestrated ETL workflows using Airflow with error handling
+• Monitored data quality with automated checks (99.9% accuracy)
+• Reduced processing time by 40% through Spark optimization
+• GitHub: [link]
+
+Real-Time Streaming Pipeline | [Date]
+• Built stream processing pipeline using Kafka and Spark Streaming
+• Implemented windowing and watermarking for late data
+• Achieved <5 second latency for real-time dashboards
+• Handled 10K events/second with auto-scaling
+
+Batch Processing with Spark | [Date]
+• Processed 50GB+ datasets using PySpark
+• Optimized partitioning strategy reducing runtime by 60%
+• Implemented data quality checks and handled data skew
+• Output to data warehouse for BI team consumption
+
+EDUCATION & CERTIFICATIONS
+• Data Engineer Pathway Certification | [Date]
+  - Pipelines, Warehousing, Spark, Kafka, Cloud, Monitoring
+  - 500+ hours hands-on training with production scenarios
+
+[Your Previous Education/Experience]
+```
+
+---
+
+## 💼 TOP 70 DATA ENGINEER INTERVIEW QUESTIONS
+
+### ETL & Data Pipelines (15 Questions)
+
+**Q1: What is the difference between ETL and ELT?**
+A: ETL transforms data before loading (traditional data warehouse).
+ELT loads raw data first, transforms inside warehouse (modern cloud approach).
+Use ETL for sensitive data needing transformation, ELT for flexibility and scale.
+
+**Q2: What is idempotency in data pipelines?**
+A: Running same pipeline multiple times produces same result.
+Critical for pipeline reliability and safe retries.
+Example: Use UPSERT instead of INSERT to handle reruns.
+
+**Q3: How do you handle pipeline failures?**
+- Automated retries with exponential backoff
+- Dead letter queues for failed records
+- Alerting and monitoring
+- Transaction logs for recovery
+- Clear rollback procedures
+
+**Q4: Explain slowly changing dimensions (SCD).**
+- Type 0: Never changes
+- Type 1: Overwrite (no history)
+- Type 2: Add new row with effective dates (full history)
+- Type 3: Add new column (limited history)
+Most common: Type 2 for full historical tracking
+
+**Q5: What is data partitioning?**
+A: Splitting data into smaller chunks for parallel processing.
+Benefits: Faster queries, easier maintenance, better scalability
+Partition by: date (most common), region, category
+Example: `/data/year=2024/month=11/day=23/file.parquet`
+
+**Q6: How do you ensure data quality?**
+- Schema validation
+- Null checks
+- Range/format validation
+- Uniqueness constraints
+- Referential integrity
+- Automated testing
+- Monitoring and alerting
+
+**Q7: What is data lineage?**
+A: Tracking data flow from sources through transformations to destinations.
+Benefits: Debugging, compliance, impact analysis, trust
+Tools: Data catalogs, metadata stores
+
+**Q8: Explain incremental vs full load.**
+- Full: Load entire dataset (simple but slow)
+- Incremental: Load only new/changed data (efficient)
+Methods: Timestamp, change data capture (CDC), delta files
+
+**Q9: What is backfilling?**
+A: Re-processing historical data with new logic.
+Challenges: Resource intensive, maintaining two pipelines
+Strategy: Batch processing, incremental approach
+
+**Q10: How to handle late-arriving data?**
+- Define cutoff window
+- Reprocess with new data
+- Use watermarks (streaming)
+- Business rules for acceptance
+
+**Q11: What is data validation?**
+- Pre-load: Check before processing
+- In-process: Validate during transformation
+- Post-load: Verify after loading
+- Reconciliation: Compare source vs destination counts
+
+**Q12: Explain error handling strategies.**
+- Fail fast: Stop on first error (data quality critical)
+- Continue: Log errors, process rest (high availability)
+- Quarantine: Move bad records to separate location
+- Retry: Automatic retry with backoff
+
+**Q13: What is schema evolution?**
+A: Handling schema changes over time.
+Approaches: Schema-on-read, schema-on-write, Avro/Parquet with evolution support
+Best practice: Backward/forward compatible changes
+
+**Q14: How to optimize pipeline performance?**
+- Parallel processing
+- Efficient file formats (Parquet, Avro)
+- Appropriate partitioning
+- Predicate pushdown
+- Caching frequently used data
+- Resource tuning
+
+**Q15: What is data orchestration?**
+A: Scheduling and managing pipeline dependencies.
+Tools: Airflow, Luigi, Prefect
+Key concepts: DAGs, task dependencies, retries, SLAs
+
+---
+
+### SQL & Data Warehousing (10 Questions)
+
+**Q16: Star schema vs snowflake schema?**
+Star: Denormalized, faster queries, more storage
+Snowflake: Normalized dimensions, less storage, more joins
+Use star for most data warehouses (simpler, faster)
+
+**Q17: Fact vs dimension tables?**
+Fact: Measures/metrics (sales, clicks, transactions)
+Dimension: Context (customers, products, time, location)
+Fact tables larger, dimension tables wider
+
+**Q18: What are window functions?**
+A: Calculations across related rows without grouping.
+```sql
+ROW_NUMBER(), RANK(), DENSE_RANK()
+SUM() OVER, AVG() OVER
+PARTITION BY, ORDER BY
+```
+
+**Q19: How to optimize slow queries?**
+- Add indexes on filter/join columns
+- Partition large tables
+- Use column statistics
+- Avoid SELECT *
+- Use EXPLAIN/EXPLAIN ANALYZE
+- Materialize common aggregations
+
+**Q20: What is a materialized view?**
+A: Pre-computed query results stored as table.
+Benefits: Faster queries, trade storage for speed
+Refresh: On-demand or scheduled
+
+**Q21: Explain data warehouse vs data lake.**
+Warehouse: Structured, schema-on-write, SQL, BI tools
+Lake: All data types, schema-on-read, flexible, cheaper storage
+Modern: Lakehouse (combines both)
+
+**Q22: What is columnar storage?**
+A: Store data by column, not row (Parquet, ORC).
+Benefits: Better compression, faster analytics, efficient for subsets
+Use for: Analytics workloads, data warehouses
+
+**Q23: How to handle duplicate records?**
+```sql
+-- Find duplicates
+SELECT col, COUNT(*) FROM table GROUP BY col HAVING COUNT(*) > 1
+
+-- Remove duplicates
+WITH deduped AS (
+  SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY updated_at DESC) as rn
+  FROM table
+)
+SELECT * FROM deduped WHERE rn = 1
+```
+
+**Q24: What is data modeling?**
+A: Designing structure for storing data.
+Types: Conceptual, logical, physical
+Approaches: Dimensional (star/snowflake), Data Vault, normalized
+
+**Q25: Explain ACID properties.**
+- Atomicity: All or nothing
+- Consistency: Valid state transitions
+- Isolation: Concurrent transactions don't interfere
+- Durability: Committed data persists
+Critical for transactional systems
+
+---
+
+### Apache Spark & Big Data (15 Questions)
+
+**Q26: Explain Spark architecture.**
+- Driver: Orchestrates job
+- Executors: Run tasks
+- Cluster Manager: Resource allocation (YARN, K8s, Standalone)
+- DAG: Execution plan
+
+**Q27: What is lazy evaluation?**
+A: Spark doesn't execute until action called.
+Transformations: map, filter, groupBy (lazy)
+Actions: count, collect, save (trigger execution)
+Benefits: Optimization, efficient execution plan
+
+**Q28: RDD vs DataFrame vs Dataset?**
+- RDD: Low-level, flexible, slower
+- DataFrame: Optimized, SQL-like, most common
+- Dataset: Type-safe, Scala/Java only
+Use DataFrame for most cases
+
+**Q29: What is shuffling?**
+A: Data redistribution across partitions.
+Triggered by: groupBy, join, repartition
+Expensive: Network I/O, disk spills
+Minimize: Broadcast small tables, pre-partition data
+
+**Q30: How to optimize Spark jobs?**
+- Appropriate partitioning (200-1000 partitions)
+- Avoid shuffles when possible
+- Cache reused DataFrames
+- Broadcast small lookup tables
+- Use efficient file formats (Parquet)
+- Tune executor memory/cores
+- Filter early (predicate pushdown)
+
+**Q31: What is data skew?**
+A: Uneven data distribution across partitions.
+Problem: Some tasks take much longer
+Solutions: Salting keys, increase partitions, custom partitioner
+
+**Q32: Explain partition vs bucketing.**
+Partition: Physical file organization by column values
+Bucketing: Hash-based distribution within partitions
+Use partitioning for time-series, bucketing for joins
+
+**Q33: What is broadcast join?**
+A: Replicating small table to all executors.
+Avoids shuffle, much faster for small tables (<100MB)
+```python
+df_large.join(broadcast(df_small), "key")
+```
+
+**Q34: cache() vs persist()?**
+cache(): Store in memory (MEMORY_ONLY)
+persist(): Choose storage level (memory, disk, both)
+Use for DataFrames accessed multiple times
+
+**Q35: What is the catalyst optimizer?**
+A: Spark's query optimizer for DataFrames.
+Optimizations: Predicate pushdown, projection pushdown, constant folding
+Why DataFrames faster than RDDs
+
+**Q36: How to read/write Parquet?**
+```python
+# Read
+df = spark.read.parquet("path/to/data")
+
+# Write with partitioning
+df.write.partitionBy("date").parquet("output/path")
+```
+
+**Q37: What are accumulators and broadcast variables?**
+Accumulator: Shared variable for aggregation across executors
+Broadcast: Read-only variable shared to all executors
+Use: Counters, lookup tables
+
+**Q38: Explain Spark SQL.**
+A: SQL interface to Spark DataFrames.
+```python
+df.createOrReplaceTempView("table")
+spark.sql("SELECT * FROM table WHERE col > 100")
+```
+
+**Q39: What is dynamic partition pruning?**
+A: Skipping irrelevant partitions during query execution.
+Benefit: Faster queries on partitioned data
+Automatic in Spark 3+
+
+**Q40: How to handle small files problem?**
+- Compact files before processing
+- Use coalesce/repartition when writing
+- Set appropriate file size (128MB-1GB)
+- Use compaction jobs
+
+---
+
+### Stream Processing (10 Questions)
+
+**Q41: Batch vs stream processing?**
+Batch: Process all data periodically (hourly, daily)
+Stream: Process data continuously as it arrives
+Use streaming for: Real-time, low latency requirements
+
+**Q42: What is Apache Kafka?**
+A: Distributed event streaming platform.
+Components: Producers, consumers, topics, partitions, brokers
+Use for: Event logs, message queuing, stream processing
+
+**Q43: Explain Kafka topics and partitions.**
+Topic: Category of messages
+Partition: Ordered sequence within topic
+Benefits: Parallelism, ordering within partition, scalability
+
+**Q44: What is a consumer group?**
+A: Set of consumers sharing topic consumption.
+Each partition consumed by one consumer in group
+Enables: Load balancing, fault tolerance
+
+**Q45: What is windowing in streaming?**
+A: Grouping events by time periods.
+Types:
+- Tumbling: Fixed, non-overlapping (every 5 min)
+- Sliding: Overlapping (last 5 min, updated every minute)
+- Session: Based on inactivity gaps
+
+**Q46: What is watermarking?**
+A: Tracking event time progress in streams.
+Handles: Late-arriving data
+Allows: Closing windows, managing state
+
+**Q47: Exactly-once vs at-least-once processing?**
+At-least-once: May process duplicates (simpler, faster)
+Exactly-once: No duplicates (complex, slower, more expensive)
+Choose based on: Data criticality, cost, complexity
+
+**Q48: What is stateful vs stateless processing?**
+Stateless: Each event processed independently
+Stateful: Maintains state across events (aggregations, joins)
+Stateful more complex: State management, checkpointing
+
+**Q49: How to handle late data?**
+- Set watermark tolerance window
+- Reprocess if within window
+- Drop if too late
+- Send to separate late-data stream
+
+**Q50: What is stream-table join?**
+A: Enriching stream with reference data.
+Example: Join click stream with user dimension table
+Implementation: Broadcast table or versioned lookups
+
+---
+
+### Cloud & Infrastructure (10 Questions)
+
+**Q51: What is Infrastructure as Code (IaC)?**
+A: Managing infrastructure through code files.
+Tools: Terraform, CloudFormation, Pulumi
+Benefits: Version control, reproducibility, automation
+
+**Q52: S3 vs EBS vs EFS?**
+- S3: Object storage, cheapest, unlimited, eventual consistency
+- EBS: Block storage, attached to EC2, persistent
+- EFS: File system, shared across instances
+Use S3 for data lakes, EBS for databases, EFS for shared files
+
+**Q53: What is auto-scaling?**
+A: Automatically adjust compute resources based on load.
+Benefits: Cost optimization, handle traffic spikes
+For data: EMR, Dataproc auto-scaling clusters
+
+**Q54: Explain data lake vs data warehouse in cloud.**
+Data Lake (S3, ADLS): Raw data, all formats, cheap, flexible
+Data Warehouse (Redshift, Snowflake, BigQuery): Structured, optimized for BI
+Strategy: Lake for storage, warehouse for analytics
+
+**Q55: What is serverless computing?**
+A: Run code without managing servers.
+Examples: AWS Lambda, Azure Functions, GCP Cloud Functions
+For data: Event-driven ETL, light transformations, scheduling
+
+**Q56: How to secure data in cloud?**
+- Encryption at rest and in transit
+- IAM roles and policies (least privilege)
+- VPC and network isolation
+- Data masking/tokenization
+- Audit logging
+- Access controls
+
+**Q57: What is a VPC?**
+A: Virtual Private Cloud - isolated network.
+Components: Subnets, route tables, security groups, NAT gateway
+Use for: Network isolation, security
+
+**Q58: Explain  CI/CD for data pipelines.**
+Continuous Integration: Automated testing of code
+Continuous Deployment: Automated deployment to production
+Tools: Jenkins, GitLab CI, GitHub Actions
+Tests: Data validation, schema checks, integration tests
+
+**Q59: What is container orchestration?**
+A: Managing containerized applications.
+Kubernetes: Most popular, complex, powerful
+Docker Compose: Simple, single host
+For data: Airflow on K8s, Spark on K8s
+
+**Q60: How to estimate cloud costs?**
+- Compute: Instance hours × price
+- Storage: GB × price × time
+- Data transfer: GB transferred
+- Optimize: Reserved instances, spot instances, lifecycle policies, auto-scaling
+
+---
+
+### System Design & Architecture (10 Questions)
+
+**Q61: Design a data pipeline for processing clickstream data.**
+1. Ingestion: Kafka for real-time collection
+2. Stream processing: Spark Streaming for enrichment
+3. Storage: S3 data lake (raw), Redshift (aggregated)
+4. Orchestration: Airflow for batch jobs
+5. Monitoring: CloudWatch, custom dashboards
+6. Data quality: Schema validation, null checks
+
+**Q62: How to process 1TB of data daily?**
+- Use distributed processing (Spark, Presto)
+- Partition by date for incremental processing
+- Optimize file formats (Parquet)
+- Scale compute based on load
+- Parallel processing (10-100 executors)
+- Incremental updates, not full rewrites
+
+**Q63: Design a real-time analytics system.**
+- Kafka for event ingestion
+- Spark Streaming / Flink for processing
+- Redis / Druid for serving layer
+- Monitoring: Prometheus, Grafana
+- Auto-scaling for variable load
+- <5 second latency target
+
+**Q64: How to build a data warehouse from scratch?**
+1. Requirements: Identify use cases, KPIs
+2. Data modeling: Star schema, fact/dimension tables
+3. ETL: Extract from sources, transform, load
+4. Tools: Redshift/Snowflake/BigQuery
+5. BI layer: Tableau/Looker
+6. Governance: Access control, data quality
+
+**Q65: Design CDC (Change Data Capture) system.**
+- Source: Database transaction logs
+- Capture: Debezium, AWS DMS
+- Stream: Kafka
+- Process: Spark/Flink for transformations
+- Target: Data warehouse with SCD Type 2
+- Monitoring: Lag, throughput, errors
+
+**Q66: How to ensure high availability?**
+- Redundancy: Multi-AZ deployment
+- Failover: Automatic switching
+- Load balancing
+- Backups: Regular, tested restores
+- Monitoring: Health checks, alerts
+- Chaos engineering: Test failure scenarios
+
+**Q67: Design event-driven architecture.**
+- Events: Kafka topics
+- Producers: Applications, IoT, logs
+- Consumers: Microservices, Lambda
+- Schema registry: Avro schemas
+- Dead letter queue: Failed events
+- Monitoring: Event lag, throughput
+
+**Q68: How to handle schema changes?**
+- Backward compatible: Add optional fields
+- Forward compatible: Ignore unknown fields
+- Schema registry: Avro, Protobuf
+- Versioning: Track schema versions
+- Testing: Validate before production
+- Communication: Notify consumers
+
+**Q69: Design disaster recovery strategy.**
+- Backups: Automated, regular
+- Replication: Cross-region
+- RPO: Recovery Point Objective (acceptable data loss)
+- RTO: Recovery Time Objective (downtime)
+- Testing: Regular DR drills
+- Documentation: Runbooks
+
+**Q70: How to implement data governance?**
+- Data catalog: Metadata management
+- Access control: Role-based permissions
+- Data quality: Automated checks
+- Lineage: Track data flow
+- Compliance: GDPR, CCPA
+- Audit logs: Track access, changes
+
+---
+
+## 🎤 INTERVIEW TIPS
+
+### Technical Interview Prep:
+1. Practice system design on whiteboard
+2. Know your projects deeply
+3. Be ready to write SQL/Python live
+4. Understand trade-offs (not just one solution)
+5. Ask clarifying questions
+
+### Behavioral Questions:
+- Describe a complex pipeline you built
+- How do you handle production issues?
+- Tell me about a time you optimized performance
+- How do you ensure data quality?
+- Describe working with stakeholders
+
+### Questions to Ask:
+- What's the data infrastructure stack?
+- How is data quality ensured?
+- What's the biggest data challenge?
+- How does the team prioritize work?
+- Opportunities for learning new technologies?
+
+---
+
+## 💡 LINKEDIN OPTIMIZATION
+
+### Headline:
+"Data Engineer | Spark, Airflow, AWS | Building Scalable Data Pipelines"
+
+### Skills to Highlight:
+- Apache Spark
+- Python
+- SQL
+- Apache Airflow
+- AWS / Azure / GCP
+- ETL/ELT
+- Data Warehousing
+- Apache Kafka
+- Docker
+- Data Modeling
+
+---
+
+**Complete career prep for Data Engineer roles!**
+
+Practice technical questions, build strong portfolio, optimize LinkedIn,
+and confidently ace your interviews.
+
+**Good luck! 🚀**
+"""
+            pdf = create_unit_pdf(0, "Career Prep - Data Engineer", career_prep_md)
+            st.download_button(
+                label="Download Career Prep Package PDF",
+                data=pdf,
+                file_name="Career_Prep_Package_Data_Engineer.pdf",
+                mime="application/pdf",
+                key="de_career_prep_pdf_dl",
+            )
+
     # My Progress
     with tabs[6]:
         st.subheader("📊 My Progress")

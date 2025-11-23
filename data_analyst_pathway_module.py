@@ -1507,6 +1507,748 @@ portfolio.
                     key="da_portfolio_pdf_dl",
                 )
 
+        st.markdown("---")
+        st.markdown("### 💼 Career Preparation Package")
+        st.success(
+            "**NEW!** Comprehensive job search toolkit - Resume templates, "
+            "200+ interview questions, LinkedIn guide, and career strategies!"
+        )
+        
+        if st.button("📥 Career Prep Package (Data Analyst Edition)", key="da_career_prep_pdf"):
+            # Using same comprehensive career prep content
+            from data_science_foundations_module import create_career_prep_content
+            career_prep_md = """# Career Prep Package - Land Your Data Analyst Job
+
+**Comprehensive toolkit for Data Analyst job search success**
+
+---
+
+## 📄 DATA ANALYST RESUME TEMPLATE
+
+```
+[YOUR NAME]
+Data Analyst
+Email: your.email@example.com | LinkedIn: linkedin.com/in/yourname
+Portfolio: github.com/yourname
+
+PROFESSIONAL SUMMARY
+Data Analyst with expertise in SQL, Excel, and business intelligence tools.
+Completed comprehensive training in data analysis, visualization, and
+stakeholder communication. Strong ability to translate business questions
+into actionable insights using data.
+
+TECHNICAL SKILLS
+• Analysis: SQL, Excel (Advanced: Pivot Tables, VLOOKUP, Power Query)
+• Visualization: Tableau/Power BI, Python (Matplotlib, Seaborn)
+• Programming: Python (Pandas, NumPy), basic R
+• Databases: MySQL, PostgreSQL
+• Skills: Data Cleaning, KPI Design, A/B Testing, Dashboard Creation,
+  Business Intelligence, Statistical Analysis
+
+KEY PROJECTS
+
+Business Analytics Capstone | [Date]
+• Analyzed 50,000+ transaction records to identify revenue drivers
+• Created interactive dashboard tracking 12 key business metrics
+• Presented findings to stakeholders with 3 actionable recommendations
+• Tools: SQL, Tableau, Excel
+• GitHub: [link]
+
+KPI Dashboard Project | [Date]
+• Designed and built weekly metrics dashboard for e-commerce business
+• Automated data refresh using SQL queries
+• Reduced reporting time from 4 hours to 15 minutes
+• Improved decision-making with real-time visibility
+
+SQL Analysis Project | [Date]
+• Wrote complex queries across 5 related tables
+• Analyzed customer behavior patterns
+• Identified top 10 customer segments for targeted marketing
+• Presented insights with clear visualizations
+
+EDUCATION & CERTIFICATIONS
+• Data Analyst Pathway Certification | [Date]
+  - SQL, Excel, BI Tools, Python for Analysis
+  - 400+ hours hands-on training
+  - Portfolio of real-world projects
+
+[Your Previous Education/Experience]
+```
+
+---
+
+## 💼 TOP 60 DATA ANALYST INTERVIEW QUESTIONS & ANSWERS
+
+### SQL Questions (15 Essential)
+
+**Q1: What is the difference between WHERE and HAVING?**
+A: WHERE filters individual rows before grouping; HAVING filters groups
+after aggregation.
+Example:
+```sql
+SELECT department, AVG(salary)
+FROM employees
+WHERE active = 1  -- Filter rows first
+GROUP BY department
+HAVING AVG(salary) > 50000;  -- Filter groups
+```
+
+**Q2: Write a query to find top 5 customers by revenue.**
+```sql
+SELECT customer_id, customer_name, SUM(order_amount) as total_revenue
+FROM orders o
+JOIN customers c ON o.customer_id = c.id
+GROUP BY customer_id, customer_name
+ORDER BY total_revenue DESC
+LIMIT 5;
+```
+
+**Q3: Explain INNER JOIN vs LEFT JOIN with business examples.**
+A:
+- INNER JOIN: Only customers who placed orders
+- LEFT JOIN: All customers, including those who haven't ordered
+Use LEFT JOIN to find customers who NEVER ordered (WHERE order_id IS NULL)
+
+**Q4: How do you find duplicate rows?**
+```sql
+SELECT email, COUNT(*) as count
+FROM customers
+GROUP BY email
+HAVING COUNT(*) > 1;
+```
+
+**Q5: Calculate month-over-month growth.**
+```sql
+WITH monthly_sales AS (
+  SELECT 
+    DATE_TRUNC('month', order_date) as month,
+    SUM(amount) as revenue
+  FROM orders
+  GROUP BY month
+)
+SELECT 
+  month,
+  revenue,
+  LAG(revenue) OVER (ORDER BY month) as prev_month,
+  (revenue - LAG(revenue) OVER (ORDER BY month)) / 
+    LAG(revenue) OVER (ORDER BY month) * 100 as growth_pct
+FROM monthly_sales;
+```
+
+**Q6: What are window functions?**
+A: Perform calculations across rows related to current row without grouping.
+```sql
+SELECT 
+  employee_name,
+  salary,
+  RANK() OVER (ORDER BY salary DESC) as salary_rank,
+  AVG(salary) OVER (PARTITION BY department) as dept_avg
+FROM employees;
+```
+
+**Q7: How to optimize slow SQL queries?**
+- Add indexes on WHERE/JOIN columns
+- Avoid SELECT *, specify needed columns
+- Use EXPLAIN to analyze query execution
+- Limit result set size
+- Avoid functions on indexed columns in WHERE
+
+**Q8: Explain GROUP BY and aggregations.**
+A: Groups rows with same values for summary calculations
+```sql
+SELECT region, product_category,
+       COUNT(*) as orders,
+       SUM(revenue) as total_revenue,
+       AVG(revenue) as avg_order_value
+FROM sales
+GROUP BY region, product_category;
+```
+
+**Q9: What is a subquery? When to use it?**
+A: Query nested inside another query.
+```sql
+-- Find customers who spent more than average
+SELECT customer_name, total_spent
+FROM customers
+WHERE total_spent > (SELECT AVG(total_spent) FROM customers);
+```
+
+**Q10: How to handle NULL values?**
+- IS NULL / IS NOT NULL for filtering
+- COALESCE(column, 0) for default values
+- IFNULL() or NULLIF() functions
+
+**Q11: UNION vs UNION ALL?**
+- UNION: Combines results, removes duplicates (slower)
+- UNION ALL: Combines results, keeps duplicates (faster)
+
+**Q12: Create a running total.**
+```sql
+SELECT 
+  date,
+  daily_sales,
+  SUM(daily_sales) OVER (ORDER BY date) as running_total
+FROM sales;
+```
+
+**Q13: Find second highest salary.**
+```sql
+SELECT MAX(salary) as second_highest
+FROM employees
+WHERE salary < (SELECT MAX(salary) FROM employees);
+-- OR using DENSE_RANK
+SELECT DISTINCT salary
+FROM (
+  SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) as rank
+  FROM employees
+) ranked
+WHERE rank = 2;
+```
+
+**Q14: Explain CTEs (Common Table Expressions).**
+A: Named temporary result set for readability.
+```sql
+WITH top_customers AS (
+  SELECT customer_id, SUM(amount) as total
+  FROM orders
+  GROUP BY customer_id
+  HAVING SUM(amount) > 1000
+)
+SELECT c.name, tc.total
+FROM top_customers tc
+JOIN customers c ON tc.customer_id = c.id;
+```
+
+**Q15: DELETE vs TRUNCATE vs DROP?**
+- DELETE: Remove specific rows, can rollback, triggers fire
+- TRUNCATE: Remove all rows, fast, can't rollback, no triggers
+- DROP: Delete entire table structure
+
+### Excel Questions (10 Essential)
+
+**Q16: Key Excel functions for analysts?**
+- VLOOKUP/XLOOKUP: Lookup data across tables
+- SUMIFS/COUNTIFS: Conditional aggregation
+- IF/IFS: Logic
+- PIVOT TABLES: Summarize data
+- INDEX/MATCH: Flexible lookups
+- TEXT functions: CONCATENATE, LEFT, RIGHT, MID
+- Date functions: DATE, MONTH, YEAR, EOMONTH
+
+**Q17: Explain VLOOKUP.**
+```
+=VLOOKUP(lookup_value, table_range, col_index, FALSE)
+Example: =VLOOKUP(A2, Products!A:D, 3, FALSE)
+Finds A2 in Products sheet, returns 3rd column value
+```
+
+**Q18: VLOOKUP vs INDEX/MATCH?**
+INDEX/MATCH is more flexible:
+- Can look left
+- Doesn't break when columns inserted
+- Faster for large datasets
+
+**Q19: Create a dynamic dashboard in Excel.**
+- Use PIVOT TABLES for summaries
+- Add SLICERS for filtering
+- Use conditional formatting
+- Create charts linked to pivots
+- Use named ranges for flexibility
+
+**Q20: How to remove duplicates?**
+- Data > Remove Duplicates
+- Advanced Filter with Unique Records Only
+- COUNTIFS to identify duplicates
+
+**Q21: What are Power Query and Power Pivot?**
+- Power Query: ETL tool for data transformation
+- Power Pivot: Data modeling and relationships
+
+**Q22: Explain pivot tables.**
+A: Interactive summary tables that aggregate data
+- Rows: Dimensions to group by
+- Values: Metrics to calculate
+- Filters: Subset data
+- Columns: Additional grouping
+
+**Q23: Key Excel shortcuts for analysts?**
+- Ctrl+T: Create table
+- Alt+N+V: Insert Pivot Table
+- Ctrl+Arrow: Navigate to data edges
+- Ctrl+Shift+L: Add filters
+- F4: Toggle absolute references
+
+**Q24: Handle errors in formulas?**
+Use IFERROR:
+```
+=IFERROR(A1/B1, 0)  -- Returns 0 if division error
+=IFERROR(VLOOKUP(...), "Not Found")
+```
+
+**Q25: Calculate growth percentage?**
+```
+=(New Value - Old Value) / Old Value * 100
+=IFERROR((B2-A2)/A2, 0)  -- Handle division by zero
+```
+
+### Visualization & BI Questions (10)
+
+**Q26: When to use each chart type?**
+- Bar/Column: Compare categories
+- Line: Show trends over time
+- Pie: Show composition (use sparingly!)
+- Scatter: Show correlation
+- Heatmap: Show patterns in matrix
+- Histogram: Show distribution
+
+**Q27: What makes a good dashboard?**
+- Clear purpose and audience
+- Key metrics prominent
+- Consistent design
+- Interactive filters
+- Mobile-friendly
+- Fast load times
+
+**Q28: Explain KPIs.**
+A: Key Performance Indicators - measurable values showing performance
+Examples:
+- Revenue growth %
+- Customer churn rate
+- Average order value
+- Conversion rate
+
+**Q29: Dashboard design best practices?**
+- Follow visual hierarchy
+- Use consistent colors
+- Avoid chart junk
+- Provide context (comparisons, benchmarks)
+- Make it actionable
+
+**Q30: How to choose the right visualization?**
+1. What question am I answering?
+2. What's the data type (categorical, time-series, etc.)?
+3. What comparison am I making?
+4. Who is the audience?
+
+**Q31: Tableau vs Power BI?**
+- Tableau: More advanced visualizations, better for exploration
+- Power BI: Better Microsoft integration, more affordable
+- Both: Excellent for business intelligence
+
+**Q32: What is data storytelling?**
+A: Presenting data insights as a narrative
+- Context: Why does this matter?
+- Conflict: What's the problem?
+- Resolution: What should we do?
+
+**Q33: How to present to non-technical stakeholders?**
+- Avoid jargon
+- Use simple visuals
+- Focus on business impact
+- Provide clear recommendations
+- Use analogies
+
+**Q34: Common visualization mistakes?**
+- 3D charts (distort perception)
+- Dual axes with different scales
+- Too many colors
+- Unclear labels
+- Starting Y-axis at non-zero (for bar charts)
+
+**Q35: What is exploratory vs explanatory analysis?**
+- Exploratory: You explore data to find insights
+- Explanatory: You explain insights to others
+
+### Business/Scenario Questions (15)
+
+**Q36: How would you analyze declining sales?**
+1. Segment analysis (by product, region, customer type, time)
+2. Compare to historical patterns (seasonality?)
+3. Check external factors (competition, economy, marketing changes)
+4. Look for data quality issues
+5. Identify specific drivers
+6. Recommend actions
+
+**Q37: Walk through your analysis process.**
+1. Understand the business question
+2. Identify data sources needed
+3. Clean and validate data
+4. Explore and analyze
+5. Create visualizations
+6. Draw conclusions
+7. Present recommendations
+
+**Q38: Metric increased 20% - good or bad?**
+Need context:
+- What's the baseline? (20% of what?)
+- Timeframe? (Day? Month? Year?)
+- Statistical significance?
+- Any external changes?
+- How does it compare to targets?
+- What about other related metrics?
+
+**Q39: How do you prioritize analysis requests?**
+- Business impact
+- Urgency
+- Effort required
+- Stakeholder importance
+- Data availability
+
+**Q40: Describe a time you found an unexpected insight.**
+Use STAR method:
+- Situation: What was the context?
+- Task: What were you analyzing?
+- Action: What did you discover and how?
+- Result: What was the business impact?
+
+**Q41: How to measure marketing campaign success?**
+Define KPIs:
+- Reach: Impressions, clicks
+- Engagement: CTR, time on site
+- Conversion: Leads, sales
+- ROI: Revenue vs cost
+- Attribution: Which touchpoint drove conversion?
+
+**Q42: How would you identify customer churn?**
+1. Define churn (no purchase in X days, cancellation, etc.)
+2. Calculate churn rate
+3. Segment analysis (who churns more?)
+4. Identify leading indicators
+5. Predict at-risk customers
+6. Recommend retention strategies
+
+**Q43: What metrics matter for e-commerce?**
+- Conversion rate
+- Average order value
+- Customer lifetime value
+- Cart abandonment rate
+- Traffic sources
+- Product performance
+- Customer acquisition cost
+
+**Q44: How do you ensure data quality?**
+- Validate sources
+- Check for duplicates
+- Handle missing values appropriately
+- Verify calculations
+- Cross-reference with other sources
+- Document assumptions
+- Peer review
+
+**Q45: Conflicting data sources - what do you do?**
+1. Investigate why they differ
+2. Check data definitions
+3. Verify extraction logic
+4. Validate with business owners
+5. Document the issue
+6. Choose most reliable source
+7. Monitor going forward
+
+**Q46: How to build a dashboard for executives?**
+- High-level KPIs prominent
+- Drill-down capability
+- Period comparisons (YoY, MoM)
+- Alerts for unusual patterns
+- Mobile-accessible
+- Auto-refresh
+
+**Q47: Explain A/B testing to a non-technical person.**
+"We show version A to half our users and version B to the other half,
+then measure which performs better. Like testing two recipes to see
+which tastes better, but with data!"
+
+**Q48: How do you handle tight deadlines?**
+- Clarify priorities and scope
+- Use existing templates/code
+- Focus on key insights, not perfection
+- Communicate early if delays likely
+- Deliver iteratively
+
+**Q49: What questions do you ask stakeholders?**
+- What business decision will this analysis inform?
+- What specific questions need answering?
+- What's the timeline?
+- Who's the audience?
+- What data sources are available?
+- What does success look like?
+
+**Q50: How do you stay current with tools/techniques?**
+- Online courses (Coursera, Udemy)
+- Industry blogs and newsletters
+- LinkedIn learning
+- Practice projects
+- Community forums
+- Conferences/webinars
+
+### Python/Pandas for Analysts (10)
+
+**Q51: When to use Python vs Excel?**
+Excel: Quick analysis, stakeholders use Excel, small datasets
+Python: Large datasets, automation, complex analysis, version control
+
+**Q52: Basic Pandas operations?**
+```python
+import pandas as pd
+
+# Read data
+df = pd.read_csv('file.csv')
+
+# Explore
+df.head()
+df.info()
+df.describe()
+
+# Filter
+df[df['sales'] > 1000]
+
+# Group and aggregate
+df.groupby('category')['sales'].sum()
+
+# Sort
+df.sort_values('revenue', ascending=False)
+```
+
+**Q53: Handle missing values in Pandas?**
+```python
+df.isnull().sum()  # Check missing
+df.dropna()  # Remove rows
+df.fillna(0)  # Fill with value
+df['col'].fillna(df['col'].mean())  # Fill with mean
+```
+
+**Q54: Merge dataframes?**
+```python
+pd.merge(df1, df2, on='customer_id', how='inner')
+# how='left', 'right', 'outer' for different joins
+```
+
+**Q55: Create pivot table in Pandas?**
+```python
+df.pivot_table(
+    values='sales',
+    index='product',
+    columns='month',
+    aggfunc='sum'
+)
+```
+
+**Q56: Export results?**
+```python
+df.to_csv('output.csv', index=False)
+df.to_excel('output.xlsx', sheet_name='Results')
+```
+
+**Q57: Basic visualization?**
+```python
+import matplotlib.pyplot as plt
+
+df['sales'].hist()
+df.groupby('category')['revenue'].sum().plot(kind='bar')
+plt.show()
+```
+
+**Q58: Filter with multiple conditions?**
+```python
+df[(df['sales'] > 1000) & (df['region'] == 'UK')]
+# OR use query:
+df.query('sales > 1000 and region == "UK"')
+```
+
+**Q59: Calculate new columns?**
+```python
+df['total'] = df['price'] * df['quantity']
+df['growth'] = (df['2024'] - df['2023']) / df['2023'] * 100
+```
+
+**Q60: Group and calculate multiple aggregations?**
+```python
+df.groupby('category').agg({
+    'sales': ['sum', 'mean', 'count'],
+    'profit': 'sum'
+})
+```
+
+---
+
+## 🎤 INTERVIEW PREPARATION TIPS
+
+### Before Interview:
+1. Research the company and role
+2. Prepare 3-5 STAR stories
+3. Practice SQL queries on paper
+4. Review your project portfolio
+5. Prepare questions for interviewer
+6. Test your internet/video setup (for remote)
+
+### During Interview:
+1. Listen carefully to questions
+2. Clarify before answering
+3. Think out loud (for technical questions)
+4. Use specific examples from experience
+5. Show enthusiasm for data and the role
+6. Ask thoughtful questions
+
+### Common Red Flags to Avoid:
+- Not asking clarifying questions
+- Being unable to explain your projects
+- Not knowing basic SQL/Excel
+- Focusing only on tools, not business impact
+- Badmouthing previous employers
+
+### Questions to Ask Interviewer:
+1. What does a typical day look like?
+2. What tools and data sources does the team use?
+3. How is success measured in this role?
+4. What are the biggest data challenges?
+5. How does analytics influence decisions here?
+6. What's the team structure?
+7. Opportunities for learning and growth?
+
+---
+
+## 💡 LINKEDIN OPTIMIZATION FOR DATA ANALYSTS
+
+### Headline Examples:
+"Data Analyst | SQL, Excel, Tableau | Transforming Data into Business Insights"
+"Business Intelligence Analyst | Dashboards & KPIs | Driving Data-Driven Decisions"
+"Data Analyst | E-commerce Analytics | SQL, Python, Power BI"
+
+### About Section Template:
+```
+I'm a Data Analyst passionate about turning data into actionable business insights.
+
+Recently completed comprehensive training in:
+✓ SQL & Database Querying
+✓ Excel & Power Query
+✓ Tableau/Power BI Dashboards
+✓ Python for Data Analysis
+✓ KPI Design & Business Intelligence
+
+I've built [X] end-to-end analysis projects including:
+• [Project 1 - brief description]
+• [Project 2 - brief description]
+• [Project 3 - brief description]
+
+I'm particularly interested in [industry/domain] analytics and solving
+[specific types of business problems].
+
+Currently seeking Data Analyst opportunities where I can leverage my skills
+to drive business impact.
+
+📧 [email]
+💼 Portfolio: [GitHub]
+```
+
+### Skills to List (Top 10):
+1. SQL
+2. Data Analysis
+3. Microsoft Excel
+4. Tableau / Power BI
+5. Data Visualization
+6. Python (Pandas)
+7. Business Intelligence
+8. Statistical Analysis
+9. KPI Development
+10. Dashboard Design
+
+### Activity Tips:
+- Share insights from public datasets
+- Comment on data visualization posts
+- Write short posts about analysis techniques
+- Engage with data community
+- Share your projects
+
+---
+
+## 📧 NETWORKING EMAIL TEMPLATES
+
+### Informational Interview Request:
+```
+Subject: Data Analyst seeking advice - [Your Name]
+
+Hi [Name],
+
+I'm [Your Name], transitioning into data analytics. I recently completed
+training in SQL, Excel, and BI tools, and I'm impressed by your work at
+[Company].
+
+Would you be open to a brief 15-minute call where I could ask about your
+experience in [specific area]? I'm particularly interested in learning
+about [specific topic].
+
+I understand you're busy, so I'm happy to work around your schedule.
+
+Thank you for considering!
+
+Best regards,
+[Your Name]
+```
+
+### Application Follow-up:
+```
+Subject: Following up - Data Analyst Application
+
+Hi [Name],
+
+I applied for the Data Analyst position at [Company] on [date] and wanted
+to express my continued strong interest in the role.
+
+My background in [relevant experience] and proficiency in [SQL/Excel/BI tools]
+aligns well with the requirements. I'm particularly excited about [specific
+aspect of role/company].
+
+I'd welcome the opportunity to discuss how I can contribute to [specific
+team goal or initiative].
+
+Best regards,
+[Your Name]
+```
+
+---
+
+## 30-60-90 DAY PLAN (Use in Interviews!)
+
+### First 30 Days - Learn & Absorb
+- Understand business model, products, customers
+- Learn data infrastructure and tools
+- Review existing dashboards and reports
+- Shadow team members
+- Document processes
+- Build relationships with stakeholders
+
+### Days 31-60 - Contribute
+- Take ownership of recurring reports
+- Identify quick wins / improvements
+- Propose new analyses
+- Present insights in team meetings
+- Start building relationships across teams
+- Complete first independent project
+
+### Days 61-90 - Impact
+- Complete major analysis project
+- Present findings to leadership
+- Propose process improvements
+- Mentor newer analysts
+- Establish yourself as go-to for specific domain
+- Plan next quarter initiatives
+
+---
+
+**This Career Prep Package gives you everything needed to land your Data Analyst role!**
+
+Practice these questions, customize the templates, optimize your LinkedIn, and start applying with confidence.
+
+**Good luck with your job search! 🚀**
+"""
+            pdf = create_unit_pdf(0, "Career Prep Package - Data Analyst", career_prep_md)
+            st.download_button(
+                label="Download Career Prep Package PDF",
+                data=pdf,
+                file_name="Career_Prep_Package_Data_Analyst.pdf",
+                mime="application/pdf",
+                key="da_career_prep_pdf_dl",
+            )
+
     # My Progress
     with tabs[6]:
         st.subheader("📊 My Progress")
