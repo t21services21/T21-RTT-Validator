@@ -1329,6 +1329,50 @@ def _render_unit5_quiz():
             "answer": 1,
             "explanation": "Segmentation is often used to target different actions or messages to different groups.",
         },
+        {
+            "text": "What does the 'k' in k-means represent?",
+            "options": [
+                "The number of features",
+                "The number of clusters",
+                "The number of iterations",
+                "The dataset size",
+            ],
+            "answer": 1,
+            "explanation": "k is the number of clusters you want to create.",
+        },
+        {
+            "text": "How do you typically choose the number of clusters?",
+            "options": [
+                "Always use k=2",
+                "Use domain knowledge and validation metrics like silhouette score or elbow method",
+                "Use as many clusters as there are rows",
+                "It doesn't matter",
+            ],
+            "answer": 1,
+            "explanation": "The number of clusters should be informed by business context and validation metrics.",
+        },
+        {
+            "text": "What is dimensionality reduction used for?",
+            "options": [
+                "To increase the number of features",
+                "To reduce the number of features while preserving important information",
+                "To delete all data",
+                "To encrypt data",
+            ],
+            "answer": 1,
+            "explanation": "Dimensionality reduction techniques like PCA compress high-dimensional data.",
+        },
+        {
+            "text": "Why might you use PCA before clustering?",
+            "options": [
+                "To make the code slower",
+                "To reduce noise and computational cost while preserving variance",
+                "To guarantee perfect clusters",
+                "PCA should never be used with clustering",
+            ],
+            "answer": 1,
+            "explanation": "PCA can help by reducing dimensions and noise before clustering.",
+        },
     ]
 
     answers = []
@@ -1491,6 +1535,61 @@ def _render_unit6_quiz():
             ],
             "answer": 1,
             "explanation": "Streamlit can host lightweight internal tools where users interact with models via forms or uploads.",
+        },
+        {
+            "text": "What is model drift?",
+            "options": [
+                "When the model file gets corrupted",
+                "When model performance degrades over time due to changes in data patterns",
+                "When the model trains too slowly",
+                "When you use the wrong algorithm",
+            ],
+            "answer": 1,
+            "explanation": "Drift occurs when the relationship between features and target changes over time.",
+        },
+        {
+            "text": "Why save model metadata (e.g., feature names, data schema)?",
+            "options": [
+                "To make the file larger",
+                "To ensure production data matches the expected format and features",
+                "It is not necessary",
+                "To slow down predictions",
+            ],
+            "answer": 1,
+            "explanation": "Metadata helps validate that production data is compatible with the trained model.",
+        },
+        {
+            "text": "What is A/B testing in the context of model deployment?",
+            "options": [
+                "Testing two different Python versions",
+                "Comparing a new model against the current model with real users",
+                "Testing on the training set twice",
+                "Using two different databases",
+            ],
+            "answer": 1,
+            "explanation": "A/B testing compares model versions in production to see which performs better.",
+        },
+        {
+            "text": "Which is a sign that a model needs retraining?",
+            "options": [
+                "The code runs without errors",
+                "Performance metrics degrade significantly on recent data",
+                "The model was trained last week",
+                "Users like the predictions",
+            ],
+            "answer": 1,
+            "explanation": "Declining performance on new data suggests the model may be outdated.",
+        },
+        {
+            "text": "What is the purpose of versioning models?",
+            "options": [
+                "To confuse users",
+                "To track which model version is deployed and enable rollback if needed",
+                "To delete old models immediately",
+                "Versioning is not useful",
+            ],
+            "answer": 1,
+            "explanation": "Versioning allows you to manage, compare, and roll back model deployments.",
         },
     ]
 
@@ -1694,6 +1793,61 @@ def _render_unit7_quiz():
             ],
             "answer": 1,
             "explanation": "At this level you aim for a realistic plan or lightweight demo rather than full production infrastructure.",
+        },
+        {
+            "text": "Why document limitations in your capstone?",
+            "options": [
+                "To make the report longer",
+                "To show honest judgment about where the analysis is strong or weak",
+                "To hide problems",
+                "Limitations are not important",
+            ],
+            "answer": 1,
+            "explanation": "Acknowledging limitations builds trust and shows professional maturity.",
+        },
+        {
+            "text": "What makes a capstone dataset suitable?",
+            "options": [
+                "It has only 10 rows",
+                "It is realistic, well-documented, and relevant to a business problem",
+                "It has no missing values or challenges",
+                "It is completely random",
+            ],
+            "answer": 1,
+            "explanation": "Good capstone datasets are realistic and allow you to demonstrate practical skills.",
+        },
+        {
+            "text": "How should you present your capstone to potential employers?",
+            "options": [
+                "Keep it only on your laptop",
+                "Upload to GitHub with a clear README, notebook, and report",
+                "Only describe it verbally",
+                "Print screenshots only",
+            ],
+            "answer": 1,
+            "explanation": "A well-documented GitHub repository is easy to share and review.",
+        },
+        {
+            "text": "What is the purpose of a capstone project?",
+            "options": [
+                "To memorize formulas",
+                "To demonstrate end-to-end data science skills on a realistic problem",
+                "To avoid learning theory",
+                "To pass time",
+            ],
+            "answer": 1,
+            "explanation": "Capstones showcase your ability to tackle real problems independently from start to finish.",
+        },
+        {
+            "text": "Which is more valuable in a capstone: breadth or depth?",
+            "options": [
+                "Breadth - try everything superficially",
+                "Depth - do one problem well with rigorous methods",
+                "Neither matters",
+                "Only breadth",
+            ],
+            "answer": 1,
+            "explanation": "Employers value depth and rigor over superficial coverage of many topics.",
         },
     ]
 
