@@ -315,6 +315,610 @@ trusted profile in any global job market.
 """
         )
 
+        st.markdown("---")
+        st.markdown("#### 🌍 Real-World Data Science Applications")
+        st.markdown(
+            """**Healthcare:**
+- Predict patient readmission risk → reduce hospital costs
+- Identify disease patterns from medical records → improve diagnosis
+- Optimize appointment scheduling → reduce wait times
+
+**Finance:**
+- Detect fraudulent transactions in real-time → save millions
+- Predict loan default risk → smarter lending decisions
+- Algorithmic trading → automated investment strategies
+
+**Retail & E-Commerce:**
+- Recommend products customers will love → increase sales
+- Forecast demand for inventory optimization → reduce waste
+- Customer churn prediction → targeted retention campaigns
+
+**Manufacturing:**
+- Predictive maintenance → prevent equipment failures
+- Quality control using computer vision → reduce defects
+- Supply chain optimization → faster delivery
+
+**Government & Public Sector:**
+- Crime prediction and resource allocation → safer communities
+- Traffic flow optimization → reduce congestion
+- Public health surveillance → early outbreak detection
+
+**Marketing:**
+- Customer segmentation for targeted campaigns → higher ROI
+- A/B testing for website optimization → better conversion
+- Sentiment analysis from social media → brand monitoring
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🛠️ Essential Data Science Tools")
+        st.markdown(
+            """**Programming Languages:**
+- **Python** 🐍 – Most popular for data science (90%+ of jobs)
+- **R** 📊 – Strong for statistics and academic research
+- **SQL** 🗄️ – Essential for working with databases
+
+**Development Environments:**
+- **Jupyter Notebooks** – Interactive coding for exploration
+- **VS Code** – Professional IDE with Python extensions
+- **Google Colab** – Free cloud notebooks with GPU access
+
+**Key Python Libraries:**
+- **Pandas** – Data manipulation and analysis
+- **NumPy** – Numerical computing and arrays
+- **Matplotlib/Seaborn** – Data visualization
+- **Scikit-learn** – Machine learning algorithms
+- **TensorFlow/PyTorch** – Deep learning frameworks
+
+**Data Tools:**
+- **Excel** – Still important for business users
+- **Tableau/Power BI** – Business intelligence dashboards
+- **Git/GitHub** – Version control for code
+- **Docker** – Containerization for deployment
+
+**You'll learn most of these throughout this pathway!**
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 💼 Career Paths & Salaries")
+        st.markdown(
+            """**Entry-Level (0-2 years):**
+- **Junior Data Analyst:** £25K-35K (UK), $50K-70K (US)
+- **Data Analyst:** £30K-45K (UK), $60K-80K (US)
+- Skills: SQL, Excel, Python basics, dashboards
+
+**Mid-Level (2-5 years):**
+- **Data Scientist:** £45K-70K (UK), $90K-130K (US)
+- **Analytics Engineer:** £50K-75K (UK), $95K-140K (US)
+- Skills: Python, SQL, ML algorithms, statistics, communication
+
+**Senior-Level (5-10 years):**
+- **Senior Data Scientist:** £70K-100K (UK), $130K-180K (US)
+- **ML Engineer:** £75K-110K (UK), $140K-200K (US)
+- **Data Science Manager:** £80K-120K (UK), $150K-220K (US)
+
+**Leadership (10+ years):**
+- **Head of Data Science:** £100K-150K+ (UK), $200K-300K+ (US)
+- **Chief Data Officer:** £120K-200K+ (UK), $250K-400K+ (US)
+
+**High-demand skills that boost salary:**
+- ✅ Cloud platforms (AWS, GCP, Azure)
+- ✅ Deep learning & NLP
+- ✅ MLOps & production deployment
+- ✅ Domain expertise (finance, healthcare)
+- ✅ Leadership & communication
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 📈 The Data Science Workflow")
+        st.markdown(
+            """**Real Example: Customer Churn Prediction**
+
+**1. Business Understanding (Week 1)**
+- Problem: 30% of customers leave each year
+- Cost: £500 per customer to acquire, £50 to retain
+- Goal: Predict who will churn, intervene early
+- Success: Reduce churn by 10% → save £500K annually
+
+**2. Data Understanding (Week 1-2)**
+```python
+import pandas as pd
+
+# Load customer data
+df = pd.read_csv('customers.csv')
+
+print(f"Dataset: {len(df):,} customers")
+print(f"Features: {df.columns.tolist()}")
+print(f"Churn rate: {df['churned'].mean():.1%}")
+
+# Missing values?
+print(df.isnull().sum())
+
+# Basic stats
+print(df.describe())
+```
+
+**3. Data Preparation (Week 2-3)**
+```python
+# Handle missing values
+df['income'].fillna(df['income'].median(), inplace=True)
+
+# Create features
+df['tenure_years'] = df['tenure_months'] / 12
+df['avg_monthly_spend'] = df['total_spend'] / df['tenure_months']
+
+# Encode categoricals
+df = pd.get_dummies(df, columns=['region', 'product_type'])
+
+# Split data
+from sklearn.model_selection import train_test_split
+X = df.drop('churned', axis=1)
+y = df['churned']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+```
+
+**4. Modeling (Week 3-4)**
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+
+# Train model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Evaluate
+y_pred = model.predict(X_test)
+print(classification_report(y_test, y_pred))
+
+# Feature importance
+importance = pd.DataFrame({
+    'feature': X.columns,
+    'importance': model.feature_importances_
+}).sort_values('importance', ascending=False)
+
+print(importance.head(10))
+```
+
+**5. Evaluation (Week 4)**
+- Model accuracy: 85%
+- Precision: 78% (of predicted churners, 78% actually churn)
+- Recall: 72% (we catch 72% of actual churners)
+- Business impact: Targeting top 20% → 15% churn reduction
+
+**6. Deployment (Week 5+)**
+- Deploy model to score customers monthly
+- Marketing team targets high-risk customers
+- Monitor: Is churn actually decreasing?
+- Retrain quarterly with new data
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🎯 Skills Matrix for Data Scientists")
+        st.markdown(
+            """**Technical Skills (60%):**
+- Programming (Python, SQL): ⭐⭐⭐⭐⭐ Essential
+- Statistics & Math: ⭐⭐⭐⭐⭐ Essential
+- Machine Learning: ⭐⭐⭐⭐⭐ Essential
+- Data Visualization: ⭐⭐⭐⭐ Very Important
+- Big Data Tools: ⭐⭐⭐ Important
+- Cloud Platforms: ⭐⭐⭐ Important
+- Deep Learning: ⭐⭐ Nice to have
+
+**Business Skills (20%):**
+- Domain Knowledge: ⭐⭐⭐⭐ Very Important
+- Problem Framing: ⭐⭐⭐⭐⭐ Essential
+- ROI Calculation: ⭐⭐⭐⭐ Very Important
+- Stakeholder Management: ⭐⭐⭐⭐ Very Important
+
+**Soft Skills (20%):**
+- Communication: ⭐⭐⭐⭐⭐ Essential
+- Storytelling: ⭐⭐⭐⭐ Very Important
+- Collaboration: ⭐⭐⭐⭐ Very Important
+- Curiosity: ⭐⭐⭐⭐⭐ Essential
+- Ethical Judgment: ⭐⭐⭐⭐⭐ Essential
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🧪 HANDS-ON LABS: Unit 1")
+        st.markdown(
+            """**Complete these 3 labs to start your data science journey:**
+
+---
+
+## Lab 1: Environment Setup & First Analysis (60 min)
+
+**Objective:** Set up your data science environment and perform your first analysis
+
+**Part A: Install Python & Jupyter (20 min)**
+
+**Step 1: Install Anaconda**
+1. Download from: https://www.anaconda.com/download
+2. Install with default settings
+3. Verify installation:
+
+```bash
+# Open terminal/command prompt
+python --version  # Should show Python 3.x
+jupyter --version  # Should show Jupyter version
+```
+
+**Step 2: Create Your First Notebook**
+
+```bash
+# Create project folder
+mkdir data_science_projects
+cd data_science_projects
+
+# Launch Jupyter
+jupyter notebook
+```
+
+**Step 3: Test Installation**
+
+```python
+# In new notebook, test imports
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+print("✅ Environment ready!")
+print(f"Pandas version: {pd.__version__}")
+print(f"NumPy version: {np.__version__}")
+```
+
+---
+
+**Part B: First Data Analysis (40 min)**
+
+**Download sample dataset (create CSV):**
+
+```python
+import pandas as pd
+import numpy as np
+
+# Generate sample e-commerce data
+np.random.seed(42)
+n = 1000
+
+data = {
+    'customer_id': range(1, n+1),
+    'age': np.random.randint(18, 75, n),
+    'monthly_spend': np.random.normal(150, 50, n),
+    'website_visits': np.random.poisson(8, n),
+    'purchases_last_month': np.random.poisson(2, n),
+    'customer_since_months': np.random.randint(1, 60, n),
+    'region': np.random.choice(['North', 'South', 'East', 'West'], n),
+    'churned': np.random.choice([0, 1], n, p=[0.75, 0.25])
+}
+
+df = pd.DataFrame(data)
+df.to_csv('ecommerce_customers.csv', index=False)
+print("✅ Dataset created: ecommerce_customers.csv")
+```
+
+**Now analyze it:**
+
+```python
+# Load data
+df = pd.read_csv('ecommerce_customers.csv')
+
+# 1. Basic info
+print("Dataset shape:", df.shape)
+print("\\nColumns:", df.columns.tolist())
+print("\\nFirst 5 rows:")
+print(df.head())
+
+# 2. Summary statistics
+print("\\nSummary statistics:")
+print(df.describe())
+
+# 3. Missing values?
+print("\\nMissing values:")
+print(df.isnull().sum())
+
+# 4. Key business metrics
+print("\\n📊 Business Metrics:")
+print(f"Total customers: {len(df):,}")
+print(f"Churn rate: {df['churned'].mean():.1%}")
+print(f"Avg monthly spend: £{df['monthly_spend'].mean():.2f}")
+print(f"Avg website visits: {df['website_visits'].mean():.1f}")
+
+# 5. Segment by region
+print("\\nCustomers by region:")
+print(df['region'].value_counts())
+
+# 6. Churn by region
+print("\\nChurn rate by region:")
+churn_by_region = df.groupby('region')['churned'].mean()
+print(churn_by_region.sort_values(ascending=False))
+
+# 7. Simple visualization
+import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+# Age distribution
+axes[0].hist(df['age'], bins=20, edgecolor='black')
+axes[0].set_title('Customer Age Distribution')
+axes[0].set_xlabel('Age')
+axes[0].set_ylabel('Count')
+
+# Spend by churn status
+df[df['churned']==0]['monthly_spend'].hist(ax=axes[1], alpha=0.6, label='Retained', bins=20)
+df[df['churned']==1]['monthly_spend'].hist(ax=axes[1], alpha=0.6, label='Churned', bins=20)
+axes[1].set_title('Monthly Spend: Retained vs Churned')
+axes[1].set_xlabel('Monthly Spend (£)')
+axes[1].legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+**Key Findings to Report:**
+- Total customers and churn rate
+- Average spend differs between churned and retained
+- Regional differences in churn
+- Age and visit patterns
+
+---
+
+**Lab 1 Checklist:**
+- ☐ Anaconda installed successfully
+- ☐ Jupyter notebook launched
+- ☐ Sample dataset created
+- ☐ Basic analysis completed
+- ☐ Visualizations created
+- ☐ Business metrics calculated
+
+---
+
+## Lab 2: Exploring Real Public Datasets (90 min)
+
+**Objective:** Practice finding, loading, and exploring real-world datasets
+
+**Part A: Find & Load Public Data (30 min)**
+
+**Recommended data sources:**
+1. **Kaggle** (www.kaggle.com/datasets) – 1000s of datasets
+2. **UCI ML Repository** – Classic datasets
+3. **Data.gov** – Government data (US/UK)
+4. **Google Dataset Search** – Search engine for data
+
+**Example: Titanic Dataset (Kaggle classic)**
+
+```python
+import pandas as pd
+
+# Load Titanic data (download from Kaggle first)
+# Or use this URL:
+url = 'https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv'
+titanic = pd.read_csv(url)
+
+print("Dataset loaded!")
+print(f"Shape: {titanic.shape}")
+print(f"\\nColumns: {titanic.columns.tolist()}")
+print(f"\\nFirst 3 rows:")
+print(titanic.head(3))
+```
+
+---
+
+**Part B: Exploratory Data Analysis (60 min)**
+
+```python
+# 1. Data Quality Assessment
+print("="*60)
+print("DATA QUALITY CHECK")
+print("="*60)
+
+# Missing values
+print("\\nMissing values:")
+missing = titanic.isnull().sum()
+print(missing[missing > 0])
+
+# Data types
+print("\\nData types:")
+print(titanic.dtypes)
+
+# Unique values for categoricals
+categorical_cols = ['Pclass', 'Sex', 'Embarked']
+for col in categorical_cols:
+    print(f"\\n{col}: {titanic[col].nunique()} unique values")
+    print(titanic[col].value_counts())
+
+# 2. Survival Analysis
+print("\\n" + "="*60)
+print("SURVIVAL ANALYSIS")
+print("="*60)
+
+survival_rate = titanic['Survived'].mean()
+print(f"Overall survival rate: {survival_rate:.1%}")
+
+# By gender
+survival_by_gender = titanic.groupby('Sex')['Survived'].mean()
+print("\\nSurvival by gender:")
+print(survival_by_gender)
+
+# By class
+survival_by_class = titanic.groupby('Pclass')['Survived'].mean()
+print("\\nSurvival by class:")
+print(survival_by_class)
+
+# By age group
+titanic['AgeGroup'] = pd.cut(titanic['Age'], 
+                              bins=[0, 18, 35, 60, 100],
+                              labels=['Child', 'Young Adult', 'Adult', 'Senior'])
+survival_by_age = titanic.groupby('AgeGroup')['Survived'].mean()
+print("\\nSurvival by age group:")
+print(survival_by_age)
+
+# 3. Visualizations
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# Survival by gender
+survival_by_gender.plot(kind='bar', ax=axes[0, 0], color=['red', 'green'])
+axes[0, 0].set_title('Survival Rate by Gender')
+axes[0, 0].set_ylabel('Survival Rate')
+axes[0, 0].set_ylim([0, 1])
+
+# Survival by class
+survival_by_class.plot(kind='bar', ax=axes[0, 1])
+axes[0, 1].set_title('Survival Rate by Passenger Class')
+axes[0, 1].set_ylabel('Survival Rate')
+axes[0, 1].set_ylim([0, 1])
+
+# Age distribution
+axes[1, 0].hist(titanic['Age'].dropna(), bins=20, edgecolor='black')
+axes[1, 0].set_title('Passenger Age Distribution')
+axes[1, 0].set_xlabel('Age')
+axes[1, 0].set_ylabel('Count')
+
+# Fare distribution by class
+for pclass in [1, 2, 3]:
+    data = titanic[titanic['Pclass']==pclass]['Fare'].dropna()
+    axes[1, 1].hist(data, alpha=0.5, label=f'Class {pclass}', bins=20)
+axes[1, 1].set_title('Fare Distribution by Class')
+axes[1, 1].set_xlabel('Fare (£)')
+axes[1, 1].legend()
+
+plt.tight_layout()
+plt.show()
+
+# 4. Key Insights Summary
+print("\\n" + "="*60)
+print("KEY INSIGHTS")
+print("="*60)
+print(f"1. Women had {survival_by_gender['female']/survival_by_gender['male']:.1f}x higher survival rate")
+print(f"2. First class passengers had {survival_by_class[1]/survival_by_class[3]:.1f}x higher survival than third class")
+print(f"3. {missing['Age']} passengers ({missing['Age']/len(titanic):.1%}) have missing age data")
+print(f"4. Average fare: £{titanic['Fare'].mean():.2f}")
+```
+
+---
+
+**Lab 2 Checklist:**
+- ☐ Public dataset source identified
+- ☐ Data loaded successfully
+- ☐ Missing values analyzed
+- ☐ Key patterns discovered
+- ☐ Multiple visualizations created
+- ☐ Business insights documented
+
+---
+
+## Lab 3: Formulate Business Questions (60 min)
+
+**Objective:** Practice turning business problems into data science questions
+
+**Part A: Healthcare Scenario (20 min)**
+
+**Scenario:** You work for a hospital network with patient readmission data
+
+**Available Data:**
+- Patient demographics (age, gender, location)
+- Admission history (dates, diagnosis codes, length of stay)
+- Treatment records (procedures, medications)
+- Readmission within 30 days (yes/no)
+
+**Your Task: Formulate 5 data science questions**
+
+```markdown
+EXAMPLE QUESTIONS:
+
+1. **PREDICTION:** Can we predict which patients are at high risk of 30-day readmission?
+   - Target: readmitted (yes/no)
+   - Features: age, diagnosis, prior admissions, length of stay
+   - Business value: Proactive follow-up care reduces readmissions by 15%
+
+2. **SEGMENTATION:** Are there distinct patient groups with different readmission patterns?
+   - Method: Clustering analysis
+   - Goal: Tailored intervention programs
+   - Business value: More effective resource allocation
+
+3. **OPTIMIZATION:** What factors most influence length of stay?
+   - Method: Regression analysis
+   - Goal: Reduce unnecessary hospital days
+   - Business value: £500 saved per day reduced
+
+4. **TREND ANALYSIS:** Are readmission rates increasing over time?
+   - Method: Time series analysis
+   - Goal: Early detection of systematic issues
+   - Business value: Quality improvement initiatives
+
+5. **ROOT CAUSE:** Which diagnoses have highest readmission rates?
+   - Method: Descriptive statistics + visualization
+   - Goal: Focus improvement efforts
+   - Business value: Targeted clinical protocol updates
+```
+
+---
+
+**Part B: Retail Scenario (20 min)**
+
+**Scenario:** E-commerce company wants to reduce cart abandonment
+
+**Your 5 Questions:**
+
+```markdown
+YOUR TURN - WRITE 5 QUESTIONS:
+
+1. PREDICTION: Can we predict which shopping carts will be abandoned?
+
+2. SEGMENTATION: _______________________________________
+
+3. OPTIMIZATION: _______________________________________
+
+4. TREND ANALYSIS: _______________________________________
+
+5. ROOT CAUSE: _______________________________________
+```
+
+---
+
+**Part C: Finance Scenario (20 min)**
+
+**Scenario:** Bank wants to detect fraudulent transactions
+
+**Your 5 Questions:**
+
+```markdown
+1. PREDICTION: _______________________________________
+
+2. ANOMALY DETECTION: _______________________________________
+
+3. PATTERN RECOGNITION: _______________________________________
+
+4. RISK SCORING: _______________________________________
+
+5. TREND ANALYSIS: _______________________________________
+```
+
+---
+
+**Lab 3 Checklist:**
+- ☐ Healthcare questions formulated (5)
+- ☐ Retail questions formulated (5)
+- ☐ Finance questions formulated (5)
+- ☐ Each question linked to business value
+- ☐ Target variables identified
+- ☐ Potential features listed
+
+---
+
+**Next Steps:** Unit 2 teaches Python programming to answer these questions!
+"""
+        )
+
     elif unit_number == 2:
         st.markdown("---")
         st.markdown("#### 🐍 Why Python is THE Language for Data Science")
@@ -4831,17 +5435,681 @@ else:
 
 ---
 
-**Lab Completion Checklist:**
-- ☐ Calculated mean, median, mode
-- ☐ Understood variance and std deviation
-- ☐ Computed correlation coefficients
-- ☐ Set up A/B test experiment
-- ☐ Calculated conversion rates and lift
-- ☐ Performed statistical significance test
-- ☐ Computed confidence intervals
+## Lab 3: Complete Statistical Analysis Mini-Project (90 min)
+
+**Objective:** Conduct end-to-end statistical analysis for business decision
+
+**Scenario:** E-commerce company launching loyalty program
+
+**Part A: Experimental Design (20 min)**
+
+```python
+import pandas as pd
+import numpy as np
+from scipy import stats
+
+# Design A/B test for loyalty program
+np.random.seed(42)
+
+# Control: No loyalty program (1000 customers)
+# Treatment: Loyalty program (1000 customers)
+
+# Simulate 3 months of data
+control_purchases = np.random.poisson(2.5, 1000)  # Avg 2.5 purchases/month
+treatment_purchases = np.random.poisson(3.2, 1000)  # Loyalty increases to 3.2
+
+control_revenue = np.random.normal(120, 40, 1000)  # Avg £120/month
+treatment_revenue = np.random.normal(145, 45, 1000)  # Loyalty increases to £145
+
+df = pd.DataFrame({
+    'group': ['Control']*1000 + ['Treatment']*1000,
+    'purchases': np.concatenate([control_purchases, treatment_purchases]),
+    'revenue': np.concatenate([control_revenue, treatment_revenue]),
+    'customer_id': range(2000)
+})
+
+print("="*60)
+print("EXPERIMENT DESIGN")
+print("="*60)
+print(f"Sample size: {len(df)}")
+print(f"\\nControl group: {(df['group']=='Control').sum()} customers")
+print(f"Treatment group: {(df['group']=='Treatment').sum()} customers")
+print(f"\\nTarget metric: Monthly purchases & revenue")
+print(f"Hypothesis: Loyalty program increases engagement & spend")
+```
+
+---
+
+**Part B: Descriptive Analysis (30 min)**
+
+```python
+# Summary statistics by group
+summary = df.groupby('group').agg({
+    'purchases': ['mean', 'std', 'median'],
+    'revenue': ['mean', 'std', 'median']
+})
+
+print("\\n" + "="*60)
+print("DESCRIPTIVE STATISTICS")
+print("="*60)
+print(summary)
+
+# Calculate lift
+control_avg_purchases = df[df['group']=='Control']['purchases'].mean()
+treatment_avg_purchases = df[df['group']=='Treatment']['purchases'].mean()
+purchase_lift = (treatment_avg_purchases - control_avg_purchases) / control_avg_purchases
+
+control_avg_revenue = df[df['group']=='Control']['revenue'].mean()
+treatment_avg_revenue = df[df['group']=='Treatment']['revenue'].mean()
+revenue_lift = (treatment_avg_revenue - control_avg_revenue) / control_avg_revenue
+
+print(f"\\nPurchase Lift: {purchase_lift:.1%}")
+print(f"Revenue Lift: {revenue_lift:.1%}")
+
+# Visualize distributions
+import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Purchases
+axes[0].hist(df[df['group']=='Control']['purchases'], alpha=0.5, label='Control', bins=15)
+axes[0].hist(df[df['group']=='Treatment']['purchases'], alpha=0.5, label='Treatment', bins=15)
+axes[0].set_title('Monthly Purchases Distribution')
+axes[0].set_xlabel('Purchases')
+axes[0].legend()
+
+# Revenue
+axes[1].hist(df[df['group']=='Control']['revenue'], alpha=0.5, label='Control', bins=15)
+axes[1].hist(df[df['group']=='Treatment']['revenue'], alpha=0.5, label='Treatment', bins=15)
+axes[1].set_title('Monthly Revenue Distribution')
+axes[1].set_xlabel('Revenue (£)')
+axes[1].legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+**Part C: Statistical Testing & Business Decision (40 min)**
+
+```python
+# Test 1: Are purchases significantly different?
+control_purchases = df[df['group']=='Control']['purchases']
+treatment_purchases = df[df['group']=='Treatment']['purchases']
+
+t_stat_purchases, p_value_purchases = stats.ttest_ind(control_purchases, treatment_purchases)
+
+print("="*60)
+print("HYPOTHESIS TEST: PURCHASES")
+print("="*60)
+print(f"H0: Loyalty program has no effect on purchases")
+print(f"H1: Loyalty program increases purchases")
+print(f"\\nT-statistic: {t_stat_purchases:.3f}")
+print(f"P-value: {p_value_purchases:.4f}")
+
+if p_value_purchases < 0.05:
+    print("\\n✅ REJECT H0: Statistically significant increase")
+else:
+    print("\\n❌ FAIL TO REJECT H0: No significant effect")
+
+# Test 2: Are revenues significantly different?
+control_revenue = df[df['group']=='Control']['revenue']
+treatment_revenue = df[df['group']=='Treatment']['revenue']
+
+t_stat_revenue, p_value_revenue = stats.ttest_ind(control_revenue, treatment_revenue)
+
+print("\\n" + "="*60)
+print("HYPOTHESIS TEST: REVENUE")
+print("="*60)
+print(f"H0: Loyalty program has no effect on revenue")
+print(f"H1: Loyalty program increases revenue")
+print(f"\\nT-statistic: {t_stat_revenue:.3f}")
+print(f"P-value: {p_value_revenue:.4f}")
+
+if p_value_revenue < 0.05:
+    print("\\n✅ REJECT H0: Statistically significant increase")
+else:
+    print("\\n❌ FAIL TO REJECT H0: No significant effect")
+
+# Calculate confidence intervals
+control_ci = stats.t.interval(0.95, len(control_revenue)-1,
+                               loc=control_revenue.mean(),
+                               scale=stats.sem(control_revenue))
+treatment_ci = stats.t.interval(0.95, len(treatment_revenue)-1,
+                                 loc=treatment_revenue.mean(),
+                                 scale=stats.sem(treatment_revenue))
+
+print("\\n" + "="*60)
+print("95% CONFIDENCE INTERVALS - REVENUE")
+print("="*60)
+print(f"Control:   £{control_ci[0]:.2f} - £{control_ci[1]:.2f}")
+print(f"Treatment: £{treatment_ci[0]:.2f} - £{treatment_ci[1]:.2f}")
+
+# Business impact calculation
+total_customers = 50000  # Company has 50K customers
+annual_months = 12
+
+additional_revenue_per_customer = treatment_avg_revenue - control_avg_revenue
+total_additional_revenue = total_customers * additional_revenue_per_customer * annual_months
+
+program_cost_per_customer = 2  # £2/month
+total_program_cost = total_customers * program_cost_per_customer * annual_months
+
+net_benefit = total_additional_revenue - total_program_cost
+roi = (net_benefit / total_program_cost) * 100
+
+print("\\n" + "="*60)
+print("BUSINESS IMPACT ANALYSIS")
+print("="*60)
+print(f"Total customers: {total_customers:,}")
+print(f"\\nAdditional revenue per customer: £{additional_revenue_per_customer:.2f}/month")
+print(f"Total additional revenue (annual): £{total_additional_revenue:,.0f}")
+print(f"\\nProgram cost per customer: £{program_cost_per_customer}/month")
+print(f"Total program cost (annual): £{total_program_cost:,.0f}")
+print(f"\\nNet benefit: £{net_benefit:,.0f}")
+print(f"ROI: {roi:.0f}%")
+
+# Final recommendation
+print("\\n" + "="*60)
+print("RECOMMENDATION")
+print("="*60)
+if p_value_revenue < 0.05 and roi > 100:
+    print("✅ LAUNCH loyalty program")
+    print(f"   - Statistically significant revenue increase (p={p_value_revenue:.4f})")
+    print(f"   - Strong ROI ({roi:.0f}%)")
+    print(f"   - Expected net benefit: £{net_benefit:,.0f} annually")
+elif p_value_revenue < 0.05:
+    print("⚠️ Significant effect but marginal ROI")
+    print("   - Consider reducing program costs")
+    print("   - Or target high-value customers only")
+else:
+    print("❌ Do NOT launch - insufficient evidence")
+    print("   - Continue testing with larger sample")
+    print("   - Or redesign program features")
+
+print("="*60)
+```
+
+---
+
+**Lab 3 Completion Checklist:**
+- ☐ Designed A/B test experiment
+- ☐ Calculated descriptive statistics
+- ☐ Created distribution visualizations
+- ☐ Performed t-tests for purchases & revenue
+- ☐ Computed 95% confidence intervals
+- ☐ Calculated business impact (ROI)
 - ☐ Made data-driven recommendation
+- ☐ Considered both statistical AND practical significance
 
 **Next:** Unit 6 Visualization labs teach you to communicate these results visually!
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 📐 Regression Analysis Fundamentals")
+        st.markdown(
+            """**Simple Linear Regression**
+
+**Goal:** Model relationship between two variables
+
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+# Example: Advertising spend vs Revenue
+np.random.seed(42)
+advertising = np.array([10, 15, 20, 25, 30, 35, 40, 45, 50, 55])
+revenue = advertising * 2.5 + np.random.normal(0, 5, 10) + 10
+
+# Linear regression
+slope, intercept, r_value, p_value, std_err = stats.linregress(advertising, revenue)
+
+print(f"Equation: Revenue = {intercept:.2f} + {slope:.2f} × Advertising")
+print(f"R-squared: {r_value**2:.3f}")
+print(f"P-value: {p_value:.4f}")
+
+# Predict
+new_spend = 60
+predicted_revenue = intercept + slope * new_spend
+print(f"\\nPrediction: £{new_spend}K ad spend → £{predicted_revenue:.2f}K revenue")
+
+# Visualize
+plt.figure(figsize=(10, 6))
+plt.scatter(advertising, revenue, s=100, alpha=0.6, label='Actual')
+plt.plot(advertising, intercept + slope*advertising, 'r-', linewidth=2, label='Fitted Line')
+plt.xlabel('Advertising Spend (£K)')
+plt.ylabel('Revenue (£K)')
+plt.title(f'Linear Regression (R² = {r_value**2:.3f})')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+```
+
+**Interpretation:**
+- **Slope:** For every £1K in ads, revenue increases by £2.5K
+- **R²:** Model explains 95% of revenue variance
+- **P-value < 0.05:** Statistically significant relationship
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🎲 Probability Distributions")
+        st.markdown(
+            """**Common Distributions in Data Science**
+
+**1. Normal Distribution (Bell Curve)**
+
+```python
+from scipy.stats import norm
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Customer ages: mean=35, std=10
+mean_age = 35
+std_age = 10
+
+# Generate data
+ages = np.random.normal(mean_age, std_age, 1000)
+
+# Probabilities
+prob_under_30 = norm.cdf(30, mean_age, std_age)
+prob_over_50 = 1 - norm.cdf(50, mean_age, std_age)
+prob_between_30_40 = norm.cdf(40, mean_age, std_age) - norm.cdf(30, mean_age, std_age)
+
+print(f"P(age < 30) = {prob_under_30:.1%}")
+print(f"P(age > 50) = {prob_over_50:.1%}")
+print(f"P(30 < age < 40) = {prob_between_30_40:.1%}")
+
+# Visualize
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.hist(ages, bins=30, density=True, alpha=0.6, edgecolor='black')
+x = np.linspace(0, 70, 100)
+ax.plot(x, norm.pdf(x, mean_age, std_age), 'r-', linewidth=2, label='Normal PDF')
+ax.set_xlabel('Age')
+ax.set_ylabel('Density')
+ax.set_title('Customer Age Distribution')
+ax.legend()
+plt.show()
+```
+
+---
+
+**2. Poisson Distribution (Count Events)**
+
+```python
+from scipy.stats import poisson
+
+# Website visits per day: average = 5
+lambda_rate = 5
+
+# Probabilities
+for k in range(0, 10):
+    prob = poisson.pmf(k, lambda_rate)
+    print(f"P(exactly {k} visits) = {prob:.3f}")
+
+# Business question: What's probability of >8 visits?
+prob_more_than_8 = 1 - poisson.cdf(8, lambda_rate)
+print(f"\\nP(more than 8 visits) = {prob_more_than_8:.1%}")
+```
+
+---
+
+**3. Binomial Distribution (Success/Failure)**
+
+```python
+from scipy.stats import binom
+
+# Email campaign: 1000 emails, 5% open rate
+n_emails = 1000
+open_rate = 0.05
+
+# Expected opens
+expected = n_emails * open_rate
+print(f"Expected opens: {expected:.0f}")
+
+# Probability of exactly 60 opens?
+prob_60 = binom.pmf(60, n_emails, open_rate)
+print(f"P(exactly 60 opens) = {prob_60:.3f}")
+
+# Probability of at least 40 opens?
+prob_at_least_40 = 1 - binom.cdf(39, n_emails, open_rate)
+print(f"P(≥40 opens) = {prob_at_least_40:.1%}")
+```
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 📊 Sampling & Central Limit Theorem")
+        st.markdown(
+            """**Why Sampling Matters**
+
+You can't survey ALL customers. Sample wisely!
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# True population: 100K customers, avg spend = £50, std = £20
+np.random.seed(42)
+population = np.random.normal(50, 20, 100000)
+true_mean = population.mean()
+
+print(f"True population mean: £{true_mean:.2f}")
+
+# Take multiple samples
+sample_sizes = [10, 30, 100, 500]
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+axes = axes.flatten()
+
+for idx, n in enumerate(sample_sizes):
+    # Take 1000 samples of size n
+    sample_means = []
+    for _ in range(1000):
+        sample = np.random.choice(population, n, replace=False)
+        sample_means.append(sample.mean())
+    
+    # Plot distribution of sample means
+    axes[idx].hist(sample_means, bins=30, edgecolor='black', alpha=0.7)
+    axes[idx].axvline(true_mean, color='r', linestyle='--', linewidth=2, label='True Mean')
+    axes[idx].set_title(f'Sample Size = {n}')
+    axes[idx].set_xlabel('Sample Mean')
+    axes[idx].legend()
+    
+    # Standard error
+    std_error = np.std(sample_means)
+    axes[idx].text(0.05, 0.95, f'SE = £{std_error:.2f}', 
+                   transform=axes[idx].transAxes, verticalalignment='top')
+
+plt.suptitle('Central Limit Theorem: Sample Means Converge to Normal')
+plt.tight_layout()
+plt.show()
+
+print("\\n📊 Key Insight:")
+print("Larger samples → More accurate estimates!")
+print("Sample means are normally distributed around true mean")
+```
+
+**Standard Error Formula:**
+
+SE = σ / √n
+
+- As n increases, SE decreases
+- Need 4x sample size to halve SE
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🔬 Hypothesis Testing Deep Dive")
+        st.markdown(
+            """**Complete Framework**
+
+**Step-by-Step Process:**
+
+```python
+import numpy as np
+from scipy import stats
+
+# Scenario: New checkout process claims to reduce cart abandonment
+# Old rate: 65%, New rate: 58% (from 500 user test)
+
+# 1. State Hypotheses
+print("="*60)
+print("HYPOTHESIS TEST")
+print("="*60)
+print("H₀ (Null): New process has no effect (p = 0.65)")
+print("H₁ (Alt):  New process reduces abandonment (p < 0.65)")
+print("α (Significance): 0.05")
+
+# 2. Collect Data
+n = 500
+observed_abandonment = 0.58
+null_hypothesis_rate = 0.65
+
+# 3. Calculate Test Statistic (Z-test for proportions)
+p0 = null_hypothesis_rate
+se = np.sqrt(p0 * (1-p0) / n)
+z_score = (observed_abandonment - p0) / se
+
+print(f"\\nObserved rate: {observed_abandonment:.1%}")
+print(f"Standard Error: {se:.4f}")
+print(f"Z-score: {z_score:.2f}")
+
+# 4. Calculate P-value
+p_value = stats.norm.cdf(z_score)  # One-tailed test
+print(f"P-value: {p_value:.4f}")
+
+# 5. Make Decision
+print("\\n" + "="*60)
+print("DECISION")
+print("="*60)
+if p_value < 0.05:
+    print("✅ REJECT null hypothesis")
+    print("Evidence suggests new process reduces abandonment")
+    
+    # Calculate effect size
+    reduction = (null_hypothesis_rate - observed_abandonment) / null_hypothesis_rate
+    print(f"\\nEffect: {reduction:.1%} reduction in abandonment")
+    
+    # Business impact
+    annual_orders = 100000
+    additional_orders = annual_orders * (null_hypothesis_rate - observed_abandonment)
+    revenue_per_order = 75
+    annual_impact = additional_orders * revenue_per_order
+    print(f"Business Impact: ~{additional_orders:,.0f} additional orders")
+    print(f"Revenue Impact: £{annual_impact:,.0f} annually")
+else:
+    print("❌ FAIL TO REJECT null hypothesis")
+    print("Insufficient evidence of improvement")
+```
+
+---
+
+**Type I & Type II Errors**
+
+```python
+# Confusion Matrix for Hypothesis Testing
+import pandas as pd
+
+confusion = pd.DataFrame({
+    'H₀ is True': ['Correct Decision (1-α)', 'Type I Error (α)'],
+    'H₀ is False': ['Type II Error (β)', 'Correct Decision (1-β)']
+}, index=['Fail to Reject H₀', 'Reject H₀'])
+
+print(confusion)
+print("\\nType I Error (False Positive):")
+print("  - Conclude there's an effect when there isn't")
+print("  - Probability = α (significance level)")
+print("\\nType II Error (False Negative):")
+print("  - Fail to detect a real effect")
+print("  - Probability = β")
+print("\\nPower = 1 - β (ability to detect real effects)")
+```
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 📈 Statistical Significance vs Practical Significance")
+        st.markdown(
+            """**Critical Distinction for Business Decisions**
+
+```python
+import numpy as np
+from scipy import stats
+
+# Scenario: Website redesign A/B test
+# Control: 10,000 visitors, 500 conversions (5.00%)
+# Treatment: 10,000 visitors, 520 conversions (5.20%)
+
+control_conversions = 500
+control_visitors = 10000
+treatment_conversions = 520
+treatment_visitors = 10000
+
+control_rate = control_conversions / control_visitors
+treatment_rate = treatment_conversions / treatment_visitors
+
+# Statistical test
+pooled_rate = (control_conversions + treatment_conversions) / (control_visitors + treatment_visitors)
+se = np.sqrt(pooled_rate * (1-pooled_rate) * (1/control_visitors + 1/treatment_visitors))
+z_score = (treatment_rate - control_rate) / se
+p_value = 2 * (1 - stats.norm.cdf(abs(z_score)))
+
+print("="*60)
+print("STATISTICAL SIGNIFICANCE")
+print("="*60)
+print(f"Control rate: {control_rate:.2%}")
+print(f"Treatment rate: {treatment_rate:.2%}")
+print(f"Lift: {(treatment_rate - control_rate):.2%} ({(treatment_rate/control_rate - 1)*100:.1f}%)")
+print(f"\\nP-value: {p_value:.4f}")
+
+if p_value < 0.05:
+    print("✅ Statistically significant!")
+else:
+    print("❌ Not statistically significant")
+
+# Practical Significance
+print("\\n" + "="*60)
+print("PRACTICAL SIGNIFICANCE")
+print("="*60)
+
+annual_visitors = 1_000_000
+additional_conversions = annual_visitors * (treatment_rate - control_rate)
+revenue_per_conversion = 50
+annual_revenue_impact = additional_conversions * revenue_per_conversion
+
+redesign_cost = 50000
+development_months = 3
+
+print(f"Annual visitors: {annual_visitors:,}")
+print(f"Additional conversions: {additional_conversions:,.0f}")
+print(f"Additional revenue: £{annual_revenue_impact:,.0f}")
+print(f"\\nRedesign cost: £{redesign_cost:,}")
+print(f"Development time: {development_months} months")
+print(f"\\nROI: {(annual_revenue_impact - redesign_cost) / redesign_cost * 100:.0f}%")
+
+print("\\n" + "="*60)
+print("RECOMMENDATION")
+print("="*60)
+if p_value < 0.05 and annual_revenue_impact > redesign_cost * 2:
+    print("✅ LAUNCH redesign")
+    print("Both statistically AND practically significant")
+elif p_value < 0.05:
+    print("⚠️ Statistically significant but marginal ROI")
+    print("Consider cheaper implementation or continue testing")
+else:
+    print("❌ Keep testing or try different approach")
+```
+
+**Key Lesson:**
+- Statistical significance ≠ Business significance
+- Always calculate ROI
+- Consider implementation costs
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🎯 Interview Questions: Statistics")
+        st.markdown(
+            """**Common Data Science Interview Questions**
+
+**Q1: What's the difference between mean and median? When do you use each?**
+
+**Answer:**
+- **Mean:** Average of all values. Sensitive to outliers.
+- **Median:** Middle value. Robust to outliers.
+- **Use median when:** Data is skewed or has outliers (e.g., house prices, salaries)
+- **Use mean when:** Data is normally distributed (e.g., heights, test scores)
+
+Example: Salaries [£30K, £32K, £35K, £500K]
+- Mean = £149K (misleading!)
+- Median = £33.5K (representative)
+
+---
+
+**Q2: Explain p-value in simple terms.**
+
+**Answer:**
+"P-value is the probability of seeing results this extreme if there's actually no real effect. If p-value < 0.05, we conclude the effect is unlikely due to chance alone."
+
+Bad answer: "It's the probability the null hypothesis is true" ❌
+
+---
+
+**Q3: What is statistical power and why does it matter?**
+
+**Answer:**
+Power = Probability of detecting a real effect when it exists.
+
+Low power (< 80%) means you might miss real improvements!
+
+Increases with:
+- Larger sample size
+- Larger effect size
+- Higher significance level (α)
+
+---
+
+**Q4: Your A/B test shows treatment has 5.2% conversion vs control's 5.0%. P-value = 0.045. What do you do?**
+
+**Answer:**
+"Check practical significance first:
+1. Calculate additional conversions and revenue
+2. Compare to implementation cost
+3. Consider confidence intervals
+4. P-value alone doesn't justify launch
+
+If ROI is strong (>200%) and CI is tight, recommend launch with monitoring plan."
+
+---
+
+**Q5: What's the Central Limit Theorem and why is it important?**
+
+**Answer:**
+"Sample means follow a normal distribution regardless of population distribution, if n is large enough (n≥30).
+
+This lets us:
+- Make inferences about populations from samples
+- Calculate confidence intervals
+- Perform hypothesis tests
+
+It's why sampling works!"
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 📚 Key Statistical Concepts Summary")
+        st.markdown(
+            """**Essential Formulas:**
+
+**Descriptive Statistics:**
+- Mean: μ = Σx / n
+- Variance: σ² = Σ(x - μ)² / n
+- Standard Deviation: σ = √variance
+- Correlation: r = cov(X,Y) / (σₓ × σᵧ)
+
+**Inferential Statistics:**
+- Standard Error: SE = σ / √n
+- Z-score: z = (x - μ) / σ
+- Confidence Interval: x̄ ± z × SE
+- T-test: t = (x̄₁ - x̄₂) / SE_difference
+
+**A/B Testing:**
+- Conversion Rate: conversions / visitors
+- Lift: (treatment_rate - control_rate) / control_rate
+- Statistical Significance: Use z-test or chi-square
+- Sample Size: n ≈ 16σ² / (effect_size)²
+
+**Remember:**
+- ✅ Always visualize data first
+- ✅ Check assumptions before tests
+- ✅ Report effect sizes, not just p-values
+- ✅ Consider practical vs statistical significance
+- ✅ Use confidence intervals
+- ✅ Document your methodology
 """
         )
 
@@ -5702,15 +6970,791 @@ NEXT STEPS:
 
 ---
 
-**Lab Completion Checklist:**
-- ☐ Created line, bar, scatter charts
-- ☐ Used Matplotlib and Seaborn
-- ☐ Applied professional styling
-- ☐ Built executive dashboard
-- ☐ Added annotations and insights
-- ☐ Wrote data story with context
+## Lab 3: Complete Data Visualization Portfolio Project (120 min)
+
+**Objective:** Create professional multi-page visualization report for portfolio
+
+**Scenario:** Quarterly Business Review for E-Commerce Company
+
+**Part A: Data Preparation & Setup (25 min)**
+
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime, timedelta
+
+# Set professional style
+sns.set_style("whitegrid")
+plt.rcParams['font.size'] = 11
+plt.rcParams['axes.labelsize'] = 12
+plt.rcParams['axes.titlesize'] = 14
+plt.rcParams['figure.titlesize'] = 16
+
+# Generate realistic quarterly data
+np.random.seed(42)
+dates = pd.date_range('2024-01-01', '2024-03-31', freq='D')
+n_days = len(dates)
+
+# Daily metrics
+df = pd.DataFrame({
+    'date': dates,
+    'revenue': np.random.normal(15000, 3000, n_days) + np.linspace(0, 5000, n_days),  # Upward trend
+    'orders': np.random.poisson(250, n_days) + np.linspace(0, 50, n_days).astype(int),
+    'visitors': np.random.poisson(5000, n_days),
+    'conversion_rate': np.random.uniform(0.04, 0.06, n_days)
+})
+
+# Add derived metrics
+df['avg_order_value'] = df['revenue'] / df['orders']
+df['month'] = df['date'].dt.month_name()
+df['week'] = df['date'].dt.isocalendar().week
+df['day_of_week'] = df['date'].dt.day_name()
+
+# Product category data
+categories = ['Electronics', 'Clothing', 'Home & Garden', 'Sports', 'Books']
+category_sales = {
+    'category': categories,
+    'q1_revenue': [125000, 98000, 87000, 65000, 45000],
+    'q4_revenue': [110000, 92000, 95000, 58000, 48000],
+    'units_sold': [1250, 2100, 1450, 980, 1820]
+}
+df_categories = pd.DataFrame(category_sales)
+
+# Customer segments
+segments = ['Champions', 'Loyal', 'Potential', 'At Risk', 'Lost']
+segment_data = {
+    'segment': segments,
+    'customers': [1500, 3500, 5000, 2800, 1200],
+    'avg_ltv': [850, 420, 180, 120, 45]
+}
+df_segments = pd.DataFrame(segment_data)
+
+print("="*60)
+print("DATA PREPARATION COMPLETE")
+print("="*60)
+print(f"Daily data: {len(df)} rows (Jan-Mar 2024)")
+print(f"Product categories: {len(categories)}")
+print(f"Customer segments: {len(segments)}")
+print("\\n✅ Ready for visualization")
+```
+
+---
+
+**Part B: Executive Summary Dashboard (45 min)**
+
+```python
+# Create comprehensive 6-panel dashboard
+fig = plt.figure(figsize=(18, 12))
+gs = fig.add_gridspec(3, 3, hspace=0.3, wspace=0.3)
+fig.suptitle('Q1 2024 Business Performance Review', fontsize=20, fontweight='bold', y=0.98)
+
+# Panel 1: Total Revenue (Big Number KPI)
+ax1 = fig.add_subplot(gs[0, 0])
+total_revenue = df['revenue'].sum()
+revenue_growth = ((df[df['month']=='March']['revenue'].sum() - df[df['month']=='January']['revenue'].sum()) / 
+                   df[df['month']=='January']['revenue'].sum() * 100)
+ax1.text(0.5, 0.6, f'£{total_revenue:,.0f}', ha='center', va='center', 
+         fontsize=42, fontweight='bold', color='#2ecc71')
+ax1.text(0.5, 0.3, 'Total Revenue', ha='center', va='center', fontsize=14, color='gray')
+ax1.text(0.5, 0.1, f'+{revenue_growth:.1f}% vs Jan', ha='center', va='center', 
+         fontsize=12, color='green', fontweight='bold')
+ax1.axis('off')
+ax1.set_facecolor('#f8f9fa')
+
+# Panel 2: Total Orders
+ax2 = fig.add_subplot(gs[0, 1])
+total_orders = df['orders'].sum()
+ax2.text(0.5, 0.6, f'{total_orders:,}', ha='center', va='center', 
+         fontsize=42, fontweight='bold', color='#3498db')
+ax2.text(0.5, 0.3, 'Total Orders', ha='center', va='center', fontsize=14, color='gray')
+ax2.text(0.5, 0.1, f'{total_orders/90:.0f} orders/day avg', ha='center', va='center', 
+         fontsize=11, color='#3498db')
+ax2.axis('off')
+ax2.set_facecolor('#f8f9fa')
+
+# Panel 3: Avg Conversion Rate
+ax3 = fig.add_subplot(gs[0, 2])
+avg_conversion = df['conversion_rate'].mean()
+ax3.text(0.5, 0.6, f'{avg_conversion:.1%}', ha='center', va='center', 
+         fontsize=42, fontweight='bold', color='#e67e22')
+ax3.text(0.5, 0.3, 'Conversion Rate', ha='center', va='center', fontsize=14, color='gray')
+ax3.text(0.5, 0.1, 'Industry avg: 4.2%', ha='center', va='center', 
+         fontsize=11, color='gray', style='italic')
+ax3.axis('off')
+ax3.set_facecolor('#f8f9fa')
+
+# Panel 4: Revenue Trend (spans 2 columns)
+ax4 = fig.add_subplot(gs[1, :2])
+df_weekly = df.groupby('week')['revenue'].sum().reset_index()
+ax4.plot(df_weekly['week'], df_weekly['revenue'], marker='o', linewidth=3, 
+         markersize=8, color='#3498db', label='Weekly Revenue')
+ax4.fill_between(df_weekly['week'], df_weekly['revenue'], alpha=0.3, color='#3498db')
+ax4.set_title('Weekly Revenue Trend', fontsize=14, fontweight='bold', loc='left')
+ax4.set_xlabel('Week Number')
+ax4.set_ylabel('Revenue (£)')
+ax4.grid(True, alpha=0.3)
+ax4.spines['top'].set_visible(False)
+ax4.spines['right'].set_visible(False)
+# Annotate peak week
+peak_week = df_weekly.loc[df_weekly['revenue'].idxmax()]
+ax4.annotate(f'Peak: £{peak_week[\"revenue\"]:,.0f}', 
+             xy=(peak_week['week'], peak_week['revenue']),
+             xytext=(peak_week['week']+1, peak_week['revenue']+10000),
+             arrowprops=dict(arrowstyle='->', color='red', lw=2),
+             fontsize=11, color='red', fontweight='bold')
+
+# Panel 5: Category Performance
+ax5 = fig.add_subplot(gs[1, 2])
+df_categories['growth'] = ((df_categories['q1_revenue'] - df_categories['q4_revenue']) / 
+                            df_categories['q4_revenue'] * 100)
+colors_cat = ['green' if x > 0 else 'red' for x in df_categories['growth']]
+ax5.barh(df_categories['category'], df_categories['growth'], color=colors_cat, alpha=0.7)
+ax5.axvline(0, color='black', linewidth=0.8)
+ax5.set_title('Category Growth (Q1 vs Q4)', fontsize=14, fontweight='bold')
+ax5.set_xlabel('Growth (%)')
+ax5.spines['top'].set_visible(False)
+ax5.spines['right'].set_visible(False)
+
+# Panel 6: Customer Segments (spans all 3 columns)
+ax6 = fig.add_subplot(gs[2, :])
+x = np.arange(len(segments))
+width = 0.35
+bars1 = ax6.bar(x - width/2, df_segments['customers'], width, label='Customers', color='#3498db', alpha=0.8)
+ax7 = ax6.twinx()
+bars2 = ax7.bar(x + width/2, df_segments['avg_ltv'], width, label='Avg LTV (£)', color='#e67e22', alpha=0.8)
+
+ax6.set_xlabel('Customer Segment')
+ax6.set_ylabel('Number of Customers', color='#3498db')
+ax6.set_xticks(x)
+ax6.set_xticklabels(segments)
+ax6.tick_params(axis='y', labelcolor='#3498db')
+ax7.set_ylabel('Avg Lifetime Value (£)', color='#e67e22')
+ax7.tick_params(axis='y', labelcolor='#e67e22')
+ax6.set_title('Customer Segmentation Analysis', fontsize=14, fontweight='bold', loc='left')
+ax6.legend(loc='upper left')
+ax7.legend(loc='upper right')
+
+# Save high-resolution
+plt.savefig('q1_business_review.png', dpi=300, bbox_inches='tight', facecolor='white')
+plt.show()
+
+print("\\n✅ Executive dashboard created: q1_business_review.png")
+```
+
+---
+
+**Part C: Deep-Dive Analysis & Storytelling (50 min)**
+
+```python
+# Create detailed analysis report with 4 focused charts
+
+fig2, axes = plt.subplots(2, 2, figsize=(16, 12))
+fig2.suptitle('Q1 2024 - Detailed Performance Analysis', fontsize=18, fontweight='bold')
+
+# Chart 1: Revenue by Day of Week
+ax = axes[0, 0]
+day_revenue = df.groupby('day_of_week')['revenue'].mean().reindex([
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+])
+colors_day = ['#3498db' if x < day_revenue.mean() else '#2ecc71' for x in day_revenue]
+ax.bar(range(7), day_revenue.values, color=colors_day, alpha=0.8, edgecolor='black')
+ax.axhline(day_revenue.mean(), color='red', linestyle='--', linewidth=2, label='Average')
+ax.set_xticks(range(7))
+ax.set_xticklabels(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], rotation=45)
+ax.set_ylabel('Avg Daily Revenue (£)')
+ax.set_title('Revenue Patterns by Weekday', fontweight='bold')
+ax.legend()
+ax.grid(True, alpha=0.3, axis='y')
+
+# Add insight annotation
+best_day = day_revenue.idxmax()
+ax.text(0.5, 0.95, f'🔍 Insight: {best_day} is peak day (+{((day_revenue.max()-day_revenue.mean())/day_revenue.mean()*100):.0f}% vs avg)',
+        transform=ax.transAxes, ha='center', va='top',
+        bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8),
+        fontsize=10)
+
+# Chart 2: Order Value Distribution
+ax = axes[0, 1]
+ax.hist(df['avg_order_value'], bins=30, edgecolor='black', alpha=0.7, color='#9b59b6')
+median_aov = df['avg_order_value'].median()
+mean_aov = df['avg_order_value'].mean()
+ax.axvline(median_aov, color='green', linestyle='--', linewidth=2, label=f'Median: £{median_aov:.0f}')
+ax.axvline(mean_aov, color='red', linestyle='--', linewidth=2, label=f'Mean: £{mean_aov:.0f}')
+ax.set_xlabel('Average Order Value (£)')
+ax.set_ylabel('Frequency')
+ax.set_title('Order Value Distribution', fontweight='bold')
+ax.legend()
+ax.grid(True, alpha=0.3, axis='y')
+
+# Chart 3: Conversion Rate Over Time
+ax = axes[1, 0]
+df_monthly = df.groupby('month')['conversion_rate'].mean().reindex(['January', 'February', 'March'])
+ax.plot(df_monthly.index, df_monthly.values, marker='o', linewidth=3, markersize=12, color='#e67e22')
+ax.fill_between(range(3), df_monthly.values, alpha=0.3, color='#e67e22')
+ax.set_ylabel('Conversion Rate (%)')
+ax.set_title('Conversion Rate Trend', fontweight='bold')
+ax.grid(True, alpha=0.3)
+
+# Add trend arrow
+if df_monthly.values[2] > df_monthly.values[0]:
+    ax.text(2, df_monthly.values[2] + 0.001, '📈 Improving', ha='center', fontsize=12, color='green', fontweight='bold')
+else:
+    ax.text(2, df_monthly.values[2] - 0.001, '📉 Declining', ha='center', fontsize=12, color='red', fontweight='bold')
+
+# Chart 4: Revenue vs Orders Correlation
+ax = axes[1, 1]
+scatter = ax.scatter(df['orders'], df['revenue'], c=df.index, cmap='viridis', alpha=0.5, s=50)
+# Add trendline
+z = np.polyfit(df['orders'], df['revenue'], 1)
+p = np.poly1d(z)
+ax.plot(df['orders'], p(df['orders']), "r--", alpha=0.8, linewidth=2, label='Trend')
+ax.set_xlabel('Daily Orders')
+ax.set_ylabel('Daily Revenue (£)')
+ax.set_title('Orders vs Revenue Correlation', fontweight='bold')
+ax.legend()
+ax.grid(True, alpha=0.3)
+
+# Calculate correlation
+corr = df['orders'].corr(df['revenue'])
+ax.text(0.05, 0.95, f'Correlation: r = {corr:.3f}', 
+        transform=ax.transAxes, fontsize=11,
+        bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+plt.tight_layout()
+plt.savefig('q1_detailed_analysis.png', dpi=300, bbox_inches='tight', facecolor='white')
+plt.show()
+
+print("\\n✅ Detailed analysis created: q1_detailed_analysis.png")
+
+# Generate executive summary
+print("\\n" + "="*70)
+print("EXECUTIVE SUMMARY - Q1 2024")
+print("="*70)
+print(f"📊 Total Revenue: £{total_revenue:,.0f} (+{revenue_growth:.1f}% growth)")
+print(f"📦 Total Orders: {total_orders:,} ({total_orders/90:.0f}/day avg)")
+print(f"💰 Avg Order Value: £{df['avg_order_value'].mean():.2f}")
+print(f"📈 Conversion Rate: {df['conversion_rate'].mean():.2%}")
+print(f"\\n🎯 Key Insights:")
+print(f"1. {best_day}s perform {((day_revenue.max()-day_revenue.mean())/day_revenue.mean()*100):.0f}% above average")
+print(f"2. Conversion rate {('improved' if df_monthly.values[2] > df_monthly.values[0] else 'declined')} by {abs((df_monthly.values[2]-df_monthly.values[0])/df_monthly.values[0]*100):.1f}%")
+print(f"3. Strong correlation (r={corr:.2f}) between orders and revenue")
+print(f"\\n💡 Recommendations:")
+print(f"1. Increase marketing spend on {best_day}s")
+print(f"2. Optimize checkout flow to boost conversion")
+print(f"3. Focus on Electronics category (strongest growth)")
+print("="*70)
+```
+
+---
+
+**Lab 3 Completion Checklist:**
+- ☐ Generated realistic business data
+- ☐ Created 6-panel executive dashboard
+- ☐ Applied professional color schemes
+- ☐ Added KPI cards with big numbers
+- ☐ Created weekly trend analysis
+- ☐ Built category comparison charts
+- ☐ Analyzed customer segments
+- ☐ Created 4 deep-dive analysis charts
+- ☐ Used annotations and insights
+- ☐ Saved high-resolution images (300 DPI)
+- ☐ Generated executive summary
+- ☐ Portfolio-ready visualizations created
+
+**🎉 Portfolio Piece Complete!**
+
+Add these charts to your GitHub, LinkedIn, and portfolio website. This demonstrates:
+- Professional visualization skills
+- Business analysis capabilities  
+- Data storytelling ability
+- Attention to detail
 
 **Next:** Unit 7 Capstone brings everything together!
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🎨 Advanced Chart Types & When to Use Them")
+        st.markdown(
+            """**Chart Selection Matrix**
+
+| Goal | Chart Type | Best For |
+|------|------------|----------|
+| **Compare** | Bar chart | Categories (sales by region) |
+| **Trend** | Line chart | Time series (revenue over months) |
+| **Distribution** | Histogram, Box plot | Understanding spread (customer ages) |
+| **Relationship** | Scatter plot | Correlation (ad spend vs revenue) |
+| **Composition** | Pie chart, Stacked bar | Part-to-whole (market share) |
+| **Ranking** | Horizontal bar | Top/bottom items (best products) |
+
+---
+
+**Example: Choosing the Right Chart**
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+# Generate sample e-commerce data
+np.random.seed(42)
+months = pd.date_range('2024-01-01', periods=12, freq='M')
+revenue = np.random.randint(40000, 80000, 12)
+orders = np.random.randint(800, 1200, 12)
+
+df = pd.DataFrame({
+    'month': months,
+    'revenue': revenue,
+    'orders': orders
+})
+
+# Calculate avg order value
+df['avg_order'] = df['revenue'] / df['orders']
+
+fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+
+# 1. Trend over time → LINE CHART
+axes[0, 0].plot(df['month'], df['revenue'], marker='o', linewidth=2, markersize=8)
+axes[0, 0].set_title('Monthly Revenue Trend', fontsize=14, fontweight='bold')
+axes[0, 0].set_ylabel('Revenue (£)')
+axes[0, 0].grid(True, alpha=0.3)
+axes[0, 0].tick_params(axis='x', rotation=45)
+
+# 2. Distribution → HISTOGRAM
+axes[0, 1].hist(df['revenue'], bins=8, edgecolor='black', alpha=0.7, color='#3498db')
+axes[0, 1].axvline(df['revenue'].mean(), color='r', linestyle='--', linewidth=2, label='Mean')
+axes[0, 1].set_title('Revenue Distribution', fontsize=14, fontweight='bold')
+axes[0, 1].set_xlabel('Revenue (£)')
+axes[0, 1].legend()
+
+# 3. Relationship → SCATTER PLOT
+axes[1, 0].scatter(df['orders'], df['revenue'], s=100, alpha=0.6, c=range(12), cmap='viridis')
+axes[1, 0].set_title('Orders vs Revenue', fontsize=14, fontweight='bold')
+axes[1, 0].set_xlabel('Number of Orders')
+axes[1, 0].set_ylabel('Revenue (£)')
+
+# Add trendline
+z = np.polyfit(df['orders'], df['revenue'], 1)
+p = np.poly1d(z)
+axes[1, 0].plot(df['orders'], p(df['orders']), "r--", alpha=0.8, linewidth=2)
+
+# 4. Comparison → BAR CHART
+top_3_months = df.nlargest(3, 'revenue')
+axes[1, 1].barh(top_3_months['month'].dt.strftime('%B'), top_3_months['revenue'], color='#e67e22')
+axes[1, 1].set_title('Top 3 Revenue Months', fontsize=14, fontweight='bold')
+axes[1, 1].set_xlabel('Revenue (£)')
+
+plt.tight_layout()
+plt.show()
+```
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🌈 Color Theory for Data Visualization")
+        st.markdown(
+            """**Colors Matter - A LOT!**
+
+**1. Sequential (Low → High)**
+
+Use for: Sales, revenue, quantities
+
+```python
+# Good: Single hue gradient
+colors_sequential = ['#f7fbff', '#deebf7', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5']
+
+# Bad: Rainbow (hard to read magnitude)
+# colors_bad = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
+```
+
+---
+
+**2. Diverging (Negative ← Zero → Positive)**
+
+Use for: Profit/loss, changes, deviations
+
+```python
+# Good: Red-White-Blue
+import seaborn as sns
+colors_diverging = sns.diverging_palette(10, 220, as_cmap=True)
+
+# Example: Revenue change by region
+import pandas as pd
+import matplotlib.pyplot as plt
+
+regions = ['North', 'South', 'East', 'West', 'Central']
+changes = [15, -8, 22, -3, 10]  # % change
+
+fig, ax = plt.subplots(figsize=(10, 6))
+colors = ['green' if x > 0 else 'red' for x in changes]
+ax.barh(regions, changes, color=colors, alpha=0.7)
+ax.axvline(0, color='black', linewidth=0.8)
+ax.set_xlabel('Revenue Change (%)')
+ax.set_title('Regional Performance: Q1 vs Q4', fontsize=14)
+plt.show()
+```
+
+---
+
+**3. Categorical (Distinct Items)**
+
+Use for: Product categories, customer segments
+
+```python
+# Good: Colorblind-friendly palette
+colors_categorical = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd']
+
+# Seaborn's built-in palettes
+import seaborn as sns
+
+# Option 1: Deep
+sns.set_palette("deep")
+
+# Option 2: Colorblind-safe
+sns.set_palette("colorblind")
+
+# Option 3: Custom
+custom_palette = ['#003f5c', '#58508d', '#bc5090', '#ff6361', '#ffa600']
+sns.set_palette(custom_palette)
+```
+
+---
+
+**4. Accessibility - Colorblind-Friendly**
+
+~8% of men are colorblind! Test your charts.
+
+```python
+# BAD: Red vs Green (colorblind can't distinguish)
+# colors_bad = ['red', 'green']
+
+# GOOD: Blue vs Orange (safe for most types)
+colors_safe = ['#0173b2', '#de8f05']
+
+# Or use patterns in addition to colors
+import matplotlib.pyplot as plt
+import numpy as np
+
+categories = ['Category A', 'Category B']
+values = [45, 55]
+
+fig, ax = plt.subplots(figsize=(8, 5))
+bars = ax.bar(categories, values, color=colors_safe)
+
+# Add hatching for extra distinction
+bars[0].set_hatch('//')
+bars[1].set_hatch('\\\\\\\\')
+
+ax.set_ylabel('Value')
+ax.set_title('Colorblind-Friendly Chart')
+plt.show()
+```
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 📊 Professional Dashboard Design")
+        st.markdown(
+            """**Executive Dashboard Best Practices**
+
+**Layout Principles:**
+1. **F-Pattern:** Eye moves left-to-right, top-to-bottom
+2. **Key metrics top-left:** Most important KPIs first
+3. **White space:** Don't cram everything
+4. **Consistent sizing:** Equal-sized panels look professional
+
+```python
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import numpy as np
+
+# Create professional dashboard
+fig = plt.figure(figsize=(16, 10))
+fig.suptitle('Q1 2024 Executive Dashboard', fontsize=20, fontweight='bold', y=0.98)
+
+# Define grid
+gs = fig.add_gridspec(3, 3, hspace=0.3, wspace=0.3)
+
+# 1. TOP LEFT: Key KPI (Big Number)
+ax1 = fig.add_subplot(gs[0, 0])
+ax1.text(0.5, 0.5, '£426K', ha='center', va='center', fontsize=48, fontweight='bold', color='#2ecc71')
+ax1.text(0.5, 0.2, 'Total Revenue', ha='center', va='center', fontsize=14, color='gray')
+ax1.text(0.5, 0.05, '+28% vs Q4 2023', ha='center', va='center', fontsize=12, color='green')
+ax1.axis('off')
+ax1.set_facecolor('#f8f9fa')
+
+# 2. TOP MIDDLE: Another KPI
+ax2 = fig.add_subplot(gs[0, 1])
+ax2.text(0.5, 0.5, '8,542', ha='center', va='center', fontsize=48, fontweight='bold', color='#3498db')
+ax2.text(0.5, 0.2, 'Total Orders', ha='center', va='center', fontsize=14, color='gray')
+ax2.text(0.5, 0.05, '+15% vs Q4 2023', ha='center', va='center', fontsize=12, color='green')
+ax2.axis('off')
+ax2.set_facecolor('#f8f9fa')
+
+# 3. TOP RIGHT: KPI
+ax3 = fig.add_subplot(gs[0, 2])
+ax3.text(0.5, 0.5, '£49.90', ha='center', va='center', fontsize=48, fontweight='bold', color='#e67e22')
+ax3.text(0.5, 0.2, 'Avg Order Value', ha='center', va='center', fontsize=14, color='gray')
+ax3.text(0.5, 0.05, '+11% vs Q4 2023', ha='center', va='center', fontsize=12, color='green')
+ax3.axis('off')
+ax3.set_facecolor('#f8f9fa')
+
+# 4. MIDDLE: Revenue Trend (spans 2 columns)
+ax4 = fig.add_subplot(gs[1, :2])
+months = ['Jan', 'Feb', 'Mar']
+revenue = [135000, 142000, 149000]
+ax4.plot(months, revenue, marker='o', linewidth=3, markersize=10, color='#3498db')
+ax4.fill_between(range(len(months)), revenue, alpha=0.3, color='#3498db')
+ax4.set_title('Monthly Revenue Trend', fontsize=14, fontweight='bold', loc='left')
+ax4.set_ylabel('Revenue (£)')
+ax4.grid(True, alpha=0.3)
+ax4.spines['top'].set_visible(False)
+ax4.spines('right'].set_visible(False)
+
+# 5. TOP RIGHT: Product Mix
+ax5 = fig.add_subplot(gs[1, 2])
+products = ['Laptops', 'Phones', 'Tablets', 'Accessories']
+sales = [39, 28, 18, 15]
+colors = ['#3498db', '#e67e22', '#2ecc71', '#9b59b6']
+ax5.pie(sales, labels=products, autopct='%1.0f%%', colors=colors, startangle=90)
+ax5.set_title('Revenue by Product', fontsize=14, fontweight='bold')
+
+# 6. BOTTOM: Top Customers (spans all columns)
+ax6 = fig.add_subplot(gs[2, :])
+customers = ['ACME Corp', 'Tech Solutions', 'Global Ltd', 'Innovation Inc', 'Data Systems']
+customer_revenue = [45000, 38000, 32000, 28000, 25000]
+bars = ax6.barh(customers, customer_revenue, color='#3498db', alpha=0.7)
+ax6.set_title('Top 5 Customers by Revenue', fontsize=14, fontweight='bold', loc='left')
+ax6.set_xlabel('Revenue (£)')
+ax6.spines['top'].set_visible(False)
+ax6.spines['right'].set_visible(False)
+
+# Add value labels
+for i, (customer, value) in enumerate(zip(customers, customer_revenue)):
+    ax6.text(value + 1000, i, f'£{value:,}', va='center', fontsize=10)
+
+plt.savefig('executive_dashboard.png', dpi=300, bbox_inches='tight', facecolor='white')
+plt.show()
+
+print("✅ Professional dashboard created!")
+```
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 📖 Data Storytelling Framework")
+        st.markdown(
+            """**Tell Stories with Data, Not Just Facts**
+
+**Structure:** Setup → Conflict → Resolution
+
+---
+
+**Example: E-Commerce Sales Analysis**
+
+**❌ BAD:** "Q1 revenue was £426K, a 28% increase. Orders were 8,542."
+
+**✅ GOOD:**
+
+```markdown
+### The Challenge (Setup)
+In Q4 2023, our e-commerce platform struggled with stagnant growth, 
+averaging £55K weekly revenue despite increased ad spend.
+
+### What We Did (Conflict)
+We implemented three key changes in Q1 2024:
+1. Optimized product mix (focused on high-margin laptops)
+2. Launched targeted seasonal campaigns
+3. Improved checkout experience
+
+### The Results (Resolution)
+Q1 2024 exceeded expectations:
+- Revenue: £426K (+28% vs Q4)
+- Orders: 8,542 (+15%)
+- Avg Order Value: £49.90 (+11%)
+
+Key Insight: Valentine's Day promotion alone drove £32K (7.5% of quarterly revenue)
+
+### What This Means
+These results validate our new strategy. We recommend:
+1. Double down on seasonal campaigns (3-4 per quarter)
+2. Expand laptop inventory to meet 40% demand increase
+3. Target: £480K in Q2 (+13% vs Q1)
+```
+
+---
+
+**Visualization Storytelling:**
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Create narrative-driven chart
+fig, ax = plt.subplots(figsize=(12, 6))
+
+# Weekly revenue data
+weeks = np.arange(1, 14)
+q4_revenue = np.random.normal(55000, 5000, 13)  # Q4: Flat
+q1_revenue = 55000 + (weeks * 2500) + np.random.normal(0, 3000, 13)  # Q1: Growing
+
+# Plot Q4 (flat)
+ax.plot(weeks, q4_revenue, 'o--', color='gray', alpha=0.6, label='Q4 2023', linewidth=2)
+
+# Plot Q1 (growth)
+ax.plot(weeks, q1_revenue, 'o-', color='#2ecc71', label='Q1 2024', linewidth=3, markersize=8)
+
+# Annotate key events
+ax.annotate('Valentine\'s Campaign\n£32K week!', 
+            xy=(6, q1_revenue[5]), xytext=(8, 85000),
+            arrowprops=dict(arrowstyle='->', color='red', lw=2),
+            fontsize=12, fontweight='bold', color='red')
+
+ax.annotate('Laptop Promo\nLaunched', 
+            xy=(3, q1_revenue[2]), xytext=(1, 75000),
+            arrowprops=dict(arrowstyle='->', color='#3498db', lw=2),
+            fontsize=10, color='#3498db')
+
+# Styling
+ax.set_xlabel('Week', fontsize=12)
+ax.set_ylabel('Weekly Revenue (£)', fontsize=12)
+ax.set_title('Q1 2024: Strategic Initiatives Drive 28% Revenue Growth', 
+             fontsize=16, fontweight='bold', pad=20)
+ax.legend(fontsize=12)
+ax.grid(True, alpha=0.3)
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+
+# Add insight box
+textstr = 'Key Success Factors:\n✓ Seasonal campaigns\n✓ Product optimization\n✓ Improved UX'
+props = dict(boxstyle='round', facecolor='lightyellow', alpha=0.8)
+ax.text(0.02, 0.98, textstr, transform=ax.transAxes, fontsize=10,
+        verticalalignment='top', bbox=props)
+
+plt.tight_layout()
+plt.show()
+```
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🎯 Interview Questions: Data Visualization")
+        st.markdown(
+            """**Common Questions + Model Answers**
+
+**Q1: When should you use a bar chart vs a line chart?**
+
+**Answer:**
+- **Bar chart:** Comparing categories (sales by region, products)
+- **Line chart:** Showing trends over time (revenue by month, stock prices)
+
+"Use bars for discrete comparisons, lines for continuous trends. Never use a pie chart if you have more than 5 categories!"
+
+---
+
+**Q2: How do you choose colors for dashboards?**
+
+**Answer:**
+"I follow three principles:
+1. **Sequential** for magnitude (light to dark blue for sales)
+2. **Diverging** for pos/neg (red-white-green for profit/loss)
+3. **Categorical** for distinct items (different hues for products)
+
+Always test for colorblind accessibility - avoid red/green combos."
+
+---
+
+**Q3: What makes a good data visualization?**
+
+**Answer:**
+A good viz should:
+1. **Answer a question** (not just show data)
+2. **Be readable** (clear labels, legends, titles)
+3. **Tell a story** (annotate key insights)
+4. **Guide the eye** (highlight important parts)
+5. **Be honest** (don't mislead with scale tricks)
+
+Bad example: 3D pie charts with no labels ❌
+Good example: Annotated line chart with insights ✅
+
+---
+
+**Q4: Your stakeholder says "Just make it prettier." What do you do?**
+
+**Answer:**
+"I'd ask what specific message they want to communicate. Pretty doesn't mean effective. I'd:
+1. Clarify the key insight
+2. Choose appropriate chart type
+3. Add annotations explaining 'so what?'
+4. Use professional styling (consistent colors, clean fonts)
+5. Show before/after and explain improvements
+
+Aesthetics serve clarity, not distract from it."
+
+---
+
+**Q5: How do you visualize data for executives vs analysts?**
+
+**Answer:**
+- **Executives:** High-level KPIs, trends, 1-2 key charts. Focus on business impact.
+- **Analysts:** Detailed distributions, correlations, full data views. Enable exploration.
+
+"Example: For CEO, show 'Revenue up 15%' with trend. For analyst, show full breakdown by product, region, time with filters."
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🏆 Visualization Best Practices Checklist")
+        st.markdown(
+            """**Before Sharing Any Chart:**
+
+**Content:**
+- ☐ Title clearly states the insight (not just "Sales Chart")
+- ☐ Axes are labeled with units (£, %, count)
+- ☐ Legend is present if multiple series
+- ☐ Source/date is noted
+- ☐ Key insights are annotated
+
+**Design:**
+- ☐ Font size is readable (12pt+ for body, 16pt+ for titles)
+- ☐ Colors are colorblind-friendly
+- ☐ Gridlines are subtle (not distracting)
+- ☐ White space is used effectively
+- ☐ Chart isn't cluttered (remove chart junk)
+
+**Accuracy:**
+- ☐ Y-axis starts at zero (for bar charts)
+- ☐ Scale is appropriate (not misleading)
+- ☐ Numbers are formatted correctly (£, commas)
+- ☐ Percentages add to 100% (if applicable)
+- ☐ Data is recent and relevant
+
+**Storytelling:**
+- ☐ Answers a specific question
+- ☐ Highlights the main point
+- ☐ Provides context (vs last period, vs target)
+- ☐ Suggests action or next steps
+- ☐ Is appropriate for audience
+
+**Technical:**
+- ☐ Exported at high resolution (300 DPI minimum)
+- ☐ File format is appropriate (PNG for web, PDF for print)
+- ☐ Chart is reproducible (code saved)
+- ☐ Data source is documented
+
+---
+
+**Golden Rules:**
+1. **Less is more** - Remove everything that doesn't add value
+2. **Consistency** - Use same colors/fonts across dashboards
+3. **Accessibility** - 8% of men are colorblind
+4. **Context** - Always compare to something (baseline, target, last period)
+5. **Action** - Visualizations should drive decisions
+
+**Remember:** If your chart needs a 10-minute explanation, redesign it!
 """
         )
 
@@ -6724,6 +8768,752 @@ Full project: [GitHub link]
 - ☐ Added to LinkedIn Featured section
 
 **You're now ready to apply for Junior Data Analyst roles! 🎉**
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🛠️ Detailed Project Execution Guide")
+        st.markdown(
+            """**Week-by-Week Capstone Implementation**
+
+---
+
+**Week 1: Problem Definition & Data Collection**
+
+**Day 1-2: Choose Your Domain**
+```python
+# Questions to ask yourself:
+domains = {
+    'E-Commerce': 'Customer behavior, sales, churn',
+    'Healthcare': 'Patient outcomes, readmissions, resource allocation',
+    'Finance': 'Fraud detection, credit risk, investment analysis',
+    'Marketing': 'Campaign effectiveness, customer segmentation, ROI',
+    'Operations': 'Supply chain, inventory, predictive maintenance'
+}
+
+# Pick domain where you want to work
+target_domain = 'E-Commerce'  # Change this!
+
+print(f"Selected: {target_domain}")
+print(f"Focus areas: {domains[target_domain]}")
+```
+
+**Day 3-5: Find & Document Your Data**
+```python
+import pandas as pd
+
+# Load data
+df = pd.read_csv('your_dataset.csv')
+
+# Initial documentation
+print("="*60)
+print("DATASET DOCUMENTATION")
+print("="*60)
+print(f"Source: Kaggle / Company / Public Dataset")
+print(f"URL: [dataset link]")
+print(f"\\nShape: {df.shape[0]:,} rows × {df.shape[1]} columns")
+print(f"Period: {df['date'].min()} to {df['date'].max()}")
+print(f"\\nColumns:")
+for col in df.columns:
+    print(f"  - {col}: {df[col].dtype} ({df[col].isnull().sum()} nulls)")
+
+# Save documentation
+with open('data_dictionary.md', 'w') as f:
+    f.write("# Data Dictionary\\n\\n")
+    for col in df.columns:
+        f.write(f"## {col}\\n")
+        f.write(f"- Type: {df[col].dtype}\\n")
+        f.write(f"- Description: [Add description]\\n")
+        f.write(f"- Missing: {df[col].isnull().sum()} ({df[col].isnull().mean():.1%})\\n\\n")
+
+print("\\n✅ data_dictionary.md created")
+```
+
+**Day 6-7: Write Problem Statement**
+```markdown
+# Problem Statement Template
+
+## Business Context
+[Company/Industry] faces [problem] resulting in [impact].
+
+Example: E-commerce platform experiences 25% annual customer churn, 
+resulting in £500K lost revenue.
+
+## Objective
+Use data analysis to [specific goal].
+
+Example: Identify at-risk customers and recommend retention strategies 
+to reduce churn by 10%.
+
+## Success Metrics
+- Primary: [main KPI]
+- Secondary: [supporting metrics]
+
+Example:
+- Primary: Reduce churn from 25% to 22.5% (10% reduction)
+- Secondary: Identify top 3 churn drivers
+
+## Constraints
+- Timeline: [project duration]
+- Data: [what you have/don't have]
+- Resources: [tools, compute]
+
+Example:
+- Timeline: 4 weeks
+- Data: 2 years of customer transactions
+- Resources: Local Python environment
+```
+
+---
+
+**Week 2: Data Cleaning & EDA**
+
+**Complete Data Cleaning Template:**
+
+```python
+import pandas as pd
+import numpy as np
+
+# Load raw data
+df_raw = pd.read_csv('customers_raw.csv')
+print(f"Raw data: {df_raw.shape}")
+
+# 1. Handle missing values
+print("\\n1. MISSING VALUES")
+missing = df_raw.isnull().sum()
+print(missing[missing > 0])
+
+# Strategy A: Drop rows with critical missing data
+df = df_raw.dropna(subset=['customer_id', 'revenue'])
+print(f"After dropping: {df.shape}")
+
+# Strategy B: Fill numerical columns
+df['age'].fillna(df['age'].median(), inplace=True)
+df['income'].fillna(df['income'].median(), inplace=True)
+
+# Strategy C: Fill categorical columns
+df['region'].fillna('Unknown', inplace=True)
+
+# 2. Remove duplicates
+print("\\n2. DUPLICATES")
+before_dup = len(df)
+df = df.drop_duplicates(subset=['customer_id'])
+print(f"Removed {before_dup - len(df)} duplicates")
+
+# 3. Fix data types
+print("\\n3. DATA TYPES")
+df['signup_date'] = pd.to_datetime(df['signup_date'], errors='coerce')
+df['revenue'] = pd.to_numeric(df['revenue'], errors='coerce')
+
+# 4. Handle outliers
+print("\\n4. OUTLIERS")
+def cap_outliers(series, lower_percentile=1, upper_percentile=99):
+    lower = series.quantile(lower_percentile / 100)
+    upper = series.quantile(upper_percentile / 100)
+    return series.clip(lower, upper)
+
+df['revenue'] = cap_outliers(df['revenue'])
+df['age'] = cap_outliers(df['age'], 5, 95)
+
+# 5. Create new features
+print("\\n5. FEATURE ENGINEERING")
+df['customer_age_days'] = (pd.Timestamp.now() - df['signup_date']).dt.days
+df['customer_age_months'] = df['customer_age_days'] / 30
+df['is_active'] = df['last_purchase_days'] < 90
+
+# Save clean version
+df.to_csv('customers_clean.csv', index=False)
+print(f"\\n✅ Clean data saved: {df.shape}")
+print(f"Missing values remaining: {df.isnull().sum().sum()}")
+```
+
+**Comprehensive EDA Template:**
+
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Set style
+sns.set_style("whitegrid")
+plt.rcParams['figure.figsize'] = (14, 8)
+
+# Create EDA report
+fig, axes = plt.subplots(3, 3, figsize=(18, 14))
+fig.suptitle('Exploratory Data Analysis Report', fontsize=20, fontweight='bold')
+
+# 1. Target distribution
+axes[0, 0].hist(df['churned'], bins=2, edgecolor='black')
+axes[0, 0].set_title(f'Churn Rate: {df["churned"].mean():.1%}')
+axes[0, 0].set_xlabel('Churned')
+
+# 2. Age distribution
+axes[0, 1].hist(df['age'], bins=30, edgecolor='black', alpha=0.7)
+axes[0, 1].set_title('Age Distribution')
+axes[0, 1].set_xlabel('Age')
+
+# 3. Revenue distribution
+axes[0, 2].hist(df['revenue'], bins=30, edgecolor='black', alpha=0.7, color='green')
+axes[0, 2].set_title('Revenue Distribution')
+axes[0, 2].set_xlabel('Revenue (£)')
+
+# 4. Churn by region
+churn_by_region = df.groupby('region')['churned'].mean()
+axes[1, 0].barh(churn_by_region.index, churn_by_region.values, color='coral')
+axes[1, 0].set_title('Churn Rate by Region')
+axes[1, 0].set_xlabel('Churn Rate')
+
+# 5. Revenue by churn status
+df.boxplot(column='revenue', by='churned', ax=axes[1, 1])
+axes[1, 1].set_title('Revenue: Churned vs Retained')
+axes[1, 1].set_xlabel('Churned')
+
+# 6. Correlation heatmap
+numeric_cols = df.select_dtypes(include=[np.number]).columns[:8]
+corr = df[numeric_cols].corr()
+sns.heatmap(corr, annot=True, fmt='.2f', cmap='coolwarm', ax=axes[1, 2])
+axes[1, 2].set_title('Correlation Matrix')
+
+# 7. Customer tenure
+axes[2, 0].hist(df['customer_age_months'], bins=30, edgecolor='black')
+axes[2, 0].set_title('Customer Tenure Distribution')
+axes[2, 0].set_xlabel('Months')
+
+# 8. Churn vs Tenure
+df.boxplot(column='customer_age_months', by='churned', ax=axes[2, 1])
+axes[2, 1].set_title('Tenure: Churned vs Retained')
+
+# 9. Top insights text
+insights_text = f\"\"\"
+KEY FINDINGS:
+
+1. Churn Rate: {df['churned'].mean():.1%}
+
+2. Avg Revenue: 
+   - Retained: £{df[df['churned']==0]['revenue'].mean():.0f}
+   - Churned: £{df[df['churned']==1]['revenue'].mean():.0f}
+
+3. Avg Tenure:
+   - Retained: {df[df['churned']==0]['customer_age_months'].mean():.1f} months
+   - Churned: {df[df['churned']==1]['customer_age_months'].mean():.1f} months
+
+4. Regional Differences:
+   - Highest churn: {churn_by_region.idxmax()} ({churn_by_region.max():.1%})
+   - Lowest churn: {churn_by_region.idxmin()} ({churn_by_region.min():.1%})
+\"\"\"
+
+axes[2, 2].text(0.1, 0.9, insights_text, transform=axes[2, 2].transAxes,
+                fontsize=10, verticalalignment='top', family='monospace',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+axes[2, 2].axis('off')
+
+plt.tight_layout()
+plt.savefig('eda_report.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+print("✅ EDA report saved as eda_report.png")
+```
+
+---
+
+**Week 3: Modeling & Analysis**
+
+**Simple Model Template:**
+
+```python
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Prepare data
+features = ['age', 'revenue', 'customer_age_months', 'num_orders']
+X = df[features]
+y = df['churned']
+
+# Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print(f"Training set: {len(X_train)} samples")
+print(f"Test set: {len(X_test)} samples")
+
+# Train model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Evaluate
+y_pred = model.predict(X_test)
+print("\\nCLASSIFICATION REPORT:")
+print(classification_report(y_test, y_pred))
+
+# Confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.title('Confusion Matrix')
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.savefig('confusion_matrix.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Feature importance
+importance_df = pd.DataFrame({
+    'feature': features,
+    'importance': model.feature_importances_
+}).sort_values('importance', ascending=False)
+
+print("\\nFEATURE IMPORTANCE:")
+print(importance_df)
+
+plt.figure(figsize=(10, 6))
+plt.barh(importance_df['feature'], importance_df['importance'])
+plt.xlabel('Importance')
+plt.title('Top Features Predicting Churn')
+plt.tight_layout()
+plt.savefig('feature_importance.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+print("\\n✅ Model trained and evaluated")
+```
+
+---
+
+**Week 4: Documentation & Publishing**
+
+**Complete README Template:**
+
+````markdown
+# Customer Churn Prediction - E-Commerce Analysis
+
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## 📋 Problem Statement
+
+E-commerce platform experiencing 25% annual customer churn, resulting in estimated £500K lost revenue. This project analyzes customer behavior patterns to identify at-risk customers and develop targeted retention strategies.
+
+## 🎯 Objectives
+
+1. Identify key drivers of customer churn
+2. Build predictive model (target: 75%+ F1 score)
+3. Recommend actionable retention strategies
+4. Quantify potential business impact
+
+## 📊 Dataset
+
+- **Source:** Kaggle E-Commerce Dataset
+- **Size:** 10,000 customers, 2 years of data
+- **Features:** 15 (demographics, purchase history, engagement metrics)
+- **Target:** Binary churn (yes/no)
+
+## 🛠️ Technologies
+
+- **Python 3.9+**
+- **Pandas** - Data manipulation
+- **Scikit-learn** - Machine learning
+- **Matplotlib/Seaborn** - Visualization
+- **Jupyter** - Analysis notebooks
+
+## 📁 Project Structure
+
+```
+├── data/
+│   ├── raw/                  # Original dataset
+│   └── processed/            # Cleaned data
+├── notebooks/
+│   ├── 01_eda.ipynb         # Exploratory analysis
+│   ├── 02_modeling.ipynb    # Model development
+│   └── 03_results.ipynb     # Final results
+├── src/
+│   ├── data_processing.py   # Data cleaning functions
+│   └── modeling.py          # Model training functions
+├── reports/
+│   ├── figures/             # Visualizations
+│   └── executive_summary.pdf
+├── requirements.txt
+└── README.md
+```
+
+## 🔍 Key Findings
+
+### 1. Churn Drivers
+- **Low engagement:** Customers with <2 orders/month have 3x higher churn
+- **Poor support experience:** 45% of churned customers had unresolved tickets
+- **No recent purchase:** 90+ days since last order → 65% churn probability
+
+### 2. Customer Segments
+| Segment | Size | Churn Rate | Avg Revenue |
+|---------|------|------------|-------------|
+| Champions | 15% | 5% | £850 |
+| At Risk | 30% | 45% | £320 |
+| Lost | 20% | 95% | £180 |
+
+### 3. Model Performance
+- **Algorithm:** Random Forest
+- **F1 Score:** 0.78
+- **Precision:** 0.75
+- **Recall:** 0.81
+- **ROC-AUC:** 0.85
+
+## 💡 Recommendations
+
+### Immediate Actions (Q1)
+1. **Win-back campaign for at-risk customers** (n=3,000)
+   - Personalized 15% discount offers
+   - Expected recovery: 500 customers
+   - Revenue impact: £160K
+
+2. **Improve support response time**
+   - Target: <24hr for all tickets
+   - Cost: £50K system upgrade
+   - Expected churn reduction: 5%
+
+3. **Launch loyalty program**
+   - Reward frequent buyers
+   - Expected impact: +10% retention
+
+### Business Impact
+- **Projected churn reduction:** 25% → 22.5% (10% improvement)
+- **Revenue retained:** £125K annually
+- **ROI:** 250% (£125K saved vs £50K investment)
+
+## 🚀 Quick Start
+
+```bash
+# Clone repository
+git clone https://github.com/yourname/churn-analysis.git
+cd churn-analysis
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run analysis
+jupyter notebook notebooks/01_eda.ipynb
+```
+
+## 📈 Results Summary
+
+![Churn Prediction Model](reports/figures/model_performance.png)
+
+## 🔮 Future Improvements
+
+- Add customer lifetime value (CLV) prediction
+- Integrate real-time scoring API
+- A/B test retention campaigns
+- Expand feature set (social media, product reviews)
+
+## 👤 Author
+
+**[Your Name]**
+- LinkedIn: [Profile URL]
+- Email: your.email@example.com
+- Portfolio: [Website URL]
+
+## 📄 License
+
+This project is licensed under the MIT License - see LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Dataset: Kaggle E-Commerce Dataset
+- Inspiration: [Any relevant papers/blogs]
+````
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🐛 Troubleshooting Common Issues")
+        st.markdown(
+            """**Problem 1: Model overfitting (train=95%, test=65%)**
+
+**Solution:**
+```python
+# Use cross-validation
+from sklearn.model_selection import cross_val_score
+
+scores = cross_val_score(model, X_train, y_train, cv=5, scoring='f1')
+print(f"CV F1: {scores.mean():.3f} (+/- {scores.std():.3f})")
+
+# Reduce model complexity
+model = RandomForestClassifier(
+    n_estimators=50,        # Fewer trees
+    max_depth=10,           # Limit depth
+    min_samples_split=20,   # Require more samples
+    random_state=42
+)
+```
+
+---
+
+**Problem 2: Imbalanced classes (10% positive, 90% negative)**
+
+**Solution:**
+```python
+from sklearn.utils import resample
+
+# Oversample minority class
+df_majority = df[df['churned']==0]
+df_minority = df[df['churned']==1]
+
+df_minority_upsampled = resample(df_minority, 
+                                  n_samples=len(df_majority),
+                                  random_state=42)
+
+df_balanced = pd.concat([df_majority, df_minority_upsampled])
+
+# Or use class weights
+model = RandomForestClassifier(class_weight='balanced')
+```
+
+---
+
+**Problem 3: Poor feature importance interpretation**
+
+**Solution:**
+```python
+# Use SHAP for better explanations
+import shap
+
+explainer = shap.TreeExplainer(model)
+shap_values = explainer.shap_values(X_test)
+
+shap.summary_plot(shap_values[1], X_test, feature_names=features)
+```
+
+---
+
+**Problem 4: Data leakage (unrealistic 99% accuracy)**
+
+**Check for:**
+```python
+# 1. Target in features?
+print("Features:", X.columns.tolist())
+# Should NOT include 'churned' or 'churn_date'
+
+# 2. Future information?
+# Don't use 'last_purchase_date' if predicting future churn
+
+# 3. High correlation with target?
+correlations = df[features + ['churned']].corr()['churned'].sort_values(ascending=False)
+print(correlations)
+# Investigate any correlation > 0.9
+```
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🎤 Interview Questions: Capstone Project")
+        st.markdown(
+            """**Be Ready to Answer:**
+
+**Q1: Walk me through your capstone project.**
+
+**Answer (2-minute structure):**
+
+"I analyzed customer churn for an e-commerce platform experiencing 25% annual churn.
+
+**Problem:** They were losing £500K annually and didn't know why.
+
+**Approach:** 
+- Analyzed 10K customers over 2 years
+- Identified 3 key churn drivers: low engagement, poor support, dormant accounts
+- Built Random Forest model (78% F1 score)
+
+**Results:**
+- Recommended win-back campaign for 3,000 at-risk customers
+- Projected £125K revenue retention
+- 250% ROI
+
+**Key Insight:** Support ticket resolution time was the #1 predictor - customers with unresolved tickets had 3x higher churn."
+
+---
+
+**Q2: What would you do differently?**
+
+**Good Answer:**
+
+"Three things:
+
+1. **More features:** I'd add customer service sentiment analysis from ticket text
+2. **Real-time scoring:** Build API to score customers daily vs monthly batch
+3. **A/B test:** Actually test the retention campaign and measure real impact
+
+The model worked well, but I'd focus more on deployment and measuring actual business results."
+
+---
+
+**Q3: How did you handle imbalanced data?**
+
+**Answer:**
+
+"The dataset had 75% retained vs 25% churned. I tried three approaches:
+
+1. **Class weights:** Penalize misclassifying minority class
+2. **SMOTE:** Synthetic oversampling
+3. **Custom threshold:** Optimized for F1 instead of accuracy
+
+Class weights performed best. I also reported precision/recall separately since accuracy was misleading."
+
+---
+
+**Q4: What was the biggest challenge?**
+
+**Answer:**
+
+"Feature engineering. Raw data didn't have clear signals. I created:
+- Recency: Days since last order
+- Frequency: Orders per month
+- Engagement score: Clicks + purchases + support interactions
+
+These engineered features were 3x more important than raw demographics. Taught me that domain knowledge drives model performance."
+
+---
+
+**Q5: How would you deploy this model?**
+
+**Answer:**
+
+"Three-phase approach:
+
+**Phase 1 (Week 1):** Batch scoring - Score all customers monthly, send high-risk list to marketing
+
+**Phase 2 (Month 2):** API - Real-time scoring when customer behavior changes
+
+**Phase 3 (Month 3):** Automated actions - Trigger retention emails automatically
+
+Monitor F1 score weekly, retrain quarterly with new data."
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🏆 Final Success Checklist")
+        st.markdown(
+            """**Before Calling Your Project "Done":**
+
+**Analysis Quality (20 points):**
+- ☐ Data cleaning is documented (2 pts)
+- ☐ EDA reveals 3+ insights (3 pts)
+- ☐ Feature engineering adds value (3 pts)
+- ☐ Model F1 > 0.70 (3 pts)
+- ☐ Results are statistically significant (2 pts)
+- ☐ Overfitting is addressed (2 pts)
+- ☐ Feature importance is interpreted (2 pts)
+- ☐ Limitations are discussed (2 pts)
+- ☐ Next steps are outlined (1 pt)
+
+**Code Quality (15 points):**
+- ☐ All code runs without errors (5 pts)
+- ☐ Functions are documented (3 pts)
+- ☐ No hardcoded paths (2 pts)
+- ☐ Consistent naming (2 pts)
+- ☐ Modular structure (3 pts)
+
+**Documentation (15 points):**
+- ☐ README is comprehensive (5 pts)
+- ☐ Data dictionary exists (3 pts)
+- ☐ Comments explain "why" not "what" (2 pts)
+- ☐ Results are visualized (3 pts)
+- ☐ Methodology is reproducible (2 pts)
+
+**Business Focus (20 points):**
+- ☐ Problem statement is clear (4 pts)
+- ☐ Stakeholders are identified (3 pts)
+- ☐ Impact is quantified (£, %) (5 pts)
+- ☐ Recommendations are actionable (4 pts)
+- ☐ ROI is calculated (4 pts)
+
+**Presentation (15 points):**
+- ☐ GitHub is public and organized (3 pts)
+- ☐ LinkedIn post written (3 pts)
+- ☐ CV updated (2 pts)
+- ☐ Can explain in 2 minutes (3 pts)
+- ☐ Visualizations are professional (4 pts)
+
+**Career Integration (15 points):**
+- ☐ Portfolio website updated (3 pts)
+- ☐ Cover letter paragraph ready (3 pts)
+- ☐ Can answer "why this project?" (3 pts)
+- ☐ Can discuss technical details (3 pts)
+- ☐ Can explain business impact (3 pts)
+
+---
+
+**Scoring:**
+- **80-100 points:** Excellent! Ready for interviews
+- **60-79 points:** Good! Polish weak areas
+- **Below 60:** Keep working before publishing
+
+**Target: 80+ points before applying to jobs!**
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 🎯 Post-Capstone: Landing Your First Job")
+        st.markdown(
+            """**Step-by-Step Job Search Strategy**
+
+**Week 1-2: Portfolio Polish**
+- ✅ Publish capstone to GitHub
+- ✅ Create portfolio website (use GitHub Pages - free!)
+- ✅ Write 3 LinkedIn posts about your learnings
+- ✅ Update CV with capstone project
+
+**Week 3-4: Application Sprint**
+- Apply to 20-30 Junior Data Analyst roles
+- Tailor each cover letter (mention capstone!)
+- Track applications in spreadsheet
+- Follow up after 1 week
+
+**Sample Application Tracker:**
+```
+| Company | Role | Applied | Followed Up | Status | Notes |
+|---------|------|---------|-------------|--------|-------|
+| Acme Corp | Junior Analyst | 2024-03-01 | 2024-03-08 | Interview! | Mentioned capstone |
+```
+
+**Week 5-8: Interview Preparation**
+
+Practice these questions:
+1. Tell me about yourself (2 min)
+2. Walk through your capstone (2 min)
+3. SQL: Write query to find top customers
+4. Python: Explain pandas groupby
+5. Statistics: Explain p-value
+6. Business: Calculate ROI of marketing campaign
+
+**Week 9+: Offers & Negotiation**
+
+Typical Junior Data Analyst Offers (UK):
+- £25K-35K depending on location/company
+- Remote/hybrid options common
+- Growth to £45K+ within 2 years
+
+**Red Flags to Avoid:**
+- ❌ No structured onboarding
+- ❌ Expect expert-level skills
+- ❌ No mentorship available
+- ❌ Tech stack from 1990s
+- ❌ Unrealistic timelines
+
+**Green Flags to Look For:**
+- ✅ Learning & development budget
+- ✅ Senior analysts to learn from
+- ✅ Modern tools (Python, SQL, cloud)
+- ✅ Clear career progression
+- ✅ Supportive manager
+
+---
+
+**Your Timeline:**
+
+**Today → Week 4:** Finish capstone  
+**Week 4 → Week 6:** Polish & publish  
+**Week 6 → Week 10:** Apply & interview  
+**Week 10+:** Start your data science career!
+
+**You've got this! 🚀**
 """
         )
 
