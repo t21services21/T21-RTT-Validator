@@ -10491,7 +10491,7 @@ def render_data_science_foundations_module():
         qs = quiz_bank.get(quiz_unit, [])
         user_answers = []
         for idx, q in enumerate(qs):
-            st.markdown(f"**Q{idx + 1}. {q['text']}**")
+            st.markdown(f"**Q{idx + 1}. {q['question']}**")
             choice = st.radio(
                 label=f"q{quiz_unit}_{idx+1}",
                 options=list(range(len(q["options"]))),
