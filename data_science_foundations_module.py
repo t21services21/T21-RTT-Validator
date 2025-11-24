@@ -10458,11 +10458,25 @@ def render_data_science_foundations_module():
 
             if total > 0 and score == total:
                 st.balloons()
-                        "A list of all Python errors you saw",
-                        "Random notes with no structure",
+
+    # Assessments
+    with tabs[3]:
+        st.subheader("📝 Assessments")
+        st.info(
+            "Quick-check quizzes help reinforce learning. "
+            "These are formative self-tests, not graded submissions."
+        )
+
+        quiz_bank = {
+            1: [
+                {
+                    "question": "What does CRISP-DM stand for?",
+                    "options": [
+                        "Cross-Industry Standard Process for Data Mining",
+                        "Critical Statistical Process for Data Management",
+                        "Comprehensive Research in Statistical Programming",
                     ],
                     "answer": 0,
-                    "explanation": "A clear README helps others understand your project quickly and is standard practice on GitHub.",
                 },
             ],
         }

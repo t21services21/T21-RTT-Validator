@@ -172,6 +172,113 @@ At this level you will not build a full feature store, but you will:
 - Understand how a feature store can reduce duplication and errors.
 """
         )
+
+        st.markdown("---")
+        st.markdown("### 🧪 HANDS-ON LABS")
+        
+        st.markdown("## Lab 1: Production Feature Pipeline (90 min)")
+        st.markdown(
+            """**Objective:** Build reusable feature pipeline that prevents train/serve skew
+
+**Part A: Create Reusable Feature Transformer**
+```python
+from sklearn.base import BaseEstimator, TransformerMixin
+import pandas as pd
+
+class RFMFeatureTransformer(BaseEstimator, TransformerMixin):
+    def __init__(self, as_of_date=None):
+        self.as_of_date = as_of_date or pd.Timestamp.now()
+    
+    def fit(self, X, y=None):
+        return self
+    
+    def transform(self, customer_orders_df):
+        valid_orders = customer_orders_df[
+            customer_orders_df['order_date'] <= self.as_of_date
+        ]
+        
+        rfm = valid_orders.groupby('customer_id').agg({
+            'order_date': lambda x: (self.as_of_date - x.max()).days,
+            'order_id': 'count',
+            'order_amount': 'sum'
+        }).reset_index()
+        
+        rfm.columns = ['customer_id', 'recency_days', 'frequency', 'monetary']
+        return rfm
+```
+
+**Part B: Verify No Train/Serve Skew**
+```python
+# Training features (Jan 1)
+train_date = pd.Timestamp('2024-01-01')
+train_transformer = RFMFeatureTransformer(as_of_date=train_date)
+train_features = train_transformer.fit_transform(orders)
+
+# Serving features (March 15)  
+serve_date = pd.Timestamp('2024-03-15')
+serve_transformer = RFMFeatureTransformer(as_of_date=serve_date)
+serve_features = serve_transformer.fit_transform(orders)
+
+# ✅ Same code = No skew!
+```
+
+**Part C: Integration Tests**
+```python
+import unittest
+
+class TestRFMFeatures(unittest.TestCase):
+    def test_point_in_time_correctness(self):
+        as_of = pd.Timestamp('2023-01-10')
+        transformer = RFMFeatureTransformer(as_of_date=as_of)
+        features = transformer.fit_transform(orders)
+        # Assert no future orders included
+        
+suite = unittest.TestLoader().loadTestsFromTestCase(TestRFMFeatures)
+unittest.TextTestRunner(verbosity=2).run(suite)
+```
+
+**Completion Checklist:**
+- ☐ Created reusable transformer
+- ☐ Implemented point-in-time correctness
+- ☐ Same code for train/serve
+- ☐ Wrote unit tests
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## Lab 2: Late-Arriving Data Handling (75 min)")
+        st.markdown(
+            """**Objective:** Handle delayed data arrivals and backfills
+
+**Part A:** Simulate late confirmations (0-72 hours delay)  
+**Part B:** Compute features with time-aware logic  
+**Part C:** Implement backfill strategy
+
+*Full lab code available in course notebooks*
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## Lab 3: Feature Store Implementation (90 min)")
+        st.markdown(
+            """**Objective:** Build simplified feature store with versioning
+
+**Part A:** Design feature registry with metadata  
+**Part B:** Implement offline + online stores  
+**Part C:** Feature monitoring dashboard
+
+*Full mini-project code available in course repository*
+
+**Lab 3 Completion Checklist:**
+- ☐ Feature registry with lineage
+- ☐ Offline store (Parquet)
+- ☐ Online store (in-memory)
+- ☐ Monitoring alerts
+- ☐ Point-in-time joins
+- ☐ Portfolio-ready project
+"""
+        )
+
     elif unit_number == 2:
         st.markdown("#### 📘 Why experiment tracking matters")
         st.markdown(
@@ -211,7 +318,7 @@ you will explore strategies such as:
 """
         )
 
-        st.markdown("#### 📜 Reproducibility and audit trails")
+        st.markdown("####  Reproducibility and audit trails")
         st.markdown(
             """You will discuss how experiment tracking supports
 **reproducibility** and governance:
@@ -221,6 +328,71 @@ you will explore strategies such as:
 - Supporting compliance requirements in regulated environments.
 """
         )
+
+        st.markdown("---")
+        st.markdown("### 🧪 HANDS-ON LABS")
+        
+        st.markdown("## Lab 1: MLflow Experiment Tracking (90 min)")
+        st.markdown(
+            """**Objective:** Track experiments systematically with MLflow
+
+**Part A: Setup MLflow**
+```python
+import mlflow
+import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+mlflow.set_tracking_uri("file:./mlruns")
+mlflow.set_experiment("churn_prediction")
+
+# Log experiment
+with mlflow.start_run(run_name="rf_baseline"):
+    model = RandomForestClassifier(n_estimators=100)
+    model.fit(X_train, y_train)
+    
+    mlflow.log_params({"n_estimators": 100, "max_depth": None})
+    mlflow.log_metric("f1_score", 0.82)
+    mlflow.sklearn.log_model(model, "model")
+```
+
+**Part B: Compare Multiple Runs**  
+**Part C: Model Registry**
+
+- ☐ Tracked 5+ experiments
+- ☐ Logged params, metrics, artifacts
+- ☐ Compared runs in UI
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## Lab 2: Cross-Validation with Logging (75 min)")
+        st.markdown(
+            """**Objective:** Fair model comparison using CV
+
+**Part A:** k-fold CV with logging  
+**Part B:** Nested CV for hyperparameter tuning  
+**Part C:** Statistical significance testing
+
+*Full code in course notebooks*
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## Lab 3: Automated Model Selection Pipeline (90 min)")
+        st.markdown(
+            """**Objective:** Build automated model comparison system
+
+**Part A:** Define model zoo (Logistic, RF, XGBoost, LightGBM)  
+**Part B:** Automated training + logging  
+**Part C:** Select best model with confidence intervals
+
+- ☐ Compared 6+ models
+- ☐ Statistical comparison
+- ☐ Production model selected
+"""
+        )
+
     elif unit_number == 3:
         st.markdown("#### 📘 Why advanced supervised models?")
         st.markdown(
@@ -266,6 +438,73 @@ class labels. You will:
   may fail.
 """
         )
+
+        st.markdown("---")
+        st.markdown("### 🧪 HANDS-ON LABS")
+        
+        st.markdown("## Lab 1: Gradient Boosting Mastery (90 min)")
+        st.markdown(
+            """**Objective:** Master XGBoost, LightGBM, CatBoost
+
+**Part A: XGBoost vs LightGBM**
+```python
+import xgboost as xgb
+import lightgbm as lgb
+
+# XGBoost
+xgb_model = xgb.XGBClassifier(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=6
+)
+xgb_model.fit(X_train, y_train)
+
+# LightGBM (faster on large datasets)
+lgb_model = lgb.LGBMClassifier(
+    n_estimators=100,
+    learning_rate=0.1,
+    num_leaves=31
+)
+lgb_model.fit(X_train, y_train)
+```
+
+**Part B:** Hyperparameter tuning with Optuna  
+**Part C:** Feature importance analysis
+
+- ☐ Compared 3 boosting libraries
+- ☐ Tuned hyperparameters
+- ☐ Analyzed SHAP values
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## Lab 2: Ensemble Methods (75 min)")
+        st.markdown(
+            """**Objective:** Build stacking and blending ensembles
+
+**Part A:** Voting classifier (soft/hard)  
+**Part B:** Stacking with meta-learner  
+**Part C:** Weighted blending optimization
+
+*Full code available*
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## Lab 3: Model Calibration & Uncertainty (90 min)")
+        st.markdown(
+            """**Objective:** Calibrate probabilities for better decisions
+
+**Part A:** Calibration curves  
+**Part B:** Platt scaling / Isotonic regression  
+**Part C:** Conformal prediction intervals
+
+- ☐ Calibrated probabilities
+- ☐ Reliable confidence scores
+- ☐ Portfolio-ready uncertainty quantification
+"""
+        )
+
     elif unit_number == 4:
         st.markdown("#### 📘 Why time-series forecasting?")
         st.markdown(
@@ -311,6 +550,52 @@ hide leakage. You will practise:
 - Checking for leakage from future information in features.
 """
         )
+
+        st.markdown("---")
+        st.markdown("### 🧪 HANDS-ON LABS")
+        
+        st.markdown("## Lab 1: Time-Series Forecasting Basics (90 min)")
+        st.markdown(
+            """**Objective:** Build ARIMA, Prophet, and baseline forecasts
+
+**Part A:** Naive, seasonal naive, moving average baselines  
+**Part B:** ARIMA model selection (ACF/PACF analysis)  
+**Part C:** Prophet for trend + seasonality
+
+- ☐ Built 5 forecast models
+- ☐ Evaluated MAE, RMSE, MAPE
+- ☐ Selected best model
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## Lab 2: ML for Time-Series (75 min)")
+        st.markdown(
+            """**Objective:** Use XGBoost with lag features
+
+**Part A:** Create lag/rolling window features  
+**Part B:** Train XGBoost regressor  
+**Part C:** Multi-step ahead forecasting
+
+*Full code in notebooks*
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## Lab 3: Demand Forecasting Mini-Project (90 min)")
+        st.markdown(
+            """**Objective:** Production-ready demand forecast
+
+**Part A:** Load retail sales data + EDA  
+**Part B:** Compare ARIMA vs Prophet vs XGBoost  
+**Part C:** Deploy forecast API
+
+- ☐ Portfolio-ready forecasting project
+- ☐ Business metrics (inventory optimization)
+- ☐ Deployed as API
+"""
+        )
+
     elif unit_number == 5:
         st.markdown("#### 📘 Why packaging and environments matter")
         st.markdown(
@@ -331,12 +616,6 @@ deployment plumbing** so that:
 - Environment files (e.g. `requirements.txt`, `pyproject.toml`).
 - Pinning vs flexible version ranges.
 - Using virtual environments or containers to isolate projects.
-
-The emphasis is on **repeatability** and clear documentation.
-"""
-        )
-
-        st.markdown("#### 🧰 Packaging models and pipelines")
         st.markdown(
             """You will think about how a trained pipeline becomes a
 **deployable artefact**:
@@ -349,64 +628,128 @@ The emphasis is on **repeatability** and clear documentation.
 
         st.markdown("#### 🔄 CI/CD concepts for ML projects")
         st.markdown(
-            """You will discuss how continuous integration and delivery look for
-ML:
+            """You will explore lightweight automation for ML workflows:
 
-- Automated tests for data/feature assumptions.
-- Re-running training or evaluation in CI.
+- Running tests automatically when code changes.
+- Building and versioning docker images.
 - Controlled promotion of models between environments (dev/test/prod).
 """
         )
+
+        st.markdown("---")
+        st.markdown("### 🧪 HANDS-ON LABS")
+        
+        st.markdown("## Lab 1: Docker for ML (90 min)")
+        st.markdown(
+            """**Objective:** Containerize ML application
+
+**Part A:** Create Dockerfile for model serving  
+**Part B:** Docker Compose multi-container setup  
+**Part C:** Push to registry
+
+- ☐ Dockerized ML API
+- ☐ Reproducible environment
+- ☐ Production-ready container
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## Lab 2: GitHub Actions CI/CD (75 min)")
+        st.markdown(
+            """**Objective:** Automate testing and deployment
+
+**Part A:** Setup pytest for ML code  
+**Part B:** GitHub Actions workflow  
+**Part C:** Auto-deploy on merge to main
+
+*Full code in course repository*
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## Lab 3: Model Versioning & Registry (90 min)")
+        st.markdown(
+            """**Objective:** Manage model versions in production
+
+**Part A:** MLflow Model Registry  
+**Part B:** Stage transitions (dev/staging/prod)  
+**Part C:** Rollback strategy
+
+- ☐ Model versioning system
+- ☐ Automated deployment pipeline
+- ☐ Portfolio-ready MLOps project
+"""
+        )
+
     elif unit_number == 6:
         st.markdown("#### 📘 Why monitoring and responsible AI?")
         st.markdown(
             """Models change behaviour over time as data, users and processes
 change. This unit focuses on **catching problems early** and ensuring
-models remain safe and ethical in production.
 """
         )
 
-        st.markdown("#### 📡 Data and model performance monitoring")
+        st.markdown("#### � Explainability and fairness considerations")
         st.markdown(
-            """You will explore what and how to monitor:
+            """Responsible AI also means addressing fairness and bias:
 
-- Data ranges, missingness and distributions.
-- Feature drift vs label drift.
-- Performance metrics over time and across segments.
-
-The goal is to design a minimal but effective monitoring dashboard.
-"""
-        )
-
-        st.markdown("#### ⚖️ Fairness, bias and impact")
-        st.markdown(
-            """You will connect technical monitoring to real-world impact:
-
-- Checking performance across key subgroups.
-- Identifying potential unfairness or harm.
-- Designing escalation paths when issues are detected.
-"""
-        )
-
-        st.markdown("#### 🧭 Governance and incident response")
-        st.markdown(
-            """Monitoring is only useful if someone acts on it. You will discuss
-simple governance patterns:
-
-- Who owns a model in production.
-- How incidents are logged, triaged and resolved.
+- Asking whether the model treats subgroups differently.
+- Using fairness metrics and concepts to identify potential harms.
 - How learnings feed back into retraining and design.
 """
         )
-    elif unit_number == 7:
-        st.markdown("#### 📘 Production-style capstone goals")
-        st.markdown(
-            """The Pathway 3 capstone is your chance to demonstrate **end-to-end
-ownership** of an ML system:
 
-- A realistic problem and dataset.
-- A robust training pipeline and chosen model.
-- A clear deployment and monitoring sketch.
+        st.markdown("---")
+        st.markdown("### 🧪 HANDS-ON LABS")
+        
+        st.markdown("## Lab 1: Data Drift Detection (90 min)")
+        st.markdown(
+            """**Objective:** Monitor and detect distribution shifts
+
+**Part A:** Implement PSI, KS test, KL divergence  
+**Part B:** Build monitoring dashboard  
+**Part C:** Automated alerts
+
+- ☐ Drift detection system
+- ☐ Real-time monitoring
+- ☐ Alert thresholds configured
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## Lab 2: Model Performance Monitoring (75 min)")
+        st.markdown(
+            """**Objective:** Track model performance over time
+
+**Part A:** Log predictions + ground truth  
+**Part B:** Calculate rolling metrics  
+**Part C:** Automated retraining triggers
+
+*Full code in notebooks*
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## Lab 3: Fairness & Bias Analysis (90 min)")
+        st.markdown(
+            """**Objective:** Assess and mitigate model bias
+
+**Part A:** Fairness metrics (demographic parity, equalized odds)  
+**Part B:** Bias detection in predictions  
+**Part C:** Mitigation strategies
+
+- ☐ Fairness audit complete
+- ☐ Bias mitigation implemented
+- ☐ Responsible AI portfolio piece
+"""
+        )
+
+    elif unit_number == 7:
+        st.markdown("#### 🎓 Portfolio and career impact")
+        st.markdown(
+            """A polished capstone demonstrates you can handle production-like
+ML projects. This is a strong portfolio piece that shows you understand
+the **whole lifecycle** of an ML system, not just training a model.
 """
         )
 
