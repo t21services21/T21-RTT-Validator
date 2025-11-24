@@ -17411,6 +17411,3891 @@ git config --list
 """
         )
 
+        st.markdown("---")
+        st.markdown("## 📋 QUICK REFERENCE CARDS")
+        st.markdown(
+            """**Print-friendly cheat sheets for daily use**
+
+---
+
+## SQL Quick Reference
+
+### Essential Commands
+```sql
+-- SELECT: Retrieve data
+SELECT column1, column2 FROM table WHERE condition;
+
+-- DISTINCT: Remove duplicates
+SELECT DISTINCT column FROM table;
+
+-- WHERE: Filter rows
+WHERE column = value
+WHERE column IN (value1, value2)
+WHERE column BETWEEN value1 AND value2
+WHERE column LIKE '%pattern%'
+WHERE column IS NULL
+
+-- ORDER BY: Sort results
+ORDER BY column ASC   -- Ascending
+ORDER BY column DESC  -- Descending
+
+-- LIMIT: Limit results
+LIMIT 10
+LIMIT 10 OFFSET 20  -- Skip first 20, get next 10
+
+-- JOINS
+INNER JOIN table2 ON table1.id = table2.id
+LEFT JOIN table2 ON table1.id = table2.id
+RIGHT JOIN table2 ON table1.id = table2.id
+
+-- GROUP BY: Aggregate
+SELECT category, COUNT(*), SUM(amount)
+FROM table
+GROUP BY category
+HAVING COUNT(*) > 5
+
+-- Common Aggregates
+COUNT(*), COUNT(column), COUNT(DISTINCT column)
+SUM(column), AVG(column)
+MIN(column), MAX(column)
+
+-- Window Functions
+ROW_NUMBER() OVER (PARTITION BY category ORDER BY amount DESC)
+RANK() OVER (ORDER BY sales DESC)
+SUM(amount) OVER (PARTITION BY region ORDER BY date)
+
+-- CTEs (Common Table Expressions)
+WITH temp_table AS (
+    SELECT column1, column2 FROM table WHERE condition
+)
+SELECT * FROM temp_table;
+
+-- CASE Statements
+CASE
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    ELSE default_result
+END AS column_name
+```
+
+### Date Functions
+```sql
+-- Current date/time
+CURRENT_DATE, CURRENT_TIME, NOW()
+
+-- Extract parts
+YEAR(date), MONTH(date), DAY(date)
+DATE_PART('month', date)
+
+-- Date arithmetic
+DATE_ADD(date, INTERVAL 1 DAY)
+DATE_SUB(date, INTERVAL 1 MONTH)
+DATEDIFF(date1, date2)
+
+-- Format dates
+DATE_FORMAT(date, '%Y-%m-%d')
+TO_CHAR(date, 'YYYY-MM-DD')
+```
+
+### String Functions
+```sql
+-- Concatenation
+CONCAT(str1, str2, ...)
+str1 || str2  -- PostgreSQL
+
+-- Case conversion
+UPPER(column), LOWER(column)
+
+-- Trimming
+TRIM(column), LTRIM(column), RTRIM(column)
+
+-- Substring
+SUBSTRING(column, start, length)
+LEFT(column, length), RIGHT(column, length)
+
+-- Length
+LENGTH(column), CHAR_LENGTH(column)
+
+-- Replace
+REPLACE(column, 'old', 'new')
+```
+
+---
+
+## Python/Pandas Quick Reference
+
+### Import Libraries
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+```
+
+### Reading Data
+```python
+# CSV
+df = pd.read_csv('file.csv')
+df = pd.read_csv('file.csv', sep=';', encoding='utf-8')
+
+# Excel
+df = pd.read_excel('file.xlsx', sheet_name='Sheet1')
+
+# SQL
+df = pd.read_sql_query("SELECT * FROM table", connection)
+
+# JSON
+df = pd.read_json('file.json')
+```
+
+### Exploring Data
+```python
+df.head(10)          # First 10 rows
+df.tail(5)           # Last 5 rows
+df.shape             # (rows, columns)
+df.info()            # Data types and non-null counts
+df.describe()        # Summary statistics
+df.columns           # Column names
+df.dtypes            # Data types
+df.isnull().sum()    # Count missing values
+df['column'].value_counts()  # Count unique values
+```
+
+### Selecting Data
+```python
+# Single column (Series)
+df['column']
+
+# Multiple columns (DataFrame)
+df[['col1', 'col2']]
+
+# Filter rows
+df[df['age'] > 25]
+df[(df['age'] > 25) & (df['city'] == 'London')]
+df[df['category'].isin(['A', 'B', 'C'])]
+
+# loc: label-based
+df.loc[0:5, 'column']
+df.loc[df['age'] > 25, ['name', 'age']]
+
+# iloc: position-based
+df.iloc[0:5, 0:3]
+df.iloc[0, 1]
+```
+
+### Modifying Data
+```python
+# Add column
+df['new_col'] = df['col1'] + df['col2']
+
+# Rename columns
+df.rename(columns={'old': 'new'}, inplace=True)
+
+# Drop columns
+df.drop(['col1', 'col2'], axis=1, inplace=True)
+
+# Drop rows
+df.drop([0, 1, 2], axis=0, inplace=True)
+
+# Change data type
+df['column'] = df['column'].astype('int')
+df['date'] = pd.to_datetime(df['date'])
+
+# Replace values
+df['column'].replace({'old': 'new'}, inplace=True)
+
+# Fill missing values
+df['column'].fillna(0, inplace=True)
+df.fillna(df.mean(), inplace=True)
+```
+
+### Grouping & Aggregating
+```python
+# Simple groupby
+df.groupby('category')['sales'].sum()
+
+# Multiple aggregations
+df.groupby('category').agg({
+    'sales': ['sum', 'mean', 'count'],
+    'profit': 'sum'
+})
+
+# Group by multiple columns
+df.groupby(['region', 'category'])['sales'].sum()
+```
+
+### Merging Data
+```python
+# Inner join
+pd.merge(df1, df2, on='key', how='inner')
+
+# Left join
+pd.merge(df1, df2, on='key', how='left')
+
+# Multiple keys
+pd.merge(df1, df2, on=['key1', 'key2'])
+
+# Different column names
+pd.merge(df1, df2, left_on='id1', right_on='id2')
+
+# Concatenate
+pd.concat([df1, df2], axis=0)  # Vertically
+pd.concat([df1, df2], axis=1)  # Horizontally
+```
+
+### Sorting
+```python
+df.sort_values('column', ascending=True)
+df.sort_values(['col1', 'col2'], ascending=[True, False])
+```
+
+### Writing Data
+```python
+df.to_csv('output.csv', index=False)
+df.to_excel('output.xlsx', sheet_name='Sheet1', index=False)
+df.to_sql('table_name', connection, if_exists='replace')
+```
+
+---
+
+## Excel Quick Reference
+
+### Essential Formulas
+```
+-- Lookup Functions
+=VLOOKUP(lookup_value, table_array, col_index, [FALSE])
+=HLOOKUP(lookup_value, table_array, row_index, [FALSE])
+=INDEX(array, row_num, col_num)
+=MATCH(lookup_value, lookup_array, [0])
+=INDEX(MATCH()) -- Powerful combination
+
+-- Logical Functions
+=IF(condition, value_if_true, value_if_false)
+=IFS(condition1, value1, condition2, value2, ...)
+=AND(condition1, condition2, ...)
+=OR(condition1, condition2, ...)
+=NOT(condition)
+
+-- Text Functions
+=CONCATENATE(text1, text2, ...) or text1&text2
+=LEFT(text, num_chars)
+=RIGHT(text, num_chars)
+=MID(text, start_num, num_chars)
+=TRIM(text)
+=UPPER(text), =LOWER(text), =PROPER(text)
+=TEXT(value, format_text)
+=VALUE(text)
+
+-- Date Functions
+=TODAY()
+=NOW()
+=DATE(year, month, day)
+=YEAR(date), =MONTH(date), =DAY(date)
+=EOMONTH(start_date, months)  -- End of month
+=NETWORKDAYS(start_date, end_date)
+=DATEDIF(start_date, end_date, unit)
+
+-- Math Functions
+=SUM(range)
+=SUMIF(range, criteria, [sum_range])
+=SUMIFS(sum_range, criteria_range1, criteria1, ...)
+=AVERAGE(range)
+=AVERAGEIF(range, criteria, [average_range])
+=COUNT(range)  -- Numbers only
+=COUNTA(range)  -- Non-empty cells
+=COUNTIF(range, criteria)
+=COUNTIFS(criteria_range1, criteria1, ...)
+=ROUND(number, num_digits)
+=ROUNDUP(number, num_digits)
+=ROUNDDOWN(number, num_digits)
+=ABS(number)
+=MAX(range), =MIN(range)
+
+-- Statistical Functions
+=MEDIAN(range)
+=MODE(range)
+=STDEV.S(range)  -- Sample standard deviation
+=VAR.S(range)  -- Sample variance
+=PERCENTILE(range, k)
+=RANK(number, ref, [order])
+
+-- Financial Functions
+=PMT(rate, nper, pv, [fv], [type])
+=NPV(rate, value1, value2, ...)
+=IRR(values, [guess])
+=FV(rate, nper, pmt, [pv], [type])
+```
+
+### Keyboard Shortcuts
+```
+Ctrl + C: Copy
+Ctrl + V: Paste
+Ctrl + Z: Undo
+Ctrl + Y: Redo
+Ctrl + S: Save
+Ctrl + F: Find
+Ctrl + H: Find and Replace
+Ctrl + Arrow: Jump to edge of data
+Ctrl + Shift + Arrow: Select to edge
+Ctrl + Space: Select column
+Shift + Space: Select row
+Ctrl + T: Create table
+Alt + =: AutoSum
+F2: Edit cell
+F4: Toggle absolute/relative references
+Ctrl + 1: Format cells
+Alt + Enter: New line in cell
+```
+
+### Pivot Table Quick Start
+```
+1. Select data range
+2. Insert → PivotTable
+3. Drag fields to:
+   - Filters: Top-level filtering
+   - Columns: Column headers
+   - Rows: Row headers
+   - Values: Data to aggregate
+4. Right-click values → Value Field Settings
+5. Choose aggregation: Sum, Count, Average, etc.
+```
+
+### Data Validation
+```
+1. Select cells
+2. Data → Data Validation
+3. Choose criteria:
+   - List: Dropdown from range
+   - Whole number: Numeric range
+   - Date: Date range
+   - Custom: Formula
+```
+
+---
+
+## Statistics Quick Reference
+
+### Descriptive Statistics
+```
+Mean: Average value
+Median: Middle value (50th percentile)
+Mode: Most frequent value
+Standard Deviation: Spread from mean
+Variance: Square of standard deviation
+Range: Max - Min
+IQR: 75th percentile - 25th percentile
+```
+
+### Hypothesis Testing
+```
+Null Hypothesis (H0): No effect/difference
+Alternative Hypothesis (H1): Effect exists
+p-value: Probability of results if H0 true
+α (alpha): Significance level (usually 0.05)
+
+If p < α: Reject H0 (statistically significant)
+If p ≥ α: Fail to reject H0 (not significant)
+
+Type I Error: False positive (reject true H0)
+Type II Error: False negative (fail to reject false H0)
+```
+
+### Common Tests
+```
+t-test: Compare two group means
+Chi-square: Test relationship between categorical variables
+ANOVA: Compare three or more group means
+Correlation: Measure relationship strength between variables
+Regression: Model relationship and predict outcomes
+```
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🎥 ADDITIONAL VIDEO WALKTHROUGH SCRIPTS")
+        st.markdown(
+            """**More instructor-led content for complete coverage**
+
+---
+
+## Unit 2 Video Scripts
+
+### Video 7: "Excel Pivot Tables Mastery" (8 minutes)
+
+**[INTRO - 30 seconds]**
+
+Pivot tables are Excel's most powerful feature for data analysis. Master these, and you can summarize any dataset in seconds.
+
+Today: Building professional pivot tables from scratch.
+
+**[SECTION 1: Why Pivot Tables? - 1 minute]**
+
+Imagine you have 10,000 rows of sales data. You need to answer:
+- What's total revenue by product?
+- Which region performed best?
+- What's the monthly trend?
+
+With formulas, this would take hours. With pivot tables, it takes minutes.
+
+**[SECTION 2: Creating Your First Pivot Table - 3 minutes]**
+
+**Step 1: Prepare data**
+- Data should be in table format
+- Each column has a header
+- No blank rows or columns
+- Consistent data types
+
+**Step 2: Insert pivot table**
+```
+1. Click anywhere in your data
+2. Insert → PivotTable
+3. Excel automatically selects your range
+4. Choose where to place it (new worksheet recommended)
+5. Click OK
+```
+
+**Step 3: Build the pivot**
+```
+Drag fields to areas:
+- ROWS: Categories to group by (Product, Region, Month)
+- COLUMNS: Secondary grouping (Year, Quarter)
+- VALUES: Numbers to aggregate (Sales, Quantity)
+- FILTERS: Top-level filtering (Date, Category)
+```
+
+**Example:**
+```
+Rows: Product
+Values: Sum of Sales
+Result: Total sales per product
+```
+
+**[SECTION 3: Customizing Pivot Tables - 2 minutes]**
+
+**Change aggregation:**
+- Right-click value → Value Field Settings
+- Choose: Sum, Average, Count, Min, Max
+- Show values as: % of Total, % of Row, Running Total
+
+**Format numbers:**
+- Right-click value → Number Format
+- Choose currency, percentages, decimals
+
+**Sort and filter:**
+- Click dropdown arrows in row labels
+- Sort A-Z, Z-A, or by values
+- Filter to show only specific items
+
+**[SECTION 4: Advanced Techniques - 1 minute]**
+
+**Calculated fields:**
+```
+PivotTable Analyze → Fields, Items & Sets → Calculated Field
+Example: Profit = Sales - Cost
+```
+
+**Grouping dates:**
+```
+Right-click date field → Group
+Choose: Days, Months, Quarters, Years
+```
+
+**Slicers for filtering:**
+```
+PivotTable Analyze → Insert Slicer
+Select fields to filter by
+Visual, interactive filtering
+```
+
+**[CLOSING - 30 seconds]**
+
+Pivot tables are essential. Practice building them until it's second nature. In the next video, we'll cover advanced Excel formulas.
+
+---
+
+### Video 8: "Excel VLOOKUP and INDEX/MATCH" (10 minutes)
+
+**[INTRO - 30 seconds]**
+
+Lookup functions are critical for combining data from different sources. They're used in almost every Excel analysis.
+
+Today: Mastering VLOOKUP and the more powerful INDEX/MATCH combination.
+
+**[SECTION 1: VLOOKUP Basics - 3 minutes]**
+
+VLOOKUP searches for a value in the first column of a table and returns a value from another column.
+
+**Syntax:**
+```excel
+=VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])
+```
+
+**Example scenario:**
+You have customer IDs in one sheet and need to add their names from another sheet.
+
+```excel
+Customer sheet: A2 has customer ID "C001"
+Reference sheet: Column A has IDs, Column B has names
+
+Formula:
+=VLOOKUP(A2, 'Reference'!A:B, 2, FALSE)
+
+Explanation:
+- A2: What to look up
+- 'Reference'!A:B: Where to look
+- 2: Return value from 2nd column
+- FALSE: Exact match only
+```
+
+**Common mistakes:**
+1. Lookup column must be first in range
+2. Use FALSE for exact match
+3. Lock references with $ when copying formula
+4. Check for extra spaces (use TRIM)
+
+**[SECTION 2: VLOOKUP Limitations - 1 minute]**
+
+Problems with VLOOKUP:
+- Can only look right (column must be first)
+- Column number breaks if columns added/removed
+- Not dynamic
+
+Solution: INDEX/MATCH!
+
+**[SECTION 3: INDEX/MATCH Power - 3 minutes]**
+
+INDEX returns value at specific position. MATCH finds that position.
+
+**INDEX syntax:**
+```excel
+=INDEX(return_array, row_number)
+```
+
+**MATCH syntax:**
+```excel
+=MATCH(lookup_value, lookup_array, [match_type])
+```
+
+**Combined:**
+```excel
+=INDEX(return_range, MATCH(lookup_value, lookup_range, 0))
+```
+
+**Example:**
+```excel
+=INDEX('Reference'!B:B, MATCH(A2, 'Reference'!A:A, 0))
+
+Advantages:
+- Can look left or right
+- More flexible
+- Faster on large datasets
+- Column changes don't break formula
+```
+
+**[SECTION 4: Advanced Lookups - 2 minutes]**
+
+**Two-way lookup (row and column):**
+```excel
+=INDEX(table, MATCH(row_value, row_range, 0), MATCH(col_value, col_range, 0))
+```
+
+**Handling errors:**
+```excel
+=IFERROR(VLOOKUP(A2, Table, 2, FALSE), "Not Found")
+```
+
+**Approximate match for ranges:**
+```excel
+=VLOOKUP(score, grade_table, 2, TRUE)
+Use TRUE for finding closest value (sorted data)
+```
+
+**[CLOSING - 30 seconds]**
+
+Master these lookups - they're in every analyst's daily toolkit. Practice with different datasets until they're intuitive.
+
+Next video: Building professional dashboards!
+
+---
+
+## Unit 4 Video Scripts
+
+### Video 9: "Building Your First Dashboard in Tableau" (12 minutes)
+
+**[INTRO - 30 seconds]**
+
+Dashboards turn data into decisions. Today, you'll build a complete executive dashboard from scratch in Tableau.
+
+Let's create something you can add to your portfolio!
+
+**[SECTION 1: Dashboard Planning - 1.5 minutes]**
+
+Before opening Tableau, answer:
+- Who's the audience? (Executive, Manager, Analyst)
+- What decisions will this inform?
+- What questions must it answer?
+- What's the story?
+
+**Our example:** Sales Executive Dashboard
+- Audience: VP of Sales
+- Decision: Which regions/products need attention?
+- Questions: Performance vs target, trends, top performers
+
+**[SECTION 2: Connect to Data - 1 minute]**
+
+```
+1. Open Tableau
+2. Connect → Text file (or your data source)
+3. Select sales_data.csv
+4. Preview data in Data Source tab
+5. Check data types are correct
+6. Go to Sheet 1
+```
+
+**[SECTION 3: Create KPI Cards - 2.5 minutes]**
+
+**Sheet 1: Total Revenue**
+```
+1. Drag Sales to Text on Marks card
+2. Change aggregation to SUM
+3. Format: Number → Currency
+4. Increase font size to 48pt
+5. Add title: "Total Revenue"
+6. Color text green for positive metric
+```
+
+**Sheet 2: Order Count**
+- Drag Order ID to sheet
+- Change to COUNT
+- Format and style
+
+**Sheet 3: Average Order Value**
+- Calculated Field: SUM(Sales) / COUNT(Order ID)
+- Format as currency
+
+**Pro tip:** Make all KPI sheets same size for consistency.
+
+**[SECTION 4: Revenue Trend Line Chart - 2 minutes]**
+
+**Sheet 4: Revenue Over Time**
+```
+1. Drag Order Date to Columns
+2. Click dropdown → Month
+3. Drag Sales to Rows
+4. Add trend line: Analytics → Trend Line → Linear
+5. Add reference line for target
+6. Format: 
+   - Add title
+   - Clean axes
+   - Add tooltip with details
+```
+
+**[SECTION 5: Top 10 Products Bar Chart - 1.5 minutes]**
+
+**Sheet 5: Top Products**
+```
+1. Drag Product to Rows
+2. Drag Sales to Columns
+3. Sort descending by Sales
+4. Filter: Top → 10 by Sales
+5. Add data labels
+6. Color by Sales (gradient)
+```
+
+**[SECTION 6: Regional Map - 1.5 minutes]**
+
+**Sheet 6: Sales by Region**
+```
+1. Drag Country/Region to sheet
+2. Tableau auto-creates map
+3. Drag Sales to Color
+4. Drag Sales to Size
+5. Adjust color palette
+6. Add tooltip with metrics
+```
+
+**[SECTION 7: Assemble Dashboard - 2 minutes]**
+
+```
+1. Dashboard → New Dashboard
+2. Set size: Automatic (responsive)
+3. Drag sheets to dashboard:
+   - KPIs across top (horizontal)
+   - Trend chart in middle
+   - Products and map side by side bottom
+4. Add filters:
+   - Date range filter
+   - Region filter
+5. Format:
+   - Remove titles from individual sheets
+   - Add dashboard title
+   - Adjust spacing
+   - Apply consistent color theme
+6. Add interactivity:
+   - Use as Filter on region map
+   - Highlight actions
+```
+
+**[CLOSING - 30 seconds]**
+
+You now have a professional dashboard! Publish to Tableau Public and add to your portfolio.
+
+Practice with different datasets. Next video: Power BI basics!
+
+---
+
+## Unit 7 Video Scripts
+
+### Video 10: "Portfolio Project Walkthrough" (15 minutes)
+
+**[INTRO - 30 seconds]**
+
+Your portfolio is your ticket to interviews. Today, I'll walk through creating a complete portfolio project from scratch.
+
+This will be something you can show employers with confidence.
+
+**[SECTION 1: Choosing Your Project - 1.5 minutes]**
+
+Good portfolio projects:
+- Solve a real business problem
+- Show multiple skills (SQL + Python + Visualization)
+- Have clear insights and recommendations
+- Are well-documented
+
+**Today's project:** Customer Churn Analysis for Telecom Company
+
+**Business question:** Why are customers leaving, and how can we reduce churn?
+
+**[SECTION 2: Project Structure - 2 minutes]**
+
+Every portfolio project should have:
+
+```
+project-folder/
+├── README.md (Overview and findings)
+├── data/ (Raw and cleaned data)
+├── sql/ (Queries used)
+├── notebooks/ (Python analysis)
+├── visualizations/ (Dashboard screenshots)
+└── presentation/ (Executive summary)
+```
+
+**[SECTION 3: Data Extraction (SQL) - 2.5 minutes]**
+
+**Step 1: Define data needs**
+```sql
+-- Customer demographics
+-- Service details
+-- Payment history
+-- Support tickets
+-- Churn status
+```
+
+**Step 2: Write extraction queries**
+```sql
+-- Main customer table
+SELECT 
+    c.customer_id,
+    c.tenure_months,
+    c.monthly_charges,
+    c.total_charges,
+    c.contract_type,
+    c.payment_method,
+    c.churned,
+    COUNT(st.ticket_id) as support_tickets
+FROM customers c
+LEFT JOIN support_tickets st 
+    ON c.customer_id = st.customer_id
+GROUP BY c.customer_id, c.tenure_months, c.monthly_charges,
+         c.total_charges, c.contract_type, c.payment_method, c.churned;
+```
+
+**Document your queries with comments!**
+
+**[SECTION 4: Exploratory Analysis (Python) - 3 minutes]**
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load data
+df = pd.read_csv('customer_data.csv')
+
+# Basic exploration
+print(df.info())
+print(df.describe())
+
+# Churn rate
+churn_rate = df['churned'].mean()
+print(f"Overall Churn Rate: {churn_rate:.1%}")
+
+# Churn by contract type
+churn_by_contract = df.groupby('contract_type')['churned'].agg(['mean', 'count'])
+print("\nChurn by Contract Type:")
+print(churn_by_contract)
+
+# Visualization: Churn by tenure
+plt.figure(figsize=(12, 6))
+sns.boxplot(x='churned', y='tenure_months', data=df)
+plt.title('Customer Tenure by Churn Status')
+plt.savefig('tenure_analysis.png')
+
+# Key finding: Month-to-month contracts have 3x higher churn!
+```
+
+**[SECTION 5: Key Insights & Recommendations - 2 minutes]**
+
+**Document your findings:**
+
+```markdown
+## Key Findings
+
+1. **Contract Type Impact**
+   - Month-to-month: 42% churn rate
+   - One-year: 15% churn rate
+   - Two-year: 3% churn rate
+   
+2. **Support Tickets Correlation**
+   - Customers with 3+ tickets: 58% churn rate
+   - Customers with 0 tickets: 18% churn rate
+
+3. **High-Risk Profile**
+   - Short tenure (< 6 months)
+   - Month-to-month contract
+   - High monthly charges
+   - Recent support issues
+
+## Recommendations
+
+1. **Incentivize Long-Term Contracts**
+   - Offer 15% discount for annual contracts
+   - Estimated retention improvement: 12%
+   - ROI: £2.4M annually
+
+2. **Improve Support Experience**
+   - Implement proactive outreach after 2nd ticket
+   - Estimated churn reduction: 8%
+
+3. **Target High-Risk Customers**
+   - Create retention campaign
+   - Focus on customers fitting high-risk profile
+```
+
+**[SECTION 6: Create Dashboard - 2 minutes]**
+
+Build interactive dashboard showing:
+- Churn rate by segment
+- Risk score distribution
+- Retention campaign targeting
+- Financial impact projections
+
+Export as PDF for portfolio.
+
+**[SECTION 7: Document Everything - 2 minutes]**
+
+**README.md structure:**
+```markdown
+# Customer Churn Analysis
+
+## Business Problem
+High churn rate impacting revenue
+
+## Methodology
+- SQL for data extraction
+- Python for analysis
+- Tableau for visualization
+- Statistical testing for validation
+
+## Key Findings
+[Your insights]
+
+## Recommendations
+[Your recommendations with impact]
+
+## Technical Details
+- Tools: SQL, Python, Tableau
+- Techniques: Cohort analysis, logistic regression
+- Data: 10,000 customers, 2 years
+
+## Files
+- `sql/`: Data extraction queries
+- `notebooks/`: Python analysis
+- `dashboard.pdf`: Executive dashboard
+
+## Author
+[Your name and contact]
+```
+
+**[CLOSING - 30 seconds]**
+
+This is a complete portfolio project! Upload to GitHub, add screenshots, and link from your resume.
+
+Create 2-3 projects like this in different domains (retail, healthcare, finance) to show versatility.
+
+---
+
+### Video 11: "Interview Preparation - Technical Questions" (10 minutes)
+
+**[INTRO - 30 seconds]**
+
+Technical interviews can be nerve-wracking. But if you can answer these questions, you'll be more prepared than 90% of candidates.
+
+Today: The most common data analyst interview questions and how to answer them perfectly.
+
+**[SECTION 1: SQL Interview Questions - 3 minutes]**
+
+**Q1: "Write a query to find the second highest salary"**
+
+```sql
+-- Method 1: Using LIMIT and OFFSET
+SELECT DISTINCT salary
+FROM employees
+ORDER BY salary DESC
+LIMIT 1 OFFSET 1;
+
+-- Method 2: Using subquery
+SELECT MAX(salary)
+FROM employees
+WHERE salary < (SELECT MAX(salary) FROM employees);
+
+-- Method 3: Using DENSE_RANK (most robust)
+SELECT salary
+FROM (
+    SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) as rank
+    FROM employees
+) ranked
+WHERE rank = 2;
+```
+
+**Q2: "Explain the difference between WHERE and HAVING"**
+
+Answer template:
+"WHERE filters rows before grouping, HAVING filters after aggregation. For example, WHERE age > 25 filters individual rows, while HAVING COUNT(*) > 5 filters groups. You can't use aggregate functions in WHERE, but you can in HAVING."
+
+**Q3: "Find customers who made purchases in all 3 categories"**
+
+```sql
+SELECT customer_id
+FROM purchases
+GROUP BY customer_id
+HAVING COUNT(DISTINCT category) = 3;
+```
+
+**[SECTION 2: Python Interview Questions - 2.5 minutes]**
+
+**Q1: "How do you handle missing data in pandas?"**
+
+```python
+# Check for missing values
+df.isnull().sum()
+
+# Strategies:
+# 1. Drop rows
+df.dropna()
+
+# 2. Fill with mean/median
+df['column'].fillna(df['column'].median())
+
+# 3. Forward/backward fill
+df.fillna(method='ffill')
+
+# 4. Fill by group
+df['value'].fillna(df.groupby('category')['value'].transform('mean'))
+
+# My approach: Depends on:
+# - Amount of missing data
+# - Type of analysis
+# - Business context
+# Usually I document assumption and test sensitivity
+```
+
+**Q2: "Merge two dataframes - explain different joins"**
+
+```python
+# Inner join: Only matching rows
+pd.merge(df1, df2, on='key', how='inner')
+
+# Left join: All from left, matches from right
+pd.merge(df1, df2, on='key', how='left')
+
+# Outer join: All rows from both
+pd.merge(df1, df2, on='key', how='outer')
+
+# Choice depends on business requirement:
+# - Customer analysis usually left join (keep all customers)
+# - Transaction matching usually inner join (only valid matches)
+```
+
+**[SECTION 3: Statistics Interview Questions - 2 minutes]**
+
+**Q1: "Explain p-value to a non-technical stakeholder"**
+
+Answer template:
+"P-value is the probability that our results happened by random chance. If p-value is less than 0.05, we're 95% confident the result is real, not luck. For example, if testing a new checkout flow increases conversion with p=0.03, there's only 3% chance it's random - strong evidence the change works."
+
+**Q2: "When would you use median instead of mean?"**
+
+"Median is better when data has outliers or is skewed. For example, median income is more representative than mean because billionaires skew the average. I always check distribution first - if skewed, use median."
+
+**[SECTION 4: Behavioral Question Framework - 2 minutes]**
+
+**Use STAR method:**
+- **S**ituation: Set context
+- **T**ask: Your responsibility  
+- **A**ction: What you did
+- **R**esult: Outcome with numbers
+
+**Example: "Tell me about a challenging analysis"**
+
+"At my previous role (S), we noticed 20% decline in user engagement (T). I conducted cohort analysis in SQL, finding that new features confused existing users (A). I recommended a phased rollout and onboarding flow. Result: Engagement recovered to baseline within 2 months, and new user retention improved 15% (R)."
+
+**[CLOSING - 30 seconds]**
+
+Practice these questions out loud. Record yourself. The more you practice, the more confident you'll be.
+
+In your next interview, you'll crush it!
+
+---
+
+## Video Recording Best Practices
+
+### Before Recording:
+- Test audio and video quality
+- Close unnecessary applications
+- Prepare all examples and datasets
+- Practice once without recording
+- Have water nearby
+
+### During Recording:
+- Speak clearly at moderate pace
+- Show enthusiasm and energy
+- Pause between major sections
+- Use cursor to highlight important parts
+- Zoom in on code/formulas
+
+### After Recording:
+- Watch full video
+- Note any mistakes or unclear parts
+- Re-record sections if needed
+- Add captions for accessibility
+- Create chapter markers
+
+### Publishing:
+- Upload to YouTube
+- Add detailed description
+- Include timestamps in description
+- Create custom thumbnail
+- Add to relevant playlists
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 📊 PRACTICE DATASETS & DATA DOCUMENTATION")
+        st.markdown(
+            """**Complete guide to datasets for hands-on practice**
+
+---
+
+## Dataset 1: E-Commerce Sales Data
+
+### Overview
+**File:** `ecommerce_sales.csv`  
+**Rows:** 10,000  
+**Columns:** 12  
+**Time Period:** January 2022 - December 2024  
+**Use Cases:** Sales analysis, customer segmentation, product performance, time series  
+
+### Schema
+```
+Column Name       | Data Type | Description                    | Example
+------------------|-----------|--------------------------------|------------------
+order_id          | TEXT      | Unique order identifier        | ORD-2024-00001
+order_date        | DATE      | Date of purchase               | 2024-01-15
+customer_id       | TEXT      | Unique customer identifier     | CUST-12345
+customer_name     | TEXT      | Customer full name             | John Smith
+customer_email    | TEXT      | Customer email                 | john@email.com
+customer_city     | TEXT      | Customer location              | London
+product_id        | TEXT      | Unique product identifier      | PROD-ABC-001
+product_name      | TEXT      | Product description            | Laptop Pro 15"
+product_category  | TEXT      | Product category               | Electronics
+quantity          | INTEGER   | Number of items ordered        | 2
+unit_price        | DECIMAL   | Price per unit                 | 1299.99
+total_amount      | DECIMAL   | Total order value              | 2599.98
+```
+
+### Sample SQL Queries
+
+**Basic Analysis:**
+```sql
+-- Total revenue by month
+SELECT 
+    DATE_TRUNC('month', order_date) as month,
+    SUM(total_amount) as revenue,
+    COUNT(DISTINCT order_id) as orders,
+    COUNT(DISTINCT customer_id) as customers
+FROM ecommerce_sales
+GROUP BY month
+ORDER BY month;
+
+-- Top 10 products by revenue
+SELECT 
+    product_name,
+    product_category,
+    SUM(total_amount) as revenue,
+    SUM(quantity) as units_sold
+FROM ecommerce_sales
+GROUP BY product_name, product_category
+ORDER BY revenue DESC
+LIMIT 10;
+```
+
+**Advanced Analysis:**
+```sql
+-- Customer lifetime value
+WITH customer_metrics AS (
+    SELECT 
+        customer_id,
+        MIN(order_date) as first_purchase,
+        MAX(order_date) as last_purchase,
+        COUNT(DISTINCT order_id) as order_count,
+        SUM(total_amount) as total_spent
+    FROM ecommerce_sales
+    GROUP BY customer_id
+)
+SELECT 
+    CASE 
+        WHEN order_count = 1 THEN 'One-time'
+        WHEN order_count BETWEEN 2 AND 5 THEN 'Occasional'
+        ELSE 'Frequent'
+    END as customer_type,
+    COUNT(*) as customers,
+    AVG(total_spent) as avg_ltv,
+    SUM(total_spent) as total_revenue
+FROM customer_metrics
+GROUP BY customer_type;
+
+-- Monthly cohort retention
+WITH cohorts AS (
+    SELECT 
+        customer_id,
+        DATE_TRUNC('month', MIN(order_date)) as cohort_month
+    FROM ecommerce_sales
+    GROUP BY customer_id
+),
+cohort_activity AS (
+    SELECT 
+        c.cohort_month,
+        DATE_TRUNC('month', e.order_date) as activity_month,
+        COUNT(DISTINCT e.customer_id) as customers
+    FROM cohorts c
+    JOIN ecommerce_sales e ON c.customer_id = e.customer_id
+    GROUP BY c.cohort_month, activity_month
+)
+SELECT 
+    cohort_month,
+    activity_month,
+    customers,
+    ROUND(100.0 * customers / FIRST_VALUE(customers) OVER (
+        PARTITION BY cohort_month ORDER BY activity_month
+    ), 2) as retention_pct
+FROM cohort_activity
+ORDER BY cohort_month, activity_month;
+```
+
+### Python Analysis Examples
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load data
+df = pd.read_csv('ecommerce_sales.csv', parse_dates=['order_date'])
+
+# Basic metrics
+print(f"Total Revenue: £{df['total_amount'].sum():,.2f}")
+print(f"Average Order Value: £{df['total_amount'].mean():.2f}")
+print(f"Total Customers: {df['customer_id'].nunique():,}")
+print(f"Total Products: {df['product_name'].nunique():,}")
+
+# Revenue by category
+category_revenue = df.groupby('product_category')['total_amount'].sum().sort_values(ascending=False)
+plt.figure(figsize=(12, 6))
+category_revenue.plot(kind='bar')
+plt.title('Revenue by Product Category')
+plt.ylabel('Revenue (£)')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig('category_revenue.png')
+
+# Customer segmentation by purchase frequency
+customer_orders = df.groupby('customer_id').agg({
+    'order_id': 'count',
+    'total_amount': 'sum'
+}).rename(columns={'order_id': 'order_count', 'total_amount': 'total_spent'})
+
+# RFM Analysis
+from datetime import datetime
+analysis_date = df['order_date'].max() + pd.Timedelta(days=1)
+
+rfm = df.groupby('customer_id').agg({
+    'order_date': lambda x: (analysis_date - x.max()).days,  # Recency
+    'order_id': 'count',  # Frequency
+    'total_amount': 'sum'  # Monetary
+}).rename(columns={
+    'order_date': 'recency',
+    'order_id': 'frequency',
+    'total_amount': 'monetary'
+})
+
+# Quartile-based segmentation
+rfm['R_score'] = pd.qcut(rfm['recency'], 4, labels=[4,3,2,1])
+rfm['F_score'] = pd.qcut(rfm['frequency'].rank(method='first'), 4, labels=[1,2,3,4])
+rfm['M_score'] = pd.qcut(rfm['monetary'], 4, labels=[1,2,3,4])
+rfm['RFM_score'] = rfm['R_score'].astype(str) + rfm['F_score'].astype(str) + rfm['M_score'].astype(str)
+
+# Identify champions (high recency, frequency, monetary)
+champions = rfm[rfm['RFM_score'] == '444']
+print(f"\nChampion Customers: {len(champions)} ({len(champions)/len(rfm)*100:.1f}%)")
+print(f"Champion Revenue: £{champions['monetary'].sum():,.2f}")
+```
+
+---
+
+## Dataset 2: Customer Support Tickets
+
+### Overview
+**File:** `support_tickets.csv`  
+**Rows:** 5,000  
+**Columns:** 10  
+**Time Period:** January 2024 - December 2024  
+**Use Cases:** Support analytics, resolution time analysis, ticket trends  
+
+### Schema
+```
+Column Name        | Data Type | Description                    | Example
+-------------------|-----------|--------------------------------|------------------
+ticket_id          | TEXT      | Unique ticket identifier       | TKT-2024-00001
+created_date       | DATETIME  | Ticket creation timestamp      | 2024-01-15 09:30:00
+resolved_date      | DATETIME  | Ticket resolution timestamp    | 2024-01-16 14:22:00
+customer_id        | TEXT      | Customer identifier            | CUST-12345
+priority           | TEXT      | Ticket priority                | High
+category           | TEXT      | Issue category                 | Technical
+subcategory        | TEXT      | Issue subcategory              | Login Issue
+status             | TEXT      | Current status                 | Resolved
+assigned_agent     | TEXT      | Support agent name             | Sarah Johnson
+satisfaction_score | INTEGER   | Customer rating (1-5)          | 4
+```
+
+### Sample SQL Queries
+
+```sql
+-- Average resolution time by priority
+SELECT 
+    priority,
+    COUNT(*) as ticket_count,
+    ROUND(AVG(EXTRACT(EPOCH FROM (resolved_date - created_date))/3600), 2) as avg_hours_to_resolve,
+    ROUND(AVG(satisfaction_score), 2) as avg_satisfaction
+FROM support_tickets
+WHERE status = 'Resolved'
+GROUP BY priority
+ORDER BY avg_hours_to_resolve;
+
+-- Agent performance metrics
+SELECT 
+    assigned_agent,
+    COUNT(*) as tickets_handled,
+    COUNT(CASE WHEN status = 'Resolved' THEN 1 END) as resolved_tickets,
+    ROUND(100.0 * COUNT(CASE WHEN status = 'Resolved' THEN 1 END) / COUNT(*), 2) as resolution_rate,
+    ROUND(AVG(satisfaction_score), 2) as avg_satisfaction,
+    ROUND(AVG(CASE WHEN status = 'Resolved' 
+        THEN EXTRACT(EPOCH FROM (resolved_date - created_date))/3600 
+    END), 2) as avg_resolution_hours
+FROM support_tickets
+GROUP BY assigned_agent
+HAVING COUNT(*) > 50  -- Minimum 50 tickets
+ORDER BY resolution_rate DESC, avg_satisfaction DESC;
+
+-- Ticket volume trends
+SELECT 
+    DATE_TRUNC('week', created_date) as week,
+    category,
+    COUNT(*) as ticket_count,
+    ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (PARTITION BY DATE_TRUNC('week', created_date)), 2) as pct_of_week
+FROM support_tickets
+GROUP BY week, category
+ORDER BY week, ticket_count DESC;
+```
+
+---
+
+## Dataset 3: Employee HR Data
+
+### Overview
+**File:** `employee_data.csv`  
+**Rows:** 1,000  
+**Columns:** 15  
+**Time Period:** Current snapshot  
+**Use Cases:** HR analytics, compensation analysis, retention, diversity  
+
+### Schema
+```
+Column Name        | Data Type | Description                    | Example
+-------------------|-----------|--------------------------------|------------------
+employee_id        | TEXT      | Unique employee identifier     | EMP-001
+first_name         | TEXT      | Employee first name            | Alice
+last_name          | TEXT      | Employee last name             | Smith
+email              | TEXT      | Employee email                 | alice.smith@company.com
+department         | TEXT      | Department name                | Engineering
+job_title          | TEXT      | Job title                      | Senior Developer
+hire_date          | DATE      | Date of hire                   | 2020-03-15
+salary             | DECIMAL   | Annual salary                  | 85000
+bonus              | DECIMAL   | Annual bonus                   | 8500
+gender             | TEXT      | Gender                         | Female
+age                | INTEGER   | Age                            | 32
+education_level    | TEXT      | Highest education              | Bachelor's
+performance_rating | TEXT      | Latest performance rating      | Exceeds
+tenure_years       | DECIMAL   | Years at company               | 4.2
+remote_work        | BOOLEAN   | Remote work eligible           | TRUE
+```
+
+### Sample SQL Queries
+
+```sql
+-- Compensation analysis by department
+SELECT 
+    department,
+    COUNT(*) as employee_count,
+    ROUND(AVG(salary), 2) as avg_salary,
+    ROUND(AVG(bonus), 2) as avg_bonus,
+    ROUND(AVG(salary + bonus), 2) as avg_total_comp,
+    MIN(salary) as min_salary,
+    MAX(salary) as max_salary
+FROM employee_data
+GROUP BY department
+ORDER BY avg_total_comp DESC;
+
+-- Diversity metrics
+SELECT 
+    department,
+    COUNT(*) as total_employees,
+    COUNT(CASE WHEN gender = 'Female' THEN 1 END) as female_count,
+    ROUND(100.0 * COUNT(CASE WHEN gender = 'Female' THEN 1 END) / COUNT(*), 2) as female_pct,
+    ROUND(AVG(age), 1) as avg_age,
+    COUNT(CASE WHEN remote_work = TRUE THEN 1 END) as remote_eligible
+FROM employee_data
+GROUP BY department;
+
+-- Performance and compensation correlation
+SELECT 
+    performance_rating,
+    COUNT(*) as employee_count,
+    ROUND(AVG(salary), 2) as avg_salary,
+    ROUND(AVG(bonus), 2) as avg_bonus,
+    ROUND(AVG(tenure_years), 2) as avg_tenure
+FROM employee_data
+GROUP BY performance_rating
+ORDER BY 
+    CASE performance_rating
+        WHEN 'Outstanding' THEN 1
+        WHEN 'Exceeds' THEN 2
+        WHEN 'Meets' THEN 3
+        ELSE 4
+    END;
+```
+
+---
+
+## Dataset 4: Website Analytics Data
+
+### Overview
+**File:** `website_analytics.csv`  
+**Rows:** 50,000  
+**Columns:** 12  
+**Time Period:** Last 90 days  
+**Use Cases:** Web analytics, conversion optimization, user behavior  
+
+### Schema
+```
+Column Name        | Data Type | Description                    | Example
+-------------------|-----------|--------------------------------|------------------
+session_id         | TEXT      | Unique session identifier      | SES-2024-00001
+user_id            | TEXT      | User identifier (if logged in) | USR-12345
+session_date       | DATETIME  | Session start timestamp        | 2024-01-15 10:30:00
+device_type        | TEXT      | Device category                | Desktop
+browser            | TEXT      | Browser name                   | Chrome
+traffic_source     | TEXT      | Traffic source                 | Organic Search
+landing_page       | TEXT      | Entry page URL                 | /products
+page_views         | INTEGER   | Pages viewed in session        | 5
+time_on_site       | INTEGER   | Time in seconds                | 320
+bounce             | BOOLEAN   | Single page session            | FALSE
+conversion         | BOOLEAN   | Purchase made                  | TRUE
+revenue            | DECIMAL   | Revenue from session           | 149.99
+```
+
+### Sample SQL Queries
+
+```sql
+-- Conversion rate by traffic source
+SELECT 
+    traffic_source,
+    COUNT(*) as sessions,
+    COUNT(CASE WHEN conversion = TRUE THEN 1 END) as conversions,
+    ROUND(100.0 * COUNT(CASE WHEN conversion = TRUE THEN 1 END) / COUNT(*), 2) as conversion_rate,
+    SUM(revenue) as total_revenue,
+    ROUND(SUM(revenue) / COUNT(*), 2) as revenue_per_session
+FROM website_analytics
+GROUP BY traffic_source
+ORDER BY conversion_rate DESC;
+
+-- Landing page performance
+SELECT 
+    landing_page,
+    COUNT(*) as sessions,
+    ROUND(AVG(page_views), 2) as avg_page_views,
+    ROUND(AVG(time_on_site), 2) as avg_time_seconds,
+    ROUND(100.0 * COUNT(CASE WHEN bounce = TRUE THEN 1 END) / COUNT(*), 2) as bounce_rate,
+    ROUND(100.0 * COUNT(CASE WHEN conversion = TRUE THEN 1 END) / COUNT(*), 2) as conversion_rate
+FROM website_analytics
+GROUP BY landing_page
+HAVING COUNT(*) > 100  -- Minimum traffic threshold
+ORDER BY conversion_rate DESC;
+
+-- Daily trends
+SELECT 
+    DATE(session_date) as date,
+    COUNT(*) as sessions,
+    COUNT(DISTINCT user_id) as unique_users,
+    ROUND(AVG(page_views), 2) as avg_page_views,
+    COUNT(CASE WHEN conversion = TRUE THEN 1 END) as conversions,
+    SUM(revenue) as revenue
+FROM website_analytics
+GROUP BY DATE(session_date)
+ORDER BY date;
+```
+
+---
+
+## Dataset 5: Product Inventory Data
+
+### Overview
+**File:** `inventory_data.csv`  
+**Rows:** 500  
+**Columns:** 10  
+**Time Period:** Current snapshot with historical data  
+**Use Cases:** Inventory management, demand forecasting, stock optimization  
+
+### Schema
+```
+Column Name        | Data Type | Description                    | Example
+-------------------|-----------|--------------------------------|------------------
+product_id         | TEXT      | Unique product identifier      | PROD-ABC-001
+product_name       | TEXT      | Product name                   | Laptop Pro 15"
+category           | TEXT      | Product category               | Electronics
+supplier           | TEXT      | Supplier name                  | Tech Suppliers Inc
+unit_cost          | DECIMAL   | Cost per unit                  | 800.00
+unit_price         | DECIMAL   | Selling price                  | 1299.99
+stock_quantity     | INTEGER   | Current stock level            | 45
+reorder_point      | INTEGER   | Minimum stock before reorder   | 20
+lead_time_days     | INTEGER   | Days from order to delivery    | 14
+units_sold_30d     | INTEGER   | Units sold last 30 days        | 23
+```
+
+### Sample SQL Queries
+
+```sql
+-- Inventory health check
+SELECT 
+    category,
+    COUNT(*) as product_count,
+    SUM(stock_quantity) as total_units,
+    SUM(stock_quantity * unit_cost) as inventory_value,
+    COUNT(CASE WHEN stock_quantity <= reorder_point THEN 1 END) as need_reorder,
+    COUNT(CASE WHEN stock_quantity = 0 THEN 1 END) as out_of_stock
+FROM inventory_data
+GROUP BY category;
+
+-- Products needing reorder
+SELECT 
+    product_name,
+    category,
+    stock_quantity,
+    reorder_point,
+    units_sold_30d,
+    lead_time_days,
+    ROUND(30.0 * units_sold_30d / 30, 2) as daily_sales_rate,
+    CEIL((reorder_point + (units_sold_30d / 30.0 * lead_time_days)) - stock_quantity) as order_quantity
+FROM inventory_data
+WHERE stock_quantity <= reorder_point
+ORDER BY (reorder_point - stock_quantity) DESC;
+
+-- Profitability analysis
+SELECT 
+    product_name,
+    category,
+    unit_price,
+    unit_cost,
+    (unit_price - unit_cost) as profit_per_unit,
+    ROUND(100.0 * (unit_price - unit_cost) / unit_price, 2) as margin_pct,
+    units_sold_30d,
+    (unit_price - unit_cost) * units_sold_30d as profit_30d
+FROM inventory_data
+ORDER BY profit_30d DESC
+LIMIT 20;
+```
+
+---
+
+## Practice Exercise Ideas by Dataset
+
+### E-Commerce Sales
+1. Identify seasonal trends in product categories
+2. Build customer segmentation using RFM analysis
+3. Calculate monthly recurring revenue and growth rate
+4. Find products frequently bought together
+5. Predict next month's revenue using time series
+6. Identify at-risk customers (no purchase in 90 days)
+
+### Support Tickets
+1. Calculate first response time and resolution time SLAs
+2. Identify ticket categories with lowest satisfaction
+3. Forecast ticket volume for next month
+4. Analyze agent workload distribution
+5. Find patterns in high-priority tickets
+6. Calculate cost per ticket by category
+
+### Employee HR
+1. Analyze compensation equity across demographics
+2. Identify departments with highest turnover risk
+3. Calculate total compensation by performance tier
+4. Predict promotion candidates
+5. Analyze hiring trends over time
+6. Calculate diversity metrics by level and department
+
+### Website Analytics
+1. Build conversion funnel analysis
+2. Calculate customer acquisition cost by channel
+3. Identify best-performing landing pages
+4. Analyze mobile vs desktop conversion rates
+5. Find optimal time of day for campaigns
+6. Calculate lifetime value by acquisition channel
+
+### Product Inventory
+1. Optimize reorder points using safety stock formula
+2. Identify slow-moving inventory
+3. Calculate inventory turnover ratio
+4. Forecast demand for next quarter
+5. Analyze supplier performance
+6. Calculate economic order quantity (EOQ)
+
+---
+
+## Data Quality Checklist
+
+Before analyzing any dataset:
+
+**1. Completeness**
+- Check for missing values
+- Verify all expected columns present
+- Confirm date range is complete
+
+**2. Accuracy**
+- Look for outliers or impossible values
+- Verify totals add up
+- Cross-check with source systems
+
+**3. Consistency**
+- Check date formats consistent
+- Verify categorical values standardized
+- Confirm naming conventions followed
+
+**4. Validity**
+- Ensure data types correct
+- Verify foreign keys exist
+- Check constraints not violated
+
+**SQL checklist queries:**
+```sql
+-- Missing values
+SELECT 
+    COUNT(*) as total_rows,
+    COUNT(column1) as column1_count,
+    COUNT(*) - COUNT(column1) as column1_missing
+FROM table_name;
+
+-- Duplicates
+SELECT column1, column2, COUNT(*)
+FROM table_name
+GROUP BY column1, column2
+HAVING COUNT(*) > 1;
+
+-- Outliers (for numeric columns)
+SELECT *
+FROM table_name
+WHERE numeric_column > (
+    SELECT AVG(numeric_column) + 3 * STDDEV(numeric_column)
+    FROM table_name
+);
+```
+
+---
+
+## Downloading Practice Datasets
+
+### Recommended Sources:
+
+**1. Kaggle (kaggle.com/datasets)**
+- Thousands of real-world datasets
+- Competitions with labeled data
+- Community notebooks for learning
+
+**2. Data.gov**
+- US government open data
+- Wide variety of topics
+- Clean, documented datasets
+
+**3. Google Dataset Search (datasetsearch.research.google.com)**
+- Search engine for datasets
+- Links to original sources
+- Academic and research data
+
+**4. UCI Machine Learning Repository**
+- Classic ML datasets
+- Well-documented
+- Good for learning
+
+**5. Company-Specific**
+- Stripe (payment data examples)
+- Airbnb (listings data)
+- Uber (trip data)
+- FiveThirtyEight (data journalism)
+
+### Tips for Practice:
+1. Start with small datasets (< 10,000 rows)
+2. Work with familiar domains
+3. Document your analysis
+4. Share findings on GitHub
+5. Build portfolio projects
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🗺️ LEARNING PATHS & COURSE SYLLABUS")
+        st.markdown(
+            """**Structured roadmaps for different goals and timelines**
+
+---
+
+## Learning Path 1: Career Switcher (12 Weeks Full-Time)
+
+**Goal:** Land first data analyst role  
+**Time Commitment:** 40 hours/week  
+**Prerequisites:** None - absolute beginner friendly  
+
+### Week 1-2: Foundations & Excel
+- **Unit 1:** Data & Business Questions (complete)
+- **Unit 2:** Excel Mastery (complete)
+- **Practice:** 20 Excel problems
+- **Project:** Excel sales dashboard
+- **Checkpoint:** Build pivot table analysis from scratch
+
+### Week 3-4: SQL Fundamentals
+- **Unit 3:** SQL for Data Analysts (complete)
+- **Practice:** 30 SQL queries
+- **Project:** Database analysis for e-commerce
+- **Checkpoint:** Write complex JOINs and window functions
+
+### Week 5-6: Visualization
+- **Unit 4:** BI Dashboards (complete)
+- **Tool Focus:** Tableau Public
+- **Practice:** 3 dashboard projects
+- **Checkpoint:** Build interactive executive dashboard
+
+### Week 7-8: Python & Automation
+- **Unit 5:** Python for Analysts (complete)
+- **Practice:** 25 pandas problems
+- **Project:** Automated reporting pipeline
+- **Checkpoint:** Clean, analyze, and visualize data in Python
+
+### Week 9: Metrics & Analysis
+- **Unit 6:** Metrics & A/B Testing (complete)
+- **Practice:** Design and analyze 3 experiments
+- **Checkpoint:** Calculate statistical significance
+
+### Week 10-11: Industry Application
+- Choose 2 industry modules
+- Complete 10 scenarios
+- Build industry-specific portfolio project
+- **Checkpoint:** Present analysis with business impact
+
+### Week 12: Career Prep & Portfolio
+- **Unit 7:** Capstone & Career (complete)
+- Polish 3-4 portfolio projects
+- Practice 50 interview questions
+- Update resume and LinkedIn
+- Apply to 10 jobs
+- **Checkpoint:** Portfolio live on GitHub
+
+**Expected Outcome:** Job-ready with portfolio, ready to interview
+
+---
+
+## Learning Path 2: Part-Time Professional (24 Weeks)
+
+**Goal:** Transition to data analyst while working  
+**Time Commitment:** 15-20 hours/week  
+**Prerequisites:** Basic Excel knowledge helpful  
+
+### Weeks 1-4: Excel & SQL Foundations
+- Units 1-3 (selective focus)
+- 2 hours/day weekdays
+- 5 hours/day weekends
+- Complete core labs only
+
+### Weeks 5-8: Visualization
+- Unit 4 complete
+- Choose Tableau OR Power BI
+- Build 2 dashboards
+
+### Weeks 9-12: Python Basics
+- Unit 5 core content
+- Focus on pandas
+- Skip advanced topics initially
+
+### Weeks 13-16: Analytics & Metrics
+- Unit 6 complete
+- Apply to current job
+- Document real-world project
+
+### Weeks 17-20: Specialization
+- Choose 1 industry module
+- Deep dive with 15 scenarios
+- Build major portfolio project
+
+### Weeks 21-24: Career Launch
+- Unit 7 complete
+- 3 polished projects
+- Interview prep
+- Networking
+
+**Expected Outcome:** Career transition with proven skills
+
+---
+
+## Learning Path 3: Student/Graduate (6 Months)
+
+**Goal:** Entry-level data analyst position  
+**Time Commitment:** 20 hours/week during semester  
+**Prerequisites:** Basic statistics helpful  
+
+### Month 1: Data Foundations
+- Units 1-2
+- Excel proficiency
+- Understanding business context
+
+### Month 2: SQL Mastery
+- Unit 3 deep dive
+- Practice 60 queries
+- Complex JOINs & CTEs
+
+### Month 3: Visualization Tools
+- Unit 4 complete
+- Both Tableau AND Power BI
+- Dashboard portfolio
+
+### Month 4: Python & Automation
+- Unit 5 complete
+- pandas mastery
+- Automation scripts
+
+### Month 5: Advanced Topics
+- Unit 6 complete
+- Statistics deep dive
+- A/B testing projects
+- 1 industry module
+
+### Month 6: Portfolio & Career
+- Unit 7 complete
+- 5 diverse projects
+- GitHub portfolio
+- Interview practice
+- Internship applications
+
+**Expected Outcome:** Strong candidate for internships/entry roles
+
+---
+
+## Learning Path 4: Analyst Upskilling (8 Weeks)
+
+**Goal:** Excel analyst adding SQL/Python  
+**Time Commitment:** 10 hours/week  
+**Prerequisites:** Proficient in Excel  
+
+### Week 1-2: SQL Focus
+- Unit 3 complete
+- Apply SQL to existing analyses
+- Replace Excel calculations with queries
+
+### Week 3-4: Python Introduction
+- Unit 5 core
+- pandas for Excel users
+- Automate current workflows
+
+### Week 5-6: Advanced Analytics
+- Unit 6 complete
+- Statistical testing
+- Experiment design
+
+### Week 7-8: Tool Integration
+- Connect Excel to databases
+- Python → Excel reports
+- Automated dashboards
+- Document 2 automation projects
+
+**Expected Outcome:** Modern analyst with full stack skills
+
+---
+
+## Learning Path 5: Domain Expert Adding Analytics (12 Weeks Part-Time)
+
+**Goal:** Add data skills to domain expertise  
+**Time Commitment:** 10 hours/week  
+**Prerequisites:** Subject matter expertise  
+
+### Weeks 1-3: Quick Wins with Excel
+- Unit 2 advanced features
+- Pivot tables for your domain
+- Formulas for your use cases
+
+### Weeks 4-7: SQL for Your Data
+- Unit 3 adapted to your domain
+- Query your actual databases
+- Build domain-specific queries
+
+### Weeks 8-10: Visualization
+- Unit 4 selective
+- Dashboards for your stakeholders
+- Domain-specific KPIs
+
+### Weeks 11-12: Integration
+- Choose relevant industry module
+- Apply to real problems
+- Present to team
+
+**Expected Outcome:** Data-driven decision making in your domain
+
+---
+
+## Complete Course Syllabus
+
+### UNIT 1: Data & Business Questions (Week 1)
+**Learning Objectives:**
+- Understand data analyst role and responsibilities
+- Frame business problems as data questions
+- Assess data quality and reliability
+- Communicate findings effectively
+
+**Topics:**
+- What is data analysis
+- Types of analytics (descriptive, diagnostic, predictive, prescriptive)
+- Business question framework (5W1H)
+- Data quality assessment
+- Stakeholder management
+- Communication best practices
+
+**Deliverables:**
+- 10 business question formulations
+- Data quality assessment report
+- Stakeholder presentation
+
+---
+
+### UNIT 2: Excel Mastery (Week 2)
+**Learning Objectives:**
+- Master essential Excel functions
+- Build professional pivot tables
+- Create interactive dashboards
+- Automate with basic VBA
+
+**Topics:**
+- Essential formulas (VLOOKUP, INDEX/MATCH, IF, SUMIFS)
+- Pivot tables and pivot charts
+- Conditional formatting
+- Data validation
+- Dashboard design
+- Power Query basics
+- VBA introduction
+
+**Deliverables:**
+- Sales dashboard
+- Financial model
+- Automated report
+
+**Practice:** 45 problems with solutions
+
+---
+
+### UNIT 3: SQL for Data Analysts (Weeks 3-4)
+**Learning Objectives:**
+- Write complex SQL queries
+- Optimize query performance
+- Design efficient data models
+- Extract insights from databases
+
+**Topics:**
+- SELECT, WHERE, ORDER BY, LIMIT
+- JOINs (INNER, LEFT, RIGHT, FULL)
+- Aggregations (GROUP BY, HAVING)
+- Window functions (ROW_NUMBER, RANK, LAG, LEAD)
+- CTEs and subqueries
+- Date/time functions
+- String manipulation
+- Query optimization
+
+**Deliverables:**
+- Customer analysis queries
+- Sales performance report
+- Product recommendation query
+
+**Practice:** 63 queries with solutions
+
+---
+
+### UNIT 4: BI Dashboards & Visualization (Weeks 5-6)
+**Learning Objectives:**
+- Design effective visualizations
+- Build interactive dashboards
+- Master Tableau and/or Power BI
+- Present data visually
+
+**Topics:**
+- Data visualization principles
+- Chart type selection
+- Color theory for data
+- Dashboard design patterns
+- Tableau fundamentals
+- Power BI basics
+- Interactive elements
+- Mobile responsiveness
+
+**Deliverables:**
+- Executive sales dashboard
+- Customer analytics dashboard
+- KPI monitoring dashboard
+
+**Practice:** 3 complete dashboards
+
+---
+
+### UNIT 5: Python for Analysts (Weeks 7-8)
+**Learning Objectives:**
+- Manipulate data with pandas
+- Automate repetitive tasks
+- Create visualizations with matplotlib/seaborn
+- Build data pipelines
+
+**Topics:**
+- Python basics
+- pandas DataFrames
+- Data cleaning and transformation
+- Grouping and aggregation
+- Merging and joining
+- Time series analysis
+- Visualization with matplotlib/seaborn
+- Automation and scheduling
+
+**Deliverables:**
+- Automated data pipeline
+- Customer segmentation analysis
+- Time series forecast
+
+**Practice:** 60 problems with solutions
+
+---
+
+### UNIT 6: Metrics & A/B Testing (Week 9)
+**Learning Objectives:**
+- Design meaningful metrics
+- Run and analyze A/B tests
+- Calculate statistical significance
+- Make data-driven recommendations
+
+**Topics:**
+- KPI framework
+- Metric design principles
+- A/B testing methodology
+- Statistical significance
+- Sample size calculation
+- Common testing pitfalls
+- Experiment analysis
+- Reporting results
+
+**Deliverables:**
+- Metric framework for product
+- Complete A/B test analysis
+- Recommendation presentation
+
+**Practice:** 5 experiment designs and analyses
+
+---
+
+### UNIT 7: Capstone & Career (Weeks 10-12)
+**Learning Objectives:**
+- Build complete portfolio projects
+- Prepare for technical interviews
+- Navigate job search
+- Negotiate offers
+
+**Topics:**
+- Portfolio project design
+- GitHub best practices
+- Resume optimization
+- LinkedIn strategy
+- Interview preparation (technical & behavioral)
+- Salary negotiation
+- First 90 days as analyst
+
+**Deliverables:**
+- 3 portfolio projects on GitHub
+- Polished resume
+- Interview practice completions
+
+**Practice:** 100+ interview questions
+
+---
+
+## Time Investment Summary
+
+### Minimum Path (Core Skills Only)
+- **Duration:** 8 weeks full-time
+- **Hours:** 320 total
+- **Focus:** Units 1-3, 5, 7 (core only)
+- **Outcome:** Entry-level ready
+
+### Recommended Path (Comprehensive)
+- **Duration:** 12 weeks full-time or 24 weeks part-time
+- **Hours:** 480-500 total
+- **Focus:** All units complete
+- **Outcome:** Competitive candidate
+
+### Mastery Path (Industry Specialization)
+- **Duration:** 16 weeks
+- **Hours:** 640 total
+- **Focus:** All units + 3 industry modules
+- **Outcome:** Specialized analyst
+
+---
+
+## Assessment & Certification
+
+### Unit Assessments (70% to pass each)
+- Multiple choice questions (20%)
+- Short answer questions (30%)
+- Practical exercises (50%)
+
+### Final Capstone (Must pass)
+- Complete end-to-end project
+- Demonstrate all skills
+- Present findings professionally
+
+### Certification Requirements
+- Pass all 7 unit assessments (70%+)
+- Complete final capstone project
+- Build portfolio with 3+ projects
+- Pass mock interview
+
+---
+
+## Prerequisites by Unit
+
+**Unit 1:** None  
+**Unit 2:** Basic computer skills  
+**Unit 3:** Unit 2 OR equivalent Excel experience  
+**Unit 4:** Unit 3 OR basic SQL knowledge  
+**Unit 5:** Units 2-3 OR equivalent experience  
+**Unit 6:** Units 3, 5 OR statistics background  
+**Unit 7:** Units 1-6 complete  
+
+---
+
+## Tools & Software Required
+
+**Essential (Free):**
+- Excel (LibreOffice Calc alternative)
+- SQL database (SQLite or PostgreSQL)
+- Python with pandas, matplotlib
+- Git and GitHub account
+- VS Code or Jupyter
+
+**Visualization (Choose one initially):**
+- Tableau Public (free)
+- Power BI Desktop (free for Windows)
+
+**Optional:**
+- DBeaver (database management)
+- Anaconda (Python distribution)
+
+---
+
+## Support & Resources
+
+**During Learning:**
+- FAQ for every tool
+- Troubleshooting guides
+- Video walkthroughs
+- Quick reference cards
+- Practice datasets
+
+**Career Support:**
+- Interview question bank
+- Resume templates
+- Portfolio examples
+- Networking strategies
+- Salary benchmarks
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🏆 CHALLENGE PROBLEMS - COMPETITION LEVEL")
+        st.markdown(
+            """**Test your skills with advanced, real-world challenges**
+
+---
+
+## Challenge 1: E-Commerce Attribution Analysis
+
+**Difficulty:** Hard  
+**Time:** 2-3 hours  
+**Skills:** SQL, Python, Statistics  
+
+### Problem Statement
+An e-commerce company has multiple marketing channels (email, social, search, direct). Customers often interact with multiple channels before purchasing. Build a multi-touch attribution model to fairly distribute credit across channels.
+
+### Data Tables
+```sql
+-- Sessions table
+CREATE TABLE sessions (
+    session_id VARCHAR(50),
+    user_id VARCHAR(50),
+    session_date TIMESTAMP,
+    channel VARCHAR(50),
+    converted BOOLEAN
+);
+
+-- Conversions table  
+CREATE TABLE conversions (
+    conversion_id VARCHAR(50),
+    user_id VARCHAR(50),
+    conversion_date TIMESTAMP,
+    revenue DECIMAL(10,2)
+);
+```
+
+### Requirements
+1. Identify all touchpoints in customer journey
+2. Implement 3 attribution models:
+   - Last-touch (100% to final channel)
+   - First-touch (100% to initial channel)
+   - Linear (equal credit to all touchpoints)
+3. Compare revenue attribution across models
+4. Visualize results
+5. Recommend best model with justification
+
+### Solution Approach
+
+```sql
+-- Step 1: Build customer journey
+WITH customer_journeys AS (
+    SELECT 
+        s.user_id,
+        c.conversion_id,
+        c.revenue,
+        s.channel,
+        s.session_date,
+        c.conversion_date,
+        ROW_NUMBER() OVER (PARTITION BY s.user_id, c.conversion_id ORDER BY s.session_date) as touch_position,
+        COUNT(*) OVER (PARTITION BY s.user_id, c.conversion_id) as total_touches
+    FROM sessions s
+    JOIN conversions c ON s.user_id = c.user_id
+    WHERE s.session_date <= c.conversion_date
+        AND s.session_date >= c.conversion_date - INTERVAL '30 days'
+),
+
+-- Step 2: Calculate attributions
+attribution AS (
+    SELECT 
+        channel,
+        -- Last touch
+        SUM(CASE WHEN touch_position = total_touches THEN revenue ELSE 0 END) as last_touch_revenue,
+        -- First touch
+        SUM(CASE WHEN touch_position = 1 THEN revenue ELSE 0 END) as first_touch_revenue,
+        -- Linear
+        SUM(revenue / total_touches) as linear_revenue
+    FROM customer_journeys
+    GROUP BY channel
+)
+
+SELECT 
+    channel,
+    ROUND(last_touch_revenue, 2) as last_touch,
+    ROUND(first_touch_revenue, 2) as first_touch,
+    ROUND(linear_revenue, 2) as linear,
+    ROUND((last_touch_revenue + first_touch_revenue + linear_revenue) / 3, 2) as avg_attribution
+FROM attribution
+ORDER BY avg_attribution DESC;
+```
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load data
+journeys = pd.read_sql_query(sql_query, conn)
+
+# Visualize attribution comparison
+fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+
+models = ['last_touch', 'first_touch', 'linear']
+titles = ['Last-Touch Attribution', 'First-Touch Attribution', 'Linear Attribution']
+
+for idx, (model, title) in enumerate(zip(models, titles)):
+    journeys.plot(kind='bar', x='channel', y=model, ax=axes[idx], color='steelblue')
+    axes[idx].set_title(title)
+    axes[idx].set_ylabel('Revenue (£)')
+    axes[idx].tick_params(axis='x', rotation=45)
+
+plt.tight_layout()
+plt.savefig('attribution_comparison.png')
+
+# Calculate impact differences
+impact = journeys.copy()
+impact['last_vs_first'] = impact['last_touch'] - impact['first_touch']
+impact['recommendation'] = impact.apply(
+    lambda x: 'Optimize early funnel' if x['first_touch'] > x['last_touch'] 
+    else 'Optimize conversion', axis=1
+)
+
+print("\n=== Attribution Insights ===")
+print(impact[['channel', 'last_vs_first', 'recommendation']])
+```
+
+**Expected Insights:**
+- Channels with high last-touch but low first-touch are good at converting but not discovering
+- Channels with high first-touch but low last-touch create awareness but don't close
+- Linear gives balanced view of customer journey
+
+---
+
+## Challenge 2: Predictive Churn Model
+
+**Difficulty:** Hard  
+**Time:** 3-4 hours  
+**Skills:** Python, ML, Statistics  
+
+### Problem Statement
+Build a customer churn prediction model. Identify features that predict churn, create the model, and provide actionable recommendations to reduce churn.
+
+### Data
+Customer data with features: tenure, monthly_charges, total_charges, contract_type, payment_method, support_tickets, churned (target)
+
+### Requirements
+1. Exploratory data analysis
+2. Feature engineering
+3. Train logistic regression model
+4. Evaluate model performance (precision, recall, F1)
+5. Identify top churn indicators
+6. Calculate potential revenue saved by retention campaign
+7. Recommend specific actions
+
+### Solution
+
+```python
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load data
+df = pd.read_csv('customer_data.csv')
+
+# EDA
+print("Churn Rate:", df['churned'].mean())
+print("\nChurn by Contract Type:")
+print(df.groupby('contract_type')['churned'].mean())
+
+# Feature engineering
+df['support_ticket_flag'] = (df['support_tickets'] >= 3).astype(int)
+df['high_charges'] = (df['monthly_charges'] > df['monthly_charges'].median()).astype(int)
+df['new_customer'] = (df['tenure_months'] < 6).astype(int)
+
+# Encode categorical variables
+df_encoded = pd.get_dummies(df, columns=['contract_type', 'payment_method'], drop_first=True)
+
+# Prepare features
+features = ['tenure_months', 'monthly_charges', 'total_charges', 'support_tickets',
+            'support_ticket_flag', 'high_charges', 'new_customer',
+            'contract_type_One year', 'contract_type_Two year',
+            'payment_method_Credit card', 'payment_method_Electronic check']
+
+X = df_encoded[features]
+y = df_encoded['churned']
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Scale features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Train model
+model = LogisticRegression(random_state=42, max_iter=1000)
+model.fit(X_train_scaled, y_train)
+
+# Evaluate
+y_pred = model.predict(X_test_scaled)
+y_pred_proba = model.predict_proba(X_test_scaled)[:, 1]
+
+print("\n=== Model Performance ===")
+print(classification_report(y_test, y_pred))
+print(f"\nROC-AUC Score: {roc_auc_score(y_test, y_pred_proba):.3f}")
+
+# Feature importance
+feature_importance = pd.DataFrame({
+    'feature': features,
+    'coefficient': model.coef_[0],
+    'abs_coefficient': np.abs(model.coef_[0])
+}).sort_values('abs_coefficient', ascending=False)
+
+print("\n=== Top Churn Indicators ===")
+print(feature_importance.head(10))
+
+# Business impact
+avg_customer_value = df['total_charges'].mean()
+churn_customers = df[df['churned'] == 1]
+potential_lost_revenue = len(churn_customers) * avg_customer_value
+
+# If we can save 30% of high-risk customers
+high_risk_threshold = 0.7
+high_risk_count = (y_pred_proba >= high_risk_threshold).sum()
+potential_saved = high_risk_count * avg_customer_value * 0.3
+
+print(f"\n=== Business Impact ===")
+print(f"Potential Lost Revenue: £{potential_lost_revenue:,.2f}")
+print(f"High-Risk Customers: {high_risk_count:,}")
+print(f"Potential Revenue Saved (30% retention): £{potential_saved:,.2f}")
+
+# Recommendations
+print("\n=== Actionable Recommendations ===")
+print("1. Proactive Support: Contact customers with 3+ tickets before they churn")
+print("2. Contract Incentives: Offer discounts for annual contracts (2-year shows lowest churn)")
+print("3. Payment Method: Customers on electronic check have higher churn - offer credit card incentives")
+print("4. New Customer Onboarding: First 6 months are critical - implement welcome program")
+print("5. High-Charge Customers: Review pricing for customers paying above median")
+
+# Visualize confusion matrix
+plt.figure(figsize=(8, 6))
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.title('Confusion Matrix')
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.savefig('confusion_matrix.png')
+```
+
+---
+
+## Challenge 3: Real-Time Dashboard Optimization
+
+**Difficulty:** Medium-Hard  
+**Time:** 2 hours  
+**Skills:** SQL, Tableau/Power BI  
+
+### Problem Statement
+You have a slow-performing executive dashboard loading data from multiple large tables. Optimize it to load in under 3 seconds while maintaining all functionality.
+
+### Current Issues
+- Dashboard loads in 45 seconds
+- Queries scan entire tables (millions of rows)
+- No aggregations pre-calculated
+- Multiple redundant queries
+
+### Optimization Requirements
+1. Identify slow queries
+2. Create aggregated tables
+3. Implement incremental refresh
+4. Add appropriate indexes
+5. Reduce data sources
+6. Measure improvement
+
+### Solution
+
+```sql
+-- Step 1: Create aggregated daily snapshot
+CREATE TABLE daily_sales_summary AS
+SELECT 
+    DATE(order_date) as sales_date,
+    product_category,
+    region,
+    COUNT(DISTINCT order_id) as order_count,
+    COUNT(DISTINCT customer_id) as customer_count,
+    SUM(order_amount) as total_revenue,
+    AVG(order_amount) as avg_order_value
+FROM orders
+GROUP BY DATE(order_date), product_category, region;
+
+-- Step 2: Add indexes
+CREATE INDEX idx_sales_summary_date ON daily_sales_summary(sales_date);
+CREATE INDEX idx_sales_summary_category ON daily_sales_summary(product_category);
+CREATE INDEX idx_sales_summary_region ON daily_sales_summary(region);
+
+-- Step 3: Create incremental refresh procedure
+CREATE PROCEDURE refresh_daily_summary(p_date DATE)
+BEGIN
+    DELETE FROM daily_sales_summary WHERE sales_date = p_date;
+    
+    INSERT INTO daily_sales_summary
+    SELECT 
+        DATE(order_date) as sales_date,
+        product_category,
+        region,
+        COUNT(DISTINCT order_id) as order_count,
+        COUNT(DISTINCT customer_id) as customer_count,
+        SUM(order_amount) as total_revenue,
+        AVG(order_amount) as avg_order_value
+    FROM orders
+    WHERE DATE(order_date) = p_date
+    GROUP BY DATE(order_date), product_category, region;
+END;
+
+-- Step 4: Optimized query for dashboard (now queries summary table)
+SELECT 
+    sales_date,
+    product_category,
+    SUM(total_revenue) as revenue,
+    SUM(order_count) as orders
+FROM daily_sales_summary
+WHERE sales_date >= CURRENT_DATE - INTERVAL '90 days'
+GROUP BY sales_date, product_category
+ORDER BY sales_date;
+
+-- Performance comparison
+-- BEFORE: Full table scan of 10M rows = 42 seconds
+-- AFTER: Aggregated table of 50K rows = 0.8 seconds
+-- IMPROVEMENT: 98% faster
+```
+
+**Additional Optimizations:**
+1. **Data Source Reduction:** Combine 5 data sources into 2 pre-joined views
+2. **Extract Instead of Live:** Use Tableau extract (.hyper) instead of live connection
+3. **Filter Early:** Apply date filters in SQL, not in Tableau
+4. **Aggregation:** Pre-aggregate at source, not in viz
+5. **Caching:** Enable dashboard caching for 1 hour
+
+**Results:**
+- Load time: 45s → 2.1s (95% improvement)
+- Query count: 23 → 5 (78% reduction)
+- Data scanned: 10M rows → 50K rows (99.5% reduction)
+
+---
+
+## Challenge 4: A/B Test Power Analysis
+
+**Difficulty:** Medium  
+**Time:** 1-2 hours  
+**Skills:** Statistics, Python  
+
+### Problem Statement
+Design an A/B test for a new checkout flow. Calculate required sample size, run simulation, and determine if observed difference is significant.
+
+### Scenario
+- Current conversion rate: 12%
+- Minimum detectable effect: 2% (relative improvement to 14%)
+- Significance level: 0.05
+- Power: 0.80
+
+### Requirements
+1. Calculate required sample size
+2. Simulate test data
+3. Run statistical test
+4. Calculate confidence intervals
+5. Make go/no-go recommendation
+
+### Solution
+
+```python
+import numpy as np
+from scipy import stats
+from statsmodels.stats.power import zt_ind_solve_power
+from statsmodels.stats.proportion import proportion_effectsize
+import matplotlib.pyplot as plt
+
+# Step 1: Calculate required sample size
+baseline_rate = 0.12
+target_rate = 0.14
+alpha = 0.05
+power = 0.80
+
+# Effect size
+effect_size = proportion_effectsize(baseline_rate, target_rate)
+
+# Sample size per group
+sample_size = zt_ind_solve_power(
+    effect_size=effect_size,
+    alpha=alpha,
+    power=power,
+    ratio=1.0,
+    alternative='larger'
+)
+
+print(f"=== Sample Size Calculation ===")
+print(f"Required sample size per group: {int(np.ceil(sample_size)):,}")
+print(f"Total visitors needed: {int(np.ceil(sample_size * 2)):,}")
+print(f"Expected runtime (at 1000 visitors/day): {int(np.ceil(sample_size * 2 / 1000))} days")
+
+# Step 2: Simulate test data
+np.random.seed(42)
+n_per_group = int(np.ceil(sample_size))
+
+# Control group (12% conversion)
+control_conversions = np.random.binomial(n=1, p=baseline_rate, size=n_per_group)
+control_rate = control_conversions.mean()
+
+# Treatment group (14% conversion)
+treatment_conversions = np.random.binomial(n=1, p=target_rate, size=n_per_group)
+treatment_rate = treatment_conversions.mean()
+
+print(f"\n=== Test Results ===")
+print(f"Control conversion rate: {control_rate:.2%}")
+print(f"Treatment conversion rate: {treatment_rate:.2%}")
+print(f"Absolute lift: {treatment_rate - control_rate:.2%}")
+print(f"Relative lift: {(treatment_rate / control_rate - 1):.2%}")
+
+# Step 3: Statistical test
+# Two-proportion z-test
+conversions = np.array([control_conversions.sum(), treatment_conversions.sum()])
+nobs = np.array([n_per_group, n_per_group])
+
+from statsmodels.stats.proportion import proportions_ztest
+z_stat, p_value = proportions_ztest(conversions, nobs, alternative='smaller')
+
+print(f"\n=== Statistical Significance ===")
+print(f"Z-statistic: {z_stat:.3f}")
+print(f"P-value: {p_value:.4f}")
+print(f"Significant at α=0.05: {'YES ✓' if p_value < alpha else 'NO ✗'}")
+
+# Step 4: Confidence intervals
+from statsmodels.stats.proportion import proportion_confint
+
+ci_control = proportion_confint(control_conversions.sum(), n_per_group, alpha=0.05, method='wilson')
+ci_treatment = proportion_confint(treatment_conversions.sum(), n_per_group, alpha=0.05, method='wilson')
+
+print(f"\n=== 95% Confidence Intervals ===")
+print(f"Control: {ci_control[0]:.2%} - {ci_control[1]:.2%}")
+print(f"Treatment: {ci_treatment[0]:.2%} - {ci_treatment[1]:.2%}")
+
+# Step 5: Business impact
+avg_order_value = 75
+daily_visitors = 1000
+
+annual_impact = (treatment_rate - control_rate) * daily_visitors * 365 * avg_order_value
+
+print(f"\n=== Business Impact ===")
+print(f"Additional conversions per day: {(treatment_rate - control_rate) * daily_visitors:.1f}")
+print(f"Annual revenue impact: £{annual_impact:,.2f}")
+
+# Recommendation
+print(f"\n=== Recommendation ===")
+if p_value < alpha:
+    print("✓ LAUNCH: Treatment significantly outperforms control")
+    print(f"  Expected annual impact: £{annual_impact:,.2f}")
+    print(f"  Confidence: {(1-p_value)*100:.1f}%")
+else:
+    print("✗ DO NOT LAUNCH: No significant difference detected")
+    print("  Consider:")
+    print("  - Running test longer for more data")
+    print("  - Testing more dramatic changes")
+    print("  - Segmenting by user type")
+
+# Visualize
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+
+# Conversion rates
+rates = [control_rate, treatment_rate]
+labels = ['Control', 'Treatment']
+colors = ['#3498db', '#2ecc71']
+
+ax1.bar(labels, rates, color=colors)
+ax1.set_ylabel('Conversion Rate')
+ax1.set_title('A/B Test Results')
+ax1.set_ylim(0, max(rates) * 1.2)
+
+for i, (rate, label) in enumerate(zip(rates, labels)):
+    ax1.text(i, rate + 0.005, f'{rate:.2%}', ha='center', fontweight='bold')
+
+# Confidence intervals
+ax2.errorbar([0, 1], [control_rate, treatment_rate], 
+             yerr=[[control_rate - ci_control[0], treatment_rate - ci_treatment[0]],
+                   [ci_control[1] - control_rate, ci_treatment[1] - treatment_rate]],
+             fmt='o', markersize=10, capsize=10, capthick=2, color=colors)
+ax2.set_ylabel('Conversion Rate')
+ax2.set_title('95% Confidence Intervals')
+ax2.set_xticks([0, 1])
+ax2.set_xticklabels(labels)
+
+plt.tight_layout()
+plt.savefig('ab_test_results.png')
+```
+
+---
+
+## Challenge 5: SQL Performance Tuning
+
+**Difficulty:** Hard  
+**Time:** 1-2 hours  
+**Skills:** SQL, Database optimization  
+
+### Problem Statement
+You have a query that takes 3 minutes to run. Optimize it to run in under 5 seconds.
+
+### Slow Query
+```sql
+-- Takes 180 seconds
+SELECT 
+    c.customer_name,
+    COUNT(o.order_id) as order_count,
+    SUM(o.order_amount) as total_spent,
+    (SELECT AVG(order_amount) FROM orders WHERE customer_id = c.customer_id) as avg_order,
+    (SELECT MAX(order_date) FROM orders WHERE customer_id = c.customer_id) as last_order,
+    (SELECT COUNT(*) FROM orders WHERE customer_id = c.customer_id AND order_date >= CURRENT_DATE - INTERVAL '30 days') as recent_orders
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+WHERE c.signup_date >= '2023-01-01'
+GROUP BY c.customer_id, c.customer_name
+HAVING COUNT(o.order_id) > 0
+ORDER BY total_spent DESC;
+```
+
+### Optimized Query
+```sql
+-- Takes 3.2 seconds
+WITH customer_metrics AS (
+    SELECT 
+        customer_id,
+        COUNT(order_id) as order_count,
+        SUM(order_amount) as total_spent,
+        AVG(order_amount) as avg_order,
+        MAX(order_date) as last_order,
+        COUNT(CASE WHEN order_date >= CURRENT_DATE - INTERVAL '30 days' THEN 1 END) as recent_orders
+    FROM orders
+    GROUP BY customer_id
+)
+SELECT 
+    c.customer_name,
+    cm.order_count,
+    cm.total_spent,
+    cm.avg_order,
+    cm.last_order,
+    cm.recent_orders
+FROM customers c
+INNER JOIN customer_metrics cm ON c.customer_id = cm.customer_id
+WHERE c.signup_date >= '2023-01-01'
+    AND cm.order_count > 0
+ORDER BY cm.total_spent DESC;
+
+-- Add indexes
+CREATE INDEX idx_customers_signup ON customers(signup_date);
+CREATE INDEX idx_orders_customer ON orders(customer_id);
+CREATE INDEX idx_orders_date ON orders(order_date);
+```
+
+### Optimizations Applied
+1. **Removed correlated subqueries** - Massive performance killer
+2. **Used CTE** - Single aggregation pass instead of multiple
+3. **Changed LEFT to INNER JOIN** - HAVING already filters non-customers
+4. **Added indexes** - Speed up filtering and joining
+5. **Moved filter to WHERE** - Filter before aggregation
+
+**Performance:**
+- Before: 180 seconds
+- After: 3.2 seconds
+- **Improvement: 98%**
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## ⚖️ TOOL COMPARISON GUIDES")
+        st.markdown(
+            """**Make informed decisions about which tools to use**
+
+---
+
+## SQL Database Comparison
+
+### SQLite vs MySQL vs PostgreSQL
+
+| Feature | SQLite | MySQL | PostgreSQL |
+|---------|--------|-------|------------|
+| **Best For** | Learning, small apps | Web applications | Complex analytics |
+| **Setup** | Zero config | Moderate | Moderate |
+| **Performance** | Good for < 100K rows | Excellent for reads | Excellent for complex queries |
+| **Concurrency** | Limited writes | Good | Excellent |
+| **Cost** | Free | Free (open source) | Free (open source) |
+| **Window Functions** | Yes (3.25+) | Yes (8.0+) | Yes (excellent) |
+| **JSON Support** | Basic | Good | Excellent |
+| **Learning Curve** | Easy | Easy | Moderate |
+
+**Recommendation:**
+- **Learning:** Start with SQLite (easiest setup)
+- **Portfolio Projects:** PostgreSQL (most features)
+- **Job Skills:** MySQL and PostgreSQL (most common)
+
+### SQL Syntax Differences
+
+```sql
+-- Date functions
+-- SQLite
+SELECT date('now'), datetime('now', '-7 days');
+
+-- MySQL
+SELECT CURDATE(), DATE_SUB(NOW(), INTERVAL 7 DAY);
+
+-- PostgreSQL
+SELECT CURRENT_DATE, NOW() - INTERVAL '7 days';
+
+-- String concatenation
+-- SQLite & PostgreSQL
+SELECT first_name || ' ' || last_name FROM customers;
+
+-- MySQL
+SELECT CONCAT(first_name, ' ', last_name) FROM customers;
+
+-- Limit with offset
+-- All support:
+SELECT * FROM customers LIMIT 10 OFFSET 20;
+
+-- But MySQL also supports:
+SELECT * FROM customers LIMIT 20, 10;  -- offset, limit
+```
+
+---
+
+## Python vs R for Data Analysis
+
+| Aspect | Python | R |
+|--------|--------|---|
+| **Learning Curve** | Easier (general language) | Steeper (statistics focus) |
+| **Job Market** | Much larger | Smaller, academic |
+| **Data Manipulation** | pandas (excellent) | dplyr/tidyverse (excellent) |
+| **Visualization** | matplotlib, seaborn, plotly | ggplot2 (superior) |
+| **Machine Learning** | scikit-learn (excellent) | caret, tidymodels |
+| **Statistical Analysis** | scipy, statsmodels | Built-in (superior) |
+| **Speed** | Fast (with numpy) | Slower (but vectorized) |
+| **Community** | Massive | Large (academia) |
+| **Career** | Essential | Optional/nice-to-have |
+
+**Recommendation for Data Analysts:**
+- **Learn Python first** - Required for 90%+ of jobs
+- **Add R if:** Working in academia, healthcare research, or specialized statistics
+- **For visualization:** R's ggplot2 is better, but Python is "good enough"
+
+### Code Comparison
+
+```python
+# Python (pandas)
+import pandas as pd
+
+df = pd.read_csv('data.csv')
+result = (df.groupby('category')
+            .agg({'sales': 'sum', 'quantity': 'mean'})
+            .sort_values('sales', ascending=False))
+```
+
+```r
+# R (tidyverse)
+library(tidyverse)
+
+result <- read_csv('data.csv') %>%
+    group_by(category) %>%
+    summarize(
+        total_sales = sum(sales),
+        avg_quantity = mean(quantity)
+    ) %>%
+    arrange(desc(total_sales))
+```
+
+Both accomplish the same task. Python syntax is more familiar to programmers, R syntax is more intuitive for statisticians.
+
+---
+
+## Tableau vs Power BI
+
+| Feature | Tableau | Power BI |
+|---------|---------|----------|
+| **Cost** | Public: Free, Desktop: £588/year | Desktop: Free, Pro: £7.80/user/month |
+| **Ease of Use** | Intuitive, visual | Learning curve (DAX) |
+| **Data Sources** | 100+ connectors | Excellent Microsoft integration |
+| **Visualizations** | Superior aesthetics | Good (improving) |
+| **Performance** | Excellent for large data | Good (extracts help) |
+| **Calculations** | Calculated fields (easy) | DAX (powerful but complex) |
+| **Mobile** | Excellent | Good |
+| **Sharing** | Tableau Public, Server, Online | Power BI Service |
+| **Market Share** | Leader (enterprise) | Growing fast (Microsoft ecosystem) |
+| **Job Market** | More listings | Rapidly increasing |
+
+### When to Choose Tableau:
+- ✅ Need best-in-class visualizations
+- ✅ Working with diverse data sources
+- ✅ Large enterprise environment
+- ✅ Budget available for licensing
+- ✅ Focus on exploration and discovery
+
+### When to Choose Power BI:
+- ✅ Microsoft 365 ecosystem
+- ✅ Budget-conscious (free Desktop)
+- ✅ Need tight Excel integration
+- ✅ Growing/mid-size company
+- ✅ Already using Azure
+
+### Feature Comparison
+
+**Data Preparation:**
+- **Tableau:** Tableau Prep (separate tool), basic cleaning in Desktop
+- **Power BI:** Power Query (built-in, excellent)
+- **Winner:** Power BI
+
+**Calculated Fields:**
+- **Tableau:** Intuitive syntax, easy to learn
+- **Power BI:** DAX (more powerful, steeper curve)
+- **Winner:** Tie (depends on complexity needed)
+
+**Aesthetics:**
+- **Tableau:** Beautiful out-of-box
+- **Power BI:** Functional, requires more customization
+- **Winner:** Tableau
+
+**Recommendation for Job Seekers:**
+- **Learn both basics** (many jobs require both)
+- **Master one deeply** (start with whichever you like)
+- **Tableau first** if aesthetics-focused or enterprise-bound
+- **Power BI first** if Microsoft shop or budget-conscious
+
+---
+
+## Excel vs Google Sheets
+
+| Feature | Excel | Google Sheets |
+|---------|-------|---------------|
+| **Cost** | £59.99/year (Microsoft 365) | Free |
+| **Performance** | Excellent (large files) | Slower (100K+ cells) |
+| **Collaboration** | Good (365), limited (desktop) | Excellent (real-time) |
+| **Functions** | 400+ (most advanced) | 300+ (growing) |
+| **Pivot Tables** | Superior | Good |
+| **VBA/Macros** | Full support | Apps Script (different) |
+| **Add-ins** | Extensive | Growing |
+| **Offline** | Full functionality | Limited |
+| **File Size Limit** | 2GB | 5M cells (10MB) |
+| **Charts** | More types, better | Basic but improving |
+| **Data Sources** | Power Query (excellent) | Good connectors |
+
+### When to Use Excel:
+- ✅ Large datasets (500K+ rows)
+- ✅ Complex modeling
+- ✅ VBA automation
+- ✅ Advanced pivot tables
+- ✅ Offline work
+- ✅ Professional presentations
+
+### When to Use Google Sheets:
+- ✅ Team collaboration
+- ✅ Real-time editing
+- ✅ Cloud-first workflow
+- ✅ Simple dashboards
+- ✅ Budget constraints
+- ✅ Integration with Google services
+
+### Function Differences
+
+```excel
+// Excel
+=XLOOKUP(lookup_value, lookup_array, return_array)
+=LET(x, A1*2, y, B1*3, x+y)
+=FILTER(A1:C100, B1:B100>50)
+
+// Google Sheets equivalent
+=VLOOKUP(lookup_value, range, col_index, FALSE)  // No XLOOKUP yet
+=A1*2 + B1*3  // No LET, just calculate
+=FILTER(A1:C100, B1:B100>50)  // Same FILTER
+```
+
+Excel has more advanced functions, but Google Sheets is closing the gap.
+
+**Recommendation:**
+- **Learn Excel first** (industry standard)
+- **Know Google Sheets basics** (collaboration advantage)
+- **Use both**: Excel for heavy analysis, Sheets for collaboration
+
+---
+
+## Jupyter Notebook vs VS Code vs IDEs
+
+| Tool | Best For | Pros | Cons |
+|------|----------|------|------|
+| **Jupyter Notebook** | Exploration, learning | Interactive, visual | Version control challenges |
+| **VS Code** | Production code | Full IDE, git integration | Less interactive |
+| **PyCharm** | Large projects | Powerful debugging | Heavy, learning curve |
+| **Google Colab** | GPU tasks, sharing | Free, collaborative | Internet required |
+| **Spyder** | MATLAB users | Familiar interface | Limited features |
+
+### Jupyter Notebook
+**Pros:**
+- ✅ Perfect for data exploration
+- ✅ See results immediately
+- ✅ Mix code, text, visualizations
+- ✅ Great for learning
+- ✅ Easy to share
+
+**Cons:**
+- ❌ Hard to version control
+- ❌ Not ideal for production code
+- ❌ Can become messy
+- ❌ Difficult to debug complex logic
+
+### VS Code
+**Pros:**
+- ✅ Can run notebooks AND scripts
+- ✅ Excellent git integration
+- ✅ IntelliSense code completion
+- ✅ Debugging tools
+- ✅ Extensions for everything
+- ✅ Lightweight
+
+**Cons:**
+- ❌ Less interactive than Jupyter for exploration
+- ❌ More setup required
+- ❌ Learning curve for beginners
+
+**Recommendation:**
+- **Start with:** Jupyter for learning and exploration
+- **Graduate to:** VS Code for portfolio projects and production code
+- **Use both:** Jupyter for analysis notebooks, VS Code for Python scripts
+
+---
+
+## Cloud Platforms: AWS vs Azure vs GCP
+
+### For Data Analysts
+
+| Service Type | AWS | Azure | GCP |
+|--------------|-----|-------|-----|
+| **Data Warehouse** | Redshift | Synapse Analytics | BigQuery |
+| **Database** | RDS, Aurora | SQL Database | Cloud SQL |
+| **BI Tool** | QuickSight | Power BI | Looker |
+| **Notebooks** | SageMaker | ML Studio | Vertex AI Workbench |
+| **Data Lake** | S3 | Data Lake Storage | Cloud Storage |
+| **Learning Curve** | Steep | Moderate (if know Microsoft) | Easy (SQL-first) |
+
+**Market Share:**
+- AWS: 32% (largest)
+- Azure: 23% (growing)
+- GCP: 10% (smallest but Google tech)
+
+**Recommendation for Data Analysts:**
+- **Learn basics of all three** (job requirements vary)
+- **Focus on one** based on target employers
+- **Start with AWS** if unsure (most common)
+- **Azure** if targeting Microsoft shops
+- **GCP** if love SQL (BigQuery is excellent)
+
+### For Learning:
+1. **All offer free tiers** - experiment with each
+2. **BigQuery** easiest for SQL analysts (generous free tier)
+3. **AWS** has most learning resources
+4. **Azure** best if already know Power BI
+
+---
+
+## Data Visualization Libraries (Python)
+
+| Library | Best For | Difficulty | Interactivity |
+|---------|----------|------------|---------------|
+| **matplotlib** | Static plots, full control | Medium | No |
+| **seaborn** | Statistical plots, quick | Easy | No |
+| **plotly** | Interactive dashboards | Medium | Yes |
+| **bokeh** | Web-based viz | Hard | Yes |
+| **altair** | Declarative viz | Easy | Yes (Vega) |
+
+### matplotlib
+- ✅ Most control, customize everything
+- ✅ Publication-quality plots
+- ✅ Huge community
+- ❌ Verbose syntax
+- ❌ Not interactive
+
+### seaborn
+- ✅ Beautiful defaults
+- ✅ Statistical plots built-in
+- ✅ Works with pandas
+- ❌ Less flexibility than matplotlib
+- ❌ Built on matplotlib (same limitations)
+
+### plotly
+- ✅ Interactive out-of-box
+- ✅ Works in Jupyter and web
+- ✅ Professional dashboards
+- ✅ Hover tooltips, zoom, pan
+- ❌ Larger file sizes
+- ❌ Steeper learning curve
+
+**Recommendation:**
+1. **Start with seaborn** - easiest, good results
+2. **Learn matplotlib basics** - for customization
+3. **Add plotly** - for interactive dashboards
+4. **Skip bokeh/altair initially** - nice-to-have, not essential
+
+```python
+# Same plot in different libraries
+
+# Seaborn (easiest)
+import seaborn as sns
+sns.barplot(data=df, x='category', y='sales')
+
+# Matplotlib (most control)
+import matplotlib.pyplot as plt
+plt.bar(df['category'], df['sales'])
+plt.xlabel('Category')
+plt.ylabel('Sales')
+
+# Plotly (interactive)
+import plotly.express as px
+px.bar(df, x='category', y='sales')
+```
+
+---
+
+## Summary: Tool Decision Matrix
+
+### For Job Readiness:
+
+**Must Learn:**
+- ✅ SQL (PostgreSQL or MySQL)
+- ✅ Python with pandas
+- ✅ Excel (advanced features)
+- ✅ One BI tool (Tableau OR Power BI)
+
+**Should Learn:**
+- ✅ Git/GitHub (version control)
+- ✅ Jupyter Notebooks
+- ✅ Basic cloud (AWS or Azure)
+
+**Nice to Have:**
+- R (if academia/healthcare)
+- Both Tableau AND Power BI
+- Google Sheets (collaboration)
+- Advanced Python viz (plotly)
+
+### By Career Path:
+
+**Startup/Tech:**
+- Python, Jupyter, plotly, AWS, BigQuery
+
+**Enterprise:**
+- SQL, Tableau, Excel, Power BI, Azure
+
+**Consulting:**
+- Excel (advanced), PowerPoint, Tableau, Python
+
+**Finance:**
+- Excel (VBA), SQL, Power BI, Python
+
+**Healthcare/Research:**
+- R, Python, SQL, Tableau
+
+### By Learning Stage:
+
+**Month 1:**
+- Excel, SQL (SQLite)
+
+**Month 2-3:**
+- SQL (PostgreSQL), Python (pandas)
+
+**Month 4:**
+- Tableau OR Power BI
+
+**Month 5-6:**
+- GitHub, advanced Python, second BI tool
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 💼 CAREER RESOURCES & SUCCESS METRICS")
+        st.markdown(
+            """**Everything you need to land your first data analyst role**
+
+---
+
+## Data Analyst Resume Template
+
+### Format Guidelines
+- **Length:** 1 page (2 pages only if 10+ years experience)
+- **Font:** Calibri, Arial, or Helvetica, 10-12pt
+- **Margins:** 0.5-1 inch
+- **File:** PDF (named: FirstName_LastName_DataAnalyst.pdf)
+- **ATS-Friendly:** Use standard section headers, avoid tables/graphics
+
+### Template Structure
+
+```
+[YOUR NAME]
+[City, Country] | [Phone] | [Email] | [LinkedIn] | [GitHub]
+
+SUMMARY
+Data Analyst with [X] years of experience using SQL, Python, and Tableau to drive data-driven decisions. Skilled in statistical analysis, dashboard creation, and translating complex data into actionable business insights. Proven track record of [key achievement].
+
+TECHNICAL SKILLS
+• Languages & Tools: SQL (PostgreSQL, MySQL), Python (pandas, numpy, matplotlib, seaborn), Excel (VBA, Power Query, Pivot Tables)
+• Visualization: Tableau, Power BI, plotly
+• Statistical Analysis: A/B testing, hypothesis testing, regression analysis
+• Other: Git, Jupyter, VS Code, AWS/Azure basics
+
+PROFESSIONAL EXPERIENCE
+
+Data Analyst | [Company Name] | [City, Country] | [Month Year - Present]
+• Increased customer retention by 15% through cohort analysis identifying at-risk segments, resulting in £1.2M annual revenue saved
+• Built automated SQL-based reporting pipeline reducing manual reporting time from 8 hours to 30 minutes weekly
+• Created executive dashboard in Tableau tracking 12 KPIs across 4 departments, used daily by C-suite
+• Conducted A/B tests on 6 product features, achieving average 8% conversion lift, driving £450K additional revenue
+• Collaborated with product and marketing teams to define metrics framework, establishing 25 core KPIs
+
+Junior Data Analyst | [Company Name] | [City, Country] | [Month Year - Month Year]
+• Analyzed customer behavior patterns using Python and SQL, uncovering 3 key friction points in checkout flow
+• Developed 15+ SQL queries for ad-hoc analysis, supporting sales and marketing teams
+• Cleaned and validated datasets of 500K+ records, ensuring 99.8% data accuracy for reporting
+• Presented weekly insights to stakeholders, translating technical findings into business recommendations
+
+PROJECTS (or replace with more experience if applicable)
+
+Customer Churn Prediction Model | Python, scikit-learn
+• Built logistic regression model predicting customer churn with 85% accuracy
+• Identified top 5 churn indicators, enabling targeted retention campaign
+• Estimated £2.4M potential revenue saved through proactive intervention
+• GitHub: github.com/yourname/churn-prediction
+
+E-Commerce Sales Dashboard | Tableau, SQL
+• Created interactive dashboard analyzing £12M in annual sales across 5 product categories
+• Implemented drill-down functionality for regional and product-level insights
+• Reduced time to insight from 2 days to real-time
+• Live demo: public.tableau.com/profile/yourname
+
+EDUCATION
+
+Bachelor of Science in [Your Field] | [University Name] | [Year]
+• Relevant Coursework: Statistics, Data Analysis, Database Management
+• GPA: [X.XX] (if 3.5+)
+
+CERTIFICATIONS (optional)
+• [Certification Name] | [Issuing Organization] | [Year]
+```
+
+### Customization Tips
+1. **Quantify everything**: Use numbers, percentages, dollar amounts
+2. **Use action verbs**: Analyzed, Built, Increased, Reduced, Created
+3. **Focus on impact**: What was the business outcome?
+4. **Tailor to job**: Mirror keywords from job description
+5. **Show progression**: Increasing responsibility over time
+
+### Common Mistakes to Avoid
+❌ "Responsible for data analysis" → ✅ "Analyzed 2M+ customer records, identifying £800K revenue opportunity"
+❌ Listing duties → ✅ Highlighting achievements
+❌ Technical jargon only → ✅ Business impact in clear language
+❌ Generic summary → ✅ Specific, quantified summary
+
+---
+
+## LinkedIn Profile Optimization
+
+### Headline Formula
+**[Job Title] | [Key Skill 1] + [Key Skill 2] + [Key Skill 3] | [Value Proposition]**
+
+Examples:
+- "Data Analyst | SQL + Python + Tableau | Turning Data into Revenue-Driving Insights"
+- "Junior Data Analyst | Business Intelligence + Statistical Analysis | Helping Teams Make Better Decisions"
+
+### About Section Template
+
+```
+I'm a data analyst who loves turning messy data into clear, actionable insights that drive business results.
+
+What I do:
+→ Build dashboards that executives actually use (Tableau, Power BI)
+→ Write SQL queries that answer complex business questions
+→ Automate reporting processes, saving teams hours per week
+→ Run A/B tests that increase conversion rates
+
+Recent wins:
+• Increased customer retention 15% through predictive churn model (£1.2M saved)
+• Built automated reporting pipeline reducing manual work from 8 hours to 30 minutes
+• Designed KPI framework used across 4 departments
+
+Technical skills: SQL, Python, Tableau, Excel, Statistics, A/B Testing
+
+Currently: [Your current focus/goal]
+
+Let's connect if you're passionate about data-driven decision making!
+```
+
+### Experience Section
+- Use same format as resume (bullets with metrics)
+- Add media: screenshots of dashboards, links to Tableau Public
+- Ask colleagues for recommendations
+- Endorse others (they often endorse back)
+
+### Activity
+- Post weekly: insights from projects, data visualizations, learnings
+- Engage: Comment on data/analytics posts
+- Share: Interesting articles with your take
+- **Goal:** Stay visible, demonstrate expertise
+
+---
+
+## Job Search Strategy
+
+### Where to Find Jobs
+
+**Job Boards:**
+1. LinkedIn Jobs (best for data analyst roles)
+2. Indeed
+3. Glassdoor
+4. AngelList (startups)
+5. Built In (tech companies)
+6. We Work Remotely (remote jobs)
+
+**Company Websites:**
+- Apply directly on career pages
+- Often get faster response than job boards
+- Shows genuine interest
+
+**Networking:**
+- LinkedIn connections (second most effective method)
+- Data meetups and conferences
+- Alumni networks
+- Informational interviews
+
+### Application Strategy
+
+**Quality over quantity:**
+- ❌ Spray and pray: 100 generic applications
+- ✅ Targeted approach: 20 customized applications
+
+**For each application:**
+1. Research company (10 min)
+2. Customize resume (15 min)
+3. Write tailored cover letter (20 min)
+4. Find connection at company (10 min)
+5. Follow up after 1 week
+
+### Job Search Metrics to Track
+
+Create spreadsheet:
+- Company name
+- Position
+- Application date
+- Status (applied, phone screen, interview, offer, rejected)
+- Salary range
+- Notes
+
+**Benchmark:**
+- Applications → Phone screen: 20-30%
+- Phone screen → Interview: 50-60%
+- Interview → Offer: 10-20%
+- Time to offer: 4-8 weeks average
+
+### Daily Routine (2 hours/day)
+
+**30 min:** Job searching
+- Find 2-3 relevant positions
+- Research companies
+
+**60 min:** Applications
+- Customize 1-2 applications
+- Quality focus
+
+**30 min:** Networking
+- Reach out to 2-3 connections
+- Engage on LinkedIn
+- Follow up with previous contacts
+
+---
+
+## Interview Preparation
+
+### Interview Types
+
+**1. Phone Screen (30 min)**
+- Recruiter, non-technical
+- About you, interest in role, salary expectations
+- Focus: Be enthusiastic, ask good questions
+
+**2. Technical Interview (60 min)**
+- SQL queries (live coding or take-home)
+- Python/pandas questions
+- Statistics/A/B testing scenarios
+- Focus: Think aloud, explain approach
+
+**3. Case Study (varies)**
+- Real business problem
+- Analyze data, present findings
+- Focus: Business impact, clear communication
+
+**4. Behavioral Interview (45 min)**
+- STAR method questions
+- Team collaboration, problem-solving
+- Focus: Specific examples with metrics
+
+**5. Final/Onsite (half-day)**
+- Multiple interviews
+- Team members, managers
+- Focus: Culture fit, technical depth
+
+### Technical Interview Prep
+
+**SQL Practice:**
+- Leetcode (Database section)
+- HackerRank (SQL)
+- StrataScratch (data science)
+- 30 min daily for 2 weeks
+
+**Python Practice:**
+- pandas manipulation exercises
+- Data cleaning scenarios
+- Basic ML concepts
+- Practice in Jupyter
+
+**Statistics:**
+- Review Unit 6 content
+- Practice explaining p-values
+- A/B testing framework
+- Common pitfalls
+
+### Behavioral Questions to Prepare
+
+**Using STAR Method (Situation, Task, Action, Result):**
+
+1. "Tell me about a time you used data to influence a decision"
+2. "Describe a challenging analysis and how you approached it"
+3. "Tell me about a time you had to explain technical concepts to non-technical stakeholders"
+4. "Describe a time you made a mistake in analysis"
+5. "Tell me about a time you disagreed with a team member"
+
+**Prepare 5-6 STAR stories** covering:
+- Technical challenge
+- Stakeholder management
+- Team collaboration
+- Failure/learning
+- Impact/achievement
+
+### Questions to Ask Interviewers
+
+**About the role:**
+- "What does success look like in this role in 6 months?"
+- "What are the biggest data challenges the team is facing?"
+- "What tools and tech stack does the team use?"
+
+**About the team:**
+- "How large is the data/analytics team?"
+- "How does the team collaborate with other departments?"
+- "What's the mix of ad-hoc vs. recurring analysis?"
+
+**About growth:**
+- "What learning and development opportunities are available?"
+- "What's the typical career path for this role?"
+- "How does the team stay current with new technologies?"
+
+**Red flags to watch:**
+- Vague answers about data infrastructure
+- No clear metrics for success
+- High turnover on team
+- Unrealistic expectations
+
+---
+
+## Salary Negotiation
+
+### Research Salaries
+
+**Data sources:**
+- Glassdoor
+- Levels.fyi
+- Payscale
+- LinkedIn Salary
+- Robert Half Salary Guide
+
+**UK Entry-Level Data Analyst (2024):**
+- London: £30K - £40K
+- Manchester, Birmingham: £25K - £32K
+- Other cities: £22K - £28K
+
+**Mid-Level (2-4 years):**
+- London: £40K - £55K
+- Other major cities: £32K - £45K
+
+**Senior (5+ years):**
+- London: £55K - £75K+
+- Other cities: £45K - £60K
+
+### Negotiation Framework
+
+**When they ask for salary expectations:**
+- "Based on my research, I'm targeting £X-£Y for this type of role. But I'm flexible depending on the full compensation package and growth opportunities."
+- Never give single number, always range
+- Base range on market data + your value
+
+**When you get an offer:**
+1. **Express enthusiasm**: "I'm excited about this opportunity!"
+2. **Request time**: "Can I have 2-3 days to review the details?"
+3. **Evaluate total package**: Salary, bonus, benefits, equity, PTO, remote options
+4. **Research comparables**: Is it fair for market?
+5. **Decide strategy**: Accept, negotiate, or decline
+
+**If negotiating:**
+- Be specific: "Based on my research and the value I'll bring, I was hoping for £X"
+- Justify: "Given my SQL skills and previous impact [example], I believe this is fair"
+- Be collaborative: "Is there flexibility in the salary range?"
+- Consider alternatives: If salary fixed, negotiate bonus, PTO, remote days, start date
+
+**Email template:**
+```
+Subject: [Your Name] - Offer Discussion
+
+Hi [Hiring Manager],
+
+Thank you so much for the offer! I'm very excited about joining [Company] and contributing to [specific team/project].
+
+I've reviewed the offer details carefully. Based on my research of market rates for similar roles and the value I'll bring [mention specific skill/achievement], I was hoping we could discuss a starting salary of £[X].
+
+This would align with:
+- My [X years] of experience in SQL and Python
+- The [specific achievement] I accomplished at [previous role]
+- Market data for data analysts with similar skill sets in [location]
+
+I'm confident I'll deliver strong ROI quickly, as evidenced by [specific example].
+
+Is there flexibility in the salary range? I'm also open to discussing the full compensation package.
+
+Looking forward to hearing from you!
+
+Best,
+[Your Name]
+```
+
+**Best case:** They increase offer
+**Likely case:** They meet you halfway
+**Worst case:** "This is our best offer" → You decide to accept or decline
+
+### Total Compensation Beyond Salary
+
+Consider:
+- **Bonus:** Target % of salary
+- **Equity:** Stock options or RSUs (startups)
+- **Benefits:** Health, pension, life insurance
+- **PTO:** Days of vacation
+- **Remote work:** Flexibility, WFH allowance
+- **Learning budget:** Conferences, courses
+- **Career growth:** Promotion timeline
+
+A £35K job with 10% bonus, 25 days PTO, £1K learning budget, and remote flexibility might be better than £38K with none of these.
+
+---
+
+## Success Metrics: Track Your Progress
+
+### Learning Metrics
+
+**Weekly Goals:**
+- Study hours: 15-20 hours (full-time) or 10-15 hours (part-time)
+- Practice problems completed: 10-20
+- Projects worked on: 1-2 hours
+- New concepts learned: 2-3
+
+**Monthly Milestones:**
+- Units completed: 1-2
+- Projects finished: 0.5-1
+- Interview questions practiced: 20-30
+- Portfolio updates: 1-2
+
+### Portfolio Metrics
+
+**Minimum for job readiness:**
+- GitHub profile: Active
+- Projects: 3-5 quality projects
+- README quality: Professional, with screenshots
+- Commit frequency: Regular (shows active learning)
+- Code quality: Commented, organized, reproducible
+
+**Project types to include:**
+1. SQL analysis (complex queries, business insights)
+2. Python automation (pandas, reporting)
+3. Dashboard (Tableau or Power BI)
+4. Prediction model (ML, statistics)
+5. Industry-specific (healthcare, finance, retail)
+
+### Job Search Metrics
+
+**Track weekly:**
+- Applications submitted: 5-10
+- Networking conversations: 2-3
+- Interview invitations: Target 1-2 per 10 applications
+- Interviews completed: As many as possible
+- Offers received: Goal!
+
+**Timeline expectations:**
+- Week 1-2: Portfolio polish, resume prep
+- Week 3-4: Apply to 10-15 jobs
+- Week 5-8: Phone screens and interviews
+- Week 9-12: Offers and negotiations
+
+**If not getting interviews after 20 applications:**
+- ❌ Problem: Resume, skills mismatch, or targeting wrong roles
+- ✅ Solution: Get resume reviewed, adjust targeting, improve portfolio
+
+**If getting interviews but no offers:**
+- ❌ Problem: Interview skills or technical gaps
+- ✅ Solution: Practice more, review fundamentals, mock interviews
+
+### Career Growth Metrics (First Year)
+
+**Months 1-3:**
+- Learn team processes
+- Deliver first project
+- Build relationships
+- Understand data sources
+
+**Months 4-6:**
+- Own recurring reports
+- Start proactive analyses
+- Present to stakeholders
+- Identify improvements
+
+**Months 7-12:**
+- Lead project end-to-end
+- Mentor new team members
+- Propose new initiatives
+- Build specialized expertise
+
+**Success indicators:**
+- Positive peer reviews
+- Increasing project complexity
+- Stakeholder requests for your work
+- Opportunities to present
+- Discussion of promotion/raise
+
+---
+
+## First 90 Days as Data Analyst
+
+### Month 1: Learn
+
+**Week 1-2:**
+- Set up all tool access
+- Meet team members (1-on-1s)
+- Understand data sources
+- Read documentation
+- Shadow senior analysts
+
+**Week 3-4:**
+- Complete first small project
+- Ask lots of questions
+- Document everything
+- Start building relationships with stakeholders
+
+### Month 2: Contribute
+
+**Week 5-6:**
+- Own a recurring report
+- Improve existing process
+- Proactively find insights
+- Present in team meeting
+
+**Week 7-8:**
+- Lead analysis project
+- Collaborate cross-functionally
+- Share learnings with team
+- Build credibility
+
+### Month 3: Excel
+
+**Week 9-10:**
+- Deliver high-impact project
+- Present to leadership
+- Identify next opportunities
+- Establish expertise area
+
+**Week 11-12:**
+- Review progress with manager
+- Set goals for next quarter
+- Plan skill development
+- Celebrate wins!
+
+### Tips for Success
+
+**Do:**
+- ✅ Ask "why" behind every request
+- ✅ Document your processes
+- ✅ Share findings proactively
+- ✅ Build relationships across teams
+- ✅ Learn the business, not just the data
+- ✅ Communicate in business terms
+- ✅ Take initiative
+- ✅ Admit when you don't know
+
+**Don't:**
+- ❌ Work in isolation
+- ❌ Only do what's asked
+- ❌ Present data without insight
+- ❌ Skip stakeholder meetings
+- ❌ Ignore data quality issues
+- ❌ Assume you know the answer
+- ❌ Fear asking questions
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 📚 ADDITIONAL RESOURCES & NEXT STEPS")
+        st.markdown(
+            """**Continue your data analyst journey beyond this pathway**
+
+---
+
+## Recommended Books
+
+### For SQL:
+1. **"SQL Queries for Mere Mortals"** by John Viescas
+   - Perfect for beginners
+   - Practical examples
+   - Clear explanations
+
+2. **"The Art of SQL"** by Stéphane Faroult
+   - Performance optimization
+   - Query design patterns
+   - Advanced techniques
+
+### For Python/Data Analysis:
+1. **"Python for Data Analysis"** by Wes McKinney (creator of pandas)
+   - Definitive pandas guide
+   - Real-world examples
+   - Best practices
+
+2. **"Data Science from Scratch"** by Joel Grus
+   - Build understanding from fundamentals
+   - Implement algorithms yourself
+   - Great for interviews
+
+### For Statistics:
+1. **"Practical Statistics for Data Scientists"** by Bruce & Bruce
+   - Focus on practical application
+   - No heavy math
+   - Data analyst focused
+
+2. **"The Art of Statistics"** by David Spiegelhalter
+   - Real-world examples
+   - Statistical thinking
+   - Readable and engaging
+
+### For Business Context:
+1. **"Lean Analytics"** by Alistair Croll & Benjamin Yoskovitz
+   - Metrics that matter
+   - Analytics for startups
+   - Business frameworks
+
+2. **"Storytelling with Data"** by Cole Nussbaumer Knaflic
+   - Visualization best practices
+   - Communication techniques
+   - Before/after examples
+
+---
+
+## Online Communities
+
+### Where to Connect:
+
+**Reddit:**
+- r/dataanalysis - Career advice, questions
+- r/SQL - Query help, optimization
+- r/datascience - Broader field
+- r/tableau - Tableau-specific
+
+**Stack Overflow:**
+- [sql] tag - Query help
+- [pandas] tag - Python data manipulation
+- [data-analysis] tag - General questions
+
+**LinkedIn Groups:**
+- Data Analysts
+- SQL Server Professionals
+- Tableau Community
+
+**Discord/Slack:**
+- Data Talks Club
+- Locally Optimistic
+- DataCamp Community
+
+### Engagement Tips:
+- Answer questions (best way to learn)
+- Share your projects
+- Ask specific, well-researched questions
+- Give back to the community
+
+---
+
+## Continuing Education
+
+### After Completing This Pathway:
+
+**Deepen Your Skills:**
+1. **Advanced SQL:**
+   - Query optimization
+   - Stored procedures
+   - Database design
+   - Performance tuning
+
+2. **Advanced Python:**
+   - Object-oriented programming
+   - API development (Flask/FastAPI)
+   - Advanced pandas techniques
+   - Data engineering basics
+
+3. **Machine Learning Basics:**
+   - scikit-learn deep dive
+   - Model evaluation
+   - Feature engineering
+   - Production ML
+
+4. **Cloud Data Platforms:**
+   - AWS: Redshift, Athena, S3
+   - GCP: BigQuery, Cloud Storage
+   - Azure: Synapse, Data Lake
+
+### Certifications Worth Considering:
+
+**Vendor-Specific:**
+- Tableau Desktop Specialist
+- Microsoft Power BI Data Analyst (PL-300)
+- Google Data Analytics Professional Certificate
+- AWS Certified Data Analytics
+
+**General:**
+- Microsoft Excel Expert Certification
+- Coursera/edX certificates (for resume)
+
+**Note:** Certifications are nice-to-have, not required. Portfolio projects often matter more.
+
+---
+
+## Your Next Steps
+
+### Week 1: Final Preparation
+- ✅ Complete any remaining pathway units
+- ✅ Polish 3-5 portfolio projects
+- ✅ Update resume and LinkedIn
+- ✅ Set up GitHub properly
+- ✅ Practice 20 interview questions
+
+### Week 2: Launch Job Search
+- ✅ Apply to 5-10 positions
+- ✅ Reach out to 5 LinkedIn connections
+- ✅ Join 2-3 relevant communities
+- ✅ Post first project on LinkedIn
+- ✅ Practice SQL on LeetCode daily
+
+### Week 3-4: Interview Prep
+- ✅ Continue applications (5-10/week)
+- ✅ Practice technical interviews
+- ✅ Prepare STAR stories
+- ✅ Mock interviews with peers
+- ✅ Review fundamentals
+
+### Week 5-8: Interview Circuit
+- ✅ Attend interviews
+- ✅ Take notes after each
+- ✅ Iterate on answers
+- ✅ Follow up professionally
+- ✅ Continue learning
+
+### Week 9-12: Offers & Onboarding
+- ✅ Evaluate offers
+- ✅ Negotiate compensation
+- ✅ Accept position
+- ✅ Prepare for first day
+- ✅ Celebrate your achievement! 🎉
+
+---
+
+## Final Encouragement
+
+You've completed an intensive, comprehensive Data Analyst Pathway. You now have:
+
+✅ **Technical Skills**: SQL, Python, Excel, Tableau/Power BI, Statistics  
+✅ **Practical Experience**: 208 practice problems, 29 labs, 8 projects  
+✅ **Industry Knowledge**: 4 sectors, 40 real scenarios  
+✅ **Portfolio**: 2+ capstone projects  
+✅ **Interview Prep**: 100+ questions, complete framework  
+✅ **Career Tools**: Resume, LinkedIn, job search strategy  
+✅ **Support Resources**: FAQ, guides, references, datasets  
+
+**You are job-ready.**
+
+The data analyst field is growing rapidly. Companies need people who can turn data into decisions. That's you now.
+
+### Remember:
+- **Imposter syndrome is normal** - Everyone feels it
+- **You don't need to know everything** - Keep learning on the job
+- **Your first job won't be perfect** - It's a stepping stone
+- **The community supports you** - Reach out when stuck
+- **You've got this** - You've done the work
+
+### Stay Connected:
+Share your journey, help others, keep learning. The data community is incredibly supportive.
+
+**Good luck on your data analyst journey!** 🚀📊💪
+
+---
+
+**End of Data Analyst Pathway**
+
+*You're ready. Now go get that job.*
+
+---
+
+"""
+        )
+
 
 def render_data_analyst_pathway_module():
     learner_email = st.session_state.get("user_email", "")
