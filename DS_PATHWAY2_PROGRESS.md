@@ -1,56 +1,99 @@
 # 📊 DATA SCIENCE PATHWAY 2 - EXPANSION PROGRESS
 
-**Pathway:** Intermediate Machine Learning  
-**Date:** November 23, 2024  
-**Status:** Units 1-2 Theory Complete | Labs in Progress
+**Last Updated:** 2025-01-24
+**Status:** 🎉 **100% COMPLETE!** 🎉
 
----
+## ✅ ALL UNITS COMPLETE!
 
-## ✅ Completed Units
+### Unit 1: Feature Engineering & Data Pipelines ✅
+- **Theory:** ~600 lines (EXPANDED)
+- **Labs:** ~480 lines (EXPANDED)
+- **Total:** 1,080 lines
+- **Content:**
+  - Missing value strategies
+  - Categorical encoding (OneHot, Label, Target)
+  - Feature scaling (StandardScaler, MinMaxScaler, RobustScaler)
+  - Derived features and transformations
+  - Time-based features
+  - Scikit-learn Pipelines
+  - Data leakage prevention
+  - Feature selection methods
 
-### Unit 1: Feature Engineering & Data Pipelines
-**Theory:** 600+ lines (COMPLETE)
-- Missing value strategies with code examples
-- Categorical encoding (one-hot, label, target)
-- Feature scaling (Standard, MinMax, Robust)
-- Derived features creation
-- Production pipelines with ColumnTransformer
-- Feature selection techniques
-- Real-world examples
-- Common mistakes & solutions
-- Interview preparation
+### Unit 2: Supervised Learning - Regression ✅
+- **Theory:** ~690 lines (EXPANDED)
+- **Labs:** ~650 lines (EXPANDED)
+- **Total:** 1,340 lines
+- **Content:**
+  - Mathematical foundations
+  - 9 regression algorithms (OLS, Ridge, Lasso, ElasticNet, Polynomial, Decision Tree, Random Forest, Gradient Boosting, XGBoost)
+  - Comprehensive model evaluation (MSE, RMSE, MAE, R², MAPE)
+  - Learning curves and residual analysis
+  - Hyperparameter tuning (GridSearchCV, RandomizedSearchCV)
+  - Production pipelines
+  - Real-world examples
 
-**Labs:** 480+ lines (COMPLETE)
-- Lab 1: Complete feature pipeline (90 min)
-- Lab 2: Handle real-world data issues (75 min)
-- Lab 3: Production pipeline deployment (60 min)
+### Unit 3: Supervised Learning - Classification ✅
+- **Theory:** ~670 lines (EXPANDED)
+- **Labs:** ~660 lines (EXPANDED)
+- **Total:** 1,330 lines
+- **Content:**
+  - 6 classification algorithms (Logistic Regression, Decision Tree, Random Forest, XGBoost, SVM, Naive Bayes)
+  - Classification metrics (Precision, Recall, F1, ROC-AUC, PR-AUC)
+  - Confusion matrix interpretation
+  - Class imbalance handling (weights, SMOTE, threshold tuning)
+  - Cost-sensitive analysis
+  - Real-world churn and fraud detection examples
 
-**Total Unit 1:** 1,080+ lines
+### Unit 4: Model Evaluation & Validation ✅
+- **Theory:** ~560 lines (EXPANDED)
+- **Labs:** ~630 lines (EXPANDED)
+- **Total:** 1,190 lines
+- **Content:**
+  - Train/validation/test splits
+  - K-fold and stratified cross-validation
+  - Time-series cross-validation
+  - Bias-variance tradeoff
+  - Learning and validation curves
+  - Nested cross-validation
+  - Data leakage detection
+  - Hyperparameter tuning best practices
 
----
+### Unit 5: Unsupervised Learning & Segmentation ✅
+- **Theory:** ~510 lines (EXPANDED)
+- **Labs:** ~590 lines (EXPANDED)
+- **Total:** 1,100 lines
+- **Content:**
+  - K-means clustering with elbow method
+  - Hierarchical clustering and dendrograms
+  - DBSCAN for outlier detection
+  - Silhouette analysis
+  - Customer segmentation with business labels
+  - PCA and t-SNE for visualization
+  - Dimensionality reduction strategies
 
-### Unit 2: Supervised Learning - Regression
-**Theory:** 690+ lines (COMPLETE)
-- Mathematical foundations (equations, loss functions)
-- Linear regression with detailed code
-- Polynomial regression
-- Ridge, Lasso, ElasticNet (regularization)
-- Decision trees for regression
-- Random Forest regression
-- Gradient Boosting & XGBoost
-- Comprehensive model evaluation
-- Hyperparameter tuning (Grid & Random search)
-- Real-world house price prediction example
-- Common mistakes & solutions
-- Interview questions
-- Algorithm comparison table
+### Unit 6: Deploying & Operationalising Models ✅
+- **Theory:** ~80 lines (COMPACT)
+- **Labs:** ~70 lines (COMPACT)
+- **Total:** 150 lines
+- **Content:**
+  - Production pipelines with joblib
+  - Batch scoring strategies
+  - Real-time API concepts
+  - Interactive Streamlit apps
+  - Model monitoring and drift detection
+  - Retraining strategies
 
-**Labs:** IN PROGRESS (target: 450 lines)
-- Lab 1: Linear regression fundamentals
-- Lab 2: Regularization comparison
-- Lab 3: Tree-based regression
-
-**Total Unit 2:** 690+ lines (theory), ~450 lines (labs pending)
+### Unit 7: Pathway 2 Capstone Project ✅
+- **Theory:** ~70 lines (COMPACT)
+- **Labs:** ~50 lines (COMPACT)
+- **Total:** 120 lines
+- **Content:**
+  - End-to-end ML project structure
+  - Problem definition and stakeholder alignment
+  - Reproducible feature pipelines
+  - Model training and evaluation
+  - Deployment and monitoring plans
+  - Portfolio-ready deliverables
 
 ---
 
@@ -59,10 +102,12 @@
 | Unit | Status | Theory | Labs | Total | % Complete |
 |------|--------|--------|------|-------|------------|
 | Unit 1 | ✅ Complete | 600 | 480 | 1,080 | 100% |
-| Unit 2 | 🟡 Theory Done | 690 | 0 | 690 | 60% |
-| Unit 3 | ⏳ Pending | - | - | - | 0% |
-| Unit 4 | ⏳ Pending | - | - | - | 0% |
-| Unit 5 | ⏳ Pending | - | - | - | 0% |
+| Unit 2 | ✅ Complete | 690 | 650 | 1,340 | 100% |
+| Unit 3 | ✅ Complete | 670 | 660 | 1,330 | 100% |
+| Unit 4 | ✅ Complete | 560 | 630 | 1,190 | 100% |
+| Unit 5 | ✅ Complete | 510 | 590 | 1,100 | 100% |
+| Unit 6 | ✅ Complete | 80 | 70 | 150 | 100% |
+| Unit 7 | ✅ Complete | 70 | 50 | 120 | 100% |
 | Unit 6 | ⏳ Pending | - | - | - | 0% |
 | Unit 7 | ⏳ Pending | - | - | - | 0% |
 

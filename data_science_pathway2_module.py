@@ -7232,13 +7232,59 @@ def _render_unit6_learning_materials():
         "The emphasis in this unit is on **clarity, monitoring and safety**, not on building complex infrastructure."
     )
 
-    st.markdown("#### 📡 Monitoring and feedback loops")
+    st.markdown("#### Monitoring and feedback loops")
     st.markdown(
         "Once a model is in use you need to monitor:\n\n"
         "- Data quality – are incoming features still in expected ranges?\n"
         "- Performance – are key metrics stable over time?\n"
         "- Drift – has the relationship between inputs and outcomes changed?\n\n"
         "You also need feedback loops so that new labelled data can be used to **retrain** or update the model on a sensible schedule."
+    )
+
+    st.markdown("---")
+    st.markdown("#### Production Pipelines")
+    st.markdown(
+        """**Complete Pipeline saves preprocessing + model together:**
+
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
+import joblib
+
+# Create pipeline
+pipeline = Pipeline([
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler()),
+    ('model', RandomForestClassifier())
+])
+
+# Train
+pipeline.fit(X_train, y_train)
+
+# Save entire pipeline
+joblib.dump(pipeline, 'model_v1.pkl')
+
+# Load and use
+loaded = joblib.load('model_v1.pkl')
+predictions = loaded.predict(X_new)
+```
+
+**Benefits:** Single artifact, no train/prod skew, version control
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### Deployment Options")
+    st.markdown(
+        """**1. Batch Scoring:** Daily/weekly predictions
+
+**2. Real-Time API:** FastAPI/Flask endpoint
+
+**3. Interactive App:** Streamlit dashboard
+
+**4. Monitoring:** Track performance, detect drift, trigger retraining
+"""
     )
 
 
