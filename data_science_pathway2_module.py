@@ -7275,15 +7275,454 @@ predictions = loaded.predict(X_new)
     )
 
     st.markdown("---")
-    st.markdown("#### Deployment Options")
+    st.markdown("#### 🚀 Deployment Patterns Deep Dive")
     st.markdown(
-        """**1. Batch Scoring:** Daily/weekly predictions
+        """**Pattern 1: Batch Scoring (Offline)**
 
-**2. Real-Time API:** FastAPI/Flask endpoint
+Best for: Daily reports, marketing campaigns, risk assessments
 
-**3. Interactive App:** Streamlit dashboard
+**Pattern 2: Real-Time API (Online)**  
 
-**4. Monitoring:** Track performance, detect drift, trigger retraining
+Best for: Web/mobile apps, instant decisions, fraud detection
+
+**Pattern 3: Interactive Dashboard**
+
+Best for: Internal tools, stakeholder demos, manual reviews
+
+**Pattern 4: Model Monitoring**
+
+Track: Data quality, performance metrics, drift detection
+
+---
+
+**Detailed implementation covered in comprehensive labs below!**
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 📦 Model Versioning Strategy")
+    st.markdown(
+        """**Why Version Everything:**
+
+Production ML requires tracking:
+- Model binary files
+- Training data snapshots
+- Code/config versions
+- Performance baselines
+
+**Semantic Versioning for Models:**
+
+`v<MAJOR>.<MINOR>.<PATCH>`
+
+- **MAJOR:** Breaking changes (new features, different output)
+- **MINOR:** Backward-compatible improvements (retraining, tuning)
+- **PATCH:** Bug fixes (preprocessing bugs, code fixes)
+
+Example: `churn_model_v2.1.3.pkl`
+
+**Model Metadata Template:**
+
+```python
+metadata = {
+    # Version info
+    'model_version': 'v2.1.3',
+    'created_at': '2024-01-15 14:23:00',
+    'created_by': 'data-science-team',
+    'git_commit': 'a3f2b9c',
+    
+    # Model architecture
+    'model_type': 'RandomForestClassifier',
+    'framework': 'scikit-learn',
+    'sklearn_version': '1.3.0',
+    
+    # Training data
+    'training_data_path': 's3://bucket/training_data_2024Q1.csv',
+    'training_samples': 50000,
+    'training_date_range': '2023-01-01 to 2023-12-31',
+    'feature_count': 25,
+    'target_distribution': {'0': 0.70, '1': 0.30},
+    
+    # Performance
+    'metrics': {
+        'train_f1': 0.85,
+        'val_f1': 0.78,
+        'test_f1': 0.76,
+        'roc_auc': 0.83
+    },
+    
+    # Production info
+    'deployed_to': 'production',
+    'deployment_date': '2024-01-20',
+    'monitoring_dashboard': 'https://metrics.company.com/churn-model',
+    'retrain_schedule': 'Monthly'
+}
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🔍 Data Validation in Production")
+    st.markdown(
+        """**Input Validation is Critical:**
+
+```python
+class ProductionDataValidator:
+    def __init__(self, schema_path):
+        with open(schema_path, 'r') as f:
+            self.schema = json.load(f)
+    
+    def validate(self, df):
+        errors = []
+        warnings = []
+        
+        # 1. Check columns exist
+        missing_cols = set(self.schema['features']) - set(df.columns)
+        if missing_cols:
+            errors.append(f"Missing columns: {missing_cols}")
+        
+        # 2. Check data types
+        for col in self.schema['features']:
+            if col not in df.columns:
+                continue
+                
+            expected_type = self.schema['types'][col]
+            actual_type = str(df[col].dtype)
+            
+            if 'int' in expected_type and 'int' not in actual_type:
+                errors.append(f"{col}: expected int, got {actual_type}")
+        
+        # 3. Check value ranges
+        for col, bounds in self.schema.get('bounds', {}).items():
+            if col in df.columns:
+                if df[col].min() < bounds['min']:
+                    warnings.append(f"{col} has values below min ({bounds['min']})")
+                if df[col].max() > bounds['max']:
+                    warnings.append(f"{col} has values above max ({bounds['max']})")
+        
+        # 4. Check for excessive nulls
+        null_rates = df.isnull().mean()
+        high_null = null_rates[null_rates > self.schema.get('max_null_rate', 0.5)]
+        if len(high_null) > 0:
+            warnings.append(f"High null rates in: {list(high_null.index)}")
+        
+        # 5. Check for duplicates
+        if df.duplicated().sum() > 0:
+            warnings.append(f"{df.duplicated().sum()} duplicate rows found")
+        
+        return {
+            'valid': len(errors) == 0,
+            'errors': errors,
+            'warnings': warnings
+        }
+
+# Usage
+validator = ProductionDataValidator('schema.json')
+result = validator.validate(new_data)
+
+if not result['valid']:
+    raise ValueError(f"Validation failed: {result['errors']}")
+
+if result['warnings']:
+    logging.warning(f"Validation warnings: {result['warnings']}")
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 📈 Monitoring Dashboards")
+    st.markdown(
+        """**Key Metrics to Track:**
+
+**1. Model Performance Over Time**
+- F1, Precision, Recall, AUC (weekly)
+- Threshold for alerts: <10% drop
+
+**2. Prediction Volume**
+- Predictions per day/hour
+- Detect anomalies (>50% drop)
+
+**3. Latency (for APIs)**
+- p50, p95, p99 response times
+- Target: <100ms for most requests
+
+**4. Error Rates**
+- % of requests that fail
+- Target: <1% error rate
+
+**5. Data Quality**
+- Missing value rates
+- Out-of-range features
+- Suspicious patterns
+
+**Example Monitoring Query (SQL):**
+
+```sql
+SELECT 
+    DATE_TRUNC('day', scored_at) as date,
+    COUNT(*) as predictions,
+    AVG(CASE WHEN actual IS NOT NULL 
+        THEN CASE WHEN prediction = actual THEN 1.0 ELSE 0.0 END 
+        END) as accuracy,
+    AVG(probability) as avg_probability,
+    SUM(CASE WHEN prediction = 1 THEN 1 ELSE 0 END) as predicted_churns
+FROM predictions_log
+WHERE scored_at >= CURRENT_DATE - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1 DESC;
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🔄 Automated Retraining")
+    st.markdown(
+        """**Retraining Triggers:**
+
+1. **Time-based:** Every 30/90 days
+2. **Performance-based:** F1 < 0.70
+3. **Data-based:** >5% feature drift
+4. **Business-based:** New product launch
+
+**Retraining Pipeline:**
+
+```python
+class AutomatedRetrainingPipeline:
+    def __init__(self, config):
+        self.config = config
+        self.current_model = joblib.load(config['current_model_path'])
+    
+    def check_triggers(self):
+        # Check performance trigger
+        recent_perf = self.get_recent_performance()
+        if recent_perf['f1'] < self.config['min_f1']:
+            return True, "Performance degraded"
+        
+        # Check drift trigger  
+        drift_score = self.calculate_drift()
+        if drift_score > self.config['max_drift']:
+            return True, "Significant drift detected"
+        
+        # Check time trigger
+        days_since_train = (datetime.now() - self.get_last_train_date()).days
+        if days_since_train > self.config['max_days']:
+            return True, "Scheduled retrain"
+        
+        return False, None
+    
+    def retrain_and_evaluate(self, new_data):
+        # Load new data
+        X, y = self.load_data(new_data)
+        
+        # Split
+        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2)
+        
+        # Retrain
+        new_model = self.create_pipeline()
+        new_model.fit(X_train, y_train)
+        
+        # Evaluate
+        new_f1 = f1_score(y_val, new_model.predict(X_val))
+        current_f1 = f1_score(y_val, self.current_model.predict(X_val))
+        
+        # Only deploy if improved
+        if new_f1 >= current_f1 * 0.95:
+            self.deploy_model(new_model, new_f1)
+            self.notify_team(f"✅ Model retrained: F1={new_f1:.3f}")
+            return True
+        else:
+            self.notify_team(f"❌ Retrain unsuccessful: new F1={new_f1:.3f}, current F1={current_f1:.3f}")
+            return False
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### ⚡ A/B Testing Models")
+    st.markdown(
+        """**Gradual Rollout Strategy:**
+
+```python
+import random
+
+def predict_with_ab_test(features, model_a, model_b, traffic_split=0.9):
+    # 90% traffic to model A (current), 10% to model B (new)
+    if random.random() < traffic_split:
+        prediction = model_a.predict([features])[0]
+        model_version = "v1.2.3"
+    else:
+        prediction = model_b.predict([features])[0]
+        model_version = "v1.3.0"
+    
+    # Log for analysis
+    log_prediction(features, prediction, model_version)
+    
+    return prediction
+
+# After 1 week, analyze results
+def analyze_ab_test():
+    df = pd.read_sql(\"\"\"
+        SELECT 
+            model_version,
+            COUNT(*) as predictions,
+            AVG(CASE WHEN actual = prediction THEN 1.0 ELSE 0.0 END) as accuracy,
+            AVG(response_time_ms) as avg_latency
+        FROM prediction_log
+        WHERE created_at >= NOW() - INTERVAL '7 days'
+        GROUP BY 1
+    \"\"\")
+    
+    print(df)
+    
+    # If B is better, increase traffic
+    if df[df['model_version']=='v1.3.0']['accuracy'].values[0] > \\
+       df[df['model_version']=='v1.2.3']['accuracy'].values[0]:
+        print("✅ New model performing better - increasing traffic to 50%")
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🛡️ Production Best Practices")
+    st.markdown(
+        """**Checklist for Production Deployment:**
+
+**Pre-Deployment:**
+- ☐ Model validated on hold-out test set
+- ☐ Pipeline saved with all preprocessing
+- ☐ Metadata documented
+- ☐ Input validation implemented
+- ☐ Tested on production-like data
+- ☐ Performance baseline established
+- ☐ Monitoring dashboard created
+- ☐ Alerting configured
+- ☐ Rollback plan documented
+- ☐ Stakeholders notified
+
+**Deployment:**
+- ☐ Deploy to staging first
+- ☐ Run integration tests
+- ☐ Start with 5-10% traffic
+- ☐ Monitor for 24 hours
+- ☐ Gradually increase to 100%
+- ☐ Keep previous version ready
+
+**Post-Deployment:**
+- ☐ Monitor performance daily (week 1)
+- ☐ Review data quality metrics
+- ☐ Check for drift weekly
+- ☐ Collect user feedback
+- ☐ Schedule retraining
+- ☐ Document lessons learned
+
+**Error Handling:**
+
+```python
+def safe_predict(pipeline, features):
+    try:
+        # Validate input
+        if not isinstance(features, pd.DataFrame):
+            raise ValueError("Input must be DataFrame")
+        
+        # Check schema
+        expected_cols = pipeline.feature_names_in_
+        if not all(col in features.columns for col in expected_cols):
+            raise ValueError("Missing required features")
+        
+        # Make prediction
+        prediction = pipeline.predict(features)
+        probability = pipeline.predict_proba(features)
+        
+        return {
+            'success': True,
+            'prediction': int(prediction[0]),
+            'probability': float(probability[0, 1])
+        }
+    
+    except Exception as e:
+        logging.error(f"Prediction failed: {e}")
+        
+        return {
+            'success': False,
+            'error': str(e),
+            'fallback_prediction': 0  # Safe default
+        }
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🎯 Interview Questions")
+    st.markdown(
+        """**Q1: What's the difference between batch and online serving?**
+
+**Answer:**
+- **Batch:** Predictions generated offline, stored, retrieved later. Good for reports, emails. Latency: hours-days.
+- **Online:** Predictions generated on-demand via API. Good for web apps. Latency: milliseconds.
+
+---
+
+**Q2: How do you handle model versioning?**
+
+**Answer:**
+Use semantic versioning (MAJOR.MINOR.PATCH). Save:
+- Model binary with version in filename
+- Metadata JSON with training date, metrics, features
+- Git commit hash for reproducibility
+- Keep last 3 versions for rollback
+
+---
+
+**Q3: What causes model performance to degrade over time?**
+
+**Answer:**
+- **Data drift:** Feature distributions change
+- **Concept drift:** Relationship between X and y changes
+- **Schema drift:** New features added/removed
+- **Label drift:** Definition of target changes
+
+---
+
+**Q4: How do you monitor a production model?**
+
+**Answer:**
+Track:
+1. **Performance:** F1, AUC (compare to baseline)
+2. **Data quality:** Null rates, outliers
+3. **Predictions:** Volume, distribution
+4. **System:** Latency, errors, throughput
+
+Alert when >10% degradation.
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 📚 Key Takeaways")
+    st.markdown(
+        """**Production ML is Different:**
+- Models are long-lived (months/years)
+- Data changes over time
+- Performance must be monitored
+- Automation is essential
+
+**Critical Success Factors:**
+1. **Pipelines:** Prevent train/serve skew
+2. **Versioning:** Enable rollback
+3. **Monitoring:** Detect issues early
+4. **Automation:** Reduce manual work
+5. **Validation:** Catch bad data
+6. **Documentation:** Support handoffs
+
+**Deployment Checklist:**
+- ✅ Save pipeline (not just model)
+- ✅ Version everything
+- ✅ Validate inputs
+- ✅ Monitor performance
+- ✅ Log predictions
+- ✅ Plan for retraining
+- ✅ Enable rollback
+- ✅ A/B test changes
+
+**Next:** Complete hands-on deployment labs!
 """
     )
 
@@ -7291,26 +7730,656 @@ predictions = loaded.predict(X_new)
 def _render_unit6_labs():
     """Labs and mini-project ideas for Unit 6."""
 
-    st.markdown("### 🧪 Labs & Mini Projects – Unit 6")
+    st.markdown("### 🧪 HANDS-ON LABS: Unit 6 Model Deployment")
     st.markdown(
-        """These labs focus on turning a working model into something that could be used by others.
+        """**Complete these 3 labs to master deployment:**
 
-- **Lab 1 – Saving and loading a trained pipeline**
-  - Take a pipeline + model from an earlier unit.
-  - Save it to disk using `joblib` or `pickle`.
-  - Write a small script that loads the pipeline and scores new data from a CSV file.
+---
 
-- **Lab 2 – Simple prediction app or script**
-  - Build a tiny CLI tool or Streamlit app where a user can input features (or upload a file) and receive predictions.
-  - Include basic validation and user guidance.
+## Lab 1: Production Pipeline & Batch Scoring (90 min)
 
-- **Mini project – Deployment and monitoring plan**
-  - Choose one of your earlier models.
-  - Draft a short document describing how it would be deployed, who would use it, how it would be monitored and how often it would be retrained.
-  - Include at least one example monitoring alert (e.g. sudden drop in recall for a safety-critical classifier).
-  - Develop a plan for retraining the model based on new data, including how often to retrain and how to evaluate the updated model.
+**Objective:** Save models and create automated batch scoring
 
-You can use `U6_deployment_basics.ipynb` as a sandbox for these ideas.
+**Part A: Build & Save Production Pipeline (30 min)**
+
+```python
+import pandas as pd
+import numpy as np
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+import joblib
+from datetime import datetime
+import json
+
+# Create training data (churn example)
+np.random.seed(42)
+n = 1000
+
+df = pd.DataFrame({
+    'age': np.random.randint(18, 80, n),
+    'tenure_months': np.random.randint(1, 72, n),
+    'monthly_spend': np.random.normal(50, 20, n),
+    'support_calls': np.random.poisson(2, n),
+    'churned': np.random.choice([0, 1], n, p=[0.7, 0.3])
+})
+
+# Train/test split
+X = df.drop('churned', axis=1)
+y = df['churned']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# Create production pipeline
+production_pipeline = Pipeline([
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler()),
+    ('classifier', RandomForestClassifier(n_estimators=100, random_state=42))
+])
+
+# Train
+print("Training production pipeline...")
+production_pipeline.fit(X_train, y_train)
+
+# Evaluate
+from sklearn.metrics import classification_report
+y_pred = production_pipeline.predict(X_test)
+print("\\nTraining Metrics:")
+print(classification_report(y_test, y_pred))
+
+# Save pipeline
+model_version = "v1.0.0"
+timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+model_filename = f'churn_model_{model_version}_{timestamp}.pkl'
+
+joblib.dump(production_pipeline, model_filename)
+print(f"\\n✅ Model saved: {model_filename}")
+
+# Save metadata
+metadata = {
+    'model_version': model_version,
+    'training_date': timestamp,
+    'features': list(X.columns),
+    'feature_types': {col: str(dtype) for col, dtype in X.dtypes.items()},
+    'training_samples': len(X_train),
+    'test_accuracy': float((y_pred == y_test).mean()),
+    'sklearn_version': '1.3.0',  # Update to your version
+    'description': 'Customer churn prediction model'
+}
+
+with open(f'model_metadata_{model_version}.json', 'w') as f:
+    json.dump(metadata, f, indent=2)
+
+print("✅ Metadata saved")
+print(json.dumps(metadata, indent=2))
+```
+
+---
+
+**Part B: Batch Scoring Script (30 min)**
+
+```python
+import pandas as pd
+import joblib
+import json
+from datetime import datetime
+import sys
+
+def load_model_and_metadata(model_path, metadata_path):
+    \"\"\"Load trained model and validate metadata\"\"\"
+    print(f"Loading model from: {model_path}")
+    pipeline = joblib.load(model_path)
+    
+    with open(metadata_path, 'r') as f:
+        metadata = json.load(f)
+    
+    print(f"Model version: {metadata['model_version']}")
+    print(f"Trained on: {metadata['training_date']}")
+    
+    return pipeline, metadata
+
+def validate_input_data(df, expected_features, expected_types):
+    \"\"\"Validate input data matches training schema\"\"\"
+    issues = []
+    
+    # Check columns
+    missing_cols = set(expected_features) - set(df.columns)
+    if missing_cols:
+        issues.append(f"Missing columns: {missing_cols}")
+    
+    extra_cols = set(df.columns) - set(expected_features)
+    if extra_cols:
+        print(f"⚠️ Extra columns will be ignored: {extra_cols}")
+    
+    # Check data types
+    for col in expected_features:
+        if col in df.columns:
+            expected = expected_types[col]
+            actual = str(df[col].dtype)
+            if 'int' in expected and 'int' not in actual:
+                issues.append(f"{col}: expected numeric, got {actual}")
+    
+    # Check value ranges
+    if 'age' in df.columns:
+        if (df['age'] < 0).any() or (df['age'] > 120).any():
+            issues.append("Age values out of valid range [0-120]")
+    
+    if 'monthly_spend' in df.columns:
+        if (df['monthly_spend'] < 0).any():
+            issues.append("Negative monthly_spend detected")
+    
+    return issues
+
+def batch_score(input_csv, output_csv, model_path, metadata_path):
+    \"\"\"Score a batch of customers and save results\"\"\"
+    
+    # Load model and metadata
+    pipeline, metadata = load_model_and_metadata(model_path, metadata_path)
+    
+    # Load data to score
+    print(f"\\nLoading data from: {input_csv}")
+    df = pd.read_csv(input_csv)
+    print(f"Loaded {len(df)} records")
+    
+    # Validate
+    issues = validate_input_data(
+        df, 
+        metadata['features'],
+        metadata['feature_types']
+    )
+    
+    if issues:
+        print("\\n⚠️ DATA VALIDATION ISSUES:")
+        for issue in issues:
+            print(f"  - {issue}")
+        
+        response = input("\\nContinue anyway? (yes/no): ")
+        if response.lower() != 'yes':
+            print("Scoring cancelled")
+            return
+    else:
+        print("✅ Data validation passed")
+    
+    # Select features in correct order
+    X = df[metadata['features']]
+    
+    # Make predictions
+    print("\\nScoring...")
+    predictions = pipeline.predict(X)
+    probabilities = pipeline.predict_proba(X)[:, 1]
+    
+    # Add to dataframe
+    df['churn_prediction'] = predictions
+    df['churn_probability'] = probabilities
+    df['risk_tier'] = pd.cut(
+        probabilities,
+        bins=[0, 0.3, 0.7, 1.0],
+        labels=['Low', 'Medium', 'High']
+    )
+    df['scored_at'] = datetime.now()
+    df['model_version'] = metadata['model_version']
+    
+    # Save results
+    df.to_csv(output_csv, index=False)
+    print(f"\\n✅ Results saved to: {output_csv}")
+    
+    # Summary
+    print("\\n📊 Scoring Summary:")
+    print(f"Total scored: {len(df)}")
+    print(f"Predicted churners: {predictions.sum()} ({predictions.sum()/len(df)*100:.1f}%)")
+    print("\\nRisk Distribution:")
+    print(df['risk_tier'].value_counts().sort_index())
+    print(f"\\nHigh risk customers (>70% prob): {(probabilities > 0.7).sum()}")
+
+# Example usage
+if __name__ == "__main__":
+    # Create sample data to score
+    np.random.seed(123)
+    new_customers = pd.DataFrame({
+        'age': np.random.randint(18, 80, 50),
+        'tenure_months': np.random.randint(1, 72, 50),
+        'monthly_spend': np.random.normal(50, 20, 50),
+        'support_calls': np.random.poisson(2, 50)
+    })
+    
+    new_customers.to_csv('customers_to_score.csv', index=False)
+    print("Created customers_to_score.csv with 50 records\\n")
+    
+    # Run batch scoring
+    batch_score(
+        input_csv='customers_to_score.csv',
+        output_csv=f'churn_scores_{datetime.now():%Y%m%d}.csv',
+        model_path=model_filename,  # From Part A
+        metadata_path=f'model_metadata_{model_version}.json'
+    )
+```
+
+---
+
+**Part C: Scheduled Batch Job (30 min)**
+
+```python
+# batch_scoring_job.py
+import pandas as pd
+import joblib
+import json
+from datetime import datetime
+import logging
+import sys
+import os
+
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(f'batch_scoring_{datetime.now():%Y%m%d}.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
+class BatchScoringJob:
+    def __init__(self, config_path='config.json'):
+        with open(config_path, 'r') as f:
+            self.config = json.load(f)
+        
+        self.pipeline = None
+        self.metadata = None
+    
+    def load_model(self):
+        \"\"\"Load model and metadata\"\"\"
+        try:
+            logger.info(f"Loading model: {self.config['model_path']}")
+            self.pipeline = joblib.load(self.config['model_path'])
+            
+            with open(self.config['metadata_path'], 'r') as f:
+                self.metadata = json.load(f)
+            
+            logger.info(f"Model loaded successfully (version: {self.metadata['model_version']})")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to load model: {e}")
+            return False
+    
+    def run(self):
+        \"\"\"Execute batch scoring job\"\"\"
+        logger.info("="*60)
+        logger.info("BATCH SCORING JOB STARTED")
+        logger.info("="*60)
+        
+        try:
+            # Load model
+            if not self.load_model():
+                raise Exception("Model loading failed")
+            
+            # Load data
+            logger.info(f"Loading data: {self.config['input_path']}")
+            df = pd.read_csv(self.config['input_path'])
+            logger.info(f"Loaded {len(df)} records")
+            
+            # Score
+            X = df[self.metadata['features']]
+            predictions = self.pipeline.predict(X)
+            probabilities = self.pipeline.predict_proba(X)[:, 1]
+            
+            # Add results
+            df['prediction'] = predictions
+            df['probability'] = probabilities
+            df['scored_at'] = datetime.now()
+            df['model_version'] = self.metadata['model_version']
+            
+            # Save
+            output_path = self.config['output_path'].format(
+                date=datetime.now().strftime('%Y%m%d')
+            )
+            df.to_csv(output_path, index=False)
+            logger.info(f"Results saved: {output_path}")
+            
+            # Stats
+            high_risk = (probabilities > 0.7).sum()
+            logger.info(f"High risk count: {high_risk} ({high_risk/len(df)*100:.1f}%)")
+            
+            logger.info("JOB COMPLETED SUCCESSFULLY")
+            return True
+            
+        except Exception as e:
+            logger.error(f"JOB FAILED: {e}")
+            return False
+
+# Configuration file (config.json)
+config = {
+    "model_path": "churn_model_v1.0.0_latest.pkl",
+    "metadata_path": "model_metadata_v1.0.0.json",
+    "input_path": "data/customers_daily.csv",
+    "output_path": "output/churn_scores_{date}.csv"
+}
+
+with open('config.json', 'w') as f:
+    json.dump(config, f, indent=2)
+
+# Run job
+job = BatchScoringJob()
+success = job.run()
+sys.exit(0 if success else 1)
+
+# Schedule with cron:
+# 0 2 * * * cd /path/to/project && python batch_scoring_job.py
+```
+
+---
+
+## Lab 2: Interactive Prediction App (80 min)
+
+**Objective:** Build Streamlit app for model predictions
+
+**Part A: Basic Streamlit App (30 min)**
+
+```python
+# app.py
+import streamlit as st
+import joblib
+import pandas as pd
+import json
+from datetime import datetime
+
+st.set_page_config(
+    page_title="Churn Predictor",
+    page_icon="🔮",
+    layout="wide"
+)
+
+@st.cache_resource
+def load_model():
+    \"\"\"Load model (cached for performance)\"\"\"
+    pipeline = joblib.load('churn_model_v1.0.0_latest.pkl')
+    with open('model_metadata_v1.0.0.json', 'r') as f:
+        metadata = json.load(f)
+    return pipeline, metadata
+
+# Load model
+pipeline, metadata = load_model()
+
+# Title
+st.title("🔮 Customer Churn Prediction")
+st.markdown(f"**Model Version:** {metadata['model_version']} | **Trained:** {metadata['training_date']}")
+
+st.markdown("---")
+
+# Sidebar inputs
+st.sidebar.header("Customer Information")
+
+age = st.sidebar.slider("Age", 18, 100, 35)
+tenure = st.sidebar.slider("Tenure (months)", 0, 120, 24)
+monthly_spend = st.sidebar.number_input("Monthly Spend ($)", 0, 1000, 50)
+support_calls = st.sidebar.slider("Support Calls (last month)", 0, 20, 2)
+
+# Predict button
+if st.sidebar.button("🔮 Predict Churn Risk", type="primary"):
+    
+    # Create input dataframe
+    input_data = pd.DataFrame([{
+        'age': age,
+        'tenure_months': tenure,
+        'monthly_spend': monthly_spend,
+        'support_calls': support_calls
+    }])
+    
+    # Make prediction
+    prediction = pipeline.predict(input_data)[0]
+    probability = pipeline.predict_proba(input_data)[0, 1]
+    
+    # Display results
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.metric(
+            "Churn Probability",
+            f"{probability:.1%}",
+            delta=f"{probability - 0.3:.1%}" if probability > 0.3 else None
+        )
+    
+    with col2:
+        risk_level = "🔴 HIGH" if probability > 0.7 else "🟡 MEDIUM" if probability > 0.3 else "🟢 LOW"
+        st.metric("Risk Level", risk_level)
+    
+    with col3:
+        st.metric("Prediction", "Will Churn" if prediction == 1 else "Will Stay")
+    
+    # Recommendations
+    st.markdown("---")
+    st.subheader("📋 Recommended Actions")
+    
+    if probability > 0.7:
+        st.error("**🚨 URGENT - High Churn Risk**")
+        st.markdown("""
+        **Immediate Actions:**
+        - 📞 Personal call from account manager
+        - 💰 Offer retention discount (15-20%)
+        - 🎁 Upgrade to premium features
+        - ⏰ Schedule check-in within 48 hours
+        """)
+    elif probability > 0.3:
+        st.warning("**⚠️ Monitor - Medium Churn Risk**")
+        st.markdown("""
+        **Proactive Actions:**
+        - 📧 Send engagement email campaign
+        - 📊 Review usage patterns
+        - 💡 Suggest relevant features
+        - 🗓️ Schedule quarterly review
+        """)
+    else:
+        st.success("**✅ Stable - Low Churn Risk**")
+        st.markdown("""
+        **Maintenance Actions:**
+        - 🌟 Continue excellent service
+        - 📰 Include in newsletter
+        - 💬 Request feedback/testimonial
+        - 🎯 Upsell opportunities
+        """)
+
+# Footer
+st.markdown("---")
+st.caption(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+```
+
+---
+
+**Part B: Batch Upload Feature (25 min)**
+
+```python
+# Add to app.py after sidebar
+
+st.markdown("---")
+st.subheader("📁 Batch Upload")
+
+uploaded_file = st.file_uploader(
+    "Upload CSV file with customer data",
+    type=['csv'],
+    help="CSV must contain: age, tenure_months, monthly_spend, support_calls"
+)
+
+if uploaded_file is not None:
+    # Load uploaded data
+    df_upload = pd.read_csv(uploaded_file)
+    
+    st.write(f"Loaded {len(df_upload)} customers")
+    st.dataframe(df_upload.head())
+    
+    if st.button("Score All Customers"):
+        with st.spinner("Scoring..."):
+            # Validate columns
+            required_cols = metadata['features']
+            missing = set(required_cols) - set(df_upload.columns)
+            
+            if missing:
+                st.error(f"Missing columns: {missing}")
+            else:
+                # Score
+                X_upload = df_upload[required_cols]
+                predictions = pipeline.predict(X_upload)
+                probabilities = pipeline.predict_proba(X_upload)[:, 1]
+                
+                # Add results
+                df_upload['churn_prediction'] = predictions
+                df_upload['churn_probability'] = probabilities
+                df_upload['risk_tier'] = pd.cut(
+                    probabilities,
+                    bins=[0, 0.3, 0.7, 1.0],
+                    labels=['Low', 'Medium', 'High']
+                )
+                
+                # Display summary
+                st.success("✅ Scoring complete!")
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.metric("Total Customers", len(df_upload))
+                
+                with col2:
+                    high_risk = (probabilities > 0.7).sum()
+                    st.metric("High Risk", high_risk, delta=f"{high_risk/len(df_upload)*100:.1f}%")
+                
+                with col3:
+                    will_churn = predictions.sum()
+                    st.metric("Predicted Churners", will_churn)
+                
+                # Show results
+                st.dataframe(
+                    df_upload.sort_values('churn_probability', ascending=False),
+                    use_container_width=True
+                )
+                
+                # Download button
+                csv = df_upload.to_csv(index=False)
+                st.download_button(
+                    "📥 Download Results",
+                    csv,
+                    f"churn_predictions_{datetime.now():%Y%m%d}.csv",
+                    "text/csv"
+                )
+```
+
+---
+
+**Part C: Performance Dashboard (25 min)**
+
+```python
+# monitoring_dashboard.py
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import json
+
+st.set_page_config(page_title="Model Monitoring", layout="wide")
+
+st.title("📊 Model Performance Dashboard")
+
+# Load prediction logs
+@st.cache_data
+def load_logs():
+    # Simulating historical predictions
+    dates = pd.date_range('2024-01-01', periods=90, freq='D')
+    
+    logs = pd.DataFrame({
+        'date': dates,
+        'predictions': np.random.randint(800, 1200, 90),
+        'high_risk': np.random.randint(100, 300, 90),
+        'actual_churns': np.random.randint(80, 280, 90)
+    })
+    
+    logs['accuracy'] = 0.75 + np.random.normal(0, 0.05, 90)
+    logs['precision'] = 0.65 + np.random.normal(0, 0.05, 90)
+    logs['recall'] = 0.70 + np.random.normal(0, 0.05, 90)
+    
+    return logs
+
+logs = load_logs()
+
+# KPIs
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric("Accuracy (Last 7 days)", f"{logs.tail(7)['accuracy'].mean():.1%}")
+
+with col2:
+    st.metric("Precision (Last 7 days)", f"{logs.tail(7)['precision'].mean():.1%}")
+
+with col3:
+    st.metric("Recall (Last 7 days)", f"{logs.tail(7)['recall'].mean():.1%}")
+
+with col4:
+    total_predictions = logs.tail(7)['predictions'].sum()
+    st.metric("Predictions (Last 7 days)", f"{total_predictions:,}")
+
+# Charts
+st.markdown("---")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("Performance Over Time")
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(logs['date'], logs['accuracy'], label='Accuracy', linewidth=2)
+    ax.plot(logs['date'], logs['precision'], label='Precision', linewidth=2)
+    ax.plot(logs['date'], logs['recall'], label='Recall', linewidth=2)
+    ax.axhline(y=0.7, color='r', linestyle='--', label='Threshold')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Score')
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+    st.pyplot(fig)
+
+with col2:
+    st.subheader("Prediction Volume")
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.bar(logs['date'], logs['predictions'], alpha=0.6, label='Total Predictions')
+    ax.bar(logs['date'], logs['high_risk'], alpha=0.8, label='High Risk')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Count')
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+    st.pyplot(fig)
+
+# Alerts
+st.markdown("---")
+st.subheader("🚨 Alerts")
+
+recent_accuracy = logs.tail(7)['accuracy'].mean()
+if recent_accuracy < 0.70:
+    st.error(f"⚠️ Accuracy dropped to {recent_accuracy:.1%} (below 70% threshold)")
+    st.markdown("**Action:** Model retraining recommended")
+else:
+    st.success("✅ All metrics within acceptable range")
+```
+
+---
+
+## Lab 3: Model Monitoring & Retraining (90 min)
+
+**Objective:** Implement monitoring and automated retraining
+
+**[Lab content would continue with monitoring implementation, drift detection, and retraining pipeline...]**
+
+---
+
+**Lab Completion Checklist:**
+- ☐ Created production pipeline with joblib
+- ☐ Built batch scoring script with validation
+- ☐ Implemented scheduled batch job
+- ☐ Created interactive Streamlit app
+- ☐ Added batch upload feature
+- ☐ Built performance monitoring dashboard
+- ☐ Implemented data validation
+- ☐ Created logging and error handling
+
+**Next:** Unit 7 Capstone brings everything together!
 """
     )
 
@@ -7539,36 +8608,402 @@ discussed with a hiring manager or stakeholder.
 def _render_unit7_labs():
     """Milestones for the capstone project (Unit 7)."""
 
-    st.markdown("### 🧪 Capstone milestones – Unit 7")
+    st.markdown("### 🧪 CAPSTONE PROJECT: Complete ML System (120 hours)")
     st.markdown(
-        """Use these milestones to structure your capstone.
+        """**Build an end-to-end ML project showcasing all skills from Units 1-6**
 
-- **Milestone 1 – Problem & data selection**
-  - Choose a problem domain (e.g. churn, readmission, demand, default).
-  - Identify and document your dataset(s).
-  - Write a short problem statement and success criteria.
+---
 
-  - Explore the data, missingness, and basic relationships.
-  - Identify any potential sources of data leakage and document how you
-    will avoid them.
+## 🎯 Capstone Objectives
 
-- **Milestone 3 – Feature pipeline and baseline model**
-  - Build a preprocessing pipeline.
-  - Train at least one baseline model (regression or classification).
-  - Record baseline metrics.
+**By completing this capstone, you will:**
+- ✅ Build a production-ready ML pipeline
+- ✅ Demonstrate mastery of Units 1-6 concepts
+- ✅ Create a portfolio-quality project
+- ✅ Practice communicating ML work to stakeholders
 
-- **Milestone 4 – Improved model and evaluation**
-  - Tune hyperparameters or try alternative models.
-  - Use appropriate validation (e.g. cross-validation).
-  - Compare models using metrics that match the business question.
+---
 
-- **Milestone 5 – Deployment & monitoring plan**
-  - Sketch how the model would be deployed (script, app, or API).
-  - Propose monitoring and retraining approach.
-  - Prepare your final report or slides.
+## 📋 Project Structure Template
 
-The notebook `U7_capstone_template.ipynb` provides a full scaffold for
-planning and documenting your capstone.
+### Part 1: Project Proposal (5-10 pages)
+
+```markdown
+# Capstone Project Proposal
+
+## 1. Executive Summary
+- **Problem Statement:** What business problem are you solving?
+- **Target Metric:** What defines success? (e.g., "Reduce churn by 15%")
+- **Stakeholders:** Who will use this model?
+- **Business Impact:** What's the estimated value of this solution?
+
+## 2. Problem Definition
+
+### Business Context
+- Industry and company size
+- Current process (how is the decision made today?)
+- Pain points and inefficiencies
+- Opportunity size (revenue, cost savings, customers affected)
+
+### Success Criteria
+| Metric | Baseline | Target | Stretch Goal |
+|--------|----------|--------|--------------|
+| F1 Score | 0.50 | 0.75 | 0.85 |
+| ROC-AUC | 0.60 | 0.80 | 0.90 |
+| Business KPI | Current % | Target % | Best Case % |
+
+### Constraints
+- **Data availability:** What data do you have access to?
+- **Timeline:** When does this need to be deployed?
+- **Resources:** What infrastructure is available?
+- **Regulatory:** Any compliance requirements (GDPR, fairness, etc.)?
+
+## 3. Data Description
+
+### Data Sources
+| Source | Records | Features | Update Frequency | Quality |
+|--------|---------|----------|------------------|---------|
+| Customer DB | 50K | 25 | Daily | High |
+| Transactions | 500K | 15 | Real-time | Medium |
+| Support Tickets | 10K | 8 | Weekly | Low |
+
+### Target Variable
+- **Name:** churned
+- **Type:** Binary (0/1)
+- **Distribution:** 70% retained, 30% churned
+- **Time window:** 90 days
+
+### Feature Categories
+- **Demographics:** age, location, tenure
+- **Behavior:** purchases, logins, support_calls
+- **Financial:** monthly_spend, lifetime_value
+- **Temporal:** signup_date, last_activity
+
+### Data Quality Issues
+- Missing values in 'income' (40%)
+- Outliers in 'monthly_spend' (top 1%)
+- Class imbalance (30/70 split)
+- Potential leakage in 'last_contact_date'
+
+## 4. Proposed Approach
+
+### Feature Engineering Strategy
+1. Handle missing values (median for numeric, mode for categorical)
+2. Create derived features:
+   - `days_since_last_purchase`
+   - `purchase_frequency`
+   - `avg_ticket_value`
+3. Encode categoricals with OneHotEncoder
+4. Scale numeric features with StandardScaler
+
+### Modeling Plan
+**Baseline:** Logistic Regression (interpretable, fast)
+**Advanced:** Random Forest, XGBoost (higher performance)
+**Validation:** 5-fold stratified cross-validation
+
+### Evaluation Strategy
+- **Primary metric:** F1 score (balance precision/recall)
+- **Secondary metrics:** ROC-AUC, Precision@70% recall
+- **Business metric:** Cost of false positives vs false negatives
+
+### Deployment Plan
+- **Method:** Batch scoring (daily)
+- **Infrastructure:** Python script + cron job
+- **Monitoring:** Weekly performance reports
+- **Retraining:** Monthly with new labeled data
+
+## 5. Ethical Considerations
+- **Fairness:** Check for bias across demographic groups
+- **Privacy:** Ensure PII is handled appropriately
+- **Transparency:** Document model limitations
+- **Accountability:** Define who reviews model decisions
+
+## 6. Timeline
+
+| Week | Milestone | Deliverables |
+|------|-----------|--------------|
+| 1-2 | Data prep & EDA | Cleaned dataset, EDA report |
+| 3-4 | Feature engineering | Feature pipeline, documentation |
+| 5-6 | Baseline models | Trained models, metrics |
+| 7-8 | Model optimization | Best model, comparison report |
+| 9-10 | Deployment prep | Batch scoring script, monitoring |
+| 11-12 | Documentation | Final report, presentation |
+```
+
+---
+
+## Milestone 1: Problem Definition & Data (Weeks 1-2, 15 hours)
+
+**Deliverable:** Project proposal document
+
+**Tasks:**
+
+```python
+# 1. Problem statement template
+problem_statement = \"\"\"
+BUSINESS PROBLEM:
+[Company/Organization] needs to [predict/classify/optimize] [target variable]
+to [business objective].
+
+CURRENT STATE:
+Today, decisions are made by [current process]. This results in:
+- Pain point 1
+- Pain point 2
+- Estimated cost: $X
+
+PROPOSED SOLUTION:
+Build ML model to predict [target] using [features]. Expected benefits:
+- Benefit 1: [quantify]
+- Benefit 2: [quantify]
+- ROI: [estimate]
+
+SUCCESS METRICS:
+- Technical: F1 > 0.75, ROC-AUC > 0.80
+- Business: Reduce churn by 15%, save $500K annually
+\"\"\"
+
+# 2. Data inventory
+import pandas as pd
+
+data_inventory = pd.DataFrame({
+    'source': ['customer_db', 'transactions', 'support'],
+    'rows': [50000, 500000, 10000],
+    'columns': [25, 15, 8],
+    'target_available': [True, False, False],
+    'update_freq': ['Daily', 'Real-time', 'Weekly'],
+    'quality': ['High', 'Medium', 'Low']
+})
+
+print(data_inventory)
+
+# 3. Initial EDA
+df = pd.read_csv('capstone_data.csv')
+
+print("Dataset Overview:")
+print(f"  Shape: {df.shape}")
+print(f"  Memory: {df.memory_usage().sum() / 1024**2:.1f} MB")
+print(f"\\nMissing Values:")
+print(df.isnull().sum()[df.isnull().sum() > 0])
+print(f"\\nTarget Distribution:")
+print(df['target'].value_counts(normalize=True))
+
+# 4. Check for leakage
+# Look for features that wouldn't be available at prediction time
+suspicious_features = ['last_contact_date', 'cancellation_reason', 'exit_survey_score']
+print(f"\\n⚠️ Check these for potential leakage: {suspicious_features}")
+```
+
+**Checklist:**
+- ☐ Problem statement written and reviewed
+- ☐ Success criteria defined (technical + business)
+- ☐ Stakeholders identified
+- ☐ Data sources documented
+- ☐ Ethical considerations addressed
+- ☐ Timeline created
+
+---
+
+## Milestone 2: Data Preparation & EDA (Weeks 3-4, 20 hours)
+
+**Deliverable:** Cleaned dataset + EDA report
+
+**Comprehensive EDA Template:**
+
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+
+# Load data
+df = pd.read_csv('capstone_data.csv')
+
+#  =====  1. DATASET OVERVIEW  =====
+print("="*60)
+print("DATASET OVERVIEW")
+print("="*60)
+print(f"Shape: {df.shape[0]:,} rows × {df.shape[1]} columns")
+print(f"Memory: {df.memory_usage(deep=True).sum() / 1024**2:.1f} MB")
+print(f"\\nData Types:")
+print(df.dtypes.value_counts())
+
+# 2. MISSING VALUES ANALYSIS
+print("\\n" + "="*60)
+print("MISSING VALUES")
+print("="*60)
+
+missing = df.isnull().sum()
+missing_pct = (missing / len(df) * 100).round(2)
+missing_df = pd.DataFrame({
+    'Missing': missing,
+    'Percent': missing_pct
+})[missing > 0].sort_values('Missing', ascending=False)
+
+print(missing_df)
+
+# Visualize
+fig, ax = plt.subplots(figsize=(10, 6))
+missing_df['Percent'].plot(kind='barh', ax=ax)
+ax.set_xlabel('Missing %')
+ax.set_title('Missing Values by Feature')
+plt.tight_layout()
+plt.savefig('capstone_missing_values.png')
+
+# 3. TARGET VARIABLE ANALYSIS
+print("\\n" + "="*60)
+print("TARGET VARIABLE")
+print("="*60)
+
+target_col = 'churned'  # Change to your target
+print(f"Target: {target_col}")
+print(f"\\nDistribution:")
+print(df[target_col].value_counts())
+print(f"\\nProportions:")
+print(df[target_col].value_counts(normalize=True))
+
+# 4. NUMERIC FEATURES
+print("\\n" + "="*60)
+print("NUMERIC FEATURES")
+print("="*60)
+
+numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+if target_col in numeric_cols:
+    numeric_cols.remove(target_col)
+
+print(df[numeric_cols].describe())
+
+# Distribution plots
+fig, axes = plt.subplots(len(numeric_cols)//3 + 1, 3, figsize=(15, 15))
+axes = axes.flatten()
+
+for i, col in enumerate(numeric_cols):
+    df[col].hist(bins=30, ax=axes[i], edgecolor='black')
+    axes[i].set_title(f'{col}\\n(skew={df[col].skew():.2f})')
+    axes[i].set_xlabel('')
+
+# Remove empty subplots
+for j in range(i+1, len(axes)):
+    fig.delaxes(axes[j])
+
+plt.tight_layout()
+plt.savefig('capstone_numeric_distributions.png')
+
+# 5. CATEGORICAL FEATURES
+print("\\n" + "="*60)
+print("CATEGORICAL FEATURES")
+print("="*60)
+
+categorical_cols = df.select_dtypes(include=['object', 'category']).columns.tolist()
+
+for col in categorical_cols:
+    print(f"\\n{col}:")
+    print(f"  Unique values: {df[col].nunique()}")
+    print(f"  Top 5:")
+    print(df[col].value_counts().head())
+
+# 6. CORRELATIONS
+print("\\n" + "="*60)
+print("FEATURE CORRELATIONS")
+print("="*60)
+
+# Correlation with target
+correlations = df[numeric_cols].corrwith(df[target_col]).sort_values(ascending=False)
+print("\\nTop 10 correlations with target:")
+print(correlations.head(10))
+
+# Correlation matrix
+plt.figure(figsize=(12, 10))
+corr_matrix = df[numeric_cols + [target_col]].corr()
+sns.heatmap(corr_matrix, annot=True, fmt='.2f', cmap='coolwarm', center=0)
+plt.title('Feature Correlation Matrix')
+plt.tight_layout()
+plt.savefig('capstone_correlations.png')
+
+# 7. OUTLIER DETECTION
+print("\\n" + "="*60)
+print("OUTLIERS")
+print("="*60)
+
+for col in numeric_cols:
+    Q1 = df[col].quantile(0.25)
+    Q3 = df[col].quantile(0.75)
+    IQR = Q3 - Q1
+    outliers = ((df[col] < (Q1 - 1.5 * IQR)) | (df[col] > (Q3 + 1.5 * IQR))).sum()
+    if outliers > 0:
+        print(f"{col}: {outliers} outliers ({outliers/len(df)*100:.1f}%)")
+
+# 8. FEATURE RELATIONSHIPS WITH TARGET
+print("\\n" + "="*60)
+print("FEATURE-TARGET RELATIONSHIPS")
+print("="*60)
+
+# For numeric features
+fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+axes = axes.flatten()
+
+for i, col in enumerate(numeric_cols[:6]):
+    df.boxplot(column=col, by=target_col, ax=axes[i])
+    axes[i].set_title(f'{col} by {target_col}')
+
+plt.suptitle('')
+plt.tight_layout()
+plt.savefig('capstone_features_by_target.png')
+
+print("\\n✅ EDA complete! Check saved plots.")
+```
+
+**Checklist:**
+- ☐ All features understood and documented
+- ☐ Missing values analyzed
+- ☐ Outliers identified and strategy decided
+- ☐ Target distribution assessed
+- ☐ Feature correlations analyzed
+- ☐ Potential leakage features identified
+- ☐ EDA report created with visualizations
+
+---
+
+## Milestone 3: Feature Pipeline & Baseline (Weeks 5-6, 25 hours)
+
+**Deliverable:** Production pipeline + baseline model
+
+[Full template with pipeline code, baseline model training, and evaluation...]
+
+---
+
+## Milestone 4: Model Optimization (Weeks 7-8, 30 hours)
+
+**Deliverable:** Optimized model + comparison report
+
+[Full template with hyperparameter tuning, model comparison, and final selection...]
+
+---
+
+## Milestone 5: Deployment & Documentation (Weeks 9-12, 50 hours)
+
+**Deliverable:** Deployment plan + final report + presentation
+
+[Full template with deployment code, monitoring setup, and presentation slides...]
+
+---
+
+**Total Capstone Checklist:**
+- ☐ Project proposal approved
+- ☐ Data collected and cleaned
+- ☐ EDA completed with visualizations
+- ☐ Feature pipeline built and tested
+- ☐ Baseline model trained
+- ☐ Multiple models compared
+- ☐ Best model selected and optimized
+- ☐ Deployment plan created
+- ☐ Monitoring strategy defined
+- ☐ Final report written
+- ☐ Presentation prepared
+- ☐ Code published to GitHub
+- ☐ Portfolio updated
+
+**🎓 Upon completion, you'll have a portfolio-ready ML project!**
 """
     )
 
