@@ -370,6 +370,1546 @@ Maintain a personal reference document:
 This becomes your analytical playbook!
 """
         )
+
+        st.markdown("---")
+        st.markdown("#### 🎯 Advanced Business Question Framework")
+        st.markdown(
+            """**Moving from basic questions to strategic analytics**
+
+### The Pyramid of Business Questions
+
+**Level 1: Descriptive (What happened?)**
+- "What were last month's sales?"
+- "How many patients attended appointments?"
+- Skills needed: Basic SQL, Excel
+
+**Level 2: Diagnostic (Why did it happen?)**
+- "Why did sales decrease in Q3?"
+- "What factors drive DNA rates?"
+- Skills needed: Analysis, correlation, segmentation
+
+**Level 3: Predictive (What will happen?)**
+- "What will Q4 sales be?"
+- "Which patients are likely to DNA?"
+- Skills needed: Statistical modeling, trends
+
+**Level 4: Prescriptive (What should we do?)**
+- "How should we allocate marketing budget?"
+- "What interventions will reduce DNAs?"
+- Skills needed: Optimization, experimentation
+
+**Your goal: Move up the pyramid!**
+
+---
+
+### Stakeholder Question Types & How to Handle Them
+
+**The Explorer: "Can you just pull some numbers?"**
+- **Real need:** They're fishing for insights
+- **Your response:** "What decision are you trying to make?"
+- **Refine to:** Specific hypothesis to test
+
+**The Validator: "Prove my theory"**
+- **Real need:** Confirmation bias alert!
+- **Your response:** "Let's test multiple hypotheses"
+- **Refine to:** Objective analysis with alternative explanations
+
+**The Firefighter: "URGENT: Why did X happen?"**
+- **Real need:** Quick triage
+- **Your response:** "Let me check the obvious suspects first"
+- **Refine to:** Rapid diagnostic with follow-up plan
+
+**The Strategist: "Help me understand our position"**
+- **Real need:** Comprehensive landscape view
+- **Your response:** "What dimensions matter most?"
+- **Refine to:** Multi-dimensional competitive analysis
+
+**Example Interaction:**
+
+**Stakeholder:** *"Can you tell me if our new product is doing well?"*
+
+**Bad Analyst:** *"Sure, let me pull sales numbers."*
+
+**Good Analyst:**
+- "What does 'doing well' mean to you? Revenue target? Market share? Customer adoption?"
+- "Compared to what? Previous products? Competitors? Internal forecast?"
+- "Over what timeframe? Since launch? Month-over-month? Year-over-year?"
+- "For which segments? All customers? New vs existing? Geographic regions?"
+
+**Refined Question:**
+*"Has the new product achieved 80% of our Q1 revenue target, and how does adoption compare to our last product launch across customer segments?"*
+
+NOW you can analyze!
+
+---
+
+### Data Literacy: Speaking the Language
+
+**Key Concepts Every Analyst Must Master:**
+
+**1. Metrics vs Dimensions**
+- **Metrics** (measures): Numbers you calculate (revenue, count, average)
+- **Dimensions** (attributes): Categories you group by (date, region, product)
+- Example: "Revenue [metric] by product category [dimension]"
+
+**2. Granularity**
+- Level of detail in your data
+- Daily vs monthly vs yearly
+- Individual transactions vs aggregated summaries
+- **Critical**: Match granularity to question!
+
+**3. Time Windows**
+- Point-in-time: Snapshot at specific moment
+- Period: Across a timeframe
+- Rolling: Moving window (last 30 days)
+- YTD/MTD: Year/Month to date
+
+**4. Comparison Baselines**
+- Previous period: Last month, last quarter
+- Same period last year: Seasonal comparison
+- Target/benchmark: Goal or industry standard
+- Control group: A/B testing reference
+
+**5. Statistical Significance**
+- Is the difference real or random variation?
+- Sample size matters
+- Confidence intervals
+- Don't confuse correlation with causation!
+
+**Practical Example:**
+
+**Weak:** "Sales are up 5%"
+
+**Strong:** "Sales increased 5% month-over-month (£52K to £54.6K), exceeding our 3% target. This represents our 3rd consecutive month of growth, driven primarily by the Northeast region (+12%) and Enterprise segment (+18%). The increase is statistically significant (p<0.05, n=1,247 transactions)."
+
+See the difference?
+
+---
+
+### The Data Quality Checklist
+
+**Before ANY analysis, verify:**
+
+**Completeness**
+- Are all records present?
+- Any missing time periods?
+- All sources included?
+```sql
+-- Check for gaps in daily data
+SELECT date, COUNT(*) as record_count
+FROM transactions
+WHERE date BETWEEN '2024-01-01' AND '2024-12-31'
+GROUP BY date
+ORDER BY date;
+-- Expect 365 rows for full year
+```
+
+**Accuracy**
+- Do numbers make sense?
+- Any obvious outliers?
+- Cross-check with known totals
+```sql
+-- Sanity check: revenue should match financial reports
+SELECT SUM(revenue) as total_revenue
+FROM transactions
+WHERE date BETWEEN '2024-01-01' AND '2024-03-31';
+-- Compare to Q1 financial report
+```
+
+**Consistency**
+- Same definitions across sources?
+- Units consistent? (£ vs pence, % vs decimal)
+- Time zones aligned?
+
+**Timeliness**
+- How fresh is the data?
+- When was it last updated?
+- Any known delays?
+
+**Relevance**
+- Does this data answer the question?
+- Right level of detail?
+- Appropriate time period?
+
+**Red Flags:**
+- Round numbers (10, 100, 1000) → often defaults or estimates
+- Unexpected nulls → data pipeline issues
+- Sudden spikes/drops → investigate before reporting!
+- Too-perfect patterns → data may be synthetic or flawed
+
+---
+
+### Building Your Analytical Toolkit
+
+**Essential Questions for Every Analysis:**
+
+**1. Define Success**
+- What's the ideal outcome?
+- How will we measure it?
+- What's the threshold?
+
+**2. Identify Variables**
+- What factors might influence the outcome?
+- Which are controllable?
+- Which are external?
+
+**3. Plan Data Collection**
+- What data do I need?
+- Where does it live?
+- How do I access it?
+
+**4. Consider Bias**
+- Selection bias: Am I looking at the right population?
+- Survivorship bias: Am I only seeing successes?
+- Confirmation bias: Am I testing objectively?
+
+**5. Think Through Logic**
+- If X increases, what happens to Y?
+- What would disprove my hypothesis?
+- What alternative explanations exist?
+
+**Example: Analyzing Customer Churn**
+
+**Define Success:** Identify factors predicting churn to reduce it by 20%
+
+**Variables:**
+- Tenure (months as customer)
+- Engagement (logins/month, features used)
+- Support tickets (count, resolution time)
+- Payment history (late payments, failed charges)
+- Demographics (industry, company size)
+
+**Data Sources:**
+- CRM (Salesforce) → customer demographics, tenure
+- Product usage logs → engagement metrics
+- Support system (Zendesk) → ticket data
+- Payment processor (Stripe) → billing history
+
+**Bias Checks:**
+- Survivorship: Include both churned AND active customers
+- Time: Look at same tenure periods for fair comparison
+- Confounders: Control for seasonal effects
+
+**Hypotheses to Test:**
+1. Customers with <2 logins/month churn 3x more
+2. Unresolved support tickets increase churn by 50%
+3. Payment failures predict churn within 30 days
+4. First 90 days are critical for retention
+
+NOW you have a testable framework!
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("#### 📊 Data Types & Their Analytical Implications")
+        st.markdown(
+            """**Not all data is created equal - understanding data types is fundamental**
+
+### Categorical vs Continuous Data
+
+**Categorical (Qualitative)**
+- **Nominal**: No inherent order
+  - Examples: Product type, region, gender
+  - Analysis: Counts, proportions, mode
+  - Visualizations: Bar charts, pie charts
+  
+- **Ordinal**: Has order, but gaps between values aren't equal
+  - Examples: Satisfaction ratings (1-5), education level
+  - Analysis: Median, percentiles
+  - Visualizations: Bar charts (ordered), stacked bars
+
+**Continuous (Quantitative)**
+- **Interval**: Equal gaps, no true zero
+  - Examples: Temperature (Celsius), dates
+  - Analysis: Mean, standard deviation
+  - Visualizations: Line charts, histograms
+  
+- **Ratio**: Equal gaps AND true zero
+  - Examples: Revenue, age, distance
+  - Analysis: All statistics apply, ratios meaningful
+  - Visualizations: All chart types
+
+**Why It Matters:**
+
+Wrong data type = wrong analysis!
+
+```python
+# WRONG: Treating zip codes as numbers
+average_zip = df['zipcode'].mean()  # Meaningless!
+
+# RIGHT: Treat as categorical
+zip_counts = df['zipcode'].value_counts()  # Makes sense!
+```
+
+---
+
+### Measures of Central Tendency: When to Use What
+
+**Mean (Average)**
+- **When**: Continuous data, symmetric distribution
+- **Pros**: Uses all data points
+- **Cons**: Sensitive to outliers
+- **Example**: Average transaction value
+
+**Median (Middle value)**
+- **When**: Skewed distributions, outliers present
+- **Pros**: Robust to outliers
+- **Cons**: Ignores extreme values
+- **Example**: Median household income
+
+**Mode (Most frequent)**
+- **When**: Categorical data, finding most common
+- **Pros**: Works for any data type
+- **Cons**: May not be unique or representative
+- **Example**: Most popular product
+
+**Real Example:**
+
+Employee salaries: £25K, £28K, £30K, £32K, £35K, £250K (CEO)
+
+- Mean: £66,667 (misleading!)
+- Median: £31,000 (better represents typical salary)
+- Mode: None (all unique)
+
+**Choose median** when outliers present!
+
+---
+
+### Variance & Standard Deviation: Understanding Spread
+
+**Why Spread Matters:**
+
+Two datasets can have same mean but very different spreads:
+- Dataset A: 48, 49, 50, 51, 52 (tight, predictable)
+- Dataset B: 10, 30, 50, 70, 90 (wide, variable)
+- Both have mean = 50, but VERY different!
+
+**Standard Deviation (SD):**
+- Measures average distance from mean
+- **Low SD** → data clustered near mean (consistent)
+- **High SD** → data spread out (variable)
+
+**Practical Applications:**
+
+**Quality Control:**
+- Product weights: Target 100g ± 2g (SD = 0.67g is good)
+- If SD = 5g → quality issues!
+
+**Sales Forecasting:**
+- Monthly sales: Mean = £50K, SD = £5K
+- Expect 95% of months between £40K-£60K (±2 SD)
+- Month with £75K sales → investigate why!
+
+**Customer Behavior:**
+- Average purchase: £45, SD = £15
+- Customer spending £100 → high-value segment
+- Target for premium offers!
+
+---
+
+### Correlation vs Causation: The Most Important Distinction
+
+**Correlation:** Two things change together
+
+**Causation:** One thing CAUSES another to change
+
+**Just because X and Y move together doesn't mean X causes Y!**
+
+**Classic Examples:**
+
+1. **Ice cream sales & drowning deaths**
+   - Correlation: Both increase in summer
+   - Causation: Neither causes the other!
+   - Real cause: Hot weather (confounding variable)
+
+2. **Website traffic & sales**
+   - Correlation: Higher traffic → more sales
+   - But is it causation? Maybe!
+   - Could be: Brand awareness driving both
+
+**Tests for Causation:**
+
+**Bradford Hill Criteria:**
+1. **Strength**: Strong correlation?
+2. **Consistency**: Observed in multiple studies?
+3. **Specificity**: X linked specifically to Y?
+4. **Temporality**: X happens before Y?
+5. **Gradient**: More X → more Y?
+6. **Plausibility**: Makes logical sense?
+7. **Coherence**: Fits existing knowledge?
+8. **Experiment**: Can we test it (A/B test)?
+
+**Gold Standard: Randomized Controlled Trial (RCT)**
+- Control group (no intervention)
+- Treatment group (intervention)
+- Random assignment
+- Measure difference
+
+**Example: Does email marketing increase sales?**
+
+**Correlation Analysis:**
+```sql
+-- Weeks with more emails sent also have higher sales
+SELECT 
+    week,
+    COUNT(*) as emails_sent,
+    SUM(revenue) as total_sales
+FROM campaigns
+GROUP BY week;
+-- Positive correlation, but is it causal?
+```
+
+**Causal Test (A/B):**
+- Randomly split customers 50/50
+- Send emails to Group A only
+- Compare sales between groups
+- If Group A has 15% higher sales → likely causal!
+
+**Never say "X causes Y" without evidence!**
+
+---
+
+### Segmentation: Finding Patterns in Data
+
+**What is Segmentation?**
+Breaking data into meaningful groups to find differences
+
+**Why Segment?**
+- Not all customers/products/regions are the same
+- Different segments need different strategies
+- Averages hide important stories!
+
+**Common Segmentation Approaches:**
+
+**1. Demographic Segmentation**
+- Age groups: <25, 25-34, 35-44, 45-54, 55+
+- Geography: Region, country, urban/rural
+- Industry: Healthcare, finance, retail, etc.
+
+**2. Behavioral Segmentation**
+- Purchase frequency: New, occasional, regular, frequent
+- Engagement: Active, lapsed, dormant, churned
+- Value: High-value, medium, low
+
+**3. RFM Segmentation (Powerful!)**
+- **Recency**: When did they last interact?
+- **Frequency**: How often do they interact?
+- **Monetary**: How much do they spend?
+
+```sql
+-- RFM scoring example
+WITH rfm AS (
+    SELECT 
+        customer_id,
+        DATEDIFF(day, MAX(order_date), CURRENT_DATE) as recency_days,
+        COUNT(*) as frequency,
+        SUM(revenue) as monetary
+    FROM orders
+    WHERE order_date >= DATEADD(year, -1, CURRENT_DATE)
+    GROUP BY customer_id
+)
+SELECT 
+    customer_id,
+    CASE 
+        WHEN recency_days <= 30 THEN 'Very Recent'
+        WHEN recency_days <= 90 THEN 'Recent'
+        WHEN recency_days <= 180 THEN 'Lapsed'
+        ELSE 'Inactive'
+    END as recency_segment,
+    CASE 
+        WHEN frequency >= 10 THEN 'Frequent'
+        WHEN frequency >= 5 THEN 'Regular'
+        ELSE 'Occasional'
+    END as frequency_segment,
+    CASE 
+        WHEN monetary >= 1000 THEN 'High Value'
+        WHEN monetary >= 500 THEN 'Medium Value'
+        ELSE 'Low Value'
+    END as monetary_segment
+FROM rfm;
+```
+
+**4. Cohort Analysis**
+- Group by shared characteristic (e.g., signup month)
+- Track behavior over time
+- Identify trends and lifecycle patterns
+
+**Example: Monthly Cohort Retention**
+
+| Signup Month | Month 1 | Month 2 | Month 3 | Month 6 | Month 12 |
+|--------------|---------|---------|---------|---------|----------|
+| Jan 2023 | 100% | 85% | 78% | 65% | 52% |
+| Feb 2023 | 100% | 88% | 82% | 70% | ? |
+| Mar 2023 | 100% | 90% | 85% | ? | ? |
+
+**Insights:**
+- Feb & Mar cohorts have better retention → what changed?
+- 6-month retention critical milestone
+- Target: Improve Month 2-3 retention
+
+---
+
+### Time Series Analysis Basics
+
+**What is Time Series Data?**
+Data collected at regular intervals over time
+
+**Examples:**
+- Daily sales
+- Monthly website traffic
+- Quarterly revenue
+- Hourly server loads
+
+**Key Concepts:**
+
+**1. Trend**
+- Long-term increase or decrease
+- "Are sales growing overall?"
+- Calculate: Moving average, linear regression
+
+**2. Seasonality**
+- Regular, predictable patterns
+- "Do we see peaks in December?"
+- Examples: Holiday shopping, summer tourism
+
+**3. Cyclical Patterns**
+- Longer-term fluctuations (not fixed periods)
+- Examples: Economic cycles, market trends
+
+**4. Random Variation (Noise)**
+- Unpredictable fluctuations
+- Need to separate signal from noise
+
+**Practical Time Series Analysis:**
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load daily sales data
+df = pd.read_csv('sales.csv', parse_dates=['date'])
+df = df.set_index('date')
+
+# Calculate 7-day moving average (smooth out noise)
+df['sales_ma7'] = df['sales'].rolling(window=7).mean()
+
+# Calculate year-over-year growth
+df['sales_yoy'] = df['sales'].pct_change(periods=365) * 100
+
+# Identify day-of-week patterns
+df['dow'] = df.index.dayofweek
+dow_avg = df.groupby('dow')['sales'].mean()
+# Monday=0, Sunday=6
+
+# Visualize
+plt.figure(figsize=(12, 6))
+plt.plot(df['sales'], alpha=0.3, label='Daily Sales')
+plt.plot(df['sales_ma7'], label='7-Day MA (Trend)')
+plt.legend()
+plt.title('Sales Trend Analysis')
+plt.show()
+```
+
+**Common Time Series Mistakes:**
+
+❌ Comparing absolute numbers across different time periods
+✅ Use percentage change or indexed values
+
+❌ Ignoring seasonality
+✅ Compare same period year-over-year
+
+❌ Reacting to every fluctuation
+✅ Focus on trends, not daily noise
+
+❌ Not accounting for external events
+✅ Note holidays, marketing campaigns, etc.
+
+**Example Analysis:**
+
+"Website traffic dropped 15% this week!"
+
+**Good Analyst Checks:**
+- Is it a holiday week? (expected seasonality)
+- What was traffic same week last year?
+- Is the trend (moving average) still upward?
+- Any known technical issues or marketing changes?
+
+**Conclusion:** "Traffic is down 15% week-over-year, and the 30-day moving average shows continued growth. No action needed."
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🔬 HANDS-ON LABS - Unit 1")
+        st.markdown(
+            """**Practical exercises to master business questions and data foundations**
+
+### LAB 1: Business Question Transformation Workshop
+
+**Objective:** Transform 10 vague business requests into SMART analytical questions
+
+**Scenario:** You're a new Data Analyst at MediCare Hospital Trust
+
+**Your Task:** Refine these stakeholder requests into actionable questions
+
+**Request 1: "Staff morale seems low"**
+
+**Your Analysis Plan:**
+```
+1. Define "morale" measurably:
+   - Staff survey scores?
+   - Absence rates?
+   - Turnover rates?
+   - Engagement metrics?
+
+2. Identify baseline:
+   - Compared to what period?
+   - Which departments?
+   - What's the target benchmark?
+
+3. Refined Question:
+   "Has staff absence rate increased in Q3 2024 vs Q3 2023? 
+   Analyze by department and staff level, identifying departments 
+   exceeding 5% absence rate (trust target)."
+
+4. Data Needed:
+   - HR system: absence records, staff demographics
+   - Timeframe: Q3 2023 vs Q3 2024
+   - Segmentation: Department, role, tenure
+
+5. Success Criteria:
+   - Identify which departments have issues
+   - Quantify magnitude of problem
+   - Enable targeted interventions
+```
+
+**Request 2: "Our website isn't working properly"**
+
+**Your Turn - Complete This Analysis:**
+```
+1. Define "not working properly":
+   - [ ] Load time issues?
+   - [ ] Error rates?
+   - [ ] Conversion drops?
+   - [ ] User complaints?
+
+2. Baseline comparison:
+   - [ ] Current vs last month?
+   - [ ] Before/after recent deployment?
+   - [ ] Compared to benchmarks?
+
+3. Your Refined Question:
+   [Write your refined question here]
+
+4. Data Sources Needed:
+   - [ ] Google Analytics: _________________
+   - [ ] Server logs: _________________
+   - [ ] Error tracking: _________________
+
+5. Metrics to Track:
+   - [ ] ___________________________
+   - [ ] ___________________________
+   - [ ] ___________________________
+```
+
+**Request 3-10: Practice These Yourself**
+
+3. "Marketing isn't generating leads"
+4. "Patients are waiting too long"
+5. "Our competitors are winning"
+6. "The new system is confusing"
+7. "Costs are out of control"
+8. "Sales are disappointing"
+9. "Customers aren't happy"
+10. "We need to grow faster"
+
+**Deliverable:** Document showing:
+- Original vague request
+- Your clarifying questions
+- Refined SMART question
+- Data sources identified
+- Analysis approach
+- Expected insights
+
+**Time:** 2-3 hours  
+**Tools:** Word/Google Docs
+
+---
+
+### LAB 2: Data Source Mapping Exercise
+
+**Objective:** Map business questions to actual data sources in a real organization
+
+**Scenario:** You're joining RetailCo as Junior Data Analyst. They have:
+- **E-commerce Platform**: Shopify (orders, products, customers)
+- **CRM**: HubSpot (leads, contacts, deals)
+- **Marketing**: Google Ads, Facebook Ads, Mailchimp
+- **Support**: Zendesk (tickets, responses, ratings)
+- **Financial**: Xero (invoicing, expenses, revenue)
+- **Data Warehouse**: Snowflake (central repository)
+
+**Your Task:** Map 5 business questions to data sources
+
+**Question 1: "What's our customer acquisition cost by channel?"**
+
+**Data Mapping:**
+```
+Required Data Points:
+1. Marketing spend by channel
+   - Source: Google Ads API → ad_spend table
+   - Source: Facebook Ads → campaign_costs table
+   - Source: Mailchimp → email_campaign_costs
+   
+2. New customers acquired
+   - Source: Shopify → customers table
+   - Filter: first_order_date
+   - Group by: utm_source, utm_medium
+
+3. Attribution logic
+   - Source: Google Analytics → user_acquisition
+   - Join key: customer_id
+
+Calculation:
+CAC = Total Marketing Spend / New Customers Acquired
+
+SQL Approach:
+SELECT 
+    ga.acquisition_channel,
+    SUM(ad_spend) as total_spend,
+    COUNT(DISTINCT c.customer_id) as new_customers,
+    SUM(ad_spend) / COUNT(DISTINCT c.customer_id) as cac
+FROM google_ads ga
+LEFT JOIN customers c 
+    ON ga.utm_source = c.acquisition_source
+WHERE c.first_order_date >= '2024-01-01'
+GROUP BY ga.acquisition_channel
+ORDER BY cac ASC;
+
+Data Quality Checks:
+- Verify all channels included
+- Check for unattributed customers
+- Validate spend totals against finance
+```
+
+**Question 2: "Which products have highest return rate?"**
+
+**Your Turn - Complete This Mapping:**
+```
+Required Data Points:
+1. Total orders per product
+   - Source: _________________
+   - Table/Field: _________________
+
+2. Return requests
+   - Source: _________________
+   - Join on: _________________
+
+3. Return reasons (bonus)
+   - Source: _________________
+
+Calculation Formula:
+Return Rate = _________________
+
+SQL Skeleton:
+SELECT 
+    p.product_name,
+    COUNT(o.order_id) as total_orders,
+    COUNT(r.return_id) as returns,
+    _________________ as return_rate_pct
+FROM _________________ p
+LEFT JOIN _________________ o ON _________________
+LEFT JOIN _________________ r ON _________________
+GROUP BY _________________
+HAVING total_orders >= 10  -- minimum threshold
+ORDER BY return_rate_pct DESC;
+```
+
+**Questions 3-5: Practice These**
+
+3. "What's our average customer lifetime value?"
+4. "How quickly do we respond to support tickets?"
+5. "What % of leads convert to customers?"
+
+**Deliverable:** 
+- Data source inventory spreadsheet
+- SQL query drafts for each question
+- Data quality concerns identified
+- Access requirements documented
+
+**Time:** 3-4 hours  
+**Tools:** Excel, DB visualization tool, SQL editor
+
+---
+
+### LAB 3: Data Quality Audit
+
+**Objective:** Assess data quality and identify issues before analysis
+
+**Scenario:** You've been asked to analyze Q3 sales performance, but first you need to audit the data quality.
+
+**Dataset:** `sales_transactions_q3_2024.csv` (sample provided)
+
+**Your Audit Checklist:**
+
+**1. Completeness Check**
+```sql
+-- Check for missing values
+SELECT 
+    COUNT(*) as total_records,
+    SUM(CASE WHEN order_id IS NULL THEN 1 ELSE 0 END) as missing_order_id,
+    SUM(CASE WHEN customer_id IS NULL THEN 1 ELSE 0 END) as missing_customer,
+    SUM(CASE WHEN order_date IS NULL THEN 1 ELSE 0 END) as missing_date,
+    SUM(CASE WHEN revenue IS NULL THEN 1 ELSE 0 END) as missing_revenue,
+    SUM(CASE WHEN product_id IS NULL THEN 1 ELSE 0 END) as missing_product
+FROM sales_transactions;
+
+-- Check for complete months
+SELECT 
+    DATE_TRUNC('month', order_date) as month,
+    COUNT(*) as transaction_count
+FROM sales_transactions
+WHERE order_date BETWEEN '2024-07-01' AND '2024-09-30'
+GROUP BY month
+ORDER BY month;
+-- Expect 3 rows (July, August, September)
+```
+
+**2. Accuracy Check**
+```sql
+-- Identify suspicious values
+SELECT 
+    order_id,
+    revenue,
+    quantity,
+    unit_price,
+    revenue - (quantity * unit_price) as revenue_discrepancy
+FROM sales_transactions
+WHERE ABS(revenue - (quantity * unit_price)) > 0.01;
+
+-- Find outliers (orders >3 standard deviations from mean)
+WITH stats AS (
+    SELECT 
+        AVG(revenue) as mean_revenue,
+        STDDEV(revenue) as stddev_revenue
+    FROM sales_transactions
+)
+SELECT 
+    t.order_id,
+    t.revenue,
+    (t.revenue - s.mean_revenue) / s.stddev_revenue as z_score
+FROM sales_transactions t, stats s
+WHERE ABS((t.revenue - s.mean_revenue) / s.stddev_revenue) > 3
+ORDER BY z_score DESC;
+```
+
+**3. Consistency Check**
+```python
+import pandas as pd
+
+# Load data
+df = pd.read_csv('sales_transactions_q3_2024.csv')
+
+# Check data types
+print("Data Types:")
+print(df.dtypes)
+
+# Check for inconsistent formats
+print("\nDate Format Issues:")
+print(df[pd.to_datetime(df['order_date'], errors='coerce').isna()]['order_date'].value_counts())
+
+# Check for duplicate orders
+print("\nDuplicate Orders:")
+duplicates = df[df.duplicated(subset=['order_id'], keep=False)]
+print(f"Found {len(duplicates)} duplicate records")
+
+# Check category consistency
+print("\nProduct Categories (check for typos):")
+print(df['product_category'].value_counts())
+# Look for: "Electronics" vs "electronics", "Health & Beauty" vs "Health&Beauty"
+```
+
+**4. Timeliness Check**
+```sql
+-- Check data freshness
+SELECT 
+    MAX(order_date) as latest_order,
+    DATEDIFF(day, MAX(order_date), CURRENT_DATE) as days_old
+FROM sales_transactions;
+
+-- Should be <2 days old for near-real-time reporting
+```
+
+**5. Validity Check**
+```sql
+-- Business rule violations
+SELECT 
+    'Negative Revenue' as issue,
+    COUNT(*) as count
+FROM sales_transactions
+WHERE revenue < 0
+
+UNION ALL
+
+SELECT 
+    'Zero Quantity' as issue,
+    COUNT(*) as count
+FROM sales_transactions
+WHERE quantity = 0
+
+UNION ALL
+
+SELECT 
+    'Future Dates' as issue,
+    COUNT(*) as count
+FROM sales_transactions
+WHERE order_date > CURRENT_DATE;
+```
+
+**Your Deliverable:**
+Create a **Data Quality Report** with:
+
+1. **Executive Summary**
+   - Overall data quality score (0-100)
+   - Critical issues found
+   - Recommendation: Proceed / Fix First / Do Not Use
+
+2. **Detailed Findings**
+   - Completeness: X% complete
+   - Accuracy: Y issues found
+   - Consistency: Z format problems
+   - Timeliness: Updated N days ago
+   - Validity: M business rule violations
+
+3. **Issues Table**
+   | Issue Type | Count | Severity | Action Required |
+   |------------|-------|----------|----------------|
+   | Missing customer IDs | 47 | High | Investigate & backfill |
+   | Negative revenue | 3 | Critical | Correct immediately |
+   | Duplicate orders | 12 | Medium | De-duplicate before analysis |
+
+4. **Recommendations**
+   - Can we proceed with analysis? (Yes/No/With caveats)
+   - What needs to be fixed?
+   - Who needs to be contacted?
+   - Timeline for resolution?
+
+**Time:** 2-3 hours  
+**Tools:** SQL, Python/Excel  
+**Deliverable:** PowerPoint/Word report
+
+---
+
+### MINI PROJECT 1: End-to-End Question → Insight
+
+**Objective:** Complete a full analytical cycle from question to recommendation
+
+**Scenario:** You're analyzing DNA (Did Not Attend) rates for OutpatientClinic
+
+**Phase 1: Question Refinement (30 mins)**
+
+**Initial Request:** "Can you look into our DNA problem?"
+
+Your refined questions:
+1. What's the current DNA rate and how does it compare to target/historical?
+2. Which clinics/specialties have highest DNA rates?
+3. Are there patient demographic patterns?
+4. What's the financial impact?
+5. What factors correlate with DNAs?
+
+**Phase 2: Data Collection (1 hour)**
+
+**Data Sources:**
+- Appointments database
+- Patient demographics
+- Clinic information
+- Historical benchmarks
+
+**SQL Query:**
+```sql
+-- Comprehensive DNA analysis
+WITH appointment_summary AS (
+    SELECT 
+        a.appointment_id,
+        a.appointment_date,
+        a.appointment_time,
+        a.clinic_id,
+        c.clinic_name,
+        c.specialty,
+        a.patient_id,
+        p.age,
+        p.gender,
+        p.postcode_sector,
+        p.deprivation_index,
+        a.appointment_type,
+        a.appointment_status,
+        CASE WHEN a.appointment_status = 'DNA' THEN 1 ELSE 0 END as is_dna,
+        c.appointment_value_gbp
+    FROM appointments a
+    JOIN clinics c ON a.clinic_id = c.clinic_id
+    JOIN patients p ON a.patient_id = p.patient_id
+    WHERE a.appointment_date BETWEEN '2024-01-01' AND '2024-09-30'
+)
+SELECT 
+    specialty,
+    COUNT(*) as total_appointments,
+    SUM(is_dna) as dna_count,
+    ROUND(100.0 * SUM(is_dna) / COUNT(*), 2) as dna_rate_pct,
+    SUM(CASE WHEN is_dna = 1 THEN appointment_value_gbp ELSE 0 END) as lost_revenue_gbp
+FROM appointment_summary
+GROUP BY specialty
+ORDER BY dna_rate_pct DESC;
+```
+
+**Phase 3: Analysis (2 hours)**
+
+**Your Tasks:**
+1. Calculate overall DNA rate and trend
+2. Identify highest-risk segments
+3. Perform statistical tests
+4. Quantify financial impact
+5. Compare to benchmarks
+
+**Python Analysis:**
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+
+# Load data
+df = pd.read_csv('appointments_analysis.csv')
+
+# 1. Overall DNA rate
+overall_dna_rate = df['is_dna'].mean() * 100
+print(f"Overall DNA Rate: {overall_dna_rate:.2f}%")
+
+# 2. DNA rate by specialty
+specialty_dna = df.groupby('specialty').agg({
+    'appointment_id': 'count',
+    'is_dna': ['sum', 'mean']
+}).round(3)
+specialty_dna.columns = ['total_appts', 'dna_count', 'dna_rate']
+specialty_dna['dna_rate_pct'] = specialty_dna['dna_rate'] * 100
+print(specialty_dna.sort_values('dna_rate_pct', ascending=False))
+
+# 3. Statistical significance
+# Compare Dermatology vs other specialties
+derm_dna_rate = df[df['specialty'] == 'Dermatology']['is_dna'].mean()
+other_dna_rate = df[df['specialty'] != 'Dermatology']['is_dna'].mean()
+
+# Chi-square test
+from scipy.stats import chi2_contingency
+contingency_table = pd.crosstab(
+    df['specialty'] == 'Dermatology',
+    df['is_dna']
+)
+chi2, p_value, dof, expected = chi2_contingency(contingency_table)
+print(f"Chi-square p-value: {p_value:.4f}")
+if p_value < 0.05:
+    print("Difference is statistically significant!")
+
+# 4. Visualization
+plt.figure(figsize=(12, 6))
+sns.barplot(data=specialty_dna.reset_index(), 
+            x='specialty', y='dna_rate_pct')
+plt.xticks(rotation=45, ha='right')
+plt.title('DNA Rate by Specialty')
+plt.ylabel('DNA Rate (%)')
+plt.axhline(y=overall_dna_rate, color='r', linestyle='--', label='Trust Average')
+plt.legend()
+plt.tight_layout()
+plt.savefig('dna_by_specialty.png')
+plt.show()
+
+# 5. Financial impact
+total_lost_revenue = df[df['is_dna'] == 1]['appointment_value_gbp'].sum()
+print(f"Total Lost Revenue: £{total_lost_revenue:,.0f}")
+```
+
+**Phase 4: Insights & Recommendations (1 hour)**
+
+**Your Report Structure:**
+
+**Executive Summary:**
+- DNA rate is 14.5%, up from 12% last year
+- Dermatology has highest rate at 18.2% (statistically significant, p<0.001)
+- Lost revenue: £42,000 in 9 months (£56K annual run-rate)
+- Recommend: Implement SMS reminders for Dermatology + new patients
+
+**Key Findings:**
+1. Dermatology DNA rate (18.2%) significantly higher than average (14.5%)
+2. New patients DNA 2.3x more than established patients
+3. Afternoon appointments have 1.4x higher DNA rate
+4. No significant demographic pattern by age/gender
+
+**Recommendations:**
+1. **Immediate (0-30 days):** 
+   - SMS reminder system for Dermatology
+   - Target new patients specifically
+   - Estimated cost: £200/month
+   - Projected DNA reduction: 30-40%
+   - ROI: £2,500/month saved
+
+2. **Short-term (1-3 months):**
+   - Analyze root causes via patient survey
+   - Consider scheduling changes (fewer afternoon slots)
+
+3. **Long-term (3-6 months):**
+   - Online booking with automatic reminders
+   - Waitlist management system
+
+**Next Steps:**
+- Present findings to clinic managers
+- Get approval for SMS pilot
+- Set up tracking dashboard
+- Review results after 3 months
+
+**Deliverable:** 10-slide PowerPoint presentation
+
+**Time:** 4-5 hours total  
+**Tools:** SQL, Python/Excel, PowerPoint
+
+---
+
+### Practice Dataset & Resources
+
+**Download Practice Files:**
+- `hospital_appointments.csv` - 10,000 appointments
+- `patient_demographics.csv` - Patient details
+- `clinic_reference.csv` - Clinic information
+- `data_dictionary.pdf` - Field definitions
+
+**Success Criteria:**
+- ✅ Transformed vague questions into SMART questions
+- ✅ Mapped business questions to data sources
+- ✅ Conducted thorough data quality audit
+- ✅ Completed end-to-end analysis project
+- ✅ Delivered actionable recommendations
+
+---
+
+## 📝 50+ PRACTICE PROBLEMS - Unit 1
+
+### Question Transformation Practice (20 Problems)
+
+**Problem 1:** "Our website is slow."
+**Your Analysis:**
+- Slow compared to what benchmark?
+- Which pages specifically?
+- At what times of day?
+- For which user segments?
+**SMART Question:** "What is the P95 page load time for our checkout flow during peak hours (6-9pm) compared to our 2-second target?"
+
+**Problem 2:** "Customers are complaining."
+**Your Analysis:**
+- What percentage of customers?
+- About what specifically?
+- Through which channels?
+- Has this increased recently?
+**SMART Question:** "What is our NPS score by product category in Q4 2024 vs Q3 2024, and what are the top 3 complaint themes?"
+
+**Problem 3:** "Marketing spend is too high."
+**Your Analysis:**
+- Too high relative to what?
+- Which channels/campaigns?
+- What's the ROI comparison?
+- Against which targets?
+**SMART Question:** "What is the customer acquisition cost (CAC) by channel vs our £50 target, and which channels have CAC > £75?"
+
+**Problem 4:** "We need more customers."
+**Your Analysis:**
+- How many more specifically?
+- In which segments/markets?
+- By when?
+- Through which strategies?
+**SMART Question:** "How can we increase new customer acquisition from 1,000 to 1,500 per month in the UK market by Q2 2025?"
+
+**Problem 5:** "Sales are down."
+**SMART Question:** "What is the month-over-month sales change by product category and region for October 2024, and what factors correlate with declines?"
+
+**Problem 6:** "Our app keeps crashing."
+**SMART Question:** "What is the crash rate by app version and device type for iOS users in the past 30 days, and which user actions trigger crashes?"
+
+**Problem 7:** "Staff aren't productive."
+**SMART Question:** "What is the average cases resolved per agent per day by team in Q4 vs Q3, and how does this compare to our target of 15 cases/day?"
+
+**Problem 8:** "Inventory is always wrong."
+**SMART Question:** "What is the inventory accuracy rate (physical vs system) by warehouse and product category, and which SKUs have >10% variance?"
+
+**Problem 9:** "Our promotions don't work."
+**SMART Question:** "What is the incremental revenue lift and ROI for promotions run in Q4, by promotion type and product category?"
+
+**Problem 10:** "Patients wait too long."
+**SMART Question:** "What is the median wait time from arrival to consultation by clinic and day of week vs our 60-minute target, and which clinics exceed 90 minutes?"
+
+**Problem 11:** "Social media engagement is low."
+**SMART Question:** "What is our engagement rate (likes+comments/followers) by platform and content type vs industry benchmark of 3%?"
+
+**Problem 12:** "The new feature isn't being used."
+**SMART Question:** "What is the adoption rate (% of active users who used feature at least once) in the 30 days post-launch by user cohort?"
+
+**Problem 13:** "Shipping costs are killing us."
+**SMART Question:** "What is the average shipping cost per order by carrier and delivery speed vs our £5 target, and where can we optimize?"
+
+**Problem 14:** "Email campaigns get ignored."
+**SMART Question:** "What is the open rate and click-through rate by email campaign type and send time vs our benchmarks (25% open, 3% CTR)?"
+
+**Problem 15:** "Our competitors are winning."
+**SMART Question:** "What is our market share by product segment vs top 3 competitors in Q4, and which segments have we lost share in?"
+
+**Problem 16:** "Customer lifetime value is dropping."
+**SMART Question:** "What is the 12-month CLV by acquisition channel and cohort, comparing 2024 vs 2023 cohorts?"
+
+**Problem 17:** "The website redesign failed."
+**SMART Question:** "What is the conversion rate and bounce rate pre vs post-redesign for our top 5 landing pages?"
+
+**Problem 18:** "Support tickets are overwhelming."
+**SMART Question:** "What is the daily ticket volume by category and priority, and which issues have >100 tickets/week?"
+
+**Problem 19:** "Our prices aren't competitive."
+**SMART Question:** "What is our price index vs 3 main competitors for our top 20 SKUs, and where are we >10% more expensive?"
+
+**Problem 20:** "Training programs aren't effective."
+**SMART Question:** "What is the performance improvement (metric: sales/accuracy/efficiency) 30 and 90 days post-training vs control group?"
+
+---
+
+### Data Source Mapping Practice (15 Problems)
+
+**Problem 21:** Business Question: "Which products have the highest profit margin?"
+**Data Sources Needed:**
+- Product sales data (units sold, revenue)
+- Cost of goods sold (COGS) by product
+- Operating expenses allocated to products
+**Calculations:** `Profit Margin = (Revenue - COGS - Operating Expenses) / Revenue * 100`
+**Potential Issues:** Cost allocation methodology, promotional pricing, returns
+
+**Problem 22:** "What's our customer churn rate by segment?"
+**Data Sources:**
+- Customer subscription data
+- Cancellation/churn events
+- Customer segments/demographics
+**Calculations:** `Monthly Churn = Customers Lost / Customers at Start * 100`
+
+**Problem 23:** "Is our advertising driving sales?"
+**Data Sources:**
+- Advertising spend by channel/campaign
+- Sales/revenue data with attribution
+- Website traffic sources
+**Calculations:** `ROAS = Revenue from Ads / Ad Spend`
+
+**Problem 24:** "Which employees are flight risks?"
+**Data Sources:**
+- Employee tenure and role
+- Performance reviews
+- Salary vs market rate
+- Engagement survey scores
+**Analysis:** Predictive model using historical exit patterns
+
+**Problem 25:** "Should we expand to a new market?"
+**Data Sources:**
+- Target market demographics
+- Competitor presence and market share
+- Economic indicators (GDP, purchasing power)
+- Infrastructure and logistics costs
+**Analysis:** Market sizing, TAM/SAM/SOM calculation
+
+**Problem 26-35:** [Similar structured problems for:]
+- Supply chain optimization
+- Pricing strategy analysis
+- Customer satisfaction drivers
+- A/B test evaluation
+- Fraud detection
+- Demand forecasting
+- Resource allocation
+- Quality control
+- Risk assessment
+- Predictive maintenance
+
+---
+
+### Real-World Industry Case Studies (10 Detailed Scenarios)
+
+**CASE STUDY 1: E-Commerce - Cart Abandonment Analysis**
+
+**Context:** Online retailer with 68% cart abandonment, losing £250K monthly
+
+**Your Assignment:**
+1. **Data Available:**
+   - 50,000 session logs (add to cart events)
+   - User demographics (age, location, device)
+   - Product information (category, price)
+   - Checkout flow events (step-by-step)
+
+2. **Analysis Steps:**
+```sql
+-- Step 1: Calculate overall abandonment rate
+SELECT 
+  COUNT(DISTINCT CASE WHEN added_to_cart = 1 THEN session_id END) as cart_sessions,
+  COUNT(DISTINCT CASE WHEN purchase_complete = 1 THEN session_id END) as completed,
+  (1 - COUNT(DISTINCT CASE WHEN purchase_complete = 1 THEN session_id END) * 1.0 / 
+   COUNT(DISTINCT CASE WHEN added_to_cart = 1 THEN session_id END)) * 100 as abandonment_rate
+FROM sessions
+WHERE date >= '2024-10-01';
+
+-- Step 2: Segment by device type
+SELECT 
+  device_type,
+  COUNT(*) as sessions,
+  AVG(CASE WHEN purchase_complete = 1 THEN 1 ELSE 0 END) as completion_rate,
+  (1 - AVG(CASE WHEN purchase_complete = 1 THEN 1 ELSE 0 END)) * 100 as abandonment_rate
+FROM sessions
+WHERE added_to_cart = 1
+GROUP BY device_type
+ORDER BY abandonment_rate DESC;
+
+-- Step 3: Identify drop-off points
+SELECT 
+  checkout_step,
+  COUNT(*) as users_reached,
+  COUNT(*) * 100.0 / (SELECT COUNT(*) FROM sessions WHERE checkout_step >= 1) as pct_reached,
+  COUNT(CASE WHEN completed_next_step = 0 THEN 1 END) * 100.0 / COUNT(*) as drop_off_rate
+FROM checkout_events
+GROUP BY checkout_step
+ORDER BY checkout_step;
+```
+
+3. **Key Findings:**
+   - Mobile abandonment 75% vs desktop 55%
+   - Biggest drop-off at shipping cost reveal (step 3)
+   - Weekend abandonment 15% higher than weekday
+   - Electronics category worst at 72%
+
+4. **Recommendations:**
+   - Mobile checkout optimization (simplify 5 steps to 3)
+   - Show shipping cost earlier in flow
+   - Weekend-specific cart recovery emails
+   - A/B test simplified checkout
+
+5. **Expected Impact:**
+   - 12% reduction in abandonment
+   - £300K annual revenue recovery
+   - Improved user experience scores
+
+---
+
+**CASE STUDY 2: Healthcare - Emergency Department Wait Times**
+
+**Context:** Hospital ED with 4-hour target being missed 40% of the time
+
+**Data Available:**
+- 25,000 ED visits over 6 months
+- Arrival timestamps, triage codes, bed allocation times
+- Discharge times, department transfers
+- Staffing levels by hour/day
+
+**Analysis Framework:**
+```sql
+-- Calculate wait time metrics
+WITH wait_times AS (
+  SELECT 
+    visit_id,
+    arrival_time,
+    first_assessment_time,
+    discharge_time,
+    TIMESTAMPDIFF(MINUTE, arrival_time, first_assessment_time) as wait_to_assessment,
+    TIMESTAMPDIFF(MINUTE, arrival_time, discharge_time) as total_time,
+    triage_code,
+    HOUR(arrival_time) as arrival_hour,
+    DAYNAME(arrival_time) as day_of_week
+  FROM ed_visits
+  WHERE discharge_time IS NOT NULL
+)
+SELECT 
+  day_of_week,
+  arrival_hour,
+  COUNT(*) as visits,
+  AVG(wait_to_assessment) as avg_wait_minutes,
+  PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY wait_to_assessment) as median_wait,
+  PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY wait_to_assessment) as p95_wait,
+  SUM(CASE WHEN total_time > 240 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as pct_over_4hrs
+FROM wait_times
+GROUP BY day_of_week, arrival_hour
+HAVING COUNT(*) > 50
+ORDER BY pct_over_4hrs DESC;
+```
+
+**Findings:**
+- Peak hours 10am-2pm and 6pm-10pm account for 45% of breaches
+- Monday and Friday worst days (48% breach rate)
+- Triage code 3 patients wait longest (avg 127 mins)
+- Correlation between staffing gaps and wait times (r=0.72)
+
+**Recommendations:**
+1. Shift allocation: +2 nurses during peak hours
+2. Fast-track pathway for triage 4-5 patients
+3. Monday/Friday surge capacity planning
+4. Real-time dashboard alerting when wait >90 mins
+
+**ROI:** £850K annual savings from avoided breaches
+
+---
+
+**CASE STUDY 3: SaaS - Customer Churn Prediction**
+
+**Context:** B2B SaaS company with 8% monthly churn, need to identify at-risk accounts
+
+**Data & Analysis:**
+```python
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+
+# Load customer data
+df = pd.read_csv('customer_usage.csv')
+
+# Feature engineering
+df['days_since_last_login'] = (pd.Timestamp.now() - df['last_login']).dt.days
+df['feature_adoption_score'] = df[['feature_1', 'feature_2', 'feature_3']].sum(axis=1)
+df['support_tickets_per_month'] = df['support_tickets'] / df['tenure_months']
+df['payment_issues'] = (df['failed_payments'] > 0).astype(int)
+
+# Predictive features
+features = ['days_since_last_login', 'feature_adoption_score', 'support_tickets_per_month', 
+            'payment_issues', 'user_count', 'contract_value', 'tenure_months']
+
+# Train model
+X = df[features]
+y = df['churned_next_month']
+model = RandomForestClassifier(n_estimators=100)
+model.fit(X, y)
+
+# Feature importance
+importance = pd.DataFrame({
+    'feature': features,
+    'importance': model.feature_importances_
+}).sort_values('importance', ascending=False)
+
+print(importance)
+```
+
+**Results:**
+Top churn indicators:
+1. Days since last login (28% importance)
+2. Feature adoption score (22%)
+3. Support tickets (18%)
+4. Payment issues (15%)
+
+**Intervention Strategy:**
+- Customers inactive >14 days → Automated check-in email
+- Low adoption score → CSM outreach + training
+- High support tickets → Escalate to technical account manager
+- Payment issues → Billing team intervention
+
+**Impact:** Reduced churn from 8% to 5.5% (saving £420K annually)
+
+---
+
+**CASE STUDIES 4-10:** [Detailed scenarios for:]
+- Retail inventory optimization
+- Marketing campaign attribution
+- Pricing optimization model
+- Quality control analysis
+- Workforce planning
+- Financial fraud detection
+- Supply chain disruption analysis
+
+Each with:
+- Business context
+- Data available
+- SQL/Python analysis code
+- Key findings
+- Recommendations
+- Expected ROI/impact
+
+---
+
+### Advanced Questioning Techniques
+
+**The "5 Whys" Method for Root Cause Analysis:**
+
+**Problem:** "Sales are down 15% this month"
+
+**Why #1:** Why are sales down?
+**Answer:** Fewer orders from existing customers
+
+**Why #2:** Why are customers ordering less?
+**Answer:** Order frequency dropped from 2x/month to 1x/month
+
+**Why #3:** Why did order frequency drop?
+**Answer:** New competitors offering faster delivery
+
+**Why #4:** Why does faster delivery matter to our customers?
+**Answer:** They need supplies urgently for their operations
+
+**Why #5:** Why can't we match delivery speed?
+**Answer:** Our warehouse is single-location vs competitors' distributed network
+
+**Root Cause:** Geographic constraint on delivery speed
+**Solution:** Open regional distribution centers or partner with 3PL
+
+---
+
+**The "What If" Scenario Planning:**
+
+**Current Question:** "Should we expand to Germany?"
+
+**Expand with "What If":**
+- What if demand is 50% lower than forecast?
+- What if logistics costs are 30% higher?
+- What if it takes 6 months longer to break even?
+- What if a major competitor enters simultaneously?
+- What if regulatory requirements change?
+
+**Creates Robust Analysis:** Best case, base case, worst case scenarios with contingency plans
+
+---
+
+### Data Quality Red Flags Checklist
+
+When auditing data, watch for:
+
+**Completeness Issues:**
+- [ ] Missing values >10% in critical fields
+- [ ] Entire date ranges absent
+- [ ] Null values in required fields
+- [ ] Incomplete records (partial information)
+
+**Accuracy Issues:**
+- [ ] Values outside possible range (age: 150, price: negative)
+- [ ] Inconsistent units (mixing $ and £)
+- [ ] Mismatched data types (dates stored as text)
+- [ ] Calculation errors in derived fields
+
+**Consistency Issues:**
+- [ ] Different spellings ("UK" vs "United Kingdom")
+- [ ] Duplicate records with conflicting values
+- [ ] Related tables don't match (orphaned records)
+- [ ] Time series breaks or gaps
+
+**Timeliness Issues:**
+- [ ] Data older than expected (stale)
+- [ ] Update frequency doesn't match requirement
+- [ ] Delayed by hours/days
+- [ ] Historical backfill incomplete
+
+**Validity Issues:**
+- [ ] Invalid codes/categories
+- [ ] Referential integrity broken
+- [ ] Business rules violated
+- [ ] Logical inconsistencies
+
+**For Each Issue Found:**
+1. Document severity (Critical/High/Medium/Low)
+2. Quantify impact (% of records affected)
+3. Identify root cause
+4. Propose fix
+5. Assign owner
+
+---
+
+"""
+        )
     elif unit_number == 2:
         st.markdown("#### 📘 Why Spreadsheets Still Matter (And Always Will)")
         st.markdown(
@@ -1008,6 +2548,1307 @@ Make filtering easy for non-technical users:
 **Time to insight:** 5 minutes (vs hours of manual formulas)
 
 **Delivery:** Copy Pivot Table to PowerPoint, add 2-3 sentence summary, done!
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🔬 HANDS-ON LABS - Unit 2: Excel Mastery")
+        st.markdown(
+            """**Practical exercises to become an Excel power user**
+
+### LAB 1: Data Cleaning & Preparation in Excel
+
+**Objective:** Clean a messy real-world dataset using Excel
+
+**Scenario:** You received `sales_data_raw.xlsx` from the sales team. It's a mess!
+
+**The Dataset Contains:**
+- 5,000 rows of sales transactions
+- Inconsistent date formats
+- Duplicate records
+- Missing values
+- Extra spaces in text fields
+- Mixed case product names
+- Currency symbols in number fields
+
+**Your Cleaning Tasks:**
+
+**Step 1: Remove Duplicates**
+```
+1. Select your data range (Ctrl+A)
+2. Data tab → Remove Duplicates
+3. Check all columns
+4. Excel reports: "47 duplicate values found and removed"
+5. Result: 4,953 unique records
+```
+
+**Step 2: Fix Date Formats**
+```
+Problem: Dates appear as text ("01/15/2024", "January 15, 2024", "15-Jan-24")
+
+Solution A: Text-to-Columns
+1. Select date column
+2. Data → Text to Columns
+3. Choose "Delimited" → Next
+4. Uncheck all delimiters → Next
+5. Column data format: Date (MDY)
+6. Finish
+
+Solution B: Formula Method
+=DATEVALUE(A2)
+Then copy down and convert to values
+
+Verification:
+- All dates should be right-aligned (indicates number format)
+- Format cells as "Short Date"
+- Check: No #VALUE! errors
+```
+
+**Step 3: Clean Text Data (Remove Extra Spaces, Fix Case)**
+```
+Problem: Product names have extra spaces and mixed case
+Example: "  wireless  MOUSE  " should be "Wireless Mouse"
+
+Formula:
+=PROPER(TRIM(B2))
+
+Explanation:
+- TRIM() removes extra spaces
+- PROPER() converts to Title Case
+
+Apply to all text columns:
+1. Insert helper column
+2. Write formula
+3. Copy down entire column
+4. Copy → Paste Values over original
+5. Delete helper column
+```
+
+**Step 4: Extract & Parse Data**
+```
+Problem: Email addresses in format "john.doe@company.com"
+Need: Extract first name, last name, domain
+
+Formulas:
+First Name: =LEFT(D2, FIND(".", D2)-1)
+Last Name: =MID(D2, FIND(".", D2)+1, FIND("@", D2)-FIND(".", D2)-1)
+Domain: =RIGHT(D2, LEN(D2)-FIND("@", D2))
+
+Example: "john.doe@company.com"
+- First Name: john
+- Last Name: doe
+- Domain: company.com
+```
+
+**Step 5: Handle Missing Values**
+```
+Problem: Revenue column has blanks and "N/A" text
+
+Strategy:
+1. Find blanks: Ctrl+F → Find All → blank cells
+2. Options:
+   a) Fill with 0: Find & Replace blank with 0
+   b) Fill with average: =AVERAGE(E:E), then fill blanks
+   c) Remove rows: Filter → Blanks → Delete
+
+For "N/A" text:
+1. Find & Replace: "N/A" → (leave blank)
+2. Convert to numbers: Select column → yellow warning → Convert to Number
+```
+
+**Step 6: Remove Currency Symbols & Convert to Numbers**
+```
+Problem: Revenue shows as "£1,234.56" (text)
+
+Solution:
+=VALUE(SUBSTITUTE(SUBSTITUTE(F2,"£",""),",",""))
+
+Or use Find & Replace:
+1. Find: £ → Replace with: (nothing)
+2. Find: , → Replace with: (nothing)
+3. Convert to Number
+```
+
+**Step 7: Data Validation to Prevent Future Issues**
+```
+Set up rules for clean data entry:
+
+1. Date column:
+   Data → Data Validation → Date
+   Between: 01/01/2024 and TODAY()
+
+2. Revenue column:
+   Data Validation → Decimal
+   Greater than: 0
+
+3. Product Category:
+   Data Validation → List
+   Source: Electronics,Clothing,Home,Books
+```
+
+**Deliverable:** 
+- Cleaned dataset: `sales_data_cleaned.xlsx`
+- Documentation: List of issues found and fixes applied
+- Before/After comparison screenshots
+
+**Time:** 2-3 hours  
+**Success Criteria:**
+- ✅ No duplicate records
+- ✅ All dates in consistent format
+- ✅ No extra spaces or mixed case
+- ✅ No missing critical values
+- ✅ All numbers properly formatted
+- ✅ Data validation rules applied
+
+---
+
+### LAB 2: Advanced Formulas & Functions
+
+**Objective:** Master complex Excel formulas for real-world analysis
+
+**Scenario:** Analyzing customer data for RetailCo
+
+**Dataset:** `customer_transactions.xlsx`
+- customer_id, transaction_date, product_category, revenue, region
+
+**Challenge 1: Calculate Customer Lifetime Value (CLV)**
+
+```excel
+Column A: Customer ID
+Column B: First Purchase Date (use MIN with customer ID)
+Column C: Last Purchase Date (use MAX with customer ID)
+Column D: Total Revenue (SUMIF)
+Column E: Number of Transactions (COUNTIF)
+Column F: Average Order Value (Total Revenue / Transactions)
+Column G: Customer Tenure (Days)
+Column H: Monthly Spend Rate
+
+Formulas:
+B2: =MIN(IF($A$2:$A$5000=A2,$B$2:$B$5000))  [Array formula: Ctrl+Shift+Enter]
+
+Or better with MINIFS (Excel 2016+):
+B2: =MINIFS(Transaction_Table[transaction_date], 
+             Transaction_Table[customer_id], A2)
+
+C2: =MAXIFS(Transaction_Table[transaction_date], 
+            Transaction_Table[customer_id], A2)
+
+D2: =SUMIFS(Transaction_Table[revenue], 
+            Transaction_Table[customer_id], A2)
+
+E2: =COUNTIFS(Transaction_Table[customer_id], A2)
+
+F2: =D2/E2
+
+G2: =C2-B2
+
+H2: =D2/(G2/30)  // Monthly spend rate
+
+CLV (simplified): =H2*12*3  // 3-year projection
+```
+
+**Challenge 2: Customer Segmentation with Nested IFs**
+
+```excel
+Segment customers based on RFM (Recency, Frequency, Monetary):
+
+Recency Score (1-5):
+=IF(DAYS(TODAY(), LastPurchase)<=30, 5,
+  IF(DAYS(TODAY(), LastPurchase)<=90, 4,
+    IF(DAYS(TODAY(), LastPurchase)<=180, 3,
+      IF(DAYS(TODAY(), LastPurchase)<=365, 2, 1))))
+
+Frequency Score:
+=IF(TotalTransactions>=20, 5,
+  IF(TotalTransactions>=10, 4,
+    IF(TotalTransactions>=5, 3,
+      IF(TotalTransactions>=2, 2, 1))))
+
+Monetary Score:
+=IF(TotalRevenue>=1000, 5,
+  IF(TotalRevenue>=500, 4,
+    IF(TotalRevenue>=250, 3,
+      IF(TotalRevenue>=100, 2, 1))))
+
+RFM Segment:
+=IF(AND(R_Score>=4, F_Score>=4, M_Score>=4), "Champions",
+  IF(AND(R_Score>=3, F_Score>=3, M_Score>=3), "Loyal",
+    IF(AND(R_Score<=2, F_Score>=3), "At Risk",
+      IF(R_Score<=2, "Lost", "Potential"))))
+```
+
+**Challenge 3: INDEX-MATCH (Better than VLOOKUP!)**
+
+```excel
+Problem: Look up product price from separate price list
+
+VLOOKUP limitation:
+- Only looks to the right
+- Breaks if columns reordered
+- Slow on large datasets
+
+INDEX-MATCH solution:
+=INDEX(PriceList[Price], 
+       MATCH([@Product], PriceList[Product_Name], 0))
+
+Why it's better:
+- Can look left or right
+- More flexible
+- Faster performance
+- Column order doesn't matter
+
+Advanced: Two-way lookup (row AND column)
+=INDEX(Sales_Data, 
+       MATCH(Product_Name, Product_Column, 0),
+       MATCH(Month_Name, Month_Row, 0))
+```
+
+**Challenge 4: Array Formulas for Advanced Analysis**
+
+```excel
+Top 5 customers by revenue:
+=LARGE(Revenue_Range, ROW(A1))  // Copy down 5 rows for top 5
+
+Get customer name for each top 5:
+=INDEX(Customer_Names, 
+       MATCH(LARGE(Revenue_Range, ROW(A1)), Revenue_Range, 0))
+
+Count unique customers:
+=SUMPRODUCT(1/COUNTIF(Customer_Range, Customer_Range))
+
+Sum of top 20%:
+=SUMIF(Revenue_Range, ">="&PERCENTILE(Revenue_Range, 0.8))
+```
+
+**Challenge 5: Dynamic Named Ranges**
+
+```excel
+Create auto-expanding ranges for dropdown lists:
+
+1. Formulas → Define Name → "ProductList"
+2. Refers to: 
+   =OFFSET(Sheet1!$A$2, 0, 0, COUNTA(Sheet1!$A:$A)-1, 1)
+
+This range automatically expands as you add products!
+
+Use in Data Validation:
+Source: =ProductList
+```
+
+**Deliverable:**
+- Workbook with all formulas
+- Annotated screenshots explaining each formula
+- Test cases demonstrating formulas work correctly
+
+**Time:** 3-4 hours  
+**Tools:** Excel 2016 or later
+
+---
+
+### LAB 3: Pivot Tables & Dynamic Reporting
+
+**Objective:** Create professional pivot table reports and dashboards
+
+**Scenario:** Monthly sales reporting for management
+
+**Dataset:** `sales_transactions_2024.xlsx`
+- 50,000 transactions
+- Fields: Date, Region, Sales_Rep, Product_Category, Product, Units_Sold, Revenue
+
+**Task 1: Build Standard Sales Reports**
+
+**Report 1: Revenue by Region & Month**
+```
+Pivot Table Setup:
+- Rows: Region
+- Columns: Month (grouped by month)
+- Values: Sum of Revenue
+- Format: Currency, thousands separator
+
+Formatting:
+- Conditional formatting on revenue (color scale)
+- Show row totals and column totals
+- Add % of Grand Total
+
+Result: Instantly see which regions perform best each month
+```
+
+**Report 2: Product Performance Analysis**
+```
+Pivot Table:
+- Rows: Product_Category → Product (hierarchical)
+- Values: 
+  * Sum of Revenue
+  * Sum of Units_Sold
+  * Average Revenue (calculated field)
+- Show: Top 10 products by revenue
+
+Calculated Field:
+Average Order Value = Revenue / Units_Sold
+
+Slicers:
+- Add slicer for Region
+- Add slicer for Month
+- Connect slicers to multiple pivot tables
+```
+
+**Report 3: Sales Rep Leaderboard**
+```
+Pivot Table:
+- Rows: Sales_Rep
+- Values:
+  * Sum of Revenue
+  * Count of Transactions
+  * Average Deal Size
+- Sort: By revenue descending
+
+Conditional Formatting:
+- Data bars for revenue column
+- Icon sets for performance tiers
+  * Top 20%: Green up arrow
+  * Middle 60%: Yellow dash
+  * Bottom 20%: Red down arrow
+```
+
+**Task 2: Create Interactive Dashboard**
+
+**Dashboard Components:**
+
+**1. Summary Cards (using formulas)**
+```
+Total Revenue: =GETPIVOTDATA("Revenue", $A$3)
+YoY Growth: =(CurrentYear-PriorYear)/PriorYear
+Transactions: =GETPIVOTDATA("Transaction_ID", $A$3, "Count")
+Avg Order: =Total_Revenue/Transactions
+```
+
+**2. Revenue Trend Chart**
+- Line chart from pivot table
+- Show month-over-month comparison
+- Add trendline
+- Format for clarity
+
+**3. Regional Breakdown**
+- Pie chart or donut chart
+- Show top 5 regions
+- Group others as "Other"
+
+**4. Category Mix**
+- Stacked bar chart
+- Revenue by category by month
+- Show trends
+
+**5. Top Products Table**
+- Connected to slicers
+- Auto-updates based on filters
+- Conditional formatting
+
+**Dashboard Layout:**
+```
++------------------+------------------+
+| Total Revenue    | YoY Growth       |
++------------------+------------------+
+| Monthly Trend Chart                 |
++-------------------------------------+
+| Regional Mix     | Category Mix     |
++-------------------------------------+
+| Top Products Table                  |
++-------------------------------------+
+| Slicers: Region | Month | Category |
++-------------------------------------+
+```
+
+**Task 3: Advanced Pivot Table Techniques**
+
+**Calculated Fields & Items:**
+```
+Calculated Field: Profit Margin
+= (Revenue - Cost) / Revenue
+
+Calculated Item: Q1 Sales
+= January + February + March
+
+Show Value As options:
+- % of Parent Total
+- Running Total
+- Difference From (compare to previous month)
+- % Difference From
+```
+
+**Grouping:**
+```
+Group dates by:
+- Month
+- Quarter
+- Year
+
+Group numbers:
+Revenue ranges: 0-100, 100-500, 500-1000, 1000+
+```
+
+**Custom Sorting:**
+```
+Sort regions by:
+- Custom list (North, South, East, West)
+- Manual drag-and-drop
+- By value (largest to smallest)
+```
+
+**Deliverable:**
+- Excel dashboard file
+- PDF report generated from dashboard
+- Instructions for updating with new data
+
+**Time:** 4-5 hours  
+**Success Criteria:**
+- ✅ All pivot tables refresh automatically
+- ✅ Slicers control multiple visuals
+- ✅ Professional formatting
+- ✅ Dashboard fits on one screen
+- ✅ Charts tell clear story
+
+---
+
+### LAB 4: Excel Automation Basics (Macros & VBA Introduction)
+
+**Objective:** Automate repetitive tasks with macros
+
+**Scenario:** You run the same monthly report every month - time to automate!
+
+**Task 1: Record a Simple Macro**
+
+**Monthly Formatting Macro:**
+```
+Steps to record:
+1. Developer tab → Record Macro
+   Name: FormatMonthlyReport
+   Shortcut: Ctrl+Shift+F
+   
+2. Perform actions:
+   - Select data range
+   - Apply table formatting
+   - Auto-fit columns
+   - Add filters
+   - Format currency columns
+   - Bold headers
+   
+3. Stop recording
+
+Run macro: Ctrl+Shift+F
+
+Result: All formatting applied in seconds!
+```
+
+**Task 2: Edit Macro in VBA**
+
+**View the code:**
+```vba
+Sub FormatMonthlyReport()
+    ' Select data range
+    Range("A1").CurrentRegion.Select
+    
+    ' Apply table formatting
+    ActiveSheet.ListObjects.Add(xlSrcRange, Selection, , xlYes).Name = "ReportTable"
+    ActiveSheet.ListObjects("ReportTable").TableStyle = "TableStyleMedium2"
+    
+    ' Auto-fit columns
+    Columns.AutoFit
+    
+    ' Format currency
+    Range("E:E").NumberFormat = "$#,##0.00"
+    Range("F:F").NumberFormat = "$#,##0.00"
+    
+    ' Bold headers
+    Range("A1:F1").Font.Bold = True
+    
+    MsgBox "Report formatted successfully!", vbInformation
+End Sub
+```
+
+**Task 3: Create a Data Refresh Macro**
+
+```vba
+Sub RefreshAllData()
+    Application.ScreenUpdating = False
+    
+    ' Refresh all pivot tables
+    Dim ws As Worksheet
+    Dim pt As PivotTable
+    
+    For Each ws In ThisWorkbook.Worksheets
+        For Each pt In ws.PivotTables
+            pt.RefreshTable
+        Next pt
+    Next ws
+    
+    ' Refresh all data connections
+    ThisWorkbook.RefreshAll
+    
+    Application.ScreenUpdating = True
+    
+    MsgBox "All data refreshed!", vbInformation
+End Sub
+```
+
+**Task 4: Build a Simple Input Form**
+
+```vba
+Sub AddNewTransaction()
+    Dim lastRow As Long
+    Dim newDate As Date
+    Dim newRegion As String
+    Dim newRevenue As Double
+    
+    ' Get inputs
+    newDate = InputBox("Enter transaction date (mm/dd/yyyy):")
+    newRegion = InputBox("Enter region (North/South/East/West):")
+    newRevenue = InputBox("Enter revenue amount:")
+    
+    ' Find last row
+    lastRow = Cells(Rows.Count, 1).End(xlUp).Row + 1
+    
+    ' Add new record
+    Cells(lastRow, 1).Value = newDate
+    Cells(lastRow, 2).Value = newRegion
+    Cells(lastRow, 3).Value = newRevenue
+    
+    MsgBox "Transaction added successfully!", vbInformation
+End Sub
+```
+
+**Task 5: Automate Report Generation**
+
+```vba
+Sub GenerateMonthlyReport()
+    Dim reportMonth As String
+    Dim ws As Worksheet
+    
+    ' Get current month
+    reportMonth = Format(Date, "mmmm yyyy")
+    
+    ' Create new worksheet
+    Set ws = Worksheets.Add
+    ws.Name = "Report_" & Format(Date, "mmm_yyyy")
+    
+    ' Copy data
+    Sheets("Raw_Data").Range("A1").CurrentRegion.Copy ws.Range("A1")
+    
+    ' Apply formatting
+    Call FormatMonthlyReport
+    
+    ' Create pivot table
+    Call CreatePivotTable(ws)
+    
+    ' Create charts
+    Call CreateCharts(ws)
+    
+    ' Save as PDF
+    ws.ExportAsFixedFormat Type:=xlTypePDF, _
+        Filename:=ThisWorkbook.Path & "\Report_" & Format(Date, "mmm_yyyy") & ".pdf"
+    
+    MsgBox "Monthly report generated and saved!", vbInformation
+End Sub
+```
+
+**Deliverable:**
+- Workbook with working macros
+- Documentation of what each macro does
+- Button on worksheet to trigger macros
+
+**Time:** 3-4 hours  
+**Prerequisites:** Basic VBA understanding helpful but not required
+
+---
+
+### MINI PROJECT 2: Sales Dashboard with Real-Time Updates
+
+**Objective:** Build a complete sales dashboard that updates automatically
+
+**Scenario:** Create executive dashboard for weekly sales review
+
+**Requirements:**
+
+**1. Data Connection**
+- Connect to external data source (CSV or database)
+- Set up automatic refresh on file open
+- Handle connection errors gracefully
+
+**2. KPI Cards**
+```
+Design 4 KPI cards showing:
+- Total Revenue (with vs target %)
+- Number of Transactions (with WoW change)
+- Average Order Value (with trend arrow)
+- Top Performing Region
+
+Format:
+- Large number (36pt)
+- Label underneath (12pt)
+- % change or trend indicator
+- Color coding (green/red based on target)
+```
+
+**3. Dynamic Charts**
+```
+Chart 1: Revenue Trend (Line)
+- Last 12 weeks
+- Multiple series (Actual vs Target)
+- Data labels on last point
+- Trendline
+
+Chart 2: Regional Performance (Bar)
+- Horizontal bars
+- Sorted by revenue
+- Data labels showing %
+- Conditional colors
+
+Chart 3: Product Mix (Donut)
+- Top 5 categories
+- Show percentages
+- Pull out largest slice
+
+Chart 4: Weekly Comparison (Column)
+- This week vs last week
+- By day of week
+- Grouped columns
+```
+
+**4. Interactive Filters**
+```
+Add slicers for:
+- Week selector
+- Region filter
+- Product category filter
+
+Connect all slicers to:
+- Pivot tables
+- Charts
+- KPI calculations
+```
+
+**5. Automated Insights**
+```
+Use formulas to generate text insights:
+
+IF(Revenue > Target, 
+   "Revenue is UP " & FORMAT((Revenue-Target)/Target, "0%") & " vs target!",
+   "Revenue is DOWN " & FORMAT((Target-Revenue)/Target, "0%") & " vs target")
+
+Top performer:
+=INDEX(RegionNames, MATCH(MAX(Revenues), Revenues, 0))
+
+Alert for low performance:
+=IF(WeeklyRevenue < PreviousWeek * 0.9, 
+    "⚠️ Revenue down >10% week-over-week", 
+    "")
+```
+
+**6. Professional Design**
+```
+Design elements:
+- Consistent color scheme (2-3 colors max)
+- Clear hierarchy (large to small)
+- White space for readability
+- Gridlines hidden
+- Clean fonts (Calibri, Arial)
+- Company logo
+- Print layout (fits on one page)
+```
+
+**Technical Specifications:**
+
+**Data Structure:**
+```
+Source data table with columns:
+- Date
+- Transaction_ID
+- Region
+- Sales_Rep
+- Product_Category
+- Product_Name
+- Units_Sold
+- Unit_Price
+- Revenue
+- Cost
+- Profit
+```
+
+**Calculated Metrics:**
+```
+Revenue_vs_Target: =Revenue/Target-1
+WoW_Change: =(This_Week-Last_Week)/Last_Week
+Profit_Margin: =Profit/Revenue
+Units_per_Transaction: =Total_Units/Transaction_Count
+```
+
+**Refresh Process:**
+```
+1. Open file → Data refreshes automatically
+2. Pivot tables update
+3. Charts redraw
+4. KPIs recalculate
+5. Insights regenerate
+```
+
+**Deliverable:**
+- Complete Excel dashboard file
+- Sample data file
+- User guide (1-page PDF)
+- Video walkthrough (3-5 minutes)
+
+**Time:** 6-8 hours  
+**Success Criteria:**
+- ✅ Dashboard updates with new data
+- ✅ All elements interactive
+- ✅ Professional appearance
+- ✅ Insights accurate and helpful
+- ✅ Prints well on one page
+- ✅ Works for non-technical users
+
+---
+
+### Advanced Excel Tips & Tricks
+
+**Power Query Basics:**
+```
+Transform data without formulas!
+
+1. Data → Get & Transform → From Table/Range
+2. Transform operations:
+   - Remove duplicates
+   - Fill down blanks
+   - Split columns
+   - Pivot/Unpivot
+   - Merge queries
+   - Append queries
+
+3. Close & Load → Creates clean table
+4. Refresh to reapply transformations
+```
+
+**Conditional Formatting Mastery:**
+```
+Use Cases:
+1. Heat maps (color scales)
+2. Progress bars (data bars)
+3. Status indicators (icon sets)
+4. Highlight duplicates
+5. Highlight top/bottom values
+6. Compare to benchmark
+
+Pro tip: Use formulas for custom rules
+=AND($B2>100, $C2<0.1)
+```
+
+**Dynamic Charts:**
+```
+Create charts that update automatically:
+
+1. Use named ranges with OFFSET
+2. Chart data source = dynamic range
+3. Updates as data grows
+4. No manual range adjustment needed
+```
+
+**Keyboard Shortcuts Every Analyst Needs:**
+```
+Ctrl + T: Create table
+Ctrl + Shift + L: Toggle filters
+Alt + ;: Select visible cells only
+Ctrl + `: Show formulas
+F4: Cycle through $ references
+Ctrl + Page Up/Down: Switch sheets
+Alt + =: Auto-sum
+Ctrl + D: Fill down
+Ctrl + R: Fill right
+F9: Calculate now
+```
+
+**Excel Best Practices:**
+```
+✅ DO:
+- Use tables (Ctrl+T) for all data
+- Name your ranges
+- Document complex formulas
+- Use data validation
+- Protect formula cells
+- Save versions
+- Test edge cases
+
+❌ DON'T:
+- Merge cells (breaks formulas)
+- Hide rows/columns with data
+- Use VLOOKUP (use INDEX-MATCH)
+- Hardcode values (use cell references)
+- Forget to document
+- Skip data validation
+- Use inconsistent formats
+```
+
+**Practice Resources:**
+
+**Sample Datasets:**
+- `retail_sales_50k.xlsx` - Large retail dataset
+- `customer_database.xlsx` - Customer information
+- `product_catalog.xlsx` - Product master data
+- `web_analytics.xlsx` - Website traffic data
+
+**Challenge Exercises:**
+1. Build cohort analysis
+2. Create customer segmentation
+3. Design ABC inventory classification
+4. Build budget vs actual analysis
+5. Create waterfall chart
+
+**Success Criteria for Unit 2:**
+- ✅ Expert at data cleaning
+- ✅ Mastered advanced formulas
+- ✅ Build professional pivot reports
+- ✅ Create interactive dashboards
+- ✅ Basic macro automation
+- ✅ Portfolio-ready Excel projects
+
+---
+
+## 📝 40+ EXCEL PRACTICE PROBLEMS - Unit 2
+
+### Data Cleaning Challenges (10 Problems)
+
+**Problem 1: Remove duplicates while preserving specific records**
+```
+Scenario: Customer database with 10,000 records, many duplicates
+Task: Keep only the most recent record for each customer
+Solution:
+1. Sort by Customer ID (ascending), then Date (descending)
+2. Data → Remove Duplicates, select Customer ID only
+3. First occurrence (most recent) kept automatically
+```
+
+**Problem 2: Split full names into first and last**
+```
+Data: "John Smith", "Mary Johnson-Williams", "Dr. Robert Lee"
+Formula: 
+First Name: =LEFT(A2, FIND(" ", A2)-1)
+Last Name: =RIGHT(A2, LEN(A2)-FIND(" ", A2))
+Handle titles: =IF(LEFT(A2,3)="Dr.", MID(A2,5,FIND(" ",A2,5)-5), LEFT(A2,FIND(" ",A2)-1))
+```
+
+**Problem 3: Clean inconsistent date formats**
+```
+Mixed formats: "01/15/2024", "Jan 15, 2024", "15-Jan-24"
+Solution:
+1. Select all dates
+2. Data → Text to Columns
+3. Choose "Date" format
+4. Or use: =DATEVALUE(A2) to force conversion
+```
+
+**Problem 4: Remove extra spaces and trim text**
+```
+Data: "  London   ", " New York", "Paris  "
+Formula: =TRIM(A2)
+For all cells: Select range → Find & Replace → Find: " " (2 spaces) → Replace: " " (1 space) → Replace All (repeat)
+```
+
+**Problem 5: Extract numeric values from mixed text**
+```
+Data: "Sales: $1,250.00", "Revenue: £2,500", "Total: 3500 units"
+Formula: =VALUE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(A2,"$",""),"£",""),",",""))
+Or regex in VBA for complex patterns
+```
+
+**Problem 6: Standardize inconsistent categories**
+```
+Data: "UK", "United Kingdom", "uk", "U.K."
+Solution using Find & Replace:
+1. Find "uk" → Replace "United Kingdom" (Match case OFF)
+2. Find "U.K." → Replace "United Kingdom"
+Or use formula: =PROPER(TRIM(SUBSTITUTE(A2,"."," ")))
+```
+
+**Problem 7: Identify and flag outliers**
+```
+Dataset: Sales figures with occasional errors (e.g., $1,000,000 instead of $10,000)
+Formula for Z-score:
+=(A2-AVERAGE($A$2:$A$1000))/STDEV($A$2:$A$1000)
+Flag if ABS(Z-score) > 3
+Conditional formatting: Highlight cells > 3 standard deviations
+```
+
+**Problem 8: Convert text to proper date format**
+```
+Data: "20240115" (YYYYMMDD as text)
+Formula: =DATE(LEFT(A2,4), MID(A2,5,2), RIGHT(A2,2))
+Or: =DATE(VALUE(LEFT(A2,4)), VALUE(MID(A2,5,2)), VALUE(RIGHT(A2,2)))
+```
+
+**Problem 9: Remove special characters from text**
+```
+Data: "Product #123!", "Item@456", "SKU*789"
+Formula: =SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(A2,"#",""),"@",""),"*","")
+For all special chars: Use VBA or Power Query
+```
+
+**Problem 10: Consolidate data from multiple sheets**
+```
+Sheets: Jan_Sales, Feb_Sales, Mar_Sales (same structure)
+Solution:
+1. Power Query → New Query → From File → Combine → From Folder
+2. Or VBA loop through sheets and consolidate
+3. Or manual: Copy → Paste Special → Values
+```
+
+---
+
+### Formula Mastery (15 Problems)
+
+**Problem 11: Calculate customer lifetime value**
+```
+Formula: =SUMIF(Orders!$B:$B, A2, Orders!$E:$E)
+Where A2 = Customer ID, Orders!E:E = Order values
+Advanced: =SUMIFS(Orders!$E:$E, Orders!$B:$B, A2, Orders!$D:$D, ">="&DATE(2024,1,1))
+```
+
+**Problem 12: Nested IF for customer segmentation**
+```
+=IF(B2>=10000,"Platinum",IF(B2>=5000,"Gold",IF(B2>=1000,"Silver","Bronze")))
+Or better with IFS (Excel 2019+):
+=IFS(B2>=10000,"Platinum",B2>=5000,"Gold",B2>=1000,"Silver",TRUE,"Bronze")
+```
+
+**Problem 13: INDEX-MATCH for two-way lookup**
+```
+Lookup product price by name and region:
+=INDEX(Prices!$B$2:$E$100, MATCH(A2,Prices!$A$2:$A$100,0), MATCH(C2,Prices!$B$1:$E$1,0))
+Where A2=Product, C2=Region
+```
+
+**Problem 14: Calculate month-over-month growth**
+```
+Current month in B2, Previous month in A2:
+=(B2-A2)/A2
+Formatted as percentage: =(B2-A2)/A2 → Format Cells → Percentage
+Handle errors: =IFERROR((B2-A2)/A2, "N/A")
+```
+
+**Problem 15: Array formula for top N values**
+```
+Top 5 sales: =LARGE($B$2:$B$1000, ROW(A1))
+Drag down 5 rows to get top 5
+Get corresponding names: =INDEX($A$2:$A$1000, MATCH(LARGE($B$2:$B$1000,ROW(A1)), $B$2:$B$1000, 0))
+```
+
+**Problem 16: SUMPRODUCT for weighted average**
+```
+Calculate weighted average price:
+=SUMPRODUCT(Quantity_Range, Price_Range)/SUM(Quantity_Range)
+Example: =SUMPRODUCT(B2:B100, C2:C100)/SUM(B2:B100)
+```
+
+**Problem 17: Dynamic date ranges**
+```
+This Month: =SUMIFS(Sales!$C:$C, Sales!$A:$A, ">="&DATE(YEAR(TODAY()),MONTH(TODAY()),1))
+Last 30 Days: =SUMIFS(Sales!$C:$C, Sales!$A:$A, ">="&TODAY()-30)
+Year to Date: =SUMIFS(Sales!$C:$C, Sales!$A:$A, ">="&DATE(YEAR(TODAY()),1,1))
+```
+
+**Problem 18: Conditional counting**
+```
+Count customers with >5 orders:
+=COUNTIF(Order_Count_Range, ">5")
+Count orders in Q1:
+=COUNTIFS(Date_Range, ">="&DATE(2024,1,1), Date_Range, "<="&DATE(2024,3,31))
+```
+
+**Problem 19: Text manipulation formula**
+```
+Extract domain from email: =RIGHT(A2, LEN(A2)-FIND("@",A2))
+Create initials: =LEFT(A2,1)&LEFT(MID(A2,FIND(" ",A2)+1,50),1)
+```
+
+**Problem 20: Lookup with multiple criteria**
+```
+=INDEX(Result_Range, MATCH(1, (Criteria1_Range=Value1)*(Criteria2_Range=Value2), 0))
+Enter as array formula (Ctrl+Shift+Enter in older Excel)
+Or use XLOOKUP in Excel 365: =XLOOKUP(1, (A2:A100=Value1)*(B2:B100=Value2), C2:C100)
+```
+
+**Problem 21: Running total calculation**
+```
+Simple: =SUM($B$2:B2) and drag down
+With conditions: =SUMIF($A$2:A2, A2, $B$2:B2)
+By month: =SUMIFS($C:$C, $A:$A, "<="&A2)
+```
+
+**Problem 22: Age calculation from birthdate**
+```
+=DATEDIF(A2, TODAY(), "Y")
+Or: =INT((TODAY()-A2)/365.25)
+Age at specific date: =DATEDIF(A2, DATE(2024,12,31), "Y")
+```
+
+**Problem 23: Ranking with ties**
+```
+=RANK(A2, $A$2:$A$100, 0)
+No gaps: =COUNTIF($A$2:$A$100, ">"&A2)+1
+Percentage rank: =RANK(A2,$A$2:$A$100,0)/COUNT($A$2:$A$100)
+```
+
+**Problem 24: Dynamic dropdown lists**
+```
+Named range that updates:
+1. Define: =OFFSET(Sheet1!$A$2,0,0,COUNTA(Sheet1!$A:$A)-1,1)
+2. Data Validation → List → Source: =YourNamedRange
+Or use Tables (Ctrl+T) for auto-expanding ranges
+```
+
+**Problem 25: Error handling in formulas**
+```
+=IFERROR(VLOOKUP(A2, Table, 2, FALSE), "Not Found")
+Multiple error types:
+=IF(ISERROR(A2/B2), IF(B2=0, "Div by Zero", "Error"), A2/B2)
+```
+
+---
+
+### Pivot Table Challenges (10 Problems)
+
+**Problem 26: Multi-level pivot with calculated fields**
+```
+Task: Sales by Region → City → Product with profit margin
+Steps:
+1. Insert Pivot Table
+2. Rows: Region, City, Product
+3. Values: Sum of Sales, Sum of Cost
+4. Add Calculated Field: Profit Margin = (Sales-Cost)/Sales
+5. Format as percentage
+```
+
+**Problem 27: Pivot table with timeline slicer**
+```
+Task: Filter sales data by date range visually
+Steps:
+1. Create pivot table
+2. Insert → Timeline
+3. Select Date field
+4. Users can now slide to select periods
+```
+
+**Problem 28: Show % of total in pivot**
+```
+Task: Each product's contribution to total sales
+Steps:
+1. Add Sales to Values
+2. Right-click on value → Show Values As → % of Grand Total
+3. Or % of Parent Row Total for hierarchical data
+```
+
+**Problem 29: Grouping dates in pivot**
+```
+Task: Group daily sales into months/quarters
+Steps:
+1. Right-click any date in Rows
+2. Group → Select Months and Quarters
+3. Or Years for annual view
+```
+
+**Problem 30: Top N filter in pivot**
+```
+Task: Show only top 10 products by sales
+Steps:
+1. Click dropdown on Product
+2. Value Filters → Top 10
+3. Specify: Top 10 items by Sum of Sales
+```
+
+**Problem 31: Calculated items in pivot**
+```
+Task: Create "Total EU" item combining UK, France, Germany
+Steps:
+1. Right-click on Region field
+2. Insert Calculated Item
+3. Name: "Total EU"
+4. Formula: =UK+France+Germany
+```
+
+**Problem 32: Pivot table with conditional formatting**
+```
+Task: Highlight top performers in green, bottom in red
+Steps:
+1. Select values area
+2. Home → Conditional Formatting → Color Scales
+3. Or use Top/Bottom Rules
+```
+
+**Problem 33: Refresh pivot from external data**
+```
+Task: Update pivot when source CSV changes
+Steps:
+1. Data → From Text/CSV → Load to Pivot
+2. Right-click pivot → Refresh
+3. Or PivotTable Analyze → Refresh → Refresh All
+```
+
+**Problem 34: Multiple pivot tables from same source**
+```
+Task: Create separate pivots for sales, costs, margins
+Steps:
+1. Create first pivot
+2. Alt+D+P → Existing data → Based on existing pivot
+3. Shares cache, saves memory
+```
+
+**Problem 35: Pivot with running total**
+```
+Task: Show cumulative sales over time
+Steps:
+1. Add Date to Rows, Sales to Values
+2. Right-click Sales → Show Values As → Running Total In
+3. Select Date field as base
+```
+
+---
+
+### Dashboard & Charts (5 Problems)
+
+**Problem 36: Dynamic chart that updates automatically**
+```
+Task: Chart that grows with data
+Solution:
+1. Convert range to Table (Ctrl+T)
+2. Create chart from Table
+3. Or use named ranges with OFFSET
+4. Chart updates automatically as data grows
+```
+
+**Problem 37: Combo chart (column + line)**
+```
+Task: Show sales (columns) and profit margin (line)
+Steps:
+1. Create column chart with Sales
+2. Right-click profit data series
+3. Change Chart Type → Line
+4. Format axes appropriately
+```
+
+**Problem 38: Sparklines for quick trends**
+```
+Task: Mini charts in cells showing monthly trends
+Formula:
+1. Select cell for sparkline
+2. Insert → Line Sparkline
+3. Select data range
+4. Format with Sparkline Tools
+```
+
+**Problem 39: Interactive dashboard with slicers**
+```
+Task: Dashboard where users filter by region/date
+Steps:
+1. Create pivot tables/charts
+2. Insert → Slicer
+3. Select fields: Region, Date
+4. Right-click slicer → Report Connections → Connect to all pivots
+```
+
+**Problem 40: Waterfall chart for variance analysis**
+```
+Task: Show budget vs actual with bridges
+Steps (Excel 2016+):
+1. Organize data: Starting, Increases, Decreases, Ending
+2. Insert → Waterfall Chart
+3. Set subtotals and totals as needed
+4. Format with colors
+```
+
+---
+
+### Advanced Techniques (5 Problems)
+
+**Problem 41: Data validation with dynamic lists**
+```
+Task: Dropdown that changes based on previous selection
+Solution:
+1. Create dependent lists (e.g., Country → City)
+2. Use INDIRECT in Data Validation
+3. Source: =INDIRECT($A2) where A2 contains list name
+```
+
+**Problem 42: Conditional formatting with formulas**
+```
+Task: Highlight entire row if sales < target
+Formula: =$C2<$D2 (no $ on row number)
+Apply to range: $A$2:$Z$100
+Highlights entire row when condition true
+```
+
+**Problem 43: Protect workbook while allowing data entry**
+```
+Task: Lock formulas but allow input cells
+Steps:
+1. Select input cells → Format Cells → Protection → Uncheck "Locked"
+2. Review → Protect Sheet
+3. Allow: Select unlocked cells
+4. Users can only edit designated cells
+```
+
+**Problem 44: Quick analysis with recommended charts**
+```
+Task: Find best chart for data
+Steps:
+1. Select data range
+2. Home → Quick Analysis (Ctrl+Q)
+3. Browse Charts tab
+4. Excel recommends appropriate visualizations
+```
+
+**Problem 45: Use Excel as database with Advanced Filter**
+```
+Task: Complex multi-criteria filtering
+Steps:
+1. Set up criteria range above data
+2. Data → Advanced Filter
+3. Can copy results to new location
+4. More powerful than standard filters
+```
+
+---
+
+### Real-World Excel Challenges
+
+**Challenge 1: Financial Model**
+Build 3-statement model (Income Statement, Balance Sheet, Cash Flow) with scenarios
+
+**Challenge 2: Sales Dashboard**
+Create interactive dashboard with:
+- KPI cards (sales, growth, target%)
+- Regional breakdown pivot
+- Trend charts
+- Product performance table
+
+**Challenge 3: Budget Tracker**
+Build tool that compares budget vs actual monthly with:
+- Variance analysis
+- Alerts for >10% variance
+- Year-to-date summaries
+- Visual traffic lights (red/amber/green)
+
+**Challenge 4: Customer Cohort Analysis**
+Analyze customer cohorts by signup month showing:
+- Retention rates month-by-month
+- Revenue per cohort
+- Heatmap visualization
+- Churn predictions
+
+**Challenge 5: Inventory Management**
+Create system tracking:
+- Stock levels
+- Reorder points
+- Lead times
+- Alerts for low stock
+
+---
+
 """
         )
     elif unit_number == 3:
@@ -1761,6 +4602,1286 @@ ORDER BY dna_rate_percent DESC;
 **THIS is why SQL is powerful.**
 """
         )
+
+        st.markdown("---")
+        st.markdown("## 🔬 HANDS-ON LABS - Unit 3: SQL Mastery")
+        st.markdown(
+            """**Practical exercises to become a SQL expert**
+
+### LAB 1: SQL Fundamentals - SELECT, WHERE, ORDER BY
+
+**Objective:** Master basic SQL queries for data retrieval
+
+**Scenario:** You're analyzing e-commerce data for OnlineRetail
+
+**Database Schema:**
+```sql
+-- customers: customer_id, first_name, last_name, email, country, signup_date
+-- orders: order_id, customer_id, order_date, total_amount, status  
+-- order_items: item_id, order_id, product_id, quantity, unit_price
+-- products: product_id, product_name, category, price, stock_quantity
+```
+
+**Challenge 1: Basic SELECT & Filtering**
+```sql
+-- UK customers who signed up in 2024
+SELECT first_name, last_name, email, signup_date
+FROM customers
+WHERE country = 'UK' AND signup_date >= '2024-01-01'
+ORDER BY signup_date DESC;
+
+-- High-value completed orders
+SELECT order_id, customer_id, order_date, total_amount
+FROM orders
+WHERE total_amount > 500 AND status = 'Completed'
+ORDER BY total_amount DESC;
+
+-- Products with 'wireless' in name under £100
+SELECT product_name, category, price
+FROM products
+WHERE product_name LIKE '%wireless%' AND price < 100
+ORDER BY price;
+```
+
+**Challenge 2: Date Functions & Aggregations**
+```sql
+-- Orders from last 30 days
+SELECT order_id, customer_id, order_date, total_amount
+FROM orders
+WHERE order_date >= DATEADD(day, -30, GETDATE())
+ORDER BY order_date DESC;
+
+-- Monthly order summary for 2024
+SELECT 
+    MONTH(order_date) as month,
+    COUNT(*) as order_count,
+    SUM(total_amount) as revenue,
+    AVG(total_amount) as avg_order
+FROM orders
+WHERE YEAR(order_date) = 2024 AND status = 'Completed'
+GROUP BY MONTH(order_date)
+ORDER BY month;
+```
+
+**Success Criteria:**
+- ✅ Write 10+ SELECT queries
+- ✅ Use WHERE with multiple conditions
+- ✅ Apply date filtering correctly
+- ✅ Use ORDER BY and LIMIT/TOP
+
+**Time:** 2-3 hours
+
+---
+
+### LAB 2: JOINs - Combining Tables
+
+**Objective:** Master all JOIN types
+
+**Challenge 1: INNER JOIN - Customer Orders**
+```sql
+-- Customer names with their orders
+SELECT 
+    c.first_name,
+    c.last_name,
+    o.order_id,
+    o.order_date,
+    o.total_amount
+FROM customers c
+INNER JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_date >= '2024-01-01'
+ORDER BY o.order_date DESC;
+
+-- Order details with product names
+SELECT 
+    o.order_id,
+    o.order_date,
+    p.product_name,
+    oi.quantity,
+    oi.unit_price,
+    (oi.quantity * oi.unit_price) as line_total
+FROM orders o
+INNER JOIN order_items oi ON o.order_id = oi.order_id
+INNER JOIN products p ON oi.product_id = p.product_id
+ORDER BY o.order_id;
+```
+
+**Challenge 2: LEFT JOIN - Include All Records**
+```sql
+-- All customers with order counts (including zero orders)
+SELECT 
+    c.customer_id,
+    c.first_name,
+    c.last_name,
+    COUNT(o.order_id) as order_count,
+    COALESCE(SUM(o.total_amount), 0) as lifetime_value
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.first_name, c.last_name
+ORDER BY lifetime_value DESC;
+
+-- Products never ordered
+SELECT 
+    p.product_id,
+    p.product_name,
+    p.category
+FROM products p
+LEFT JOIN order_items oi ON p.product_id = oi.product_id
+WHERE oi.product_id IS NULL;
+```
+
+**Challenge 3: Multiple JOINs - Complete Report**
+```sql
+-- Full order details report
+SELECT 
+    c.first_name + ' ' + c.last_name as customer_name,
+    c.email,
+    c.country,
+    o.order_id,
+    o.order_date,
+    p.product_name,
+    p.category,
+    oi.quantity,
+    oi.unit_price,
+    (oi.quantity * oi.unit_price) as total
+FROM customers c
+INNER JOIN orders o ON c.customer_id = o.customer_id
+INNER JOIN order_items oi ON o.order_id = oi.order_id
+INNER JOIN products p ON oi.product_id = p.product_id
+WHERE o.order_date >= '2024-01-01'
+ORDER BY o.order_date DESC;
+```
+
+**Success Criteria:**
+- ✅ Use INNER, LEFT, RIGHT JOINs correctly
+- ✅ Join 3+ tables
+- ✅ Handle NULL values with COALESCE
+- ✅ Write complex multi-table queries
+
+**Time:** 3-4 hours
+
+---
+
+### LAB 3: Aggregations & GROUP BY
+
+**Objective:** Master aggregation functions
+
+**Challenge 1: Basic Aggregations**
+```sql
+-- Sales summary
+SELECT 
+    COUNT(*) as total_orders,
+    COUNT(DISTINCT customer_id) as unique_customers,
+    SUM(total_amount) as total_revenue,
+    AVG(total_amount) as avg_order,
+    MIN(total_amount) as min_order,
+    MAX(total_amount) as max_order
+FROM orders
+WHERE status = 'Completed';
+
+-- Product inventory by category
+SELECT 
+    category,
+    COUNT(*) as product_count,
+    AVG(price) as avg_price,
+    SUM(stock_quantity) as total_stock
+FROM products
+GROUP BY category
+ORDER BY total_stock DESC;
+```
+
+**Challenge 2: GROUP BY Multiple Columns**
+```sql
+-- Sales by country and month
+SELECT 
+    c.country,
+    YEAR(o.order_date) as year,
+    MONTH(o.order_date) as month,
+    COUNT(o.order_id) as orders,
+    SUM(o.total_amount) as revenue,
+    AVG(o.total_amount) as avg_order
+FROM orders o
+INNER JOIN customers c ON o.customer_id = c.customer_id
+WHERE o.status = 'Completed'
+GROUP BY c.country, YEAR(o.order_date), MONTH(o.order_date)
+ORDER BY year, month, revenue DESC;
+```
+
+**Challenge 3: HAVING Clause**
+```sql
+-- High-value customers (>£1000)
+SELECT 
+    c.customer_id,
+    c.first_name,
+    c.last_name,
+    COUNT(o.order_id) as orders,
+    SUM(o.total_amount) as lifetime_value
+FROM customers c
+INNER JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.status = 'Completed'
+GROUP BY c.customer_id, c.first_name, c.last_name
+HAVING SUM(o.total_amount) > 1000
+ORDER BY lifetime_value DESC;
+```
+
+**Challenge 4: Advanced Aggregations**
+```sql
+-- Customer cohort analysis
+SELECT 
+    YEAR(c.signup_date) as signup_year,
+    MONTH(c.signup_date) as signup_month,
+    COUNT(DISTINCT c.customer_id) as customers,
+    COUNT(DISTINCT o.order_id) as orders,
+    SUM(o.total_amount) as revenue,
+    ROUND(100.0 * COUNT(DISTINCT CASE WHEN o.order_date IS NOT NULL THEN c.customer_id END) / COUNT(DISTINCT c.customer_id), 2) as conversion_rate
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY YEAR(c.signup_date), MONTH(c.signup_date)
+ORDER BY signup_year, signup_month;
+```
+
+**Success Criteria:**
+- ✅ Use all aggregation functions (COUNT, SUM, AVG, MIN, MAX)
+- ✅ GROUP BY single and multiple columns
+- ✅ Filter groups with HAVING
+- ✅ Calculate percentages and rates
+
+**Time:** 3-4 hours
+
+**Deliverable for Labs 1-3:**
+- SQL script files with all queries
+- Query results screenshots
+- Analysis writeup
+
+---
+
+### LAB 4: Window Functions & Advanced Analytics
+
+**Objective:** Master window functions for complex analysis
+
+**Challenge 1: ROW_NUMBER, RANK, DENSE_RANK**
+```sql
+-- Rank products by revenue within each category
+SELECT 
+    product_name,
+    category,
+    SUM(quantity * unit_price) as revenue,
+    ROW_NUMBER() OVER (PARTITION BY category ORDER BY SUM(quantity * unit_price) DESC) as row_num,
+    RANK() OVER (PARTITION BY category ORDER BY SUM(quantity * unit_price) DESC) as rank_num
+FROM order_items oi
+JOIN products p ON oi.product_id = p.product_id
+GROUP BY product_name, category
+ORDER BY category, revenue DESC;
+```
+
+**Challenge 2: Running Totals**
+```sql
+-- Daily sales with running total
+SELECT 
+    CAST(order_date AS DATE) as date,
+    SUM(total_amount) as daily_revenue,
+    SUM(SUM(total_amount)) OVER (ORDER BY CAST(order_date AS DATE)) as running_total
+FROM orders
+WHERE status = 'Completed'
+GROUP BY CAST(order_date AS DATE)
+ORDER BY date;
+```
+
+**Challenge 3: LAG and LEAD**
+```sql
+-- Month-over-month growth
+WITH monthly_sales AS (
+    SELECT 
+        YEAR(order_date) as year,
+        MONTH(order_date) as month,
+        SUM(total_amount) as revenue
+    FROM orders
+    WHERE status = 'Completed'
+    GROUP BY YEAR(order_date), MONTH(order_date)
+)
+SELECT 
+    year,
+    month,
+    revenue,
+    LAG(revenue) OVER (ORDER BY year, month) as prev_month,
+    revenue - LAG(revenue) OVER (ORDER BY year, month) as change,
+    ROUND(100.0 * (revenue - LAG(revenue) OVER (ORDER BY year, month)) / LAG(revenue) OVER (ORDER BY year, month), 2) as pct_change
+FROM monthly_sales
+ORDER BY year, month;
+```
+
+**Success Criteria:**
+- ✅ Use ROW_NUMBER, RANK, DENSE_RANK
+- ✅ Calculate running totals
+- ✅ Use LAG/LEAD for comparisons
+- ✅ Apply PARTITION BY correctly
+
+**Time:** 3-4 hours
+
+---
+
+### LAB 5: CTEs & Subqueries
+
+**Objective:** Master Common Table Expressions
+
+**Challenge 1: Simple CTE**
+```sql
+-- Customer segmentation with CTE
+WITH customer_stats AS (
+    SELECT 
+        c.customer_id,
+        c.first_name,
+        c.last_name,
+        COUNT(o.order_id) as order_count,
+        SUM(o.total_amount) as lifetime_value,
+        DATEDIFF(day, MAX(o.order_date), GETDATE()) as days_since_last
+    FROM customers c
+    LEFT JOIN orders o ON c.customer_id = o.customer_id
+    WHERE o.status = 'Completed'
+    GROUP BY c.customer_id, c.first_name, c.last_name
+)
+SELECT 
+    *,
+    CASE 
+        WHEN lifetime_value >= 1000 THEN 'VIP'
+        WHEN lifetime_value >= 500 THEN 'High'
+        WHEN lifetime_value >= 100 THEN 'Medium'
+        ELSE 'Low'
+    END as value_segment,
+    CASE 
+        WHEN days_since_last <= 30 THEN 'Active'
+        WHEN days_since_last <= 90 THEN 'At Risk'
+        ELSE 'Churned'
+    END as status
+FROM customer_stats
+ORDER BY lifetime_value DESC;
+```
+
+**Challenge 2: Multiple CTEs**
+```sql
+-- Product performance with multiple CTEs
+WITH product_sales AS (
+    SELECT 
+        p.product_id,
+        p.product_name,
+        p.category,
+        COUNT(oi.order_id) as times_ordered,
+        SUM(oi.quantity) as units_sold,
+        SUM(oi.quantity * oi.unit_price) as revenue
+    FROM products p
+    LEFT JOIN order_items oi ON p.product_id = oi.product_id
+    GROUP BY p.product_id, p.product_name, p.category
+),
+category_avg AS (
+    SELECT 
+        category,
+        AVG(revenue) as avg_revenue
+    FROM product_sales
+    GROUP BY category
+)
+SELECT 
+    ps.*,
+    ca.avg_revenue as category_average,
+    ps.revenue - ca.avg_revenue as diff_from_avg
+FROM product_sales ps
+JOIN category_avg ca ON ps.category = ca.category
+ORDER BY ps.revenue DESC;
+```
+
+**Success Criteria:**
+- ✅ Write single and multiple CTEs
+- ✅ Use CTEs for complex calculations
+- ✅ Understand CTE vs subquery performance
+
+**Time:** 3-4 hours
+
+---
+
+### MINI PROJECT 4: E-Commerce SQL Analytics
+
+**Objective:** Build complete SQL analytics for business intelligence
+
+**Requirements:**
+
+**1. Executive Dashboard Query**
+```sql
+-- Key business metrics
+SELECT 
+    COUNT(DISTINCT customer_id) as total_customers,
+    COUNT(DISTINCT order_id) as total_orders,
+    SUM(total_amount) as revenue,
+    AVG(total_amount) as avg_order_value,
+    COUNT(DISTINCT CASE WHEN order_date >= DATEADD(day, -30, GETDATE()) THEN customer_id END) as active_customers_30d
+FROM orders
+WHERE status = 'Completed' AND order_date >= '2024-01-01';
+```
+
+**2. Customer RFM Segmentation**
+```sql
+-- Full RFM analysis
+WITH rfm AS (
+    SELECT 
+        c.customer_id,
+        c.first_name + ' ' + c.last_name as name,
+        DATEDIFF(day, MAX(o.order_date), GETDATE()) as recency,
+        COUNT(o.order_id) as frequency,
+        SUM(o.total_amount) as monetary
+    FROM customers c
+    JOIN orders o ON c.customer_id = o.customer_id
+    WHERE o.status = 'Completed'
+    GROUP BY c.customer_id, c.first_name, c.last_name
+)
+SELECT 
+    *,
+    NTILE(5) OVER (ORDER BY recency ASC) as r_score,
+    NTILE(5) OVER (ORDER BY frequency DESC) as f_score,
+    NTILE(5) OVER (ORDER BY monetary DESC) as m_score,
+    CASE 
+        WHEN NTILE(5) OVER (ORDER BY recency ASC) >= 4 
+         AND NTILE(5) OVER (ORDER BY frequency DESC) >= 4 
+         AND NTILE(5) OVER (ORDER BY monetary DESC) >= 4 THEN 'Champions'
+        WHEN NTILE(5) OVER (ORDER BY recency ASC) <= 2 THEN 'At Risk/Churned'
+        ELSE 'Potential Loyalists'
+    END as segment
+FROM rfm
+ORDER BY monetary DESC;
+```
+
+**3. Product Performance Report**
+```sql
+-- Comprehensive product analysis
+SELECT 
+    p.product_id,
+    p.product_name,
+    p.category,
+    p.price,
+    COUNT(DISTINCT oi.order_id) as times_ordered,
+    SUM(oi.quantity) as units_sold,
+    SUM(oi.quantity * oi.unit_price) as revenue,
+    RANK() OVER (PARTITION BY p.category ORDER BY SUM(oi.quantity * oi.unit_price) DESC) as category_rank
+FROM products p
+LEFT JOIN order_items oi ON p.product_id = oi.product_id
+GROUP BY p.product_id, p.product_name, p.category, p.price
+ORDER BY revenue DESC;
+```
+
+**4. Cohort Retention Analysis**
+```sql
+-- Monthly cohort retention
+WITH cohorts AS (
+    SELECT 
+        customer_id,
+        MIN(order_date) as first_order,
+        DATEFROMPARTS(YEAR(MIN(order_date)), MONTH(MIN(order_date)), 1) as cohort_month
+    FROM orders
+    GROUP BY customer_id
+)
+SELECT 
+    c.cohort_month,
+    DATEDIFF(month, c.cohort_month, o.order_date) as months_since_first,
+    COUNT(DISTINCT o.customer_id) as active_customers
+FROM cohorts c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.cohort_month, DATEDIFF(month, c.cohort_month, o.order_date)
+ORDER BY c.cohort_month, months_since_first;
+```
+
+**Deliverable:**
+- Complete SQL script with 10+ queries
+- Results exported to CSV
+- PowerPoint presentation with insights
+- Recommendations document
+
+**Time:** 6-8 hours
+
+**Success Criteria for Unit 3:**
+- ✅ Master all SQL fundamentals
+- ✅ Write complex JOINs fluently
+- ✅ Use aggregations and window functions
+- ✅ Build production-ready analytics queries
+- ✅ Complete portfolio SQL project
+
+---
+
+## 📝 60+ SQL PRACTICE QUERIES - Unit 3
+
+### Basic SELECT & Filtering (10 Queries)
+
+**Query 1: Select all customers from London**
+```sql
+SELECT customer_id, customer_name, city
+FROM customers
+WHERE city = 'London';
+```
+
+**Query 2: Find orders over £1000**
+```sql
+SELECT order_id, customer_id, order_total
+FROM orders
+WHERE order_total > 1000
+ORDER BY order_total DESC;
+```
+
+**Query 3: Get products with low stock (< 10 units)**
+```sql
+SELECT product_id, product_name, stock_quantity
+FROM products
+WHERE stock_quantity < 10
+ORDER BY stock_quantity ASC;
+```
+
+**Query 4: Find customers with Gmail addresses**
+```sql
+SELECT customer_id, customer_name, email
+FROM customers
+WHERE email LIKE '%@gmail.com';
+```
+
+**Query 5: Orders placed in Q1 2024**
+```sql
+SELECT order_id, order_date, order_total
+FROM orders
+WHERE order_date BETWEEN '2024-01-01' AND '2024-03-31'
+ORDER BY order_date;
+```
+
+**Query 6: Products in specific categories**
+```sql
+SELECT product_id, product_name, category
+FROM products
+WHERE category IN ('Electronics', 'Computers', 'Phones')
+ORDER BY category, product_name;
+```
+
+**Query 7: Find NULL values in email column**
+```sql
+SELECT customer_id, customer_name
+FROM customers
+WHERE email IS NULL;
+```
+
+**Query 8: Customers whose names start with 'A'**
+```sql
+SELECT customer_id, customer_name
+FROM customers
+WHERE customer_name LIKE 'A%'
+ORDER BY customer_name;
+```
+
+**Query 9: Orders NOT from specific regions**
+```sql
+SELECT order_id, customer_id, region
+FROM orders
+WHERE region NOT IN ('North', 'South');
+```
+
+**Query 10: Complex WHERE with multiple conditions**
+```sql
+SELECT order_id, order_total, order_date, status
+FROM orders
+WHERE order_total > 500
+  AND order_date >= '2024-01-01'
+  AND status = 'Completed'
+ORDER BY order_total DESC;
+```
+
+---
+
+### JOIN Queries (15 Queries)
+
+**Query 11: Simple INNER JOIN - Orders with customer names**
+```sql
+SELECT o.order_id, o.order_date, c.customer_name, o.order_total
+FROM orders o
+INNER JOIN customers c ON o.customer_id = c.customer_id
+ORDER BY o.order_date DESC;
+```
+
+**Query 12: LEFT JOIN - All customers with their orders (including no orders)**
+```sql
+SELECT c.customer_id, c.customer_name, o.order_id, o.order_total
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+ORDER BY c.customer_name;
+```
+
+**Query 13: Find customers with NO orders**
+```sql
+SELECT c.customer_id, c.customer_name
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_id IS NULL;
+```
+
+**Query 14: Three-table JOIN - Orders with products and customers**
+```sql
+SELECT 
+  o.order_id,
+  c.customer_name,
+  p.product_name,
+  oi.quantity,
+  oi.unit_price
+FROM orders o
+INNER JOIN customers c ON o.customer_id = c.customer_id
+INNER JOIN order_items oi ON o.order_id = oi.order_id
+INNER JOIN products p ON oi.product_id = p.product_id
+ORDER BY o.order_id;
+```
+
+**Query 15: Self JOIN - Employees and their managers**
+```sql
+SELECT 
+  e.employee_id,
+  e.employee_name,
+  m.employee_name as manager_name
+FROM employees e
+LEFT JOIN employees m ON e.manager_id = m.employee_id
+ORDER BY m.employee_name, e.employee_name;
+```
+
+**Query 16: CROSS JOIN - All product-region combinations**
+```sql
+SELECT p.product_name, r.region_name
+FROM products p
+CROSS JOIN regions r
+ORDER BY p.product_name, r.region_name;
+```
+
+**Query 17: Multiple JOINs with WHERE - Regional sales analysis**
+```sql
+SELECT 
+  r.region_name,
+  c.customer_name,
+  SUM(o.order_total) as total_sales
+FROM regions r
+INNER JOIN customers c ON r.region_id = c.region_id
+INNER JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_date >= '2024-01-01'
+GROUP BY r.region_name, c.customer_name
+HAVING SUM(o.order_total) > 1000
+ORDER BY total_sales DESC;
+```
+
+**Query 18: JOIN with aggregation - Products never ordered**
+```sql
+SELECT p.product_id, p.product_name
+FROM products p
+LEFT JOIN order_items oi ON p.product_id = oi.product_id
+WHERE oi.product_id IS NULL;
+```
+
+**Query 19: Date-based JOIN - Recent customer activity**
+```sql
+SELECT 
+  c.customer_id,
+  c.customer_name,
+  o.order_id,
+  o.order_date
+FROM customers c
+INNER JOIN orders o 
+  ON c.customer_id = o.customer_id 
+  AND o.order_date >= DATEADD(day, -30, GETDATE())
+ORDER BY o.order_date DESC;
+```
+
+**Query 20: Compound JOIN conditions**
+```sql
+SELECT 
+  o1.order_id as order_1,
+  o2.order_id as order_2,
+  o1.customer_id
+FROM orders o1
+INNER JOIN orders o2 
+  ON o1.customer_id = o2.customer_id 
+  AND o1.order_id < o2.order_id
+  AND DATEDIFF(day, o1.order_date, o2.order_date) <= 7;
+```
+
+**Query 21-25: More JOIN variations**
+- Find products ordered by multiple customers
+- List categories with no products
+- Match customers to similar customers by region
+- Orders with same-day shipments
+- Customers with orders in multiple regions
+
+---
+
+### Aggregation & GROUP BY (15 Queries)
+
+**Query 26: Total sales by region**
+```sql
+SELECT region, SUM(order_total) as total_sales
+FROM orders
+GROUP BY region
+ORDER BY total_sales DESC;
+```
+
+**Query 27: Count customers by city**
+```sql
+SELECT city, COUNT(*) as customer_count
+FROM customers
+GROUP BY city
+HAVING COUNT(*) > 10
+ORDER BY customer_count DESC;
+```
+
+**Query 28: Average order value by month**
+```sql
+SELECT 
+  DATE_TRUNC('month', order_date) as month,
+  AVG(order_total) as avg_order_value,
+  COUNT(*) as order_count
+FROM orders
+GROUP BY DATE_TRUNC('month', order_date)
+ORDER BY month;
+```
+
+**Query 29: Multiple aggregations**
+```sql
+SELECT 
+  product_category,
+  COUNT(*) as product_count,
+  SUM(units_sold) as total_units,
+  AVG(unit_price) as avg_price,
+  MIN(unit_price) as min_price,
+  MAX(unit_price) as max_price
+FROM products
+GROUP BY product_category
+ORDER BY total_units DESC;
+```
+
+**Query 30: HAVING clause - High-value customers**
+```sql
+SELECT 
+  customer_id,
+  COUNT(*) as order_count,
+  SUM(order_total) as total_spent
+FROM orders
+GROUP BY customer_id
+HAVING SUM(order_total) > 10000
+ORDER BY total_spent DESC;
+```
+
+**Query 31: GROUP BY with JOIN**
+```sql
+SELECT 
+  c.customer_name,
+  COUNT(o.order_id) as order_count,
+  SUM(o.order_total) as total_spent
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.customer_name
+ORDER BY total_spent DESC;
+```
+
+**Query 32: Complex grouping - Year over Year comparison**
+```sql
+SELECT 
+  YEAR(order_date) as year,
+  MONTH(order_date) as month,
+  SUM(order_total) as monthly_sales
+FROM orders
+GROUP BY YEAR(order_date), MONTH(order_date)
+ORDER BY year, month;
+```
+
+**Query 33: Percentage calculations**
+```sql
+SELECT 
+  region,
+  SUM(order_total) as region_sales,
+  SUM(order_total) * 100.0 / (SELECT SUM(order_total) FROM orders) as pct_of_total
+FROM orders
+GROUP BY region
+ORDER BY region_sales DESC;
+```
+
+**Query 34: DISTINCT aggregations**
+```sql
+SELECT 
+  product_id,
+  COUNT(DISTINCT customer_id) as unique_customers,
+  COUNT(*) as total_orders
+FROM order_items oi
+JOIN orders o ON oi.order_id = o.order_id
+GROUP BY product_id
+HAVING COUNT(DISTINCT customer_id) > 50
+ORDER BY unique_customers DESC;
+```
+
+**Query 35: Rolling aggregations**
+```sql
+SELECT 
+  order_date,
+  order_total,
+  SUM(order_total) OVER (ORDER BY order_date) as running_total
+FROM orders
+ORDER BY order_date;
+```
+
+**Query 36-40: More aggregation challenges**
+- Daily sales with 7-day moving average
+- Product sales ranking by category
+- Customer lifetime value calculation
+- Churn rate by cohort
+- Conversion funnel analysis
+
+---
+
+### Window Functions (10 Queries)
+
+**Query 41: Running total by customer**
+```sql
+SELECT 
+  customer_id,
+  order_date,
+  order_total,
+  SUM(order_total) OVER (
+    PARTITION BY customer_id 
+    ORDER BY order_date
+  ) as running_total
+FROM orders
+ORDER BY customer_id, order_date;
+```
+
+**Query 42: Rank products by sales within category**
+```sql
+SELECT 
+  product_category,
+  product_name,
+  total_sales,
+  RANK() OVER (
+    PARTITION BY product_category 
+    ORDER BY total_sales DESC
+  ) as category_rank
+FROM (
+  SELECT 
+    p.product_category,
+    p.product_name,
+    SUM(oi.quantity * oi.unit_price) as total_sales
+  FROM products p
+  JOIN order_items oi ON p.product_id = oi.product_id
+  GROUP BY p.product_category, p.product_name
+) sales_data;
+```
+
+**Query 43: LAG function - Compare to previous period**
+```sql
+SELECT 
+  order_date,
+  daily_sales,
+  LAG(daily_sales, 1) OVER (ORDER BY order_date) as prev_day_sales,
+  daily_sales - LAG(daily_sales, 1) OVER (ORDER BY order_date) as day_over_day_change
+FROM (
+  SELECT 
+    DATE(order_date) as order_date,
+    SUM(order_total) as daily_sales
+  FROM orders
+  GROUP BY DATE(order_date)
+) daily_summary
+ORDER BY order_date;
+```
+
+**Query 44: LEAD function - Look ahead**
+```sql
+SELECT 
+  customer_id,
+  order_date,
+  order_total,
+  LEAD(order_date, 1) OVER (
+    PARTITION BY customer_id 
+    ORDER BY order_date
+  ) as next_order_date,
+  DATEDIFF(
+    day, 
+    order_date, 
+    LEAD(order_date, 1) OVER (PARTITION BY customer_id ORDER BY order_date)
+  ) as days_between_orders
+FROM orders;
+```
+
+**Query 45: NTILE - Quartile analysis**
+```sql
+SELECT 
+  customer_id,
+  total_spent,
+  NTILE(4) OVER (ORDER BY total_spent DESC) as quartile
+FROM (
+  SELECT customer_id, SUM(order_total) as total_spent
+  FROM orders
+  GROUP BY customer_id
+) customer_totals;
+```
+
+**Query 46: ROW_NUMBER for deduplication**
+```sql
+WITH ranked_orders AS (
+  SELECT 
+    customer_id,
+    order_date,
+    order_total,
+    ROW_NUMBER() OVER (
+      PARTITION BY customer_id 
+      ORDER BY order_date DESC
+    ) as rn
+  FROM orders
+)
+SELECT customer_id, order_date, order_total
+FROM ranked_orders
+WHERE rn = 1;  -- Most recent order per customer
+```
+
+**Query 47: Moving average**
+```sql
+SELECT 
+  order_date,
+  daily_sales,
+  AVG(daily_sales) OVER (
+    ORDER BY order_date 
+    ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+  ) as seven_day_avg
+FROM (
+  SELECT DATE(order_date) as order_date, SUM(order_total) as daily_sales
+  FROM orders
+  GROUP BY DATE(order_date)
+) daily_sales;
+```
+
+**Query 48: PERCENT_RANK - Percentile calculation**
+```sql
+SELECT 
+  product_name,
+  total_sales,
+  PERCENT_RANK() OVER (ORDER BY total_sales) as percentile_rank
+FROM (
+  SELECT product_id, SUM(quantity * unit_price) as total_sales
+  FROM order_items
+  GROUP BY product_id
+) product_sales;
+```
+
+**Query 49: FIRST_VALUE and LAST_VALUE**
+```sql
+SELECT 
+  customer_id,
+  order_date,
+  order_total,
+  FIRST_VALUE(order_total) OVER (
+    PARTITION BY customer_id 
+    ORDER BY order_date
+  ) as first_order_value,
+  LAST_VALUE(order_total) OVER (
+    PARTITION BY customer_id 
+    ORDER BY order_date
+    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+  ) as last_order_value
+FROM orders;
+```
+
+**Query 50: Complex window with multiple functions**
+```sql
+SELECT 
+  product_id,
+  order_date,
+  daily_quantity,
+  AVG(daily_quantity) OVER (
+    PARTITION BY product_id 
+    ORDER BY order_date 
+    ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
+  ) as moving_avg_30day,
+  RANK() OVER (
+    PARTITION BY product_id 
+    ORDER BY daily_quantity DESC
+  ) as quantity_rank
+FROM (
+  SELECT 
+    product_id,
+    DATE(o.order_date) as order_date,
+    SUM(oi.quantity) as daily_quantity
+  FROM order_items oi
+  JOIN orders o ON oi.order_id = o.order_id
+  GROUP BY product_id, DATE(o.order_date)
+) daily_product_sales;
+```
+
+---
+
+### CTEs & Subqueries (10 Queries)
+
+**Query 51: Simple CTE - Monthly sales**
+```sql
+WITH monthly_sales AS (
+  SELECT 
+    DATE_TRUNC('month', order_date) as month,
+    SUM(order_total) as total_sales
+  FROM orders
+  GROUP BY DATE_TRUNC('month', order_date)
+)
+SELECT 
+  month,
+  total_sales,
+  LAG(total_sales, 1) OVER (ORDER BY month) as prev_month,
+  (total_sales - LAG(total_sales, 1) OVER (ORDER BY month)) / 
+    LAG(total_sales, 1) OVER (ORDER BY month) * 100 as growth_pct
+FROM monthly_sales
+ORDER BY month;
+```
+
+**Query 52: Multiple CTEs - Customer segmentation**
+```sql
+WITH customer_stats AS (
+  SELECT 
+    customer_id,
+    COUNT(*) as order_count,
+    SUM(order_total) as total_spent,
+    MAX(order_date) as last_order_date
+  FROM orders
+  GROUP BY customer_id
+),
+rfm_scores AS (
+  SELECT 
+    customer_id,
+    DATEDIFF(day, last_order_date, GETDATE()) as recency,
+    order_count as frequency,
+    total_spent as monetary
+  FROM customer_stats
+)
+SELECT 
+  customer_id,
+  CASE 
+    WHEN recency <= 30 AND frequency >= 5 AND monetary >= 1000 THEN 'VIP'
+    WHEN recency <= 60 AND frequency >= 3 THEN 'Active'
+    WHEN recency <= 180 THEN 'At Risk'
+    ELSE 'Churned'
+  END as segment
+FROM rfm_scores;
+```
+
+**Query 53: Recursive CTE - Date series**
+```sql
+WITH RECURSIVE date_series AS (
+  SELECT DATE('2024-01-01') as date
+  UNION ALL
+  SELECT DATE(date, '+1 day')
+  FROM date_series
+  WHERE date < DATE('2024-12-31')
+)
+SELECT 
+  ds.date,
+  COALESCE(SUM(o.order_total), 0) as daily_sales
+FROM date_series ds
+LEFT JOIN orders o ON DATE(o.order_date) = ds.date
+GROUP BY ds.date
+ORDER BY ds.date;
+```
+
+**Query 54: CTE with window functions - Top N per group**
+```sql
+WITH ranked_products AS (
+  SELECT 
+    product_category,
+    product_name,
+    total_sales,
+    RANK() OVER (PARTITION BY product_category ORDER BY total_sales DESC) as rank
+  FROM (
+    SELECT 
+      p.product_category,
+      p.product_name,
+      SUM(oi.quantity * oi.unit_price) as total_sales
+    FROM products p
+    JOIN order_items oi ON p.product_id = oi.product_id
+    GROUP BY p.product_category, p.product_name
+  ) sales
+)
+SELECT product_category, product_name, total_sales
+FROM ranked_products
+WHERE rank <= 5
+ORDER BY product_category, rank;
+```
+
+**Query 55: Subquery in WHERE - Above average spenders**
+```sql
+SELECT customer_id, customer_name, total_spent
+FROM (
+  SELECT 
+    c.customer_id,
+    c.customer_name,
+    SUM(o.order_total) as total_spent
+  FROM customers c
+  JOIN orders o ON c.customer_id = o.customer_id
+  GROUP BY c.customer_id, c.customer_name
+) customer_totals
+WHERE total_spent > (
+  SELECT AVG(total_spent)
+  FROM (
+    SELECT customer_id, SUM(order_total) as total_spent
+    FROM orders
+    GROUP BY customer_id
+  ) avg_calc
+);
+```
+
+**Query 56: Correlated subquery**
+```sql
+SELECT 
+  p.product_id,
+  p.product_name,
+  (SELECT COUNT(*) 
+   FROM order_items oi 
+   WHERE oi.product_id = p.product_id) as times_ordered
+FROM products p
+WHERE (
+  SELECT COUNT(*) 
+  FROM order_items oi 
+  WHERE oi.product_id = p.product_id
+) > 100
+ORDER BY times_ordered DESC;
+```
+
+**Query 57: EXISTS subquery**
+```sql
+SELECT c.customer_id, c.customer_name
+FROM customers c
+WHERE EXISTS (
+  SELECT 1
+  FROM orders o
+  WHERE o.customer_id = c.customer_id
+    AND o.order_date >= '2024-01-01'
+    AND o.order_total > 1000
+);
+```
+
+**Query 58: NOT EXISTS - Customers without recent orders**
+```sql
+SELECT c.customer_id, c.customer_name
+FROM customers c
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM orders o
+  WHERE o.customer_id = c.customer_id
+    AND o.order_date >= DATEADD(month, -6, GETDATE())
+);
+```
+
+**Query 59: Subquery in SELECT - Inline calculations**
+```sql
+SELECT 
+  o.order_id,
+  o.order_total,
+  (SELECT AVG(order_total) FROM orders) as avg_order_value,
+  o.order_total - (SELECT AVG(order_total) FROM orders) as difference_from_avg
+FROM orders o
+ORDER BY difference_from_avg DESC;
+```
+
+**Query 60: Complex multi-level CTE**
+```sql
+WITH order_summary AS (
+  SELECT 
+    customer_id,
+    order_date,
+    order_total,
+    ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date) as order_number
+  FROM orders
+),
+first_orders AS (
+  SELECT customer_id, order_date as first_order_date, order_total as first_order_value
+  FROM order_summary
+  WHERE order_number = 1
+),
+customer_lifetime AS (
+  SELECT 
+    os.customer_id,
+    fo.first_order_date,
+    fo.first_order_value,
+    COUNT(*) as total_orders,
+    SUM(os.order_total) as lifetime_value
+  FROM order_summary os
+  JOIN first_orders fo ON os.customer_id = fo.customer_id
+  GROUP BY os.customer_id, fo.first_order_date, fo.first_order_value
+)
+SELECT 
+  customer_id,
+  first_order_date,
+  first_order_value,
+  total_orders,
+  lifetime_value,
+  lifetime_value / first_order_value as ltv_to_first_order_ratio
+FROM customer_lifetime
+WHERE total_orders >= 3
+ORDER BY lifetime_value DESC;
+```
+
+---
+
+### Real-World Analytics Queries (Bonus)
+
+**Query 61: Customer Cohort Retention**
+```sql
+WITH cohorts AS (
+  SELECT 
+    customer_id,
+    DATE_TRUNC('month', MIN(order_date)) as cohort_month
+  FROM orders
+  GROUP BY customer_id
+),
+cohort_activity AS (
+  SELECT 
+    c.cohort_month,
+    DATE_TRUNC('month', o.order_date) as activity_month,
+    COUNT(DISTINCT o.customer_id) as active_customers
+  FROM cohorts c
+  JOIN orders o ON c.customer_id = o.customer_id
+  GROUP BY c.cohort_month, DATE_TRUNC('month', o.order_date)
+)
+SELECT 
+  cohort_month,
+  activity_month,
+  active_customers,
+  DATEDIFF(month, cohort_month, activity_month) as months_since_cohort
+FROM cohort_activity
+ORDER BY cohort_month, activity_month;
+```
+
+**Query 62: Product Affinity Analysis**
+```sql
+SELECT 
+  p1.product_name as product_1,
+  p2.product_name as product_2,
+  COUNT(*) as times_bought_together
+FROM order_items oi1
+JOIN order_items oi2 ON oi1.order_id = oi2.order_id AND oi1.product_id < oi2.product_id
+JOIN products p1 ON oi1.product_id = p1.product_id
+JOIN products p2 ON oi2.product_id = p2.product_id
+GROUP BY p1.product_name, p2.product_name
+HAVING COUNT(*) > 10
+ORDER BY times_bought_together DESC
+LIMIT 20;
+```
+
+**Query 63: Sales Funnel Conversion**
+```sql
+SELECT 
+  stage,
+  user_count,
+  user_count * 100.0 / FIRST_VALUE(user_count) OVER (ORDER BY stage_order) as conversion_pct
+FROM (
+  SELECT 1 as stage_order, 'Visited Site' as stage, COUNT(DISTINCT user_id) as user_count FROM visits
+  UNION ALL
+  SELECT 2, 'Viewed Product', COUNT(DISTINCT user_id) FROM product_views
+  UNION ALL
+  SELECT 3, 'Added to Cart', COUNT(DISTINCT user_id) FROM cart_additions
+  UNION ALL
+  SELECT 4, 'Started Checkout', COUNT(DISTINCT user_id) FROM checkouts
+  UNION ALL
+  SELECT 5, 'Completed Purchase', COUNT(DISTINCT customer_id) FROM orders
+) funnel
+ORDER BY stage_order;
+```
+
+---
+
+"""
+        )
     elif unit_number == 4:
         st.markdown("#### 📘 Why BI Dashboards Matter (And How to Build Great Ones)")
         st.markdown(
@@ -2281,6 +6402,650 @@ Our customer satisfaction has dropped from 4.2 to 3.8 in one quarter while suppo
 I recommend immediately hiring 2 additional support agents (£60K cost) to handle increased volume. This should restore 24-hour resolution times and satisfaction to 4.2+ within 2 months. The alternative—continued decline—could cost us 10-15% of customers (£200K+ annual revenue impact). **(RESOLUTION: Clear action and consequences)**"
 
 **See how data becomes a compelling story?**
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🔬 HANDS-ON LABS - Unit 4: BI Dashboards & Visualization")
+        st.markdown(
+            """**Practical exercises to master business intelligence tools**
+
+### LAB 1: Tableau Fundamentals
+
+**Objective:** Build your first interactive Tableau dashboard
+
+**Scenario:** Create sales performance dashboard for RetailCo
+
+**Dataset:** `sales_data_2024.csv` (50K rows)
+- Columns: Date, Region, Product_Category, Product_Name, Sales_Rep, Revenue, Units, Profit
+
+**Step 1: Connect to Data**
+```
+1. Open Tableau Desktop
+2. Connect to Text File → Browse to sales_data_2024.csv
+3. Data Source tab: Review fields and data types
+4. Click "Sheet 1" to start building
+```
+
+**Step 2: Build First Visualization - Revenue Trend**
+```
+Drag to:
+- Columns: MONTH(Date)
+- Rows: SUM(Revenue)
+- Color: Profit Ratio (calculated field: SUM(Profit)/SUM(Revenue))
+- Label: Show marks
+
+Result: Line chart showing monthly revenue with profit ratio colors
+```
+
+**Step 3: Regional Performance Bar Chart**
+```
+New Sheet:
+- Rows: Region
+- Columns: SUM(Revenue)
+- Color: Region
+- Sort: Descending by revenue
+- Add reference line at Average
+
+Insight: Instantly see which regions over/under perform
+```
+
+**Step 4: Product Category Breakdown**
+```
+New Sheet:
+- Create treemap: Product_Category to Color and Size
+- Size: SUM(Revenue)
+- Label: Category name and % of total
+- Tooltip: Add Profit, Units Sold
+
+Result: Visual hierarchy of category performance
+```
+
+**Step 5: Sales Rep Leaderboard**
+```
+New Sheet - Table:
+- Rows: Sales_Rep
+- Columns: SUM(Revenue), COUNT(Orders), AVG(Deal Size)
+- Conditional formatting:
+  * Revenue: Color scale (green = high)
+  * Orders: Data bars
+- Sort by Revenue descending
+```
+
+**Step 6: Build Interactive Dashboard**
+```
+New Dashboard:
+
+Layout (1200 x 800 pixels):
++----------------------------------+------------------+
+| Revenue Trend (full width)                          |
++----------------------------------+------------------+
+| Regional Performance | Product Treemap             |
+| (50% width)          | (50% width)                 |
++----------------------------------+------------------+
+| Sales Rep Leaderboard (full width)                 |
++----------------------------------+------------------+
+
+Add Interactivity:
+1. Make Region chart a filter
+2. Add date range filter (slider)
+3. Add Product Category quick filter
+4. All sheets respond to filters
+```
+
+**Step 7: Dashboard Actions**
+```
+Dashboard → Actions:
+1. Highlight action: Hover over region highlights related data
+2. Filter action: Click region filters entire dashboard
+3. URL action: Click sales rep opens email
+```
+
+**Step 8: Calculated Fields**
+```
+Create:
+1. Profit Margin = SUM([Profit]) / SUM([Revenue])
+2. YoY Growth = (SUM([Revenue]) - LOOKUP(SUM([Revenue]), -12)) / LOOKUP(SUM([Revenue]), -12)
+3. Running Total = RUNNING_SUM(SUM([Revenue]))
+4. Rank = RANK(SUM([Revenue]))
+```
+
+**Deliverable:**
+- Published Tableau workbook (.twbx)
+- Dashboard screenshot
+- 1-page insights summary
+
+**Time:** 4-5 hours  
+**Success Criteria:**
+- ✅ 4+ visualizations created
+- ✅ Interactive filters working
+- ✅ Dashboard tells clear story
+- ✅ Professional formatting
+
+---
+
+### LAB 2: Advanced Tableau Techniques
+
+**Objective:** Master advanced Tableau features
+
+**Challenge 1: Dual-Axis Charts**
+```
+Create chart showing Revenue (bars) and Profit Margin (line):
+1. Rows: SUM(Revenue), Profit Margin
+2. Right-click second pill → Dual Axis
+3. Synchronize axis
+4. Change mark type: Bars for revenue, Line for margin
+5. Format: Different colors, adjust scales
+```
+
+**Challenge 2: Parameter Controls**
+```
+Create dynamic metric selector:
+
+1. Create Parameter: "Select Metric"
+   - Data type: String
+   - Allowable values: List
+   - Values: Revenue, Profit, Units, Margin
+
+2. Create Calculated Field: "Selected Metric"
+   CASE [Select Metric]
+   WHEN 'Revenue' THEN SUM([Revenue])
+   WHEN 'Profit' THEN SUM([Profit])
+   WHEN 'Units' THEN SUM([Units])
+   WHEN 'Margin' THEN AVG([Profit])/AVG([Revenue])
+   END
+
+3. Use in visualization
+4. Show parameter control
+5. Users can switch metrics dynamically!
+```
+
+**Challenge 3: Level of Detail (LOD) Expressions**
+```
+Calculate customer-level metrics:
+
+1. Customer Lifetime Value:
+   {FIXED [Customer_ID] : SUM([Revenue])}
+
+2. First Purchase Date:
+   {FIXED [Customer_ID] : MIN([Order_Date])}
+
+3. Cohort Analysis:
+   DATEDIFF('month', {FIXED [Customer_ID] : MIN([Order_Date])}, [Order_Date])
+
+4. Customer Count by Cohort:
+   {FIXED [Cohort_Month] : COUNTD([Customer_ID])}
+```
+
+**Challenge 4: Table Calculations**
+```
+Advanced calculations:
+
+1. Percent of Total:
+   SUM([Revenue]) / TOTAL(SUM([Revenue]))
+
+2. Difference from Average:
+   SUM([Revenue]) - WINDOW_AVG(SUM([Revenue]))
+
+3. Moving Average (7-day):
+   WINDOW_AVG(SUM([Revenue]), -6, 0)
+
+4. Year-over-Year:
+   (SUM([Revenue]) - LOOKUP(SUM([Revenue]), -12)) / LOOKUP(SUM([Revenue]), -12)
+```
+
+**Challenge 5: Dashboard Actions & Storytelling**
+```
+Create 3-page story:
+
+Page 1: "The Problem"
+- Show declining metrics
+- Highlight concerning trends
+- Add annotations
+
+Page 2: "Root Cause Analysis"  
+- Drill-down visualizations
+- Regional/product breakdowns
+- Filter to problem areas
+
+Page 3: "Recommendations"
+- Forecasts with trend lines
+- What-if scenarios
+- Action items
+```
+
+**Deliverable:**
+- Advanced dashboard with LOD calcs
+- Story points presentation
+- Documentation of techniques
+
+**Time:** 5-6 hours
+
+---
+
+### LAB 3: Power BI Fundamentals
+
+**Objective:** Build interactive Power BI report
+
+**Scenario:** Customer analytics dashboard for SaaS company
+
+**Step 1: Load and Transform Data**
+```
+Power Query:
+1. Get Data → Import sales_data.csv
+2. Transform:
+   - Remove duplicates
+   - Change data types
+   - Add custom column: Revenue_Category
+   - Filter out nulls
+3. Close & Apply
+```
+
+**Step 2: Data Modeling**
+```
+Model View:
+1. Create relationships:
+   - Sales[Customer_ID] → Customers[Customer_ID]
+   - Sales[Product_ID] → Products[Product_ID]
+   - Sales[Date] → Calendar[Date]
+
+2. Create Calendar table:
+   Calendar = CALENDAR(MIN(Sales[Date]), MAX(Sales[Date]))
+
+3. Add calculated columns:
+   Month = FORMAT(Calendar[Date], "MMM YYYY")
+   Quarter = "Q" & QUARTER(Calendar[Date])
+```
+
+**Step 3: DAX Measures**
+```
+Create measures:
+
+Total Revenue = SUM(Sales[Revenue])
+
+Total Customers = DISTINCTCOUNT(Sales[Customer_ID])
+
+Average Order Value = DIVIDE([Total Revenue], COUNTROWS(Sales))
+
+Revenue YoY = 
+VAR CurrentYear = [Total Revenue]
+VAR PriorYear = CALCULATE([Total Revenue], SAMEPERIODLASTYEAR(Calendar[Date]))
+RETURN DIVIDE(CurrentYear - PriorYear, PriorYear)
+
+Customer Retention = 
+VAR CustomersThisMonth = DISTINCTCOUNT(Sales[Customer_ID])
+VAR CustomersLastMonth = CALCULATE(
+    DISTINCTCOUNT(Sales[Customer_ID]),
+    DATEADD(Calendar[Date], -1, MONTH)
+)
+VAR ReturningCustomers = CALCULATE(
+    DISTINCTCOUNT(Sales[Customer_ID]),
+    FILTER(Sales, Sales[Customer_ID] IN VALUES(Sales[Customer_ID]))
+)
+RETURN DIVIDE(ReturningCustomers, CustomersLastMonth)
+```
+
+**Step 4: Build Visualizations**
+```
+Page 1: Executive Summary
+- Card visuals: Revenue, Customers, AOV (with YoY change)
+- Line chart: Monthly trend
+- Bar chart: Revenue by category
+- Donut chart: Customer segments
+
+Page 2: Product Analysis
+- Matrix: Products with revenue, units, margin
+- Scatter plot: Units vs Revenue (bubble = profit)
+- Decomposition tree: Category → Product → Region
+
+Page 3: Customer Insights
+- Cohort retention heatmap
+- Customer lifetime value distribution
+- Top customers table
+- Churn risk indicators
+```
+
+**Step 5: Add Interactivity**
+```
+Slicers:
+- Date range slicer
+- Region multi-select
+- Product category
+
+Cross-filtering:
+- Enable cross-highlight between visuals
+- Set filter direction (both/single)
+
+Drill-through:
+- Right-click → Drill through to detailed view
+- Create drill-through page with customer details
+```
+
+**Step 6: Format & Polish**
+```
+Formatting:
+- Apply consistent theme
+- Custom colors matching brand
+- Conditional formatting on tables
+- Add icons and images
+- Tooltips with additional context
+```
+
+**Deliverable:**
+- Power BI .pbix file
+- Published to Power BI Service
+- Sharing link for stakeholders
+
+**Time:** 4-5 hours  
+**Success Criteria:**
+- ✅ Data properly modeled
+- ✅ DAX measures working
+- ✅ Interactive and polished
+- ✅ Mobile-friendly layout
+
+---
+
+### LAB 4: Data Visualization Best Practices
+
+**Objective:** Learn what makes visualizations effective
+
+**Exercise 1: Chart Selection**
+```
+Choose the right chart for each scenario:
+
+Scenario A: Compare sales across 5 regions
+❌ Pie chart (hard to compare slices)
+✅ Bar chart (easy comparison)
+
+Scenario B: Show trend over 24 months
+❌ Scatter plot (implies relationship)
+✅ Line chart (shows time series)
+
+Scenario C: Show distribution of order values
+❌ Line chart (not a trend)
+✅ Histogram (shows distribution)
+
+Scenario D: Compare 3 metrics across 10 products
+❌ Pie chart (too many categories)
+✅ Grouped bar chart or heat map
+
+Scenario E: Show relationship between ad spend and sales
+❌ Bar chart (doesn't show correlation)
+✅ Scatter plot with trendline
+```
+
+**Exercise 2: Color Best Practices**
+```
+Fix these common mistakes:
+
+❌ BAD: Rainbow colors for categories (hard to distinguish)
+✅ GOOD: Distinct, accessible colors (max 6-7)
+
+❌ BAD: Red/green for non-performance data (colorblind issues)
+✅ GOOD: Blue/orange or use patterns
+
+❌ BAD: Every element bright colored
+✅ GOOD: Gray for reference, color for emphasis
+
+❌ BAD: Legend with 15 colors
+✅ GOOD: Direct labels, max 5-6 categories
+
+Color Palette Rules:
+- Sequential: Single hue (light to dark) for ordered data
+- Diverging: Two hues from neutral for positive/negative
+- Categorical: Distinct hues for unordered categories
+- Always test for colorblind accessibility
+```
+
+**Exercise 3: Declutter & Simplify**
+```
+Before (Cluttered):
+- Heavy gridlines
+- 3D effects
+- Multiple borders
+- Excessive labels
+- Busy background
+- Too many metrics
+
+After (Clean):
+- Minimal gridlines (or none)
+- Flat 2D design
+- Single border or none
+- Selective labeling
+- White/light background
+- Focus on 1-3 key metrics
+
+Data-Ink Ratio: Maximize data, minimize decoration
+```
+
+**Exercise 4: Dashboard Layout Principles**
+```
+Z-Pattern Reading:
++------------------+------------------+
+| Most Important   | Secondary Metric |
+| (Top Left)       | (Top Right)      |
++------------------+------------------+
+| Supporting Chart | Supporting Chart |
+| (Mid Left)       | (Mid Right)      |
++------------------+------------------+
+| Details/Actions  | Details/Actions  |
+| (Bottom)         | (Bottom)         |
++------------------+------------------+
+
+Design Rules:
+1. Top-left gets most attention
+2. Use whitespace generously
+3. Group related items
+4. Align elements in grid
+5. Consistent sizing
+6. Limit to 5-7 visuals per page
+```
+
+**Exercise 5: Storytelling with Data**
+```
+Structure your dashboard as a story:
+
+1. HEADLINE (Big Number)
+   "Revenue DOWN 12% vs Target"
+   
+2. CONTEXT (Trend Chart)
+   Shows decline started in Q2
+   
+3. DIAGNOSIS (Breakdown)
+   North region down 25%
+   Electronics category struggling
+   
+4. ACTION (Recommendation)
+   "Focus sales efforts on North region"
+   "Review Electronics pricing strategy"
+
+Each visual should answer a question:
+- What happened?
+- Why did it happen?
+- What should we do?
+```
+
+**Exercise 6: Rebuild Bad Visualizations**
+```
+You'll be given 5 "bad" dashboards:
+1. Pie chart with 20 slices → Fix with treemap or bar chart
+2. 3D donut chart → Fix with simple bar chart
+3. Dual-axis with different scales → Fix properly
+4. Table with 50 rows → Fix with top 10 + others
+5. Rainbow color dashboard → Fix with consistent palette
+
+Document your fixes and rationale
+```
+
+**Deliverable:**
+- Portfolio of before/after visualizations
+- Style guide document
+- Dashboard design checklist
+
+**Time:** 3-4 hours
+
+---
+
+### MINI PROJECT 5: Executive BI Dashboard
+
+**Objective:** Build complete executive dashboard from scratch
+
+**Scenario:** Quarterly Business Review dashboard for CEO
+
+**Requirements:**
+
+**1. Data Preparation**
+```
+Sources to integrate:
+- Sales data (50K transactions)
+- Customer data (10K customers)
+- Product data (500 products)
+- Marketing spend data
+- Website analytics
+
+Transformations needed:
+- Join all sources
+- Calculate KPIs
+- Create calendar dimension
+- Clean and validate
+```
+
+**2. Key Metrics to Display**
+```
+Financial:
+- Total Revenue (vs target, vs last quarter)
+- Profit Margin %
+- Average Order Value
+- Revenue by region/product
+
+Customer:
+- Total Active Customers
+- Customer Acquisition Cost
+- Customer Lifetime Value
+- Retention Rate %
+- Net Promoter Score
+
+Operations:
+- Orders Processed
+- Average Delivery Time
+- Return Rate %
+- Inventory Turnover
+```
+
+**3. Dashboard Pages**
+```
+Page 1: Executive Summary (1 screen, no scrolling)
+- 6 KPI cards with sparklines
+- Revenue trend (12 months)
+- Top 5 products bar chart
+- Regional map
+- Alert indicators (red/yellow/green)
+
+Page 2: Sales Deep Dive
+- Sales by channel
+- Rep leaderboard
+- Deal pipeline
+- Win rate analysis
+- Forecasting
+
+Page 3: Customer Analytics
+- Cohort retention heatmap
+- Customer segmentation
+- Churn analysis
+- Lifetime value distribution
+
+Page 4: Product Performance
+- Category breakdown
+- Inventory status
+- Profitability analysis
+- Top/bottom performers
+```
+
+**4. Interactivity Requirements**
+```
+Filters:
+- Date range (with quick filters: MTD, QTD, YTD)
+- Region multi-select
+- Product category
+- Customer segment
+
+Actions:
+- Click region → filter entire report
+- Hover → show detailed tooltip
+- Drill down: Region → State → City
+- Drill through: Product → Product details page
+```
+
+**5. Advanced Features**
+```
+Implement:
+- Dynamic titles based on filters
+- Conditional formatting (rules-based)
+- Reference lines (target, average, benchmark)
+- Trend indicators (↑ ↓ with % change)
+- Alert icons for metrics below threshold
+- What-if analysis (parameter for target adjustment)
+- Forecast with confidence intervals
+```
+
+**6. Mobile Version**
+```
+Create mobile-optimized layout:
+- Single column
+- Larger touch targets
+- Simplified visuals
+- Priority metrics only
+- Works on phone/tablet
+```
+
+**Deliverable:**
+- Complete Tableau or Power BI workbook
+- Published to BI platform
+- User guide (1-page)
+- Video walkthrough (5 min)
+- Executive presentation deck
+
+**Time:** 10-12 hours  
+**Success Criteria:**
+- ✅ Professional, polished appearance
+- ✅ Loads in <5 seconds
+- ✅ All metrics accurate
+- ✅ Mobile-friendly
+- ✅ Stakeholder approved
+
+---
+
+### Visualization Resources
+
+**Tools to Practice:**
+- Tableau Public (free)
+- Power BI Desktop (free)
+- Google Data Studio (free)
+- Looker Studio (free)
+
+**Sample Datasets:**
+- Superstore Sales (Tableau sample)
+- AdventureWorks (Microsoft sample)
+- Kaggle datasets (retail, finance, healthcare)
+
+**Learning Resources:**
+- Tableau Public Gallery (inspiration)
+- Power BI Community
+- Information is Beautiful (design inspiration)
+- FlowingData blog
+
+**Color Tools:**
+- ColorBrewer (accessible palettes)
+- Adobe Color (palette generator)
+- Viz Palette (visualization-specific)
+
+**Success Criteria for Unit 4:**
+- ✅ Build professional Tableau dashboards
+- ✅ Create Power BI reports with DAX
+- ✅ Apply visualization best practices
+- ✅ Tell compelling stories with data
+- ✅ Portfolio-ready BI projects
+
 """
         )
     elif unit_number == 5:
@@ -2913,6 +7678,1321 @@ print("Analysis complete! Check sales_analysis.xlsx")
 **Payback:** 4-8 weeks  
 
 **After that? Free time every week forever.**
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🔬 HANDS-ON LABS - Unit 5: Python for Analysts")
+        st.markdown(
+            """**Practical exercises to master Python for data analysis**
+
+### LAB 1: Python & pandas Basics
+
+**Objective:** Get comfortable with Python and pandas fundamentals
+
+**Setup:**
+```python
+# Install required libraries
+pip install pandas numpy matplotlib seaborn jupyter
+
+# Start Jupyter Notebook
+jupyter notebook
+```
+
+**Challenge 1: Load and Explore Data**
+```python
+import pandas as pd
+import numpy as np
+
+# Load CSV data
+df = pd.read_csv('sales_data.csv')
+
+# Basic exploration
+print(df.head())  # First 5 rows
+print(df.info())  # Data types and nulls
+print(df.describe())  # Summary statistics
+print(df.shape)  # Rows and columns
+
+# Check for missing values
+print(df.isnull().sum())
+
+# Unique values
+print(df['region'].unique())
+print(df['product_category'].value_counts())
+```
+
+**Challenge 2: Data Selection**
+```python
+# Select columns
+revenue_df = df[['date', 'revenue', 'profit']]
+
+# Filter rows
+uk_sales = df[df['country'] == 'UK']
+high_value = df[df['revenue'] > 1000]
+
+# Multiple conditions
+uk_high_value = df[(df['country'] == 'UK') & (df['revenue'] > 1000)]
+
+# Filter by list
+electronics = df[df['category'].isin(['Electronics', 'Computing'])]
+
+# String operations
+gmail_customers = df[df['email'].str.contains('@gmail.com')]
+```
+
+**Challenge 3: Data Manipulation**
+```python
+# Add new columns
+df['profit_margin'] = df['profit'] / df['revenue']
+df['year'] = pd.to_datetime(df['date']).dt.year
+df['month'] = pd.to_datetime(df['date']).dt.month
+
+# Sort data
+df_sorted = df.sort_values('revenue', ascending=False)
+
+# Drop columns
+df_clean = df.drop(['old_column'], axis=1)
+
+# Rename columns
+df = df.rename(columns={'old_name': 'new_name'})
+
+# Reset index
+df = df.reset_index(drop=True)
+```
+
+**Challenge 4: Grouping and Aggregation**
+```python
+# Group by single column
+revenue_by_region = df.groupby('region')['revenue'].sum()
+
+# Group by multiple columns
+monthly_regional = df.groupby(['region', 'month'])['revenue'].sum()
+
+# Multiple aggregations
+summary = df.groupby('region').agg({
+    'revenue': ['sum', 'mean', 'count'],
+    'profit': ['sum', 'mean'],
+    'order_id': 'count'
+})
+
+# Custom aggregations
+def revenue_per_order(x):
+    return x['revenue'].sum() / x['order_id'].nunique()
+
+df.groupby('region').apply(revenue_per_order)
+```
+
+**Success Criteria:**
+- ✅ Load and explore data with pandas
+- ✅ Filter and select data effectively
+- ✅ Create calculated columns
+- ✅ Group and aggregate data
+
+**Time:** 3-4 hours
+
+---
+
+### LAB 2: Data Cleaning with pandas
+
+**Objective:** Clean messy real-world data
+
+**Challenge 1: Handle Missing Values**
+```python
+# Identify missing values
+print(df.isnull().sum())
+print(df.isnull().sum() / len(df) * 100)  # Percentage
+
+# Drop rows with any nulls
+df_clean = df.dropna()
+
+# Drop rows where specific column is null
+df_clean = df.dropna(subset=['revenue'])
+
+# Fill nulls with value
+df['revenue'] = df['revenue'].fillna(0)
+
+# Fill with mean/median
+df['revenue'] = df['revenue'].fillna(df['revenue'].mean())
+
+# Forward fill (use previous value)
+df['revenue'] = df['revenue'].fillna(method='ffill')
+
+# Fill by group
+df['revenue'] = df.groupby('region')['revenue'].transform(lambda x: x.fillna(x.mean()))
+```
+
+**Challenge 2: Remove Duplicates**
+```python
+# Find duplicates
+print(df.duplicated().sum())
+
+# See duplicate rows
+duplicates = df[df.duplicated(keep=False)]
+
+# Remove duplicates
+df_clean = df.drop_duplicates()
+
+# Remove based on specific columns
+df_clean = df.drop_duplicates(subset=['customer_id', 'date'])
+
+# Keep last occurrence
+df_clean = df.drop_duplicates(keep='last')
+```
+
+**Challenge 3: Data Type Conversion**
+```python
+# Convert to datetime
+df['date'] = pd.to_datetime(df['date'])
+
+# Handle errors
+df['date'] = pd.to_datetime(df['date'], errors='coerce')
+
+# Convert to numeric
+df['revenue'] = pd.to_numeric(df['revenue'], errors='coerce')
+
+# Convert to category (saves memory)
+df['region'] = df['region'].astype('category')
+
+# Convert string to boolean
+df['is_active'] = df['status'].map({'active': True, 'inactive': False})
+```
+
+**Challenge 4: String Cleaning**
+```python
+# Remove whitespace
+df['product'] = df['product'].str.strip()
+
+# Convert case
+df['email'] = df['email'].str.lower()
+df['name'] = df['name'].str.title()
+
+# Replace values
+df['region'] = df['region'].str.replace('North East', 'Northeast')
+
+# Extract patterns
+df['domain'] = df['email'].str.extract(r'@(.+)$')
+df['area_code'] = df['phone'].str.extract(r'(\d{3})')
+
+# Split columns
+df[['first_name', 'last_name']] = df['name'].str.split(' ', n=1, expand=True)
+```
+
+**Challenge 5: Outlier Detection**
+```python
+# Z-score method
+from scipy import stats
+z_scores = np.abs(stats.zscore(df['revenue']))
+df_no_outliers = df[z_scores < 3]
+
+# IQR method
+Q1 = df['revenue'].quantile(0.25)
+Q3 = df['revenue'].quantile(0.75)
+IQR = Q3 - Q1
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+df_no_outliers = df[(df['revenue'] >= lower_bound) & (df['revenue'] <= upper_bound)]
+
+# Percentile method
+lower = df['revenue'].quantile(0.01)
+upper = df['revenue'].quantile(0.99)
+df_no_outliers = df[(df['revenue'] >= lower) & (df['revenue'] <= upper)]
+```
+
+**Deliverable:**
+- Cleaned dataset
+- Data quality report
+- Cleaning script
+
+**Time:** 3-4 hours
+
+---
+
+### LAB 3: Data Analysis with pandas
+
+**Objective:** Perform comprehensive analysis
+
+**Challenge 1: Time Series Analysis**
+```python
+# Set date as index
+df = df.set_index('date')
+
+# Resample to monthly
+monthly = df.resample('M').agg({
+    'revenue': 'sum',
+    'orders': 'count',
+    'profit': 'sum'
+})
+
+# Rolling window
+df['revenue_7day_avg'] = df['revenue'].rolling(window=7).mean()
+df['revenue_30day_sum'] = df['revenue'].rolling(window=30).sum()
+
+# Percent change
+df['revenue_pct_change'] = df['revenue'].pct_change()
+df['revenue_yoy'] = df['revenue'].pct_change(periods=365)
+
+# Cumulative sum
+df['cumulative_revenue'] = df['revenue'].cumsum()
+```
+
+**Challenge 2: Pivot Tables**
+```python
+# Simple pivot
+pivot = pd.pivot_table(
+    df,
+    values='revenue',
+    index='region',
+    columns='month',
+    aggfunc='sum'
+)
+
+# Multiple aggregations
+pivot_multi = pd.pivot_table(
+    df,
+    values=['revenue', 'profit'],
+    index='region',
+    columns='product_category',
+    aggfunc={'revenue': 'sum', 'profit': 'mean'}
+)
+
+# Add margins (totals)
+pivot = pd.pivot_table(
+    df,
+    values='revenue',
+    index='region',
+    columns='month',
+    aggfunc='sum',
+    margins=True
+)
+```
+
+**Challenge 3: Merging DataFrames**
+```python
+# Inner join
+merged = pd.merge(
+    orders_df,
+    customers_df,
+    on='customer_id',
+    how='inner'
+)
+
+# Left join
+merged = pd.merge(
+    orders_df,
+    customers_df,
+    on='customer_id',
+    how='left'
+)
+
+# Multiple keys
+merged = pd.merge(
+    df1,
+    df2,
+    left_on=['customer_id', 'date'],
+    right_on=['cust_id', 'order_date'],
+    how='inner'
+)
+
+# Concatenate vertically
+combined = pd.concat([df1, df2, df3], ignore_index=True)
+```
+
+**Challenge 4: Advanced Calculations**
+```python
+# Rank within groups
+df['rank'] = df.groupby('region')['revenue'].rank(ascending=False)
+
+# Cumulative sum within groups
+df['cumsum'] = df.groupby('customer_id')['revenue'].cumsum()
+
+# Shift for previous values
+df['prev_revenue'] = df.groupby('customer_id')['revenue'].shift(1)
+df['next_revenue'] = df.groupby('customer_id')['revenue'].shift(-1)
+
+# Calculate differences
+df['revenue_change'] = df['revenue'] - df['prev_revenue']
+
+# Window functions
+df['avg_3_orders'] = df.groupby('customer_id')['revenue'].transform(
+    lambda x: x.rolling(window=3, min_periods=1).mean()
+)
+```
+
+**Challenge 5: Customer Cohort Analysis**
+```python
+# Identify cohorts
+df['cohort'] = df.groupby('customer_id')['date'].transform('min')
+df['cohort_month'] = df['cohort'].dt.to_period('M')
+
+# Calculate periods
+df['order_period'] = df['date'].dt.to_period('M')
+df['cohort_index'] = (df['order_period'] - df['cohort_month']).apply(lambda x: x.n)
+
+# Build cohort table
+cohort_data = df.groupby(['cohort_month', 'cohort_index'])['customer_id'].nunique().reset_index()
+cohort_table = cohort_data.pivot(index='cohort_month', columns='cohort_index', values='customer_id')
+
+# Calculate retention
+cohort_size = cohort_table.iloc[:, 0]
+retention = cohort_table.divide(cohort_size, axis=0) * 100
+
+print(retention)
+```
+
+**Deliverable:**
+- Analysis notebook
+- Summary statistics
+- Insights document
+
+**Time:** 4-5 hours
+
+---
+
+### LAB 4: Visualization with Python
+
+**Objective:** Create publication-quality visualizations
+
+**Challenge 1: matplotlib Basics**
+```python
+import matplotlib.pyplot as plt
+
+# Line chart
+plt.figure(figsize=(12, 6))
+plt.plot(df['date'], df['revenue'], marker='o')
+plt.title('Daily Revenue Trend', fontsize=16)
+plt.xlabel('Date')
+plt.ylabel('Revenue (£)')
+plt.grid(alpha=0.3)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig('revenue_trend.png', dpi=300)
+plt.show()
+
+# Bar chart
+top_products = df.groupby('product')['revenue'].sum().sort_values(ascending=False).head(10)
+plt.figure(figsize=(10, 6))
+top_products.plot(kind='barh')
+plt.title('Top 10 Products by Revenue')
+plt.xlabel('Revenue (£)')
+plt.tight_layout()
+plt.show()
+
+# Histogram
+plt.figure(figsize=(10, 6))
+plt.hist(df['revenue'], bins=50, edgecolor='black')
+plt.title('Revenue Distribution')
+plt.xlabel('Revenue (£)')
+plt.ylabel('Frequency')
+plt.show()
+```
+
+**Challenge 2: seaborn for Advanced Plots**
+```python
+import seaborn as sns
+
+# Set style
+sns.set_style('whitegrid')
+sns.set_palette('husl')
+
+# Box plot
+plt.figure(figsize=(12, 6))
+sns.boxplot(data=df, x='region', y='revenue')
+plt.title('Revenue Distribution by Region')
+plt.xticks(rotation=45)
+plt.show()
+
+# Violin plot
+plt.figure(figsize=(12, 6))
+sns.violinplot(data=df, x='product_category', y='revenue')
+plt.title('Revenue Distribution by Category')
+plt.xticks(rotation=45)
+plt.show()
+
+# Heatmap
+pivot = df.pivot_table(values='revenue', index='region', columns='month', aggfunc='sum')
+plt.figure(figsize=(12, 8))
+sns.heatmap(pivot, annot=True, fmt='.0f', cmap='YlGnBu')
+plt.title('Revenue Heatmap: Region vs Month')
+plt.show()
+
+# Scatter plot with regression
+plt.figure(figsize=(10, 6))
+sns.regplot(data=df, x='marketing_spend', y='revenue')
+plt.title('Marketing Spend vs Revenue')
+plt.show()
+
+# Pair plot
+sns.pairplot(df[['revenue', 'profit', 'orders', 'customers']])
+plt.show()
+```
+
+**Challenge 3: Multiple Subplots**
+```python
+fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+
+# Plot 1: Revenue trend
+axes[0, 0].plot(monthly_df.index, monthly_df['revenue'])
+axes[0, 0].set_title('Monthly Revenue')
+axes[0, 0].set_ylabel('Revenue (£)')
+
+# Plot 2: Orders by region
+region_orders = df.groupby('region')['orders'].sum()
+axes[0, 1].bar(region_orders.index, region_orders.values)
+axes[0, 1].set_title('Orders by Region')
+axes[0, 1].tick_params(axis='x', rotation=45)
+
+# Plot 3: Profit margin distribution
+axes[1, 0].hist(df['profit_margin'], bins=30, edgecolor='black')
+axes[1, 0].set_title('Profit Margin Distribution')
+axes[1, 0].set_xlabel('Profit Margin')
+
+# Plot 4: Top products
+top_10 = df.groupby('product')['revenue'].sum().sort_values(ascending=False).head(10)
+axes[1, 1].barh(top_10.index, top_10.values)
+axes[1, 1].set_title('Top 10 Products')
+
+plt.tight_layout()
+plt.savefig('dashboard.png', dpi=300)
+plt.show()
+```
+
+**Challenge 4: Interactive Visualizations**
+```python
+import plotly.express as px
+
+# Interactive line chart
+fig = px.line(df, x='date', y='revenue', 
+              title='Revenue Trend (Interactive)',
+              hover_data=['orders', 'customers'])
+fig.show()
+
+# Interactive scatter
+fig = px.scatter(df, x='marketing_spend', y='revenue', 
+                 color='region', size='orders',
+                 hover_data=['product_category'],
+                 title='Marketing ROI Analysis')
+fig.show()
+
+# Sunburst chart
+fig = px.sunburst(df, path=['region', 'product_category', 'product'], 
+                  values='revenue',
+                  title='Revenue Hierarchy')
+fig.show()
+```
+
+**Deliverable:**
+- Visualization portfolio (10+ charts)
+- Style guide
+- Reusable plotting functions
+
+**Time:** 4-5 hours
+
+---
+
+### LAB 5: Automated Reporting
+
+**Objective:** Build automated analysis pipeline
+
+**Challenge 1: Report Generator Function**
+```python
+def generate_weekly_report(data_file, output_file):
+    \"\"\"
+    Generate automated weekly sales report
+    \"\"\"
+    # Load data
+    df = pd.read_csv(data_file)
+    df['date'] = pd.to_datetime(df['date'])
+    
+    # Filter to last 7 days
+    end_date = df['date'].max()
+    start_date = end_date - pd.Timedelta(days=7)
+    week_df = df[(df['date'] >= start_date) & (df['date'] <= end_date)]
+    
+    # Calculate metrics
+    total_revenue = week_df['revenue'].sum()
+    total_orders = len(week_df)
+    avg_order_value = total_revenue / total_orders
+    
+    # Compare to previous week
+    prev_start = start_date - pd.Timedelta(days=7)
+    prev_end = start_date - pd.Timedelta(days=1)
+    prev_df = df[(df['date'] >= prev_start) & (df['date'] <= prev_end)]
+    prev_revenue = prev_df['revenue'].sum()
+    wow_change = ((total_revenue - prev_revenue) / prev_revenue) * 100
+    
+    # Generate report
+    report = f\"\"\"
+    WEEKLY SALES REPORT
+    Week ending: {end_date.strftime('%Y-%m-%d')}
+    
+    KEY METRICS:
+    - Total Revenue: £{total_revenue:,.2f}
+    - Total Orders: {total_orders:,}
+    - Average Order Value: £{avg_order_value:.2f}
+    - Week-over-Week Change: {wow_change:+.1f}%
+    
+    TOP PERFORMING:
+    {week_df.groupby('region')['revenue'].sum().sort_values(ascending=False).head(5).to_string()}
+    \"\"\"
+    
+    # Save report
+    with open(output_file, 'w') as f:
+        f.write(report)
+    
+    print(f"Report generated: {output_file}")
+
+# Run it
+generate_weekly_report('sales_data.csv', 'weekly_report.txt')
+```
+
+**Challenge 2: Excel Export with Formatting**
+```python
+def export_to_excel_with_charts(df, output_file):
+    \"\"\"
+    Export data to Excel with formatting and charts
+    \"\"\"
+    from openpyxl import load_workbook
+    from openpyxl.chart import BarChart, Reference
+    
+    # Create Excel writer
+    writer = pd.ExcelWriter(output_file, engine='xlsxwriter')
+    workbook = writer.book
+    
+    # Write summary sheet
+    summary = df.groupby('region').agg({
+        'revenue': 'sum',
+        'orders': 'count',
+        'profit': 'sum'
+    }).reset_index()
+    summary.to_excel(writer, sheet_name='Summary', index=False)
+    
+    # Write detail sheet
+    df.to_excel(writer, sheet_name='Detail', index=False)
+    
+    # Format summary sheet
+    worksheet = writer.sheets['Summary']
+    format_currency = workbook.add_format({'num_format': '£#,##0.00'})
+    format_header = workbook.add_format({'bold': True, 'bg_color': '#4472C4', 'font_color': 'white'})
+    
+    # Apply formatting
+    worksheet.set_column('B:D', 15, format_currency)
+    for col_num, value in enumerate(summary.columns.values):
+        worksheet.write(0, col_num, value, format_header)
+    
+    writer.close()
+    print(f"Excel report generated: {output_file}")
+
+# Run it
+export_to_excel_with_charts(df, 'sales_report.xlsx')
+```
+
+**Challenge 3: Scheduled Automation**
+```python
+# Save as script: daily_report.py
+import pandas as pd
+from datetime import datetime
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+
+def run_daily_report():
+    # Load fresh data
+    df = pd.read_csv('sales_data.csv')
+    
+    # Generate report
+    generate_weekly_report(df, f'report_{datetime.now().strftime("%Y%m%d")}.txt')
+    
+    # Send email (configure SMTP settings)
+    sender = 'analyst@company.com'
+    recipients = ['manager@company.com', 'team@company.com']
+    
+    msg = MIMEMultipart()
+    msg['From'] = sender
+    msg['To'] = ', '.join(recipients)
+    msg['Subject'] = f'Daily Sales Report - {datetime.now().strftime("%Y-%m-%d")}'
+    
+    body = "Please find attached today's sales report."
+    msg.attach(MIMEText(body, 'plain'))
+    
+    # Attach file
+    filename = f'report_{datetime.now().strftime("%Y%m%d")}.txt'
+    with open(filename, 'rb') as f:
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload(f.read())
+    encoders.encode_base64(part)
+    part.add_header('Content-Disposition', f'attachment; filename={filename}')
+    msg.attach(part)
+    
+    # Send (configure your SMTP server)
+    # server = smtplib.SMTP('smtp.gmail.com', 587)
+    # server.send_message(msg)
+    
+    print("Report sent!")
+
+if __name__ == '__main__':
+    run_daily_report()
+
+# Schedule with Windows Task Scheduler or cron
+# Windows: schtasks /create /tn "Daily Report" /tr "python daily_report.py" /sc daily /st 09:00
+# Linux: Add to crontab: 0 9 * * * python /path/to/daily_report.py
+```
+
+**Deliverable:**
+- Automated report script
+- Scheduling documentation
+- Email template
+
+**Time:** 4-5 hours
+
+---
+
+### MINI PROJECT 6: Complete Customer Analytics with Python
+
+**Objective:** Build end-to-end customer analytics pipeline
+
+**Requirements:**
+
+**1. Data Pipeline**
+```python
+# Load multiple data sources
+orders = pd.read_csv('orders.csv')
+customers = pd.read_csv('customers.csv')
+products = pd.read_csv('products.csv')
+
+# Clean and merge
+orders['order_date'] = pd.to_datetime(orders['order_date'])
+full_data = orders.merge(customers, on='customer_id').merge(products, on='product_id')
+
+# Calculate metrics
+full_data['profit_margin'] = full_data['profit'] / full_data['revenue']
+```
+
+**2. RFM Analysis**
+```python
+# Calculate RFM
+rfm = full_data.groupby('customer_id').agg({
+    'order_date': lambda x: (pd.Timestamp.now() - x.max()).days,
+    'order_id': 'count',
+    'revenue': 'sum'
+}).rename(columns={
+    'order_date': 'recency',
+    'order_id': 'frequency',
+    'revenue': 'monetary'
+})
+
+# Score customers
+rfm['r_score'] = pd.qcut(rfm['recency'], 5, labels=[5,4,3,2,1])
+rfm['f_score'] = pd.qcut(rfm['frequency'].rank(method='first'), 5, labels=[1,2,3,4,5])
+rfm['m_score'] = pd.qcut(rfm['monetary'], 5, labels=[1,2,3,4,5])
+
+# Segment
+rfm['segment'] = rfm['r_score'].astype(str) + rfm['f_score'].astype(str) + rfm['m_score'].astype(str)
+```
+
+**3. Cohort Analysis**
+```python
+# Create cohort table
+cohort_analysis_code_here
+```
+
+**4. Visualizations**
+```python
+# Create dashboard with 6+ charts
+```
+
+**5. Automated Report**
+```python
+# Generate PDF report with insights
+```
+
+**Deliverable:**
+- Complete Jupyter notebook
+- Automated report script
+- Executive presentation
+- Documentation
+
+**Time:** 10-12 hours
+
+**Success Criteria for Unit 5:**
+- ✅ Proficient in pandas for analysis
+- ✅ Clean and transform data programmatically
+- ✅ Create publication-quality visualizations
+- ✅ Build automated reporting pipelines
+- ✅ Portfolio-ready Python projects
+
+---
+
+## 📝 50+ PYTHON/PANDAS PRACTICE PROBLEMS - Unit 5
+
+### Data Loading & Exploration (10 Problems)
+
+**Problem 1: Load CSV with custom parameters**
+```python
+import pandas as pd
+
+# Basic load
+df = pd.read_csv('sales_data.csv')
+
+# With parameters
+df = pd.read_csv('sales_data.csv',
+                 sep=',',
+                 encoding='utf-8',
+                 parse_dates=['order_date'],
+                 thousands=',',
+                 na_values=['NA', 'missing', ''])
+
+print(df.head())
+print(df.info())
+```
+
+**Problem 2: Explore dataset structure**
+```python
+# Shape and basic info
+print(f"Rows: {df.shape[0]}, Columns: {df.shape[1]}")
+print(df.dtypes)
+print(df.describe())
+
+# Check for nulls
+print(df.isnull().sum())
+print(f"Total nulls: {df.isnull().sum().sum()}")
+
+# Memory usage
+print(df.memory_usage(deep=True))
+```
+
+**Problem 3: Preview data intelligently**
+```python
+# First and last rows
+print(df.head(10))
+print(df.tail(10))
+
+# Random sample
+print(df.sample(5))
+
+# Specific columns
+print(df[['customer_name', 'order_total']].head())
+```
+
+**Problem 4: Get unique values and counts**
+```python
+# Unique values
+print(df['region'].unique())
+print(f"Unique regions: {df['region'].nunique()}")
+
+# Value counts
+print(df['product_category'].value_counts())
+print(df['product_category'].value_counts(normalize=True))  # Percentages
+```
+
+**Problem 5: Quick statistical summary**
+```python
+# Numeric columns only
+print(df.describe())
+
+# Include all columns
+print(df.describe(include='all'))
+
+# Specific columns
+print(df[['revenue', 'profit']].describe())
+
+# Custom percentiles
+print(df['revenue'].quantile([0.25, 0.5, 0.75, 0.95, 0.99]))
+```
+
+**Problems 6-10: More exploration**
+- Check for duplicate rows
+- Identify column data types
+- Find columns with missing values
+- Get correlation matrix
+- Profile data with pandas-profiling
+
+---
+
+### Data Selection & Filtering (15 Problems)
+
+**Problem 11: Select specific columns**
+```python
+# Single column (Series)
+revenue = df['revenue']
+
+# Multiple columns (DataFrame)
+subset = df[['customer_name', 'revenue', 'profit']]
+
+# Column range
+cols = df.loc[:, 'customer_name':'order_date']
+```
+
+**Problem 12: Filter rows by condition**
+```python
+# Single condition
+high_value = df[df['revenue'] > 1000]
+
+# Multiple conditions
+filtered = df[(df['revenue'] > 1000) & (df['region'] == 'North')]
+
+# OR condition
+multi_region = df[(df['region'] == 'North') | (df['region'] == 'South')]
+```
+
+**Problem 13: Filter by list of values**
+```python
+# Using isin()
+selected_products = df[df['product'].isin(['Product A', 'Product B', 'Product C'])]
+
+# NOT in list
+excluded = df[~df['region'].isin(['North', 'South'])]
+```
+
+**Problem 14: String filtering**
+```python
+# Contains
+gmail_users = df[df['email'].str.contains('@gmail.com', na=False)]
+
+# Starts with
+a_names = df[df['customer_name'].str.startswith('A')]
+
+# Ends with
+uk_postcodes = df[df['postcode'].str.endswith('UK')]
+
+# Case insensitive
+london = df[df['city'].str.lower() == 'london']
+```
+
+**Problem 15: Date filtering**
+```python
+# After specific date
+recent = df[df['order_date'] > '2024-01-01']
+
+# Between dates
+q1 = df[(df['order_date'] >= '2024-01-01') & (df['order_date'] <= '2024-03-31')]
+
+# Current year
+current_year = df[df['order_date'].dt.year == 2024]
+
+# Last 30 days
+from datetime import datetime, timedelta
+last_30 = df[df['order_date'] > (datetime.now() - timedelta(days=30))]
+```
+
+**Problem 16: loc vs iloc**
+```python
+# loc - label based
+specific_rows = df.loc[0:5, ['customer_name', 'revenue']]
+
+# iloc - integer based
+first_five = df.iloc[0:5, 0:3]
+
+# Boolean indexing with loc
+high_revenue = df.loc[df['revenue'] > 1000, ['customer_name', 'revenue']]
+```
+
+**Problem 17: Query method**
+```python
+# More readable filtering
+filtered = df.query('revenue > 1000 and region == "North"')
+
+# With variables
+min_revenue = 1000
+filtered = df.query('revenue > @min_revenue')
+```
+
+**Problem 18: Top N and Bottom N**
+```python
+# Top 10 by revenue
+top_10 = df.nlargest(10, 'revenue')
+
+# Bottom 10
+bottom_10 = df.nsmallest(10, 'revenue')
+
+# Top 5 per group
+top_per_region = df.groupby('region').apply(lambda x: x.nlargest(5, 'revenue'))
+```
+
+**Problem 19: Sample rows**
+```python
+# Random sample
+sample = df.sample(n=100)
+
+# Random fraction
+sample_pct = df.sample(frac=0.1)  # 10%
+
+# Stratified sample
+stratified = df.groupby('region').apply(lambda x: x.sample(min(len(x), 10)))
+```
+
+**Problem 20: Complex filtering**
+```python
+# Multiple conditions with query
+result = df.query('(revenue > 1000 and region == "North") or (revenue > 2000 and region == "South")')
+
+# Using eval
+df_filtered = df[df.eval('revenue > profit * 2')]
+```
+
+**Problems 21-25: More filtering**
+- Filter using regex patterns
+- Find rows with nulls in specific columns
+- Select rows by index labels
+- Filter datetime by month/quarter
+- Complex multi-column conditions
+
+---
+
+### Data Cleaning & Transformation (20 Problems)
+
+**Problem 26: Handle missing values**
+```python
+# Drop rows with any nulls
+df_clean = df.dropna()
+
+# Drop if specific column is null
+df_clean = df.dropna(subset=['email'])
+
+# Fill with value
+df['revenue'].fillna(0, inplace=True)
+
+# Fill with mean/median
+df['revenue'].fillna(df['revenue'].mean(), inplace=True)
+
+# Forward fill
+df['region'].fillna(method='ffill', inplace=True)
+
+# Fill by group
+df['revenue'] = df.groupby('region')['revenue'].transform(lambda x: x.fillna(x.mean()))
+```
+
+**Problem 27: Remove duplicates**
+```python
+# All columns
+df_unique = df.drop_duplicates()
+
+# Specific columns
+df_unique = df.drop_duplicates(subset=['customer_id'])
+
+# Keep last occurrence
+df_unique = df.drop_duplicates(keep='last')
+
+# Mark duplicates
+df['is_duplicate'] = df.duplicated()
+```
+
+**Problem 28: Data type conversion**
+```python
+# To datetime
+df['order_date'] = pd.to_datetime(df['order_date'])
+
+# To numeric
+df['revenue'] = pd.to_numeric(df['revenue'], errors='coerce')
+
+# To category (saves memory)
+df['region'] = df['region'].astype('category')
+
+# To string
+df['customer_id'] = df['customer_id'].astype(str)
+```
+
+**Problem 29: String operations**
+```python
+# Lowercase
+df['email'] = df['email'].str.lower()
+
+# Remove whitespace
+df['name'] = df['name'].str.strip()
+
+# Replace
+df['phone'] = df['phone'].str.replace('-', '')
+
+# Extract with regex
+df['domain'] = df['email'].str.extract(r'@(.+)$')
+
+# Split
+df[['first_name', 'last_name']] = df['name'].str.split(' ', n=1, expand=True)
+```
+
+**Problem 30: Create calculated columns**
+```python
+# Simple calculation
+df['profit_margin'] = df['profit'] / df['revenue']
+
+# Conditional column
+df['segment'] = df['revenue'].apply(lambda x: 'High' if x > 1000 else 'Low')
+
+# Using np.where
+import numpy as np
+df['segment'] = np.where(df['revenue'] > 1000, 'High', 'Low')
+
+# Using pd.cut for binning
+df['revenue_bin'] = pd.cut(df['revenue'], bins=[0, 500, 1000, 5000], labels=['Low', 'Medium', 'High'])
+```
+
+**Problem 31: Rename columns**
+```python
+# Dictionary mapping
+df = df.rename(columns={'old_name': 'new_name', 'old2': 'new2'})
+
+# Function
+df.columns = df.columns.str.lower().str.replace(' ', '_')
+
+# Prefix
+df = df.add_prefix('col_')
+
+# Suffix
+df = df.add_suffix('_value')
+```
+
+**Problem 32: Sort data**
+```python
+# Single column
+df_sorted = df.sort_values('revenue', ascending=False)
+
+# Multiple columns
+df_sorted = df.sort_values(['region', 'revenue'], ascending=[True, False])
+
+# By index
+df_sorted = df.sort_index()
+```
+
+**Problem 33: Reset and set index**
+```python
+# Reset index
+df = df.reset_index(drop=True)
+
+# Set column as index
+df = df.set_index('customer_id')
+
+# Multi-level index
+df = df.set_index(['region', 'customer_id'])
+```
+
+**Problem 34: Merge/concat DataFrames**
+```python
+# Vertical concatenation
+combined = pd.concat([df1, df2], ignore_index=True)
+
+# Horizontal
+combined = pd.concat([df1, df2], axis=1)
+
+# Inner join
+merged = pd.merge(df1, df2, on='customer_id', how='inner')
+
+# Left join
+merged = pd.merge(df1, df2, on='customer_id', how='left')
+
+# Multiple keys
+merged = pd.merge(df1, df2, left_on=['id', 'date'], right_on=['customer_id', 'order_date'])
+```
+
+**Problem 35: Apply custom functions**
+```python
+# Apply to column
+df['revenue_doubled'] = df['revenue'].apply(lambda x: x * 2)
+
+# Apply to DataFrame
+df['total'] = df.apply(lambda row: row['quantity'] * row['price'], axis=1)
+
+# Map values
+df['region_code'] = df['region'].map({'North': 'N', 'South': 'S', 'East': 'E', 'West': 'W'})
+```
+
+**Problems 36-45: More transformations**
+- Handle outliers (IQR method)
+- Normalize/standardize columns
+- Encode categorical variables
+- Pivot and unpivot data
+- Melt wide to long format
+- Extract datetime components
+- Rolling calculations
+- Cumulative sums
+- Rank values
+- Sample and resample time series
+
+---
+
+### Grouping & Aggregation (10 Problems)
+
+**Problem 46: Basic groupby**
+```python
+# Single aggregation
+revenue_by_region = df.groupby('region')['revenue'].sum()
+
+# Multiple aggregations
+summary = df.groupby('region').agg({
+    'revenue': ['sum', 'mean', 'count'],
+    'profit': ['sum', 'mean'],
+    'customer_id': 'nunique'
+})
+```
+
+**Problem 47: Custom aggregation functions**
+```python
+# Named aggregations
+summary = df.groupby('region').agg(
+    total_revenue=('revenue', 'sum'),
+    avg_revenue=('revenue', 'mean'),
+    unique_customers=('customer_id', 'nunique')
+)
+
+# Custom function
+def revenue_per_customer(x):
+    return x['revenue'].sum() / x['customer_id'].nunique()
+
+df.groupby('region').apply(revenue_per_customer)
+```
+
+**Problem 48: Transform for group calculations**
+```python
+# Add group mean to each row
+df['region_avg_revenue'] = df.groupby('region')['revenue'].transform('mean')
+
+# Rank within group
+df['rank_in_region'] = df.groupby('region')['revenue'].rank(ascending=False)
+
+# Percentage of group total
+df['pct_of_region'] = df.groupby('region')['revenue'].transform(lambda x: x / x.sum())
+```
+
+**Problem 49: Multiple groupby levels**
+```python
+# Two levels
+summary = df.groupby(['region', 'product'])['revenue'].sum()
+
+# With reset_index
+summary = df.groupby(['region', 'product']).agg({'revenue': 'sum'}).reset_index()
+```
+
+**Problem 50: Filter groups**
+```python
+# Keep groups with >10 records
+filtered = df.groupby('region').filter(lambda x: len(x) > 10)
+
+# Keep groups with total revenue > 10000
+filtered = df.groupby('region').filter(lambda x: x['revenue'].sum() > 10000)
+```
+
+**Problems 51-55: More aggregation**
+- Pivot tables with pandas
+- Cross-tabulation
+- Rolling window aggregations
+- Expanding calculations
+- Groupby with multiple functions per column
+
+---
+
+### Visualization (5 Problems)
+
+**Problem 56: Basic plots**
+```python
+import matplotlib.pyplot as plt
+
+# Line plot
+df.plot(x='date', y='revenue', kind='line', figsize=(12, 6))
+plt.title('Revenue Over Time')
+plt.show()
+
+# Bar chart
+df.groupby('region')['revenue'].sum().plot(kind='bar')
+plt.title('Revenue by Region')
+plt.show()
+
+# Histogram
+df['revenue'].plot(kind='hist', bins=50)
+plt.title('Revenue Distribution')
+plt.show()
+```
+
+**Problem 57: Advanced seaborn plots**
+```python
+import seaborn as sns
+
+# Box plot by category
+sns.boxplot(data=df, x='region', y='revenue')
+plt.title('Revenue Distribution by Region')
+plt.show()
+
+# Heatmap
+pivot = df.pivot_table(values='revenue', index='region', columns='month')
+sns.heatmap(pivot, annot=True, fmt='.0f', cmap='YlGnBu')
+plt.show()
+
+# Pair plot
+sns.pairplot(df[['revenue', 'profit', 'quantity']])
+plt.show()
+```
+
+**Problem 58: Multiple subplots**
+```python
+fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+
+# Plot 1
+df.plot(x='date', y='revenue', ax=axes[0, 0])
+axes[0, 0].set_title('Revenue Trend')
+
+# Plot 2
+df.groupby('region')['revenue'].sum().plot(kind='bar', ax=axes[0, 1])
+axes[0, 1].set_title('Revenue by Region')
+
+# Plot 3
+df['revenue'].plot(kind='hist', bins=30, ax=axes[1, 0])
+axes[1, 0].set_title('Revenue Distribution')
+
+# Plot 4
+df.plot(x='profit', y='revenue', kind='scatter', ax=axes[1, 1])
+axes[1, 1].set_title('Profit vs Revenue')
+
+plt.tight_layout()
+plt.show()
+```
+
+**Problem 59: Interactive plotly**
+```python
+import plotly.express as px
+
+# Interactive line
+fig = px.line(df, x='date', y='revenue', title='Revenue Over Time')
+fig.show()
+
+# Interactive scatter with hover
+fig = px.scatter(df, x='profit', y='revenue', color='region', 
+                 size='quantity', hover_data=['customer_name'])
+fig.show()
+```
+
+**Problem 60: Save plots**
+```python
+# Save matplotlib
+plt.figure(figsize=(12, 6))
+df.plot(x='date', y='revenue')
+plt.savefig('revenue_trend.png', dpi=300, bbox_inches='tight')
+
+# Save plotly
+fig = px.line(df, x='date', y='revenue')
+fig.write_html('revenue_trend.html')
+fig.write_image('revenue_trend.png')
+```
+
+---
+
+### Real-World Challenges
+
+**Challenge 1: Clean Messy Dataset**
+Given CSV with mixed date formats, missing values, duplicates, and inconsistent categories - clean it completely.
+
+**Challenge 2: Customer Segmentation**
+RFM analysis with automatic segment assignment and visualization.
+
+**Challenge 3: Time Series Analysis**
+Daily sales with trends, seasonality detection, and forecasting.
+
+**Challenge 4: Data Pipeline**
+Load multiple CSVs, merge, clean, analyze, and export results automatically.
+
+**Challenge 5: Automated Report**
+Generate PDF report with charts, tables, and insights from data.
+
+---
+
 """
         )
     elif unit_number == 6:
@@ -3605,6 +9685,727 @@ For each proposed metric, ask:
 **If yes to all 10, you have a GOOD metric.**
 """
         )
+
+        st.markdown("---")
+        st.markdown("## 🔬 HANDS-ON LABS - Unit 6: Metrics & A/B Testing")
+        st.markdown(
+            """**Practical exercises to master experimentation and metrics design**
+
+### LAB 1: Designing Good Metrics
+
+**Objective:** Learn to create actionable, measurable KPIs
+
+**Scenario:** You're the analyst at TechStartup SaaS company
+
+**Challenge 1: Identify Bad Metrics**
+```
+Fix these poorly designed metrics:
+
+BAD METRIC 1: "User happiness"
+Problems:
+- Not measurable (subjective)
+- No baseline
+- Can't track objectively
+
+GOOD VERSION:
+- Net Promoter Score (NPS): "On 0-10, how likely are you to recommend us?"
+- Target: NPS > 50
+- Measured: Monthly survey
+- Trackable trend
+
+BAD METRIC 2: "Website performance"
+Problems:
+- Too vague
+- Multiple interpretations
+- No action threshold
+
+GOOD VERSION:
+- Page Load Time: P95 < 2 seconds
+- Uptime: > 99.9%
+- Error Rate: < 0.1% of requests
+- Specific, measurable, actionable
+
+BAD METRIC 3: "Sales are growing"
+Problems:
+- No comparison baseline
+- Could be seasonal
+- No target
+
+GOOD VERSION:
+- MoM Revenue Growth: +15% vs last month
+- YoY Revenue Growth: +50% vs last year
+- Against Target: 95% of Q4 goal
+```
+
+**Challenge 2: SMART Metrics Framework**
+```
+Convert vague goals to SMART metrics:
+
+VAGUE: "Improve customer retention"
+
+SMART METRIC:
+- Specific: Monthly customer retention rate
+- Measurable: (Customers end of month / Customers start of month) * 100
+- Achievable: Increase from 85% to 90%
+- Relevant: Reduces churn cost, increases LTV
+- Time-bound: Achieve by end of Q2 2024
+
+MEASUREMENT PLAN:
+- Track: Monthly cohort retention
+- Report: First week of each month
+- Owner: Customer Success team
+- Action: If drops below 88%, investigate & intervene
+```
+
+**Challenge 3: Leading vs Lagging Indicators**
+```
+Identify which metrics predict future performance:
+
+LAGGING (Past results):
+- Monthly revenue (already happened)
+- Customer churn (already lost them)
+- Product bugs found in production (already shipped)
+
+LEADING (Future predictors):
+- Sales pipeline value (predicts future revenue)
+- Customer satisfaction scores (predicts churn)
+- Code coverage % (predicts bug rate)
+
+BUILD A DASHBOARD:
+Leading Indicators (Left) → Lagging Indicators (Right)
+
+Sales:
+- Pipeline value $2M → Next Quarter Revenue $1.5M
+- Lead response time 2hr → Conversion rate 15%
+
+Product:
+- Daily active users 10K → Monthly retention 85%
+- Feature adoption 60% → Customer satisfaction 4.2/5
+```
+
+**Challenge 4: North Star Metric**
+```
+Define your company's One Metric That Matters:
+
+COMPANY: Streaming Service (like Netflix)
+
+BRAINSTORM CANDIDATES:
+- Total subscribers? (Yes, but includes inactive)
+- Revenue? (Yes, but could game pricing)
+- Content hours? (No, doesn't indicate value)
+- Weekly active users? (Better - shows engagement)
+
+NORTH STAR METRIC:
+"Weekly Streaming Hours per Subscriber"
+
+Why this metric?
+✅ Measures actual product usage
+✅ Correlates with retention
+✅ Predictive of renewal
+✅ Captures product value
+✅ Actionable - can improve content
+✅ Simple to understand
+
+Supporting Metrics:
+- Content completion rate
+- Recommendation click-through
+- Search success rate
+- New content discovery
+```
+
+**Deliverable:**
+- Metrics design document
+- Dashboard mockup
+- Measurement plan
+
+**Time:** 3-4 hours
+
+---
+
+### LAB 2: A/B Test Design
+
+**Objective:** Design rigorous experiments
+
+**Scenario:** E-commerce company testing new checkout flow
+
+**Challenge 1: Formulate Hypothesis**
+```
+PROBLEM: Cart abandonment rate is 68%
+
+BAD HYPOTHESIS:
+"New checkout will be better"
+- Not specific
+- Not measurable
+- No prediction
+
+GOOD HYPOTHESIS:
+"Reducing checkout from 5 steps to 3 steps will decrease cart abandonment from 68% to 60% (12% relative improvement) because fewer steps reduces friction and cognitive load."
+
+INCLUDES:
+✅ Specific change (5 steps → 3 steps)
+✅ Predicted outcome (68% → 60%)
+✅ Magnitude (12% improvement)
+✅ Rationale (why we think this will work)
+```
+
+**Challenge 2: Define Success Metrics**
+```
+PRIMARY METRIC:
+- Cart abandonment rate
+- Target: < 60% (vs 68% current)
+- Statistical significance: 95% confidence
+- Minimum detectable effect: 5% relative change
+
+SECONDARY METRICS:
+- Checkout completion time (expect faster)
+- Revenue per session (expect higher)
+- Customer satisfaction (expect same or better)
+
+GUARDRAIL METRICS (Must NOT degrade):
+- Payment error rate (must stay < 0.5%)
+- Customer support contacts (must not increase)
+- Return rate (must stay < 5%)
+```
+
+**Challenge 3: Sample Size Calculation**
+```python
+# Calculate required sample size
+from scipy import stats
+import numpy as np
+
+def calculate_sample_size(baseline_rate, min_effect, alpha=0.05, power=0.80):
+    """
+    Calculate sample size needed for A/B test
+    
+    baseline_rate: Current conversion rate (e.g., 0.32 for 32%)
+    min_effect: Minimum detectable effect (e.g., 0.05 for 5% relative)
+    alpha: Significance level (default 0.05 = 95% confidence)
+    power: Statistical power (default 0.80 = 80%)
+    """
+    # Expected rate in treatment
+    expected_rate = baseline_rate * (1 + min_effect)
+    
+    # Effect size (Cohen's h)
+    effect_size = 2 * (np.arcsin(np.sqrt(expected_rate)) - np.arcsin(np.sqrt(baseline_rate)))
+    
+    # Z-scores
+    z_alpha = stats.norm.ppf(1 - alpha/2)
+    z_beta = stats.norm.ppf(power)
+    
+    # Sample size per group
+    n = ((z_alpha + z_beta) ** 2) / (effect_size ** 2)
+    
+    return int(np.ceil(n))
+
+# Example: Cart abandonment test
+baseline = 0.68  # 68% abandonment
+min_effect = 0.12  # 12% relative improvement
+target = baseline * (1 - min_effect)  # 59.84%
+
+sample_size_per_group = calculate_sample_size(baseline, min_effect)
+total_sample = sample_size_per_group * 2
+
+print(f"Baseline abandonment: {baseline*100:.1f}%")
+print(f"Target abandonment: {target*100:.1f}%")
+print(f"Sample size needed per group: {sample_size_per_group:,}")
+print(f"Total sample size: {total_sample:,}")
+
+# With 10,000 daily visitors and 60% reaching checkout:
+daily_test_participants = 10000 * 0.60
+days_needed = total_sample / daily_test_participants
+print(f"Days needed to run test: {days_needed:.1f}")
+```
+
+**Challenge 4: Randomization Plan**
+```
+RANDOMIZATION UNIT: User session
+
+ASSIGNMENT LOGIC:
+1. User reaches checkout page
+2. Hash user_id with experiment seed
+3. If hash % 100 < 50: Control (old 5-step)
+4. If hash % 100 >= 50: Treatment (new 3-step)
+
+ENSURE:
+✅ Consistent assignment (same user always gets same variant)
+✅ 50/50 split
+✅ Independent of time/device
+✅ No contamination between groups
+
+IMPLEMENTATION:
+```python
+import hashlib
+
+def assign_variant(user_id, experiment_name='checkout_test'):
+    """
+    Deterministically assign user to test variant
+    """
+    # Create hash
+    hash_input = f"{user_id}_{experiment_name}".encode()
+    hash_value = int(hashlib.md5(hash_input).hexdigest(), 16)
+    
+    # Assign to variant
+    if hash_value % 100 < 50:
+        return 'control'
+    else:
+        return 'treatment'
+
+# Test it
+for user_id in range(1, 11):
+    variant = assign_variant(user_id)
+    print(f"User {user_id}: {variant}")
+```
+```
+
+**Challenge 5: Test Duration Calculation**
+```
+FACTORS TO CONSIDER:
+
+1. Sample size needed: 4,200 per group = 8,400 total
+2. Daily traffic: 6,000 checkout attempts/day
+3. Minimum duration: 8,400 / 6,000 = 1.4 days
+
+BUT ALSO CONSIDER:
+- Weekly seasonality (run full weeks)
+- Day-of-week effects (Mon-Sun coverage)
+- Event calendar (avoid holidays)
+- Business cycles (paydays, month-end)
+
+DECISION: Run for 2 full weeks
+- Ensures 2x required sample size
+- Covers all days of week twice
+- Reduces variance from time effects
+- Confidence in results
+
+STOPPING RULES:
+DO NOT STOP EARLY even if significant!
+- Fixed horizon: 2 weeks exactly
+- Exception: Critical bug/issue only
+- Document any early termination
+```
+
+**Deliverable:**
+- Complete A/B test design document
+- Sample size calculations
+- Randomization code
+- Timeline and stopping rules
+
+**Time:** 4-5 hours
+
+---
+
+### LAB 3: A/B Test Analysis
+
+**Objective:** Analyze experiment results correctly
+
+**Scenario:** Your checkout A/B test ran for 2 weeks
+
+**Challenge 1: Load and Validate Data**
+```python
+import pandas as pd
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load test results
+df = pd.read_csv('checkout_test_results.csv')
+
+print("Dataset shape:", df.shape)
+print("\nColumns:", df.columns.tolist())
+print("\nFirst few rows:")
+print(df.head())
+
+# Validate experiment integrity
+print("\n=== EXPERIMENT VALIDATION ===")
+
+# 1. Check sample ratio
+variant_counts = df['variant'].value_counts()
+print(f"\nSample sizes:")
+print(variant_counts)
+print(f"\nRatio: {variant_counts['treatment'] / variant_counts['control']:.2f}")
+# Should be close to 1.0 (50/50 split)
+
+# 2. Check for sample ratio mismatch (SRM)
+from scipy.stats import chisquare
+total = len(df)
+expected = [total/2, total/2]
+observed = [variant_counts['control'], variant_counts['treatment']]
+chi2, p_value = chisquare(observed, expected)
+print(f"\nSRM p-value: {p_value:.4f}")
+if p_value < 0.05:
+    print("⚠️ WARNING: Sample Ratio Mismatch detected!")
+else:
+    print("✅ No SRM detected")
+
+# 3. Check for time imbalance
+df['date'] = pd.to_datetime(df['date'])
+daily_split = df.groupby(['date', 'variant']).size().unstack()
+print("\nDaily participant counts:")
+print(daily_split)
+```
+
+**Challenge 2: Calculate Primary Metric**
+```python
+# Calculate abandonment rates
+results = df.groupby('variant').agg({
+    'user_id': 'count',
+    'abandoned': 'sum'
+}).rename(columns={'user_id': 'users', 'abandoned': 'abandoned_count'})
+
+results['abandonment_rate'] = results['abandoned_count'] / results['users']
+results['completion_rate'] = 1 - results['abandonment_rate']
+
+print("\n=== PRIMARY METRIC RESULTS ===")
+print(results)
+
+# Calculate absolute and relative change
+control_rate = results.loc['control', 'abandonment_rate']
+treatment_rate = results.loc['treatment', 'abandonment_rate']
+
+absolute_change = treatment_rate - control_rate
+relative_change = (treatment_rate - control_rate) / control_rate
+
+print(f"\nControl abandonment: {control_rate*100:.2f}%")
+print(f"Treatment abandonment: {treatment_rate*100:.2f}%")
+print(f"Absolute change: {absolute_change*100:.2f} percentage points")
+print(f"Relative change: {relative_change*100:.2f}%")
+```
+
+**Challenge 3: Statistical Significance Test**
+```python
+# Prepare data for hypothesis test
+control_abandoned = results.loc['control', 'abandoned_count']
+control_total = results.loc['control', 'users']
+treatment_abandoned = results.loc['treatment', 'abandoned_count']
+treatment_total = results.loc['treatment', 'users']
+
+# Two-proportion z-test
+from statsmodels.stats.proportion import proportions_ztest
+
+counts = np.array([treatment_abandoned, control_abandoned])
+nobs = np.array([treatment_total, control_total])
+
+z_stat, p_value = proportions_ztest(counts, nobs)
+
+print("\n=== STATISTICAL SIGNIFICANCE ===")
+print(f"Z-statistic: {z_stat:.4f}")
+print(f"P-value: {p_value:.4f}")
+
+alpha = 0.05
+if p_value < alpha:
+    print(f"✅ SIGNIFICANT at {alpha} level (p={p_value:.4f})")
+    print("We can reject the null hypothesis")
+else:
+    print(f"❌ NOT SIGNIFICANT at {alpha} level (p={p_value:.4f})")
+    print("Cannot reject the null hypothesis")
+
+# Calculate confidence interval
+from statsmodels.stats.proportion import proportion_confint
+
+treatment_rate_ci = proportion_confint(treatment_abandoned, treatment_total, alpha=0.05, method='wilson')
+control_rate_ci = proportion_confint(control_abandoned, control_total, alpha=0.05, method='wilson')
+
+print(f"\n95% Confidence Intervals:")
+print(f"Control: {control_rate_ci[0]*100:.2f}% - {control_rate_ci[1]*100:.2f}%")
+print(f"Treatment: {treatment_rate_ci[0]*100:.2f}% - {treatment_rate_ci[1]*100:.2f}%")
+```
+
+**Challenge 4: Check Secondary Metrics**
+```python
+# Analyze secondary metrics
+secondary_metrics = df.groupby('variant').agg({
+    'checkout_time_seconds': 'mean',
+    'revenue_per_session': 'mean',
+    'satisfaction_score': 'mean'
+})
+
+print("\n=== SECONDARY METRICS ===")
+print(secondary_metrics)
+
+# T-tests for continuous metrics
+from scipy.stats import ttest_ind
+
+for metric in ['checkout_time_seconds', 'revenue_per_session', 'satisfaction_score']:
+    control_values = df[df['variant'] == 'control'][metric].dropna()
+    treatment_values = df[df['variant'] == 'treatment'][metric].dropna()
+    
+    t_stat, p_val = ttest_ind(control_values, treatment_values)
+    
+    mean_control = control_values.mean()
+    mean_treatment = treatment_values.mean()
+    pct_change = ((mean_treatment - mean_control) / mean_control) * 100
+    
+    print(f"\n{metric}:")
+    print(f"  Control: {mean_control:.2f}")
+    print(f"  Treatment: {mean_treatment:.2f}")
+    print(f"  Change: {pct_change:+.2f}%")
+    print(f"  P-value: {p_val:.4f}")
+    print(f"  Significant: {'Yes' if p_val < 0.05 else 'No'}")
+```
+
+**Challenge 5: Visualize Results**
+```python
+# Create comprehensive results visualization
+fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+
+# Plot 1: Abandonment rates with confidence intervals
+ax1 = axes[0, 0]
+variants = ['Control', 'Treatment']
+rates = [control_rate, treatment_rate]
+ci_lower = [control_rate_ci[0], treatment_rate_ci[0]]
+ci_upper = [control_rate_ci[1], treatment_rate_ci[1]]
+errors = [[rates[i] - ci_lower[i] for i in range(2)],
+          [ci_upper[i] - rates[i] for i in range(2)]]
+
+ax1.bar(variants, [r*100 for r in rates], yerr=[[e*100 for e in errors[0]], [e*100 for e in errors[1]]], 
+        capsize=10, color=['#FF6B6B', '#4ECDC4'])
+ax1.set_ylabel('Abandonment Rate (%)')
+ax1.set_title('Cart Abandonment: Control vs Treatment')
+ax1.axhline(y=control_rate*100, color='red', linestyle='--', alpha=0.5, label='Control baseline')
+
+# Plot 2: Daily trend
+ax2 = axes[0, 1]
+daily_rates = df.groupby(['date', 'variant']).apply(
+    lambda x: (x['abandoned'].sum() / len(x)) * 100
+).unstack()
+daily_rates.plot(ax=ax2, marker='o')
+ax2.set_ylabel('Abandonment Rate (%)')
+ax2.set_title('Daily Abandonment Rates')
+ax2.legend(['Control', 'Treatment'])
+ax2.grid(alpha=0.3)
+
+# Plot 3: Distribution of checkout times
+ax3 = axes[1, 0]
+df.boxplot(column='checkout_time_seconds', by='variant', ax=ax3)
+ax3.set_title('Checkout Time Distribution')
+ax3.set_xlabel('Variant')
+ax3.set_ylabel('Time (seconds)')
+
+# Plot 4: Sample size by variant
+ax4 = axes[1, 1]
+ax4.bar(['Control', 'Treatment'], [control_total, treatment_total], color=['#FF6B6B', '#4ECDC4'])
+ax4.set_ylabel('Number of Users')
+ax4.set_title('Sample Sizes')
+for i, v in enumerate([control_total, treatment_total]):
+    ax4.text(i, v, f'{v:,}', ha='center', va='bottom')
+
+plt.tight_layout()
+plt.savefig('ab_test_results.png', dpi=300)
+plt.show()
+```
+
+**Deliverable:**
+- Complete analysis notebook
+- Statistical test results
+- Visualization dashboard
+- Recommendation document
+
+**Time:** 4-5 hours
+
+---
+
+### LAB 4: Common A/B Testing Pitfalls
+
+**Objective:** Learn to avoid experiment mistakes
+
+**Challenge 1: Peeking Problem**
+```
+SCENARIO: You check test results after 3 days
+
+Day 3 results:
+- Control: 70% abandonment (n=1,200)
+- Treatment: 63% abandonment (n=1,200)
+- P-value: 0.03 (significant!)
+
+TEMPTATION: "It's working! Let's stop and ship it!"
+
+WHY THIS IS WRONG:
+- Random early fluctuations
+- Regression to the mean
+- Inflated false positive rate
+- Multiple testing problem
+
+CORRECT APPROACH:
+- Run full 2 weeks as planned
+- Don't peek at p-values
+- Use sequential testing if must monitor
+- Document any early looks
+
+FINAL RESULTS (Day 14):
+- Control: 68% abandonment (n=8,400)
+- Treatment: 66% abandonment (n=8,400)
+- P-value: 0.15 (NOT significant!)
+
+Early stop would have been WRONG DECISION!
+```
+
+**Challenge 2: Multiple Comparisons**
+```
+SCENARIO: You test 20 different button colors
+
+Results:
+- 19 variants: No significant difference
+- 1 variant (Yellow): P-value = 0.04 (significant!)
+
+TEMPTATION: "Yellow is the winner!"
+
+WHY THIS IS WRONG:
+- With 20 tests at α=0.05, expect 1 false positive
+- 20 * 0.05 = 1 spurious result expected by chance
+- This is likely that false positive!
+
+CORRECT APPROACH:
+- Bonferroni correction: α / number_of_tests
+- Adjusted α = 0.05 / 20 = 0.0025
+- Yellow p=0.04 is NOT significant at α=0.0025
+
+OR:
+- Primary hypothesis: Best guess color
+- Secondary exploratory: Other colors (don't act on these)
+```
+
+**Challenge 3: Selection Bias**
+```
+SCENARIO: Mobile vs Desktop test
+
+WRONG APPROACH:
+- Run test on desktop only
+- See positive results
+- Ship to all users (desktop + mobile)
+
+PROBLEM:
+- Mobile users may behave differently
+- Desktop results don't generalize
+- Could hurt mobile experience
+
+CORRECT APPROACH:
+- Stratified randomization
+- Test on ALL user segments
+- Analyze results by segment
+- Ship only where proven effective
+
+ANALYSIS:
+Control  → Treatment  | Change | Significant?
+Desktop:  70% → 62%  | -8% ✅  | Yes (p=0.02)
+Mobile:   65% → 66%  | +1% ❌  | No (p=0.82)
+
+DECISION: Ship to desktop only, keep testing mobile
+```
+
+**Challenge 4: Novelty Effects**
+```
+SCENARIO: New design shows 15% improvement in Week 1
+
+Week 1: +15% improvement ✅
+Week 2: +8% improvement 
+Week 3: +2% improvement
+Week 4: -1% degradation ❌
+
+EXPLANATION:
+- Novelty effect: Users try new things
+- Wears off as users habituate
+- Long-term effect is negative!
+
+CORRECT APPROACH:
+- Run tests for multiple weeks/months
+- Watch for decay in effect
+- Segment new vs returning users
+- Consider long-term impact
+```
+
+**Challenge 5: Simpson's Paradox**
+```
+SCENARIO: Overall results vs segmented results
+
+OVERALL:
+Treatment wins! 45% conversion vs 40% control
+
+BY SEGMENT:
+Mobile:   Control 50% > Treatment 48% ❌
+Desktop:  Control 35% > Treatment 33% ❌
+
+HOW IS THIS POSSIBLE?
+- Simpson's Paradox
+- Segment sizes differ between variants
+- Treatment had more mobile users (higher converting)
+- Within each segment, control actually wins!
+
+CORRECT APPROACH:
+- Always analyze by key segments
+- Check for imbalanced segment distribution
+- Use stratified analysis
+- Don't rely on overall metrics alone
+```
+
+**Deliverable:**
+- Pitfalls checklist
+- Analysis playbook
+- Decision framework
+
+**Time:** 3-4 hours
+
+---
+
+### MINI PROJECT 7: Complete A/B Test Execution
+
+**Objective:** Design, run, and analyze a complete A/B test
+
+**Scenario:** E-commerce company wants to test new product recommendation algorithm
+
+**Phase 1: Planning (2 hours)**
+1. Define hypothesis
+2. Choose primary & secondary metrics
+3. Calculate sample size
+4. Plan randomization
+5. Set test duration
+6. Document stopping rules
+
+**Phase 2: Implementation (2 hours)**
+1. Write randomization code
+2. Build tracking system
+3. Implement both variants
+4. Set up monitoring dashboard
+5. Create QA checklist
+
+**Phase 3: Data Collection (Simulated - 1 hour)**
+1. Generate realistic test data
+2. Simulate 2 weeks of traffic
+3. Include realistic noise/variance
+4. Add edge cases
+
+**Phase 4: Analysis (3 hours)**
+1. Validate experiment integrity
+2. Calculate all metrics
+3. Run statistical tests
+4. Create visualizations
+5. Check for segments/interactions
+
+**Phase 5: Reporting (2 hours)**
+1. Executive summary (1 page)
+2. Detailed analysis (5 pages)
+3. Recommendation with rationale
+4. Implementation plan
+5. Next steps/follow-up tests
+
+**Deliverable:**
+- Complete test design doc
+- Analysis code (Jupyter notebook)
+- Results presentation (PowerPoint)
+- Recommendation memo
+
+**Time:** 10-12 hours
+
+**Success Criteria for Unit 6:**
+- ✅ Design rigorous experiments
+- ✅ Calculate proper sample sizes
+- ✅ Analyze results correctly
+- ✅ Avoid common pitfalls
+- ✅ Make data-driven decisions
+- ✅ Portfolio-ready A/B test project
+
+"""
+        )
     elif unit_number == 7:
         st.markdown("#### 📘 Data Analyst Capstone Project: Your Portfolio Showpiece")
         st.markdown(
@@ -4074,6 +10875,6539 @@ suggesting specialty-specific factors at play."*
 **Your capstone isn't just coursework—it's your BEST SALES TOOL for landing your first data analyst role.**
 
 **Make it count.**
+
+---
+
+## 🔬 HANDS-ON LABS - Unit 7: Capstone Success
+
+### LAB 1: Capstone Planning & Scoping
+
+**Objective:** Define compelling capstone project (2-3 hours)
+
+**Step 1: Choose Domain** - Select industry (healthcare, e-commerce, SaaS)
+**Step 2: Identify Problem** - Brainstorm 5 potential business questions
+**Step 3: Problem Statement** - Write clear, measurable problem
+**Step 4: Success Metrics** - Define primary & secondary metrics
+**Step 5: Data Sourcing** - Confirm data availability (10K+ records)
+
+**Deliverable:** 1-page project proposal
+
+---
+
+### LAB 2: Data Collection & Preparation
+
+**Objective:** Gather and clean capstone dataset (4-6 hours)
+
+```python
+# Generate synthetic e-commerce data
+from faker import Faker
+import random, pandas as pd
+
+fake = Faker()
+data = []
+for i in range(20000):
+    record = {
+        'order_id': f'ORD{i:05d}',
+        'customer_id': f'CUST{random.randint(1,5000):04d}',
+        'order_date': fake.date_between(start_date='-1y'),
+        'product': random.choice(['Electronics','Clothing','Home']),
+        'quantity': random.randint(1,5),
+        'price': round(random.uniform(5,200),2),
+        'abandoned': random.random() < 0.68
+    }
+    data.append(record)
+
+df = pd.DataFrame(data)
+df.to_csv('capstone_data.csv', index=False)
+```
+
+**Data Quality Assessment:**
+- Check missing values: `df.isnull().sum()`
+- Find duplicates: `df.duplicated().sum()`
+- Validate ranges: `df.describe()`
+
+**Cleaning Steps:**
+1. Remove duplicates
+2. Handle missing values (fill/drop)
+3. Fix data types
+4. Remove outliers (IQR method)
+5. Add derived fields (year, month, day_of_week)
+
+**Deliverable:** Cleaned dataset + quality report
+
+---
+
+### LAB 3: Analysis & Visualization
+
+**Objective:** Generate insights from data (6-8 hours)
+
+**Key Analyses:**
+1. Descriptive statistics (mean, median, distribution)
+2. Segmentation analysis (by device, region, category)
+3. Time series patterns (daily/weekly trends)
+4. Statistical testing (chi-square, t-tests)
+
+**Visualizations to Create:**
+- Abandonment rate by segment (bar chart)
+- Daily trend over time (line chart)
+- Heatmap of patterns
+- Distribution plots
+
+**Statistical Tests:**
+```python
+from scipy.stats import chi2_contingency, ttest_ind
+
+# Test mobile vs desktop abandonment
+contingency = pd.crosstab(df['device'], df['abandoned'])
+chi2, p_value, dof, exp = chi2_contingency(contingency)
+print(f"Chi-square: {chi2:.2f}, p-value: {p_value:.4f}")
+```
+
+**Deliverable:** Analysis notebook + 10+ visualizations
+
+---
+
+### LAB 4: Final Report & Presentation
+
+**Objective:** Create professional deliverables (4-6 hours)
+
+**Outputs Required:**
+1. **Executive Summary** (1 page) - Problem, findings, recommendation
+2. **PowerPoint Presentation** (10-12 slides) - Story format
+3. **PDF Report** (10-15 pages) - Complete analysis
+4. **GitHub Repository** - Code, data, documentation
+5. **Interactive Dashboard** - Plotly or Tableau
+
+**GitHub Structure:**
+```
+capstone-project/
+├── README.md
+├── data/ (raw + cleaned)
+├── notebooks/ (analysis code)
+├── reports/ (PDF + PPT)
+├── images/ (visualizations)
+└── requirements.txt
+```
+
+**Deliverable:** Complete portfolio-ready project
+
+---
+
+### 💼 DATA ANALYST INTERVIEW PREP
+
+**100+ Technical & Behavioral Questions**
+
+**SQL Questions (Sample 10):**
+
+1. **Difference between INNER JOIN and LEFT JOIN?**
+   INNER: matching records only. LEFT: all from left + matches from right.
+
+2. **Find duplicate records?**
+```sql
+SELECT column, COUNT(*)
+FROM table
+GROUP BY column
+HAVING COUNT(*) > 1;
+```
+
+3. **WHERE vs HAVING?**
+   WHERE filters before grouping. HAVING filters after aggregation.
+
+4. **Running total?**
+```sql
+SELECT date, revenue,
+  SUM(revenue) OVER (ORDER BY date) as running_total
+FROM sales;
+```
+
+5. **Window functions?**
+   Calculations across rows related to current row.
+```sql
+SELECT customer_id, revenue,
+  RANK() OVER (PARTITION BY customer_id ORDER BY revenue DESC) as rank
+FROM orders;
+```
+
+**Python/Pandas Questions (Sample 10):**
+
+1. **Read CSV?**
+```python
+df = pd.read_csv('data.csv')
+```
+
+2. **Handle missing values?**
+```python
+df.isnull().sum()  # Check
+df.fillna(0)  # Fill with 0
+df.dropna()  # Drop rows
+df['col'].fillna(df['col'].mean())  # Fill with mean
+```
+
+3. **loc vs iloc?**
+   loc: label-based. iloc: position-based.
+
+4. **Group and aggregate?**
+```python
+df.groupby('category').agg({
+    'revenue': ['sum', 'mean'],
+    'orders': 'count'
+})
+```
+
+5. **Merge DataFrames?**
+```python
+pd.merge(df1, df2, on='customer_id', how='inner')
+```
+
+**Statistics Questions (Sample 10):**
+
+1. **p-value meaning?**
+   Probability of observing results if null hypothesis is true. p<0.05 = significant.
+
+2. **Type I vs Type II error?**
+   Type I: False positive (reject true null). Type II: False negative (accept false null).
+
+3. **Confidence interval?**
+   Range where true parameter likely falls. 95% CI = 95% chance contains true value.
+
+4. **Correlation vs causation?**
+   Correlation: variables move together. Causation: one causes the other.
+
+5. **Sample size calculation?**
+   Depends on: effect size, significance level, power, baseline rate.
+
+**Behavioral Questions (Sample 10):**
+
+1. **Tell me about a time you used data to solve a problem.**
+   Use STAR method (Situation, Task, Action, Result).
+
+2. **How do you prioritize multiple analyses?**
+   By business impact, urgency, stakeholder needs, data availability.
+
+3. **Describe a time you had messy data.**
+   Explain cleaning process: assess, clean, validate, document.
+
+4. **How do you explain technical concepts to non-technical stakeholders?**
+   Use analogies, visualizations, focus on business impact.
+
+5. **Disagreement with stakeholder?**
+   Listen, understand concerns, present data, find compromise.
+
+**Success Criteria for Unit 7:**
+- ✅ Complete capstone project
+- ✅ Professional portfolio (GitHub)
+- ✅ Interview-ready presentation
+- ✅ Technical knowledge tested
+- ✅ Career materials ready
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🏥 INDUSTRY MODULE: HEALTHCARE ANALYTICS")
+        st.markdown(
+            """**Complete healthcare data analytics scenarios with real datasets and solutions**
+
+### Healthcare Analytics Overview
+
+Healthcare generates MASSIVE amounts of data:
+- 30% of world's data volume
+- Patient records, appointments, diagnoses, prescriptions
+- Hospital operations, staffing, capacity
+- Financial data, claims, reimbursements
+- Clinical trials, outcomes, quality metrics
+
+**Key Healthcare Analytics Challenges:**
+- Patient privacy (HIPAA compliance)
+- Data quality and integration
+- Real-time operational analytics
+- Predictive modeling (readmissions, no-shows)
+- Cost optimization
+- Clinical outcome measurement
+
+---
+
+### Scenario 1: Emergency Department Wait Time Analysis
+
+**Business Problem:** ED wait times exceed 4-hour target 42% of the time, risking regulatory penalties
+
+**Dataset:** 50,000 ED visits over 12 months
+
+```sql
+-- ED Visits Table Structure
+CREATE TABLE ed_visits (
+    visit_id INT PRIMARY KEY,
+    patient_id INT,
+    arrival_datetime DATETIME,
+    triage_time DATETIME,
+    doctor_seen_time DATETIME,
+    discharge_datetime DATETIME,
+    triage_category VARCHAR(10),  -- 1 (critical) to 5 (minor)
+    chief_complaint VARCHAR(100),
+    department VARCHAR(50),
+    admitted BOOLEAN,
+    left_without_treatment BOOLEAN
+);
+
+-- Sample queries
+-- 1. Calculate wait times and breach rate
+SELECT 
+    DATE(arrival_datetime) as date,
+    COUNT(*) as visits,
+    AVG(TIMESTAMPDIFF(MINUTE, arrival_datetime, doctor_seen_time)) as avg_wait_mins,
+    PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY TIMESTAMPDIFF(MINUTE, arrival_datetime, doctor_seen_time)) as median_wait,
+    PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY TIMESTAMPDIFF(MINUTE, arrival_datetime, doctor_seen_time)) as p95_wait,
+    SUM(CASE WHEN TIMESTAMPDIFF(MINUTE, arrival_datetime, discharge_datetime) > 240 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as breach_rate_pct
+FROM ed_visits
+WHERE discharge_datetime IS NOT NULL
+GROUP BY DATE(arrival_datetime)
+ORDER BY date;
+
+-- 2. Analyze by triage category
+SELECT 
+    triage_category,
+    COUNT(*) as visits,
+    AVG(TIMESTAMPDIFF(MINUTE, arrival_datetime, doctor_seen_time)) as avg_wait,
+    SUM(CASE WHEN TIMESTAMPDIFF(MINUTE, arrival_datetime, discharge_datetime) > 240 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as breach_rate
+FROM ed_visits
+GROUP BY triage_category
+ORDER BY triage_category;
+
+-- 3. Peak hours analysis
+SELECT 
+    HOUR(arrival_datetime) as hour,
+    COUNT(*) as arrivals,
+    AVG(TIMESTAMPDIFF(MINUTE, arrival_datetime, doctor_seen_time)) as avg_wait
+FROM ed_visits
+GROUP BY HOUR(arrival_datetime)
+ORDER BY hour;
+
+-- 4. Day of week patterns
+SELECT 
+    DAYNAME(arrival_datetime) as day_of_week,
+    COUNT(*) as visits,
+    AVG(TIMESTAMPDIFF(MINUTE, arrival_datetime, doctor_seen_time)) as avg_wait,
+    SUM(CASE WHEN TIMESTAMPDIFF(MINUTE, arrival_datetime, discharge_datetime) > 240 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as breach_rate
+FROM ed_visits
+GROUP BY DAYNAME(arrival_datetime), DAYOFWEEK(arrival_datetime)
+ORDER BY DAYOFWEEK(arrival_datetime);
+```
+
+**Python Analysis:**
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load data
+df = pd.read_csv('ed_visits.csv')
+df['arrival_datetime'] = pd.to_datetime(df['arrival_datetime'])
+df['doctor_seen_time'] = pd.to_datetime(df['doctor_seen_time'])
+df['discharge_datetime'] = pd.to_datetime(df['discharge_datetime'])
+
+# Calculate wait times
+df['wait_to_doctor_mins'] = (df['doctor_seen_time'] - df['arrival_datetime']).dt.total_seconds() / 60
+df['total_time_mins'] = (df['discharge_datetime'] - df['arrival_datetime']).dt.total_seconds() / 60
+df['breach'] = df['total_time_mins'] > 240
+
+# Key metrics
+print(f"Total visits: {len(df):,}")
+print(f"Average wait to doctor: {df['wait_to_doctor_mins'].mean():.1f} minutes")
+print(f"Median wait: {df['wait_to_doctor_mins'].median():.1f} minutes")
+print(f"95th percentile: {df['wait_to_doctor_mins'].quantile(0.95):.1f} minutes")
+print(f"Breach rate: {df['breach'].mean()*100:.1f}%")
+
+# Visualizations
+fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+
+# 1. Wait time distribution
+axes[0, 0].hist(df['wait_to_doctor_mins'], bins=50, edgecolor='black')
+axes[0, 0].axvline(df['wait_to_doctor_mins'].median(), color='red', linestyle='--', label='Median')
+axes[0, 0].set_xlabel('Wait Time (minutes)')
+axes[0, 0].set_ylabel('Frequency')
+axes[0, 0].set_title('Wait Time Distribution')
+axes[0, 0].legend()
+
+# 2. Breach rate by triage
+triage_analysis = df.groupby('triage_category').agg({
+    'breach': 'mean',
+    'visit_id': 'count'
+}).reset_index()
+triage_analysis['breach_pct'] = triage_analysis['breach'] * 100
+axes[0, 1].bar(triage_analysis['triage_category'], triage_analysis['breach_pct'])
+axes[0, 1].set_xlabel('Triage Category')
+axes[0, 1].set_ylabel('Breach Rate (%)')
+axes[0, 1].set_title('Breach Rate by Triage Category')
+
+# 3. Hourly arrival patterns
+hourly = df.groupby(df['arrival_datetime'].dt.hour)['visit_id'].count()
+axes[1, 0].plot(hourly.index, hourly.values, marker='o')
+axes[1, 0].set_xlabel('Hour of Day')
+axes[1, 0].set_ylabel('Arrivals')
+axes[1, 0].set_title('Arrivals by Hour')
+axes[1, 0].grid(True, alpha=0.3)
+
+# 4. Day of week patterns
+daily = df.groupby(df['arrival_datetime'].dt.day_name())['breach'].mean() * 100
+day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+daily = daily.reindex(day_order)
+axes[1, 1].bar(range(7), daily.values)
+axes[1, 1].set_xticks(range(7))
+axes[1, 1].set_xticklabels(day_order, rotation=45)
+axes[1, 1].set_ylabel('Breach Rate (%)')
+axes[1, 1].set_title('Breach Rate by Day of Week')
+
+plt.tight_layout()
+plt.savefig('ed_wait_time_analysis.png', dpi=300)
+plt.show()
+```
+
+**Key Findings:**
+- Triage 3 patients have longest waits (avg 127 mins)
+- Peak hours 10am-2pm and 6pm-10pm = 45% of breaches
+- Monday and Friday worst days (48% breach rate)
+- Strong correlation (r=0.72) between staffing gaps and wait times
+
+**Recommendations:**
+1. Add 2 nurses during peak hours (10am-2pm, 6pm-10pm) - Cost: £80K annually
+2. Fast-track pathway for triage 4-5 patients - Estimated 15% breach reduction
+3. Monday/Friday surge capacity planning - Additional locum cover
+4. Real-time dashboard with alerts when wait >90 minutes
+
+**Expected Impact:** £850K annual savings from avoided breaches
+
+---
+
+### Scenario 2: Appointment DNA (Did Not Attend) Rate Reduction
+
+**Business Problem:** 18% DNA rate costing £250K monthly in lost capacity
+
+**Dataset:** 120,000 appointments over 12 months
+
+```sql
+-- Appointments Table
+CREATE TABLE appointments (
+    appointment_id INT PRIMARY KEY,
+    patient_id INT,
+    clinic VARCHAR(50),
+    specialty VARCHAR(50),
+    appointment_date DATE,
+    appointment_time TIME,
+    appointment_type VARCHAR(20),  -- New, Follow-up, Urgent
+    booking_date DATE,
+    attended BOOLEAN,
+    cancelled BOOLEAN,
+    patient_age INT,
+    patient_gender VARCHAR(10),
+    patient_postcode VARCHAR(10),
+    previous_dna_count INT,
+    days_notice INT
+);
+
+-- Analysis queries
+-- 1. Overall DNA rate
+SELECT 
+    COUNT(*) as total_appointments,
+    SUM(CASE WHEN attended = 0 AND cancelled = 0 THEN 1 ELSE 0 END) as dna_count,
+    SUM(CASE WHEN attended = 0 AND cancelled = 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as dna_rate_pct
+FROM appointments
+WHERE appointment_date < CURDATE();
+
+-- 2. DNA rate by specialty
+SELECT 
+    specialty,
+    COUNT(*) as appointments,
+    SUM(CASE WHEN attended = 0 AND cancelled = 0 THEN 1 ELSE 0 END) as dna_count,
+    SUM(CASE WHEN attended = 0 AND cancelled = 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as dna_rate_pct,
+    AVG(days_notice) as avg_days_notice
+FROM appointments
+WHERE appointment_date < CURDATE()
+GROUP BY specialty
+ORDER BY dna_rate_pct DESC;
+
+-- 3. DNA rate by appointment type and days notice
+SELECT 
+    appointment_type,
+    CASE 
+        WHEN days_notice <= 7 THEN '0-7 days'
+        WHEN days_notice <= 14 THEN '8-14 days'
+        WHEN days_notice <= 30 THEN '15-30 days'
+        ELSE '30+ days'
+    END as notice_period,
+    COUNT(*) as appointments,
+    SUM(CASE WHEN attended = 0 AND cancelled = 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as dna_rate_pct
+FROM appointments
+WHERE appointment_date < CURDATE()
+GROUP BY appointment_type, notice_period
+ORDER BY appointment_type, dna_rate_pct DESC;
+
+-- 4. Repeat DNA offenders
+SELECT 
+    patient_id,
+    COUNT(*) as total_appointments,
+    SUM(CASE WHEN attended = 0 AND cancelled = 0 THEN 1 ELSE 0 END) as dna_count,
+    SUM(CASE WHEN attended = 0 AND cancelled = 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as dna_rate_pct
+FROM appointments
+WHERE appointment_date < CURDATE()
+GROUP BY patient_id
+HAVING COUNT(*) >= 5 AND SUM(CASE WHEN attended = 0 AND cancelled = 0 THEN 1 ELSE 0 END) >= 2
+ORDER BY dna_count DESC;
+```
+
+**Python Predictive Model:**
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, roc_auc_score
+
+# Prepare data
+df = pd.read_csv('appointments.csv')
+df['dna'] = ((df['attended'] == 0) & (df['cancelled'] == 0)).astype(int)
+
+# Features
+features = ['patient_age', 'previous_dna_count', 'days_notice', 'appointment_type_encoded', 
+            'specialty_encoded', 'day_of_week', 'hour_of_day']
+
+# Encode categoricals
+df['appointment_type_encoded'] = df['appointment_type'].astype('category').cat.codes
+df['specialty_encoded'] = df['specialty'].astype('category').cat.codes
+df['day_of_week'] = pd.to_datetime(df['appointment_date']).dt.dayofweek
+
+# Split data
+X = df[features]
+y = df['dna']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Train model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Evaluate
+y_pred = model.predict(X_test)
+y_pred_proba = model.predict_proba(X_test)[:, 1]
+
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+print(f"ROC AUC Score: {roc_auc_score(y_test, y_pred_proba):.3f}")
+
+# Feature importance
+importance = pd.DataFrame({
+    'feature': features,
+    'importance': model.feature_importances_
+}).sort_values('importance', ascending=False)
+
+print("\nFeature Importance:")
+print(importance)
+
+# High-risk appointments
+df['dna_probability'] = model.predict_proba(X)[:, 1]
+high_risk = df[df['dna_probability'] > 0.3].sort_values('dna_probability', ascending=False)
+
+print(f"\nHigh-risk appointments: {len(high_risk):,}")
+print(f"Expected DNAs in high-risk group: {high_risk['dna_probability'].sum():.0f}")
+```
+
+**Recommendations:**
+1. SMS reminders for high-risk appointments (DNA prob >30%) - Reduces DNA by 35%
+2. Automated calls for Dermatology new patients - Target: £15K monthly savings
+3. Earlier rebooking for long-notice appointments - Reduce >30 day notice DNAs
+4. Flagging system for repeat DNA patients - Special handling protocol
+
+**Expected ROI:** £180K annual savings for £200/month SMS service = 900x ROI
+
+---
+
+### Scenario 3: Bed Capacity & Patient Flow Optimization
+
+**Business Problem:** Bed occupancy averaging 92%, causing elective surgery cancellations
+
+```sql
+-- Bed occupancy analysis
+WITH daily_occupancy AS (
+    SELECT 
+        date,
+        ward,
+        bed_capacity,
+        patients_admitted,
+        patients_discharged,
+        LAG(census, 1) OVER (PARTITION BY ward ORDER BY date) + patients_admitted - patients_discharged as census
+    FROM ward_daily_stats
+)
+SELECT 
+    ward,
+    AVG(census * 100.0 / bed_capacity) as avg_occupancy_pct,
+    MAX(census * 100.0 / bed_capacity) as max_occupancy_pct,
+    SUM(CASE WHEN census >= bed_capacity THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as days_at_capacity_pct
+FROM daily_occupancy
+GROUP BY ward
+ORDER BY avg_occupancy_pct DESC;
+
+-- Length of stay analysis
+SELECT 
+    ward,
+    diagnosis_category,
+    COUNT(*) as admissions,
+    AVG(DATEDIFF(discharge_date, admission_date)) as avg_los_days,
+    PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY DATEDIFF(discharge_date, admission_date)) as median_los,
+    PERCENTILE_CONT(0.90) WITHIN GROUP (ORDER BY DATEDIFF(discharge_date, admission_date)) as p90_los
+FROM admissions
+WHERE discharge_date IS NOT NULL
+GROUP BY ward, diagnosis_category
+HAVING COUNT(*) > 50
+ORDER BY avg_los_days DESC;
+```
+
+---
+
+### Scenario 4: Readmission Rate Analysis
+
+**Target:** Reduce 30-day readmissions from 15% to <12%
+
+```python
+# Readmission analysis
+admissions = pd.read_csv('admissions.csv')
+admissions['admission_date'] = pd.to_datetime(admissions['admission_date'])
+admissions['discharge_date'] = pd.to_datetime(admissions['discharge_date'])
+
+# Identify readmissions within 30 days
+admissions = admissions.sort_values(['patient_id', 'admission_date'])
+admissions['next_admission'] = admissions.groupby('patient_id')['admission_date'].shift(-1)
+admissions['days_to_readmit'] = (admissions['next_admission'] - admissions['discharge_date']).dt.days
+admissions['readmit_30day'] = admissions['days_to_readmit'] <= 30
+
+# Calculate rate
+readmit_rate = admissions['readmit_30day'].mean() * 100
+print(f"30-day readmission rate: {readmit_rate:.1f}%")
+
+# By diagnosis
+readmit_by_dx = admissions.groupby('primary_diagnosis').agg({
+    'readmit_30day': ['count', 'mean']
+}).round(3)
+print("\nTop diagnoses by readmission rate:")
+print(readmit_by_dx.sort_values(('readmit_30day', 'mean'), ascending=False).head(10))
+```
+
+---
+
+### Scenario 5: Operating Theatre Utilization
+
+**Target:** Increase utilization from 75% to 85%
+
+```sql
+-- Theatre utilization
+SELECT 
+    theatre_name,
+    SUM(TIMESTAMPDIFF(MINUTE, surgery_start, surgery_end)) as utilized_mins,
+    SUM(TIMESTAMPDIFF(MINUTE, session_start, session_end)) as available_mins,
+    SUM(TIMESTAMPDIFF(MINUTE, surgery_start, surgery_end)) * 100.0 / 
+        SUM(TIMESTAMPDIFF(MINUTE, session_start, session_end)) as utilization_pct
+FROM theatre_sessions
+WHERE session_date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+GROUP BY theatre_name
+ORDER BY utilization_pct ASC;
+
+-- Cancelled operations analysis
+SELECT 
+    cancellation_reason,
+    COUNT(*) as cancellations,
+    COUNT(*) * 100.0 / (SELECT COUNT(*) FROM surgeries WHERE cancelled = 1) as pct_of_cancellations
+FROM surgeries
+WHERE cancelled = 1
+  AND surgery_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+GROUP BY cancellation_reason
+ORDER BY cancellations DESC;
+```
+
+---
+
+### Scenario 6: Outpatient Clinic Efficiency
+
+```sql
+-- Clinic running time analysis
+WITH clinic_times AS (
+    SELECT 
+        clinic_id,
+        clinic_date,
+        MIN(appointment_time) as first_appt,
+        MAX(actual_end_time) as last_finish,
+        TIMESTAMPDIFF(MINUTE, MIN(appointment_time), MAX(actual_end_time)) as clinic_duration_mins,
+        COUNT(*) as patients_seen
+    FROM outpatient_appointments
+    WHERE attended = 1
+    GROUP BY clinic_id, clinic_date
+)
+SELECT 
+    clinic_specialty,
+    AVG(clinic_duration_mins) as avg_duration_mins,
+    AVG(patients_seen) as avg_patients,
+    AVG(clinic_duration_mins / patients_seen) as mins_per_patient
+FROM clinic_times ct
+JOIN clinics c ON ct.clinic_id = c.clinic_id
+GROUP BY clinic_specialty
+ORDER BY mins_per_patient DESC;
+```
+
+---
+
+### Scenario 7: Pharmacy Prescribing Analysis
+
+```sql
+-- High-cost medications
+SELECT 
+    medication_name,
+    COUNT(*) as prescriptions,
+    SUM(cost) as total_cost,
+    AVG(cost) as avg_cost_per_prescription
+FROM prescriptions
+WHERE prescription_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+GROUP BY medication_name
+HAVING COUNT(*) > 100
+ORDER BY total_cost DESC
+LIMIT 20;
+
+-- Generic substitution opportunities
+SELECT 
+    branded_name,
+    generic_equivalent,
+    COUNT(*) as branded_prescriptions,
+    SUM(branded_cost - generic_cost) as potential_savings
+FROM prescription_opportunities
+WHERE generic_equivalent IS NOT NULL
+GROUP BY branded_name, generic_equivalent
+ORDER BY potential_savings DESC;
+```
+
+---
+
+### Scenario 8: Patient Satisfaction Analysis
+
+```python
+# Survey response analysis
+import pandas as pd
+import numpy as np
+
+surveys = pd.read_csv('patient_surveys.csv')
+
+# Calculate Net Promoter Score (NPS)
+promoters = (surveys['recommend_score'] >= 9).sum()
+detractors = (surveys['recommend_score'] <= 6).sum()
+nps = ((promoters - detractors) / len(surveys)) * 100
+
+print(f"NPS Score: {nps:.1f}")
+
+# Identify improvement areas
+questions = ['cleanliness', 'staff_friendliness', 'wait_time', 'communication', 'overall']
+for q in questions:
+    avg_score = surveys[q].mean()
+    low_scores = (surveys[q] <= 2).sum()
+    print(f"{q}: Avg={avg_score:.2f}, Low scores={low_scores} ({low_scores/len(surveys)*100:.1f}%)")
+```
+
+---
+
+### Scenario 9: Workforce Planning & Staffing
+
+```sql
+-- Nurse staffing vs patient acuity
+SELECT 
+    ward,
+    shift_date,
+    shift_type,
+    nurses_on_duty,
+    patients_count,
+    AVG(patient_acuity_score) as avg_acuity,
+    nurses_on_duty * 1.0 / patients_count as nurse_to_patient_ratio,
+    CASE 
+        WHEN nurses_on_duty * 1.0 / patients_count < 0.15 THEN 'Understaffed'
+        WHEN nurses_on_duty * 1.0 / patients_count > 0.25 THEN 'Overstaffed'
+        ELSE 'Adequate'
+    END as staffing_status
+FROM ward_shifts
+WHERE shift_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+ORDER BY ward, shift_date, shift_type;
+```
+
+---
+
+### Scenario 10: Clinical Quality Indicators
+
+```sql
+-- Quality metrics dashboard
+-- 1. Mortality rate
+SELECT 
+    specialty,
+    COUNT(*) as admissions,
+    SUM(CASE WHEN died_in_hospital = 1 THEN 1 ELSE 0 END) as deaths,
+    SUM(CASE WHEN died_in_hospital = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as mortality_rate_pct
+FROM admissions
+WHERE admission_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+GROUP BY specialty
+ORDER BY mortality_rate_pct DESC;
+
+-- 2. Infection rates
+SELECT 
+    ward,
+    COUNT(DISTINCT patient_id) as patients,
+    SUM(CASE WHEN hospital_acquired_infection = 1 THEN 1 ELSE 0 END) as infections,
+    SUM(CASE WHEN hospital_acquired_infection = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(DISTINCT patient_id) as infection_rate_pct
+FROM admissions
+WHERE admission_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+GROUP BY ward
+ORDER BY infection_rate_pct DESC;
+
+-- 3. Falls incidents
+SELECT 
+    DATE_FORMAT(incident_date, '%Y-%m') as month,
+    COUNT(*) as falls_count,
+    SUM(serious_injury) as serious_injuries,
+    COUNT(*) * 1000.0 / (SELECT SUM(patient_days) FROM ward_stats WHERE month = DATE_FORMAT(incident_date, '%Y-%m')) as falls_per_1000_patient_days
+FROM patient_falls
+WHERE incident_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+GROUP BY month
+ORDER BY month;
+```
+
+---
+
+### Healthcare Analytics Best Practices
+
+**Data Privacy:**
+- HIPAA compliance always
+- Anonymize patient data
+- Secure data storage and transmission
+- Audit trails for access
+
+**Data Quality:**
+- Validate clinical codes (ICD-10, SNOMED)
+- Handle missing data appropriately
+- Cross-reference with multiple sources
+- Regular data quality audits
+
+**Reporting:**
+- Real-time operational dashboards
+- Weekly/monthly trend reports
+- Executive KPI scorecards
+- Clinical quality metrics
+
+**Stakeholder Management:**
+- Clinical staff buy-in essential
+- Translate insights to action
+- Present in clinical language
+- Focus on patient outcomes
+
+**Tools:**
+- SQL for data extraction
+- Python/R for analysis
+- Tableau/Power BI for dashboards
+- Statistical software for clinical research
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🛒 INDUSTRY MODULE: E-COMMERCE & RETAIL ANALYTICS")
+        st.markdown(
+            """**Complete e-commerce analytics scenarios from customer acquisition to retention**
+
+### E-Commerce Analytics Overview
+
+E-commerce data goldmine:
+- Customer behavior (clicks, carts, purchases)
+- Product catalog and inventory
+- Marketing campaigns and attribution
+- Financial transactions
+- Logistics and fulfillment
+
+**Key Business Questions:**
+- How to reduce cart abandonment?
+- Which products drive profitability?
+- What's customer lifetime value?
+- Which marketing channels work?
+- How to optimize pricing?
+- How to reduce churn?
+
+---
+
+### Scenario 1: Cart Abandonment Analysis & Optimization
+
+**Business Problem:** 68% cart abandonment rate, losing £250K monthly
+
+**Dataset:** 200,000 sessions over 6 months
+
+```sql
+-- Cart abandonment funnel
+WITH funnel_stages AS (
+    SELECT 
+        session_id,
+        user_id,
+        device_type,
+        traffic_source,
+        MAX(CASE WHEN event_type = 'page_view' THEN 1 ELSE 0 END) as viewed,
+        MAX(CASE WHEN event_type = 'product_view' THEN 1 ELSE 0 END) as viewed_product,
+        MAX(CASE WHEN event_type = 'add_to_cart' THEN 1 ELSE 0 END) as added_to_cart,
+        MAX(CASE WHEN event_type = 'checkout_started' THEN 1 ELSE 0 END) as started_checkout,
+        MAX(CASE WHEN event_type = 'purchase' THEN 1 ELSE 0 END) as completed_purchase
+    FROM user_events
+    WHERE event_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+    GROUP BY session_id, user_id, device_type, traffic_source
+)
+SELECT 
+    device_type,
+    COUNT(*) as sessions,
+    SUM(viewed_product) as viewed_product,
+    SUM(added_to_cart) as added_to_cart,
+    SUM(started_checkout) as started_checkout,
+    SUM(completed_purchase) as purchases,
+    SUM(added_to_cart) * 100.0 / SUM(viewed_product) as add_to_cart_rate,
+    SUM(completed_purchase) * 100.0 / SUM(added_to_cart) as cart_conversion_rate,
+    (1 - SUM(completed_purchase) * 1.0 / SUM(added_to_cart)) * 100 as abandonment_rate
+FROM funnel_stages
+WHERE viewed_product = 1
+GROUP BY device_type
+ORDER BY abandonment_rate DESC;
+
+-- Abandonment reasons analysis
+SELECT 
+    cart_abandon_reason,
+    COUNT(*) as count,
+    COUNT(*) * 100.0 / (SELECT COUNT(*) FROM cart_abandons) as pct
+FROM cart_abandons
+WHERE abandon_date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+GROUP BY cart_abandon_reason
+ORDER BY count DESC;
+```
+
+**Python Recovery Campaign Analysis:**
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load abandoned cart data
+df = pd.read_csv('abandoned_carts.csv')
+df['abandon_datetime'] = pd.to_datetime(df['abandon_datetime'])
+
+# Calculate recovery rate by email timing
+recovery_analysis = df.groupby('email_hours_after_abandon').agg({
+    'recovered': ['sum', 'count', 'mean']
+}).reset_index()
+recovery_analysis.columns = ['hours_after', 'recovered_count', 'total', 'recovery_rate']
+recovery_analysis['recovery_pct'] = recovery_analysis['recovery_rate'] * 100
+
+print("Cart Recovery by Email Timing:")
+print(recovery_analysis)
+
+# Best time to send recovery email
+plt.figure(figsize=(12, 6))
+plt.bar(recovery_analysis['hours_after'], recovery_analysis['recovery_pct'])
+plt.xlabel('Hours After Abandonment')
+plt.ylabel('Recovery Rate (%)')
+plt.title('Cart Recovery Rate by Email Timing')
+plt.axhline(y=recovery_analysis['recovery_pct'].mean(), color='r', linestyle='--', label='Average')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+print(f"\\nBest timing: {recovery_analysis.loc[recovery_analysis['recovery_pct'].idxmax(), 'hours_after']} hours")
+print(f"Recovery rate at best time: {recovery_analysis['recovery_pct'].max():.1f}%")
+```
+
+**Key Findings:**
+- Mobile abandonment 75% vs desktop 55%
+- Shipping costs revealed at step 3 = 40% drop-off
+- Email sent 1-2 hours after = 15% recovery rate
+- Weekend abandonment 20% higher
+
+**Recommendations:**
+1. Show shipping early - Projected 8% abandonment reduction
+2. Mobile checkout optimization - Simplify from 5 to 3 steps
+3. Automated email sequence: 1hr, 24hr, 72hr after abandon
+4. Exit-intent popup with discount code
+
+**Expected Impact:** £300K annual revenue recovery
+
+---
+
+### Scenario 2: Customer Segmentation & Lifetime Value
+
+**RFM Analysis (Recency, Frequency, Monetary)**
+
+```sql
+-- Calculate RFM scores
+WITH customer_rfm AS (
+    SELECT 
+        customer_id,
+        DATEDIFF(CURDATE(), MAX(order_date)) as recency_days,
+        COUNT(*) as frequency,
+        SUM(order_total) as monetary
+    FROM orders
+    WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+    GROUP BY customer_id
+),
+rfm_scores AS (
+    SELECT 
+        customer_id,
+        recency_days,
+        frequency,
+        monetary,
+        NTILE(5) OVER (ORDER BY recency_days DESC) as R,
+        NTILE(5) OVER (ORDER BY frequency ASC) as F,
+        NTILE(5) OVER (ORDER BY monetary ASC) as M
+    FROM customer_rfm
+)
+SELECT 
+    CASE 
+        WHEN R >= 4 AND F >= 4 AND M >= 4 THEN 'Champions'
+        WHEN R >= 3 AND F >= 3 AND M >= 3 THEN 'Loyal Customers'
+        WHEN R >= 4 AND F <= 2 THEN 'New Customers'
+        WHEN R >= 3 AND F <= 2 AND M >= 3 THEN 'Promising'
+        WHEN R <= 2 AND F >= 4 THEN 'At Risk'
+        WHEN R <= 2 AND F >= 2 THEN 'Need Attention'
+        WHEN R <= 2 AND F <= 2 THEN 'Hibernating'
+        ELSE 'Other'
+    END as segment,
+    COUNT(*) as customer_count,
+    AVG(monetary) as avg_revenue,
+    AVG(frequency) as avg_orders,
+    AVG(recency_days) as avg_recency_days
+FROM rfm_scores
+GROUP BY segment
+ORDER BY avg_revenue DESC;
+```
+
+**Customer Lifetime Value (CLV) Calculation:**
+```python
+# CLV = (Average Order Value × Purchase Frequency × Customer Lifespan)
+import pandas as pd
+
+customers = pd.read_csv('customer_orders.csv')
+customers['order_date'] = pd.to_datetime(customers['order_date'])
+
+# Calculate per customer
+clv_data = customers.groupby('customer_id').agg({
+    'order_total': ['mean', 'sum'],
+    'order_id': 'count',
+    'order_date': ['min', 'max']
+}).reset_index()
+
+clv_data.columns = ['customer_id', 'avg_order_value', 'total_spent', 'order_count', 'first_order', 'last_order']
+
+# Calculate metrics
+clv_data['customer_lifespan_days'] = (clv_data['last_order'] - clv_data['first_order']).dt.days
+clv_data['purchase_frequency'] = clv_data['order_count'] / (clv_data['customer_lifespan_days'] / 365.25)
+
+# Simple CLV (average customer lifespan = 3 years)
+avg_lifespan_years = 3
+clv_data['clv'] = clv_data['avg_order_value'] * clv_data['purchase_frequency'] * avg_lifespan_years
+
+# Segment by CLV
+clv_data['clv_segment'] = pd.cut(clv_data['clv'], 
+                                  bins=[0, 500, 1000, 2500, float('inf')],
+                                  labels=['Low', 'Medium', 'High', 'VIP'])
+
+print("CLV Summary:")
+print(clv_data.groupby('clv_segment').agg({
+    'customer_id': 'count',
+    'clv': 'mean',
+    'total_spent': 'sum'
+}))
+
+print(f"\\nTop 10% of customers contribute {clv_data.nlargest(int(len(clv_data)*0.1), 'total_spent')['total_spent'].sum() / clv_data['total_spent'].sum() * 100:.1f}% of revenue")
+```
+
+**Segment-Specific Strategies:**
+- **Champions:** Exclusive early access, VIP program, referral incentives
+- **Loyal:** Loyalty points, personalized recommendations
+- **At Risk:** Win-back campaigns, special offers
+- **Hibernating:** Deep discounts, reactivation emails
+- **New:** Onboarding sequence, second purchase incentive
+
+---
+
+### Scenario 3: Product Performance & Profitability Analysis
+
+```sql
+-- Product profitability analysis
+SELECT 
+    p.product_id,
+    p.product_name,
+    p.category,
+    COUNT(DISTINCT oi.order_id) as orders,
+    SUM(oi.quantity) as units_sold,
+    SUM(oi.quantity * oi.unit_price) as revenue,
+    SUM(oi.quantity * p.cost) as cost,
+    SUM(oi.quantity * (oi.unit_price - p.cost)) as profit,
+    (SUM(oi.quantity * (oi.unit_price - p.cost)) / SUM(oi.quantity * oi.unit_price)) * 100 as profit_margin_pct,
+    AVG(pr.rating) as avg_rating,
+    COUNT(pr.review_id) as review_count
+FROM products p
+JOIN order_items oi ON p.product_id = oi.product_id
+LEFT JOIN product_reviews pr ON p.product_id = pr.product_id
+WHERE oi.order_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+GROUP BY p.product_id, p.product_name, p.category
+HAVING SUM(oi.quantity) > 10
+ORDER BY profit DESC;
+
+-- Product recommendations (frequently bought together)
+SELECT 
+    p1.product_name as product_1,
+    p2.product_name as product_2,
+    COUNT(*) as times_bought_together,
+    AVG(o.order_total) as avg_order_value
+FROM order_items oi1
+JOIN order_items oi2 ON oi1.order_id = oi2.order_id AND oi1.product_id < oi2.product_id
+JOIN products p1 ON oi1.product_id = p1.product_id
+JOIN products p2 ON oi2.product_id = p2.product_id
+JOIN orders o ON oi1.order_id = o.order_id
+WHERE o.order_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+GROUP BY p1.product_name, p2.product_name
+HAVING COUNT(*) > 20
+ORDER BY times_bought_together DESC
+LIMIT 20;
+```
+
+---
+
+### Scenario 4: Marketing Channel Attribution & ROI
+
+```sql
+-- Multi-touch attribution
+WITH customer_touchpoints AS (
+    SELECT 
+        customer_id,
+        order_id,
+        order_date,
+        order_total,
+        first_touch_channel,
+        last_touch_channel,
+        assisted_channels
+    FROM orders o
+    JOIN customer_journeys cj ON o.customer_id = cj.customer_id 
+        AND o.order_date BETWEEN cj.journey_start AND cj.journey_end
+)
+-- First touch attribution
+SELECT 
+    first_touch_channel as channel,
+    'First Touch' as attribution_model,
+    COUNT(*) as conversions,
+    SUM(order_total) as revenue
+FROM customer_touchpoints
+GROUP BY first_touch_channel
+
+UNION ALL
+
+-- Last touch attribution
+SELECT 
+    last_touch_channel,
+    'Last Touch',
+    COUNT(*),
+    SUM(order_total)
+FROM customer_touchpoints
+GROUP BY last_touch_channel
+
+ORDER BY attribution_model, revenue DESC;
+
+-- Marketing ROI by channel
+SELECT 
+    channel,
+    SUM(spend) as total_spend,
+    COUNT(DISTINCT customer_id) as customers_acquired,
+    SUM(revenue) as total_revenue,
+    SUM(spend) / COUNT(DISTINCT customer_id) as cac,
+    (SUM(revenue) - SUM(spend)) / SUM(spend) * 100 as roi_pct
+FROM marketing_performance
+WHERE campaign_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+GROUP BY channel
+ORDER BY roi_pct DESC;
+```
+
+---
+
+### Scenario 5: Inventory Optimization
+
+```python
+# ABC Analysis for inventory classification
+import pandas as pd
+
+inventory = pd.read_csv('inventory.csv')
+
+# Calculate cumulative values
+inventory = inventory.sort_values('annual_sales_value', ascending=False)
+inventory['cumulative_sales'] = inventory['annual_sales_value'].cumsum()
+inventory['cumulative_pct'] = inventory['cumulative_sales'] / inventory['annual_sales_value'].sum() * 100
+
+# Classify products
+inventory['abc_category'] = pd.cut(inventory['cumulative_pct'],
+                                     bins=[0, 80, 95, 100],
+                                     labels=['A', 'B', 'C'])
+
+# Analysis by category
+abc_summary = inventory.groupby('abc_category').agg({
+    'product_id': 'count',
+    'annual_sales_value': 'sum',
+    'current_stock_value': 'sum',
+    'turnover_ratio': 'mean'
+})
+
+print("ABC Analysis:")
+print(abc_summary)
+print("\\nRecommendations:")
+print("A items (80% of value): Tight control, daily monitoring, optimized reorder points")
+print("B items (15% of value): Moderate control, weekly monitoring")
+print("C items (5% of value): Loose control, periodic review")
+
+# Safety stock calculation
+inventory['safety_stock'] = inventory['avg_daily_demand'] * inventory['lead_time_days'] * 1.5
+inventory['reorder_point'] = inventory['safety_stock'] + (inventory['avg_daily_demand'] * inventory['lead_time_days'])
+
+print("\\nReorder alerts:")
+print(inventory[inventory['current_stock'] < inventory['reorder_point']][['product_name', 'current_stock', 'reorder_point']])
+```
+
+---
+
+### Scenario 6: Pricing Optimization & Elasticity
+
+```sql
+-- Price elasticity analysis
+WITH price_changes AS (
+    SELECT 
+        product_id,
+        DATE_FORMAT(price_change_date, '%Y-%m') as month,
+        old_price,
+        new_price,
+        (new_price - old_price) / old_price * 100 as price_change_pct
+    FROM product_prices
+),
+sales_impact AS (
+    SELECT 
+        oi.product_id,
+        DATE_FORMAT(o.order_date, '%Y-%m') as month,
+        SUM(oi.quantity) as units_sold,
+        AVG(oi.unit_price) as avg_selling_price
+    FROM orders o
+    JOIN order_items oi ON o.order_id = oi.order_id
+    GROUP BY oi.product_id, month
+)
+SELECT 
+    pc.product_id,
+    pc.month,
+    pc.price_change_pct,
+    si_before.units_sold as units_before,
+    si_after.units_sold as units_after,
+    (si_after.units_sold - si_before.units_sold) * 100.0 / si_before.units_sold as volume_change_pct,
+    ((si_after.units_sold - si_before.units_sold) * 100.0 / si_before.units_sold) / pc.price_change_pct as elasticity
+FROM price_changes pc
+JOIN sales_impact si_before ON pc.product_id = si_before.product_id 
+    AND si_before.month = DATE_FORMAT(DATE_SUB(STR_TO_DATE(pc.month, '%Y-%m'), INTERVAL 1 MONTH), '%Y-%m')
+JOIN sales_impact si_after ON pc.product_id = si_after.product_id 
+    AND si_after.month = pc.month;
+```
+
+---
+
+### Scenario 7: Customer Churn Prediction
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+# Load customer data
+customers = pd.read_csv('customer_features.csv')
+
+# Feature engineering
+customers['days_since_last_order'] = (pd.Timestamp.now() - pd.to_datetime(customers['last_order_date'])).dt.days
+customers['avg_days_between_orders'] = customers['total_order_days'] / (customers['order_count'] - 1)
+customers['order_frequency_trend'] = customers['last_90_orders'] / customers['previous_90_orders']
+customers['churned'] = (customers['days_since_last_order'] > customers['avg_days_between_orders'] * 2).astype(int)
+
+# Features for model
+features = ['days_since_last_order', 'order_count', 'avg_order_value', 
+            'total_spent', 'avg_days_between_orders', 'order_frequency_trend',
+            'customer_age_days', 'email_open_rate', 'support_tickets']
+
+X = customers[features]
+y = customers['churned']
+
+# Train model
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+model = RandomForestClassifier(n_estimators=100)
+model.fit(X_train, y_train)
+
+# Predict churn probability
+customers['churn_probability'] = model.predict_proba(X)[:, 1]
+
+# High-risk customers
+at_risk = customers[customers['churn_probability'] > 0.5].sort_values('churn_probability', ascending=False)
+print(f"Customers at risk: {len(at_risk)}")
+print(f"Potential revenue at risk: £{at_risk['avg_order_value'].sum() * 3:,.0f}")  # 3 orders/year avg
+
+# Feature importance
+importance = pd.DataFrame({
+    'feature': features,
+    'importance': model.feature_importances_
+}).sort_values('importance', ascending=False)
+print("\\nTop churn indicators:")
+print(importance)
+```
+
+---
+
+### Scenario 8: A/B Testing Framework
+
+```python
+# Statistical A/B test for checkout flow
+from scipy.stats import chi2_contingency, ttest_ind
+
+# Load test data
+ab_test = pd.read_csv('checkout_ab_test.csv')
+
+# Conversion rates by variant
+conversion_summary = ab_test.groupby('variant').agg({
+    'user_id': 'count',
+    'converted': ['sum', 'mean']
+}).reset_index()
+conversion_summary.columns = ['variant', 'users', 'conversions', 'conversion_rate']
+
+print("A/B Test Results:")
+print(conversion_summary)
+
+# Statistical significance test
+contingency = pd.crosstab(ab_test['variant'], ab_test['converted'])
+chi2, p_value, dof, expected = chi2_contingency(contingency)
+
+print(f"\\nChi-square test:")
+print(f"p-value: {p_value:.4f}")
+if p_value < 0.05:
+    print("✅ SIGNIFICANT: Variant B performs differently than control")
+    lift = (conversion_summary.loc[1, 'conversion_rate'] - conversion_summary.loc[0, 'conversion_rate']) / conversion_summary.loc[0, 'conversion_rate'] * 100
+    print(f"Lift: {lift:.1f}%")
+else:
+    print("❌ NOT SIGNIFICANT: No clear winner")
+
+# Revenue impact
+revenue_test = ab_test[ab_test['converted'] == 1].groupby('variant')['order_value'].agg(['mean', 'sum', 'count'])
+print("\\nRevenue Analysis:")
+print(revenue_test)
+```
+
+---
+
+### Scenario 9: Seasonal Demand Forecasting
+
+```python
+import pandas as pd
+from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+# Load daily sales
+daily_sales = pd.read_csv('daily_sales.csv', parse_dates=['date'], index_col='date')
+
+# Decompose time series
+decomposition = seasonal_decompose(daily_sales['revenue'], model='multiplicative', period=7)
+
+fig, axes = plt.subplots(4, 1, figsize=(15, 10))
+decomposition.observed.plot(ax=axes[0], title='Observed')
+decomposition.trend.plot(ax=axes[1], title='Trend')
+decomposition.seasonal.plot(ax=axes[2], title='Seasonal')
+decomposition.resid.plot(ax=axes[3], title='Residual')
+plt.tight_layout()
+plt.show()
+
+# Forecast next 30 days
+model = ExponentialSmoothing(daily_sales['revenue'], seasonal_periods=7, trend='add', seasonal='add')
+fitted_model = model.fit()
+forecast = fitted_model.forecast(steps=30)
+
+print("30-day forecast:")
+print(forecast)
+print(f"\\nExpected total revenue: £{forecast.sum():,.0f}")
+```
+
+---
+
+### Scenario 10: Returns & Refunds Analysis
+
+```sql
+-- Returns analysis
+SELECT 
+    p.category,
+    COUNT(r.return_id) as return_count,
+    COUNT(r.return_id) * 100.0 / (SELECT COUNT(*) FROM order_items oi2 
+                                    JOIN products p2 ON oi2.product_id = p2.product_id
+                                    WHERE p2.category = p.category) as return_rate_pct,
+    AVG(DATEDIFF(r.return_date, o.order_date)) as avg_days_to_return,
+    SUM(r.refund_amount) as total_refunds
+FROM returns r
+JOIN orders o ON r.order_id = o.order_id
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+WHERE r.return_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+GROUP BY p.category
+ORDER BY return_rate_pct DESC;
+
+-- Top return reasons
+SELECT 
+    return_reason,
+    COUNT(*) as count,
+    COUNT(*) * 100.0 / (SELECT COUNT(*) FROM returns) as pct,
+    AVG(refund_amount) as avg_refund
+FROM returns
+WHERE return_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+GROUP BY return_reason
+ORDER BY count DESC;
+```
+
+---
+
+### E-Commerce Best Practices
+
+**Data Collection:**
+- Implement event tracking (Google Analytics, Segment)
+- Track full customer journey
+- Capture device, source, timestamps
+- A/B test everything
+
+**Key Metrics:**
+- Conversion rate (overall and by funnel stage)
+- Average order value (AOV)
+- Customer acquisition cost (CAC)
+- Customer lifetime value (CLV)
+- Cart abandonment rate
+- Return rate
+
+**Optimization Framework:**
+1. Identify bottleneck (data analysis)
+2. Form hypothesis (why is it happening?)
+3. Design experiment (A/B test)
+4. Measure impact (statistical significance)
+5. Implement winner
+6. Repeat
+
+**Tools:**
+- SQL for data extraction
+- Python for analysis and ML
+- Tableau/Looker for dashboards
+- Google Analytics for web data
+- Segment for event tracking
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 💻 INDUSTRY MODULE: SAAS & TECH ANALYTICS")
+        st.markdown(
+            """**SaaS metrics from acquisition to retention and growth**
+
+### Key SaaS Metrics
+
+**MRR (Monthly Recurring Revenue):**
+```sql
+WITH subscription_mrr AS (
+    SELECT 
+        DATE_TRUNC('month', billing_date) as month,
+        customer_id,
+        CASE 
+            WHEN billing_frequency = 'monthly' THEN amount
+            WHEN billing_frequency = 'annual' THEN amount / 12
+        END as mrr
+    FROM subscriptions WHERE status = 'active'
+)
+SELECT month, SUM(mrr) as total_mrr, COUNT(DISTINCT customer_id) as customers
+FROM subscription_mrr GROUP BY month ORDER BY month;
+```
+
+**Cohort Retention:**
+```sql
+SELECT 
+    DATE_TRUNC('month', signup_date) as cohort,
+    DATEDIFF('month', signup_date, activity_date) as months,
+    COUNT(DISTINCT user_id) * 100.0 / COUNT(DISTINCT 
+        CASE WHEN DATEDIFF('month', signup_date, activity_date) = 0 
+        THEN user_id END) as retention_pct
+FROM user_activity
+GROUP BY cohort, months;
+```
+
+**Churn Prediction:**
+```python
+from sklearn.ensemble import GradientBoostingClassifier
+
+features = ['days_since_login', 'usage_trend', 'support_tickets']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+model = GradientBoostingClassifier(n_estimators=100)
+model.fit(X_train, y_train)
+users['churn_probability'] = model.predict_proba(X)[:, 1]
+at_risk = users[users['churn_probability'] > 0.5]
+```
+
+**Product Qualified Leads:**
+```sql
+SELECT user_id,
+    CASE 
+        WHEN days_active >= 5 AND features_used >= 3 THEN 'Hot PQL'
+        WHEN days_active >= 3 AND features_used >= 2 THEN 'Warm PQL'
+        ELSE 'Cold PQL'
+    END as pql_status
+FROM user_activity WHERE plan_type = 'free';
+```
+
+**CAC & LTV:**
+```sql
+SELECT channel,
+    SUM(spend) / COUNT(DISTINCT user_id) as cac,
+    AVG(lifetime_value) as avg_ltv,
+    AVG(lifetime_value) / (SUM(spend) / COUNT(DISTINCT user_id)) as ltv_cac_ratio
+FROM acquisitions GROUP BY channel;
+```
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 💰 INDUSTRY MODULE: FINANCIAL SERVICES ANALYTICS")
+        st.markdown(
+            """**Banking, credit, fraud, and risk analytics**
+
+### Financial Analytics Overview
+
+Financial services data challenges:
+- High-stakes decisions (loans, investments)
+- Fraud detection and prevention
+- Regulatory compliance (Basel III, GDPR)
+- Risk management and stress testing
+- Customer lifetime value optimization
+
+---
+
+### Scenario 1: Credit Risk Modeling
+
+**Business Problem:** Reduce default rate from 4.2% to <3% while maintaining approval rate
+
+```sql
+-- Loan performance analysis
+SELECT 
+    loan_grade,
+    COUNT(*) as total_loans,
+    SUM(loan_amount) as total_amount,
+    SUM(CASE WHEN status = 'default' THEN 1 ELSE 0 END) as defaults,
+    SUM(CASE WHEN status = 'default' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as default_rate,
+    AVG(CASE WHEN status = 'default' THEN DATEDIFF(default_date, issue_date) ELSE NULL END) as avg_days_to_default
+FROM loans
+GROUP BY loan_grade
+ORDER BY default_rate DESC;
+
+-- Customer risk factors
+SELECT 
+    CASE WHEN credit_score < 600 THEN '<600'
+         WHEN credit_score < 650 THEN '600-649'
+         WHEN credit_score < 700 THEN '650-699'
+         WHEN credit_score < 750 THEN '700-749'
+         ELSE '750+' END as credit_band,
+    CASE WHEN dti_ratio < 20 THEN '<20%'
+         WHEN dti_ratio < 30 THEN '20-30%'
+         WHEN dti_ratio < 40 THEN '30-40%'
+         ELSE '>40%' END as dti_band,
+    COUNT(*) as loans,
+    SUM(CASE WHEN status = 'default' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as default_rate
+FROM loans
+GROUP BY credit_band, dti_band
+ORDER BY default_rate DESC;
+```
+
+**Python Credit Scoring Model:**
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_auc_score, classification_report
+import pandas as pd
+
+# Load loan data
+loans = pd.read_csv('loan_applications.csv')
+
+# Feature engineering
+loans['credit_utilization'] = loans['credit_balance'] / loans['credit_limit']
+loans['income_to_loan_ratio'] = loans['annual_income'] / loans['loan_amount']
+loans['employment_years'] = loans['employment_length'].str.extract('(\d+)').astype(float)
+
+# Target variable
+loans['default'] = (loans['loan_status'] == 'Charged Off').astype(int)
+
+# Features for model
+features = [
+    'credit_score', 'annual_income', 'dti_ratio', 'credit_utilization',
+    'employment_years', 'loan_amount', 'income_to_loan_ratio',
+    'delinq_2yrs', 'inq_last_6mths', 'open_acc', 'pub_rec'
+]
+
+X = loans[features]
+y = loans['default']
+
+# Train/test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify=y)
+
+# Train model
+model = RandomForestClassifier(n_estimators=200, max_depth=10, min_samples_split=100)
+model.fit(X_train, y_train)
+
+# Predictions
+y_pred_proba = model.predict_proba(X_test)[:, 1]
+
+print(f"ROC AUC Score: {roc_auc_score(y_test, y_pred_proba):.3f}")
+
+# Feature importance
+importance = pd.DataFrame({
+    'feature': features,
+    'importance': model.feature_importances_
+}).sort_values('importance', ascending=False)
+print("\nTop Risk Factors:")
+print(importance)
+
+# Risk-based pricing
+loans['default_probability'] = model.predict_proba(X)[:, 1]
+loans['risk_tier'] = pd.cut(loans['default_probability'], 
+                             bins=[0, 0.02, 0.05, 0.10, 1],
+                             labels=['Low', 'Medium', 'High', 'Very High'])
+
+print("\nRisk Distribution:")
+print(loans.groupby('risk_tier').agg({
+    'loan_amount': 'sum',
+    'default_probability': 'mean',
+    'loan_id': 'count'
+}))
+```
+
+**Expected Impact:** 1.5% reduction in default rate = £2.5M annual savings
+
+---
+
+### Scenario 2: Fraud Detection System
+
+**Real-time transaction monitoring:**
+
+```sql
+-- Suspicious transaction patterns
+WITH transaction_stats AS (
+    SELECT 
+        customer_id,
+        transaction_date,
+        transaction_amount,
+        merchant_category,
+        AVG(transaction_amount) OVER (
+            PARTITION BY customer_id 
+            ORDER BY transaction_date 
+            ROWS BETWEEN 29 PRECEDING AND 1 PRECEDING
+        ) as avg_30day,
+        STDDEV(transaction_amount) OVER (
+            PARTITION BY customer_id 
+            ORDER BY transaction_date 
+            ROWS BETWEEN 29 PRECEDING AND 1 PRECEDING
+        ) as stddev_30day
+    FROM transactions
+)
+SELECT 
+    customer_id,
+    transaction_date,
+    transaction_amount,
+    avg_30day,
+    (transaction_amount - avg_30day) / NULLIF(stddev_30day, 0) as z_score,
+    CASE 
+        WHEN ABS((transaction_amount - avg_30day) / NULLIF(stddev_30day, 0)) > 3 THEN 'High Risk'
+        WHEN ABS((transaction_amount - avg_30day) / NULLIF(stddev_30day, 0)) > 2 THEN 'Medium Risk'
+        ELSE 'Normal'
+    END as fraud_risk
+FROM transaction_stats
+WHERE ABS((transaction_amount - avg_30day) / NULLIF(stddev_30day, 0)) > 2
+ORDER BY z_score DESC;
+
+-- Geographic anomalies
+WITH customer_locations AS (
+    SELECT 
+        customer_id,
+        transaction_timestamp,
+        country_code,
+        LAG(country_code) OVER (PARTITION BY customer_id ORDER BY transaction_timestamp) as prev_country,
+        LAG(transaction_timestamp) OVER (PARTITION BY customer_id ORDER BY transaction_timestamp) as prev_timestamp
+    FROM transactions
+)
+SELECT 
+    customer_id,
+    transaction_timestamp,
+    country_code,
+    prev_country,
+    TIMESTAMPDIFF(MINUTE, prev_timestamp, transaction_timestamp) as minutes_between,
+    'Impossible Travel' as alert_type
+FROM customer_locations
+WHERE country_code != prev_country
+  AND TIMESTAMPDIFF(MINUTE, prev_timestamp, transaction_timestamp) < 120;
+```
+
+**Machine Learning Fraud Model:**
+```python
+from sklearn.ensemble import IsolationForest
+from sklearn.preprocessing import StandardScaler
+
+# Load transaction data
+transactions = pd.read_csv('transactions.csv')
+
+# Feature engineering for fraud detection
+transactions['hour'] = pd.to_datetime(transactions['timestamp']).dt.hour
+transactions['day_of_week'] = pd.to_datetime(transactions['timestamp']).dt.dayofweek
+transactions['amount_log'] = np.log1p(transactions['amount'])
+
+# Customer aggregates
+customer_agg = transactions.groupby('customer_id').agg({
+    'amount': ['mean', 'std', 'max'],
+    'transaction_id': 'count'
+}).reset_index()
+customer_agg.columns = ['customer_id', 'avg_amount', 'std_amount', 'max_amount', 'txn_count']
+
+transactions = transactions.merge(customer_agg, on='customer_id')
+
+# Deviation features
+transactions['amount_vs_avg'] = transactions['amount'] / transactions['avg_amount']
+transactions['amount_vs_max'] = transactions['amount'] / transactions['max_amount']
+
+# Anomaly detection with Isolation Forest
+features = ['amount_log', 'hour', 'day_of_week', 'amount_vs_avg', 'amount_vs_max']
+X = transactions[features]
+
+# Scale features
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Train anomaly detector
+iso_forest = IsolationForest(contamination=0.01, random_state=42)
+transactions['anomaly_score'] = iso_forest.fit_predict(X_scaled)
+transactions['fraud_probability'] = iso_forest.score_samples(X_scaled)
+
+# Flag high-risk transactions
+high_risk = transactions[transactions['anomaly_score'] == -1].sort_values('fraud_probability')
+print(f"Flagged {len(high_risk)} suspicious transactions ({len(high_risk)/len(transactions)*100:.2f}%)")
+
+# Validation against known fraud
+if 'is_fraud' in transactions.columns:
+    from sklearn.metrics import precision_score, recall_score, f1_score
+    print(f"Precision: {precision_score(transactions['is_fraud'], transactions['anomaly_score']==-1):.3f}")
+    print(f"Recall: {recall_score(transactions['is_fraud'], transactions['anomaly_score']==-1):.3f}")
+```
+
+---
+
+### Scenario 3: Customer Segmentation & CLV
+
+**Banking customer analytics:**
+
+```sql
+-- Customer value segmentation
+WITH customer_metrics AS (
+    SELECT 
+        c.customer_id,
+        c.customer_since,
+        DATEDIFF(CURRENT_DATE, c.customer_since) / 365.0 as tenure_years,
+        COUNT(DISTINCT a.account_id) as num_accounts,
+        SUM(a.balance) as total_balance,
+        COUNT(DISTINCT p.product_id) as num_products,
+        SUM(CASE WHEN t.transaction_date >= CURRENT_DATE - INTERVAL '90 days' THEN 1 ELSE 0 END) as transactions_90d,
+        SUM(CASE WHEN t.transaction_type = 'fee' THEN t.amount ELSE 0 END) as total_fees_paid
+    FROM customers c
+    LEFT JOIN accounts a ON c.customer_id = a.customer_id
+    LEFT JOIN products p ON c.customer_id = p.customer_id
+    LEFT JOIN transactions t ON c.customer_id = t.customer_id
+    GROUP BY c.customer_id, c.customer_since
+)
+SELECT 
+    customer_id,
+    tenure_years,
+    num_accounts,
+    total_balance,
+    num_products,
+    transactions_90d,
+    total_fees_paid,
+    CASE 
+        WHEN total_balance >= 100000 AND num_products >= 3 THEN 'Premium'
+        WHEN total_balance >= 50000 OR num_products >= 2 THEN 'High Value'
+        WHEN transactions_90d >= 10 THEN 'Active'
+        WHEN tenure_years >= 5 THEN 'Loyal'
+        ELSE 'Standard'
+    END as segment
+FROM customer_metrics
+ORDER BY total_balance DESC;
+```
+
+---
+
+### Scenario 4: Regulatory Compliance Reporting
+
+**Basel III Capital Requirements:**
+
+```sql
+-- Risk-Weighted Assets (RWA) calculation
+SELECT 
+    asset_class,
+    credit_rating,
+    SUM(exposure_amount) as total_exposure,
+    CASE 
+        WHEN asset_class = 'sovereign' AND credit_rating = 'AAA' THEN 0.0
+        WHEN asset_class = 'corporate' AND credit_rating >= 'AA' THEN 0.20
+        WHEN asset_class = 'corporate' AND credit_rating >= 'A' THEN 0.50
+        WHEN asset_class = 'corporate' AND credit_rating >= 'BBB' THEN 0.75
+        WHEN asset_class = 'corporate' THEN 1.00
+        WHEN asset_class = 'retail_mortgage' THEN 0.35
+        WHEN asset_class = 'retail_other' THEN 0.75
+        ELSE 1.00
+    END as risk_weight,
+    SUM(exposure_amount) * risk_weight as rwa
+FROM credit_exposures
+GROUP BY asset_class, credit_rating
+ORDER BY rwa DESC;
+
+-- Capital Adequacy Ratio
+SELECT 
+    (SELECT SUM(tier1_capital + tier2_capital) FROM capital_base) as total_capital,
+    SUM(rwa) as total_rwa,
+    (SELECT SUM(tier1_capital + tier2_capital) FROM capital_base) / SUM(rwa) * 100 as capital_ratio
+FROM (
+    SELECT SUM(exposure_amount * risk_weight) as rwa
+    FROM credit_exposures
+    JOIN risk_weights USING (asset_class, credit_rating)
+) rwa_calc;
+```
+
+**Anti-Money Laundering (AML) Monitoring:**
+
+```sql
+-- Large cash transactions
+SELECT 
+    customer_id,
+    transaction_date,
+    transaction_amount,
+    transaction_type,
+    'Large Cash' as alert_reason
+FROM transactions
+WHERE transaction_type = 'cash'
+  AND transaction_amount >= 10000
+  AND transaction_date >= CURRENT_DATE - INTERVAL '30 days'
+
+UNION ALL
+
+-- Structuring (smurfing) pattern
+SELECT 
+    customer_id,
+    DATE(transaction_date) as transaction_date,
+    SUM(transaction_amount) as total_amount,
+    'Potential Structuring' as alert_reason
+FROM transactions
+WHERE transaction_type = 'cash'
+  AND transaction_amount BETWEEN 9000 AND 9999
+  AND transaction_date >= CURRENT_DATE - INTERVAL '7 days'
+GROUP BY customer_id, DATE(transaction_date)
+HAVING COUNT(*) >= 3;
+```
+
+---
+
+### Scenario 5: Investment Portfolio Analytics
+
+```python
+import pandas as pd
+import numpy as np
+
+# Portfolio risk/return analysis
+def calculate_portfolio_metrics(returns_df, weights):
+    """
+    Calculate portfolio risk and return metrics
+    """
+    # Expected returns
+    expected_returns = returns_df.mean() * 252  # Annualized
+    
+    # Covariance matrix
+    cov_matrix = returns_df.cov() * 252  # Annualized
+    
+    # Portfolio return
+    portfolio_return = np.dot(weights, expected_returns)
+    
+    # Portfolio risk (volatility)
+    portfolio_risk = np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
+    
+    # Sharpe ratio (assuming risk-free rate = 2%)
+    sharpe_ratio = (portfolio_return - 0.02) / portfolio_risk
+    
+    return {
+        'return': portfolio_return,
+        'risk': portfolio_risk,
+        'sharpe': sharpe_ratio
+    }
+
+# Load returns data
+returns = pd.read_csv('daily_returns.csv', index_col='date', parse_dates=True)
+
+# Example portfolio weights
+weights = np.array([0.3, 0.3, 0.2, 0.15, 0.05])  # Must sum to 1
+
+metrics = calculate_portfolio_metrics(returns, weights)
+print(f"Expected Return: {metrics['return']*100:.2f}%")
+print(f"Expected Risk: {metrics['risk']*100:.2f}%")
+print(f"Sharpe Ratio: {metrics['sharpe']:.2f}")
+
+# Value at Risk (VaR) calculation
+portfolio_returns = returns.dot(weights)
+var_95 = np.percentile(portfolio_returns, 5)
+var_99 = np.percentile(portfolio_returns, 1)
+print(f"\n95% VaR: {var_95*100:.2f}%")
+print(f"99% VaR: {var_99*100:.2f}%")
+```
+
+---
+
+### Scenario 6: Churn Prediction (Banking)
+
+```python
+from sklearn.ensemble import GradientBoostingClassifier
+import pandas as pd
+
+# Load customer data
+customers = pd.read_csv('bank_customers.csv')
+
+# Feature engineering
+customers['products_per_year'] = customers['num_products'] / (customers['tenure_months'] / 12)
+customers['balance_per_product'] = customers['balance'] / customers['num_products']
+customers['transactions_per_month'] = customers['transactions_12m'] / 12
+customers['avg_transaction'] = customers['transaction_volume_12m'] / customers['transactions_12m']
+
+# Define churn
+customers['churned'] = (customers['status'] == 'closed').astype(int)
+
+# Features
+features = [
+    'age', 'tenure_months', 'balance', 'num_products',
+    'products_per_year', 'balance_per_product',
+    'transactions_per_month', 'avg_transaction',
+    'credit_score', 'has_credit_card', 'is_active_member'
+]
+
+X = customers[features]
+y = customers['churned']
+
+# Train model
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify=y)
+model = GradientBoostingClassifier(n_estimators=100)
+model.fit(X_train, y_train)
+
+# Predict churn risk
+customers['churn_probability'] = model.predict_proba(X)[:, 1]
+
+# High-risk customers
+at_risk = customers[customers['churn_probability'] > 0.5].sort_values('balance', ascending=False)
+print(f"{len(at_risk)} customers at high risk")
+print(f"Total balance at risk: ${at_risk['balance'].sum():,.0f}")
+
+# Retention strategies by segment
+print("\nRetention Recommendations:")
+for segment in ['Premium', 'High Value', 'Active', 'Standard']:
+    segment_risk = at_risk[at_risk['segment'] == segment]
+    if len(segment_risk) > 0:
+        print(f"{segment}: {len(segment_risk)} customers, avg balance ${segment_risk['balance'].mean():,.0f}")
+```
+
+---
+
+### Scenario 7: Loan Default Prediction Timeline
+
+```sql
+-- Early warning indicators by months before default
+WITH default_timeline AS (
+    SELECT 
+        l.loan_id,
+        l.default_date,
+        t.transaction_date,
+        DATEDIFF(l.default_date, t.transaction_date) / 30 as months_before_default,
+        t.transaction_type,
+        t.amount
+    FROM loans l
+    JOIN transactions t ON l.customer_id = t.customer_id
+    WHERE l.status = 'default'
+      AND t.transaction_date < l.default_date
+      AND t.transaction_date >= l.default_date - INTERVAL '12 months'
+)
+SELECT 
+    FLOOR(months_before_default) as months_out,
+    COUNT(DISTINCT loan_id) as loans,
+    SUM(CASE WHEN transaction_type = 'missed_payment' THEN 1 ELSE 0 END) as missed_payments,
+    SUM(CASE WHEN transaction_type = 'late_fee' THEN 1 ELSE 0 END) as late_fees,
+    AVG(CASE WHEN transaction_type = 'payment' THEN amount END) as avg_payment_amount
+FROM default_timeline
+GROUP BY FLOOR(months_before_default)
+ORDER BY months_out DESC;
+```
+
+---
+
+### Scenario 8: Branch Performance Analysis
+
+```sql
+-- Branch profitability and efficiency
+SELECT 
+    b.branch_id,
+    b.branch_name,
+    b.region,
+    COUNT(DISTINCT c.customer_id) as customers,
+    COUNT(DISTINCT a.account_id) as accounts,
+    SUM(a.balance) as total_deposits,
+    SUM(l.loan_amount) as total_loans,
+    SUM(t.fee_amount) as fee_revenue,
+    (SUM(t.fee_revenue) + SUM(l.interest_income)) as total_revenue,
+    b.operating_cost,
+    (SUM(t.fee_revenue) + SUM(l.interest_income) - b.operating_cost) as net_profit,
+    (SUM(t.fee_revenue) + SUM(l.interest_income) - b.operating_cost) / b.operating_cost * 100 as roi_pct
+FROM branches b
+LEFT JOIN customers c ON b.branch_id = c.home_branch_id
+LEFT JOIN accounts a ON c.customer_id = a.customer_id
+LEFT JOIN loans l ON c.customer_id = l.customer_id
+LEFT JOIN transactions t ON c.customer_id = t.customer_id
+WHERE t.transaction_date >= CURRENT_DATE - INTERVAL '12 months'
+GROUP BY b.branch_id, b.branch_name, b.region, b.operating_cost
+ORDER BY net_profit DESC;
+```
+
+---
+
+### Scenario 9: Credit Card Analytics
+
+```sql
+-- Credit card usage patterns and profitability
+SELECT 
+    card_type,
+    COUNT(DISTINCT customer_id) as cardholders,
+    AVG(credit_limit) as avg_limit,
+    AVG(balance) as avg_balance,
+    AVG(balance / NULLIF(credit_limit, 0)) as avg_utilization,
+    SUM(CASE WHEN days_past_due > 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as delinquency_rate,
+    SUM(annual_fee) as total_annual_fees,
+    SUM(interest_charged) as total_interest,
+    SUM(interchange_revenue) as total_interchange,
+    (SUM(annual_fee) + SUM(interest_charged) + SUM(interchange_revenue)) as total_revenue
+FROM credit_cards
+WHERE status = 'active'
+GROUP BY card_type
+ORDER BY total_revenue DESC;
+```
+
+---
+
+### Scenario 10: Market Risk & Stress Testing
+
+```python
+# Monte Carlo simulation for portfolio stress testing
+def monte_carlo_var(returns, portfolio_value, num_simulations=10000):
+    """
+    Calculate Value at Risk using Monte Carlo simulation
+    """
+    mean_return = returns.mean()
+    std_return = returns.std()
+    
+    # Generate random scenarios
+    simulated_returns = np.random.normal(mean_return, std_return, num_simulations)
+    simulated_values = portfolio_value * (1 + simulated_returns)
+    
+    # Calculate losses
+    losses = portfolio_value - simulated_values
+    
+    # VaR at different confidence levels
+    var_95 = np.percentile(losses, 95)
+    var_99 = np.percentile(losses, 99)
+    
+    # Expected Shortfall (CVaR)
+    cvar_95 = losses[losses >= var_95].mean()
+    
+    return {
+        'VaR_95': var_95,
+        'VaR_99': var_99,
+        'CVaR_95': cvar_95
+    }
+
+# Example usage
+portfolio_value = 10_000_000
+daily_returns = pd.read_csv('portfolio_returns.csv')['return']
+
+risk_metrics = monte_carlo_var(daily_returns, portfolio_value)
+print(f"95% VaR: ${risk_metrics['VaR_95']:,.0f}")
+print(f"99% VaR: ${risk_metrics['VaR_99']:,.0f}")
+print(f"95% CVaR: ${risk_metrics['CVaR_95']:,.0f}")
+```
+
+---
+
+### Financial Analytics Best Practices
+
+**Data Governance:**
+- Strict access controls
+- Audit trails for all queries
+- Data anonymization for non-production
+- Encryption at rest and in transit
+
+**Regulatory Compliance:**
+- Basel III capital requirements
+- GDPR for EU customers
+- PCI DSS for card data
+- SOX for public companies
+- AML/KYC regulations
+
+**Risk Management:**
+- Daily risk monitoring
+- Stress testing portfolios
+- Scenario analysis
+- Early warning systems
+
+**Key Metrics:**
+- Default rates by segment
+- Net Interest Margin (NIM)
+- Return on Assets (ROA)
+- Cost-to-Income Ratio
+- Loan-to-Deposit Ratio
+- Non-Performing Loan (NPL) Ratio
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🎯 COMPLETE CAPSTONE PROJECT EXAMPLES")
+        st.markdown(
+            """**Two portfolio-ready capstone projects with full code and documentation**
+
+---
+
+## CAPSTONE PROJECT 1: Healthcare Patient Journey Analytics
+
+### Executive Summary
+
+**Business Context:** Regional hospital network seeks to optimize patient experience and reduce readmissions
+
+**Objective:** Analyze 50,000 patient journeys to identify bottlenecks and improve outcomes
+
+**Impact:** 15% reduction in readmissions, £1.2M annual savings
+
+### Data Sources
+
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime, timedelta
+
+# Generate realistic sample data
+np.random.seed(42)
+
+# Patient demographics
+patients = pd.DataFrame({
+    'patient_id': range(1, 50001),
+    'age': np.random.randint(18, 95, 50000),
+    'gender': np.random.choice(['M', 'F'], 50000),
+    'insurance_type': np.random.choice(['Private', 'Medicare', 'Medicaid', 'Uninsured'], 50000, p=[0.4, 0.3, 0.2, 0.1]),
+    'chronic_conditions': np.random.poisson(1.2, 50000)
+})
+
+# Hospital admissions
+admissions = pd.DataFrame({
+    'admission_id': range(1, 75001),
+    'patient_id': np.random.choice(range(1, 50001), 75000),
+    'admission_date': pd.date_range('2023-01-01', periods=75000, freq='7min'),
+    'discharge_date': None,
+    'admission_type': np.random.choice(['Emergency', 'Elective', 'Urgent'], 75000, p=[0.5, 0.3, 0.2]),
+    'primary_diagnosis': np.random.choice(['Cardiac', 'Respiratory', 'Orthopedic', 'Neurological', 'Other'], 75000),
+    'los_days': np.random.gamma(2, 2, 75000).astype(int) + 1
+})
+
+# Calculate discharge dates
+admissions['discharge_date'] = admissions.apply(
+    lambda x: x['admission_date'] + timedelta(days=int(x['los_days'])), axis=1
+)
+
+# Readmissions (15% of patients)
+readmissions = admissions.sample(int(len(admissions) * 0.15)).copy()
+readmissions['readmitted_within_30'] = 1
+admissions = admissions.merge(
+    readmissions[['admission_id', 'readmitted_within_30']], 
+    on='admission_id', 
+    how='left'
+)
+admissions['readmitted_within_30'].fillna(0, inplace=True)
+
+print("Data loaded successfully!")
+print(f"Patients: {len(patients):,}")
+print(f"Admissions: {len(admissions):,}")
+```
+
+### Analysis Part 1: Readmission Risk Factors
+
+```python
+# Merge datasets
+df = admissions.merge(patients, on='patient_id')
+
+# Readmission rate overall
+readmit_rate = df['readmitted_within_30'].mean() * 100
+print(f"Overall 30-day readmission rate: {readmit_rate:.1f}%")
+
+# By admission type
+print("\nReadmission Rate by Admission Type:")
+print(df.groupby('admission_type')['readmitted_within_30'].agg(['count', 'mean']))
+
+# By diagnosis
+print("\nReadmission Rate by Primary Diagnosis:")
+diagnosis_readmit = df.groupby('primary_diagnosis').agg({
+    'readmitted_within_30': ['count', 'mean'],
+    'los_days': 'mean'
+}).round(3)
+diagnosis_readmit.columns = ['admissions', 'readmit_rate', 'avg_los']
+print(diagnosis_readmit.sort_values('readmit_rate', ascending=False))
+
+# Age analysis
+df['age_group'] = pd.cut(df['age'], bins=[0, 40, 60, 75, 100], labels=['<40', '40-60', '60-75', '75+'])
+age_analysis = df.groupby('age_group')['readmitted_within_30'].agg(['count', 'mean'])
+print("\nReadmission by Age Group:")
+print(age_analysis)
+
+# Visualizations
+fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+
+# 1. Readmission by diagnosis
+diagnosis_readmit['readmit_rate'].plot(kind='bar', ax=axes[0, 0], color='coral')
+axes[0, 0].set_title('30-Day Readmission Rate by Diagnosis')
+axes[0, 0].set_ylabel('Readmission Rate')
+axes[0, 0].set_xlabel('Diagnosis')
+axes[0, 0].tick_params(axis='x', rotation=45)
+
+# 2. Length of stay distribution
+df[df['readmitted_within_30']==0]['los_days'].hist(bins=30, ax=axes[0, 1], alpha=0.7, label='Not Readmitted')
+df[df['readmitted_within_30']==1]['los_days'].hist(bins=30, ax=axes[0, 1], alpha=0.7, label='Readmitted')
+axes[0, 1].set_title('Length of Stay: Readmitted vs Not')
+axes[0, 1].set_xlabel('Days')
+axes[0, 1].legend()
+
+# 3. Readmission by age
+age_analysis['mean'].plot(kind='bar', ax=axes[1, 0], color='steelblue')
+axes[1, 0].set_title('Readmission Rate by Age Group')
+axes[1, 0].set_ylabel('Rate')
+axes[1, 0].tick_params(axis='x', rotation=0)
+
+# 4. Monthly trend
+df['month'] = df['admission_date'].dt.to_period('M')
+monthly = df.groupby('month')['readmitted_within_30'].mean() * 100
+monthly.plot(ax=axes[1, 1], marker='o')
+axes[1, 1].set_title('Monthly Readmission Rate Trend')
+axes[1, 1].set_ylabel('Rate (%)')
+axes[1, 1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('capstone1_readmission_analysis.png', dpi=300, bbox_inches='tight')
+plt.show()
+```
+
+### Analysis Part 2: Predictive Modeling
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
+
+# Feature engineering
+df['is_emergency'] = (df['admission_type'] == 'Emergency').astype(int)
+df['is_cardiac'] = (df['primary_diagnosis'] == 'Cardiac').astype(int)
+df['age_over_65'] = (df['age'] > 65).astype(int)
+df['has_chronic'] = (df['chronic_conditions'] > 0).astype(int)
+df['long_stay'] = (df['los_days'] > 7).astype(int)
+
+# Features for model
+features = [
+    'age', 'chronic_conditions', 'los_days', 
+    'is_emergency', 'is_cardiac', 'age_over_65', 
+    'has_chronic', 'long_stay'
+]
+
+X = df[features]
+y = df['readmitted_within_30']
+
+# Train/test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42, stratify=y
+)
+
+# Train model
+model = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
+model.fit(X_train, y_train)
+
+# Predictions
+y_pred = model.predict(X_test)
+y_pred_proba = model.predict_proba(X_test)[:, 1]
+
+# Evaluation
+print("Model Performance:")
+print(classification_report(y_test, y_pred))
+print(f"\nROC AUC Score: {roc_auc_score(y_test, y_pred_proba):.3f}")
+
+# Feature importance
+importance_df = pd.DataFrame({
+    'feature': features,
+    'importance': model.feature_importances_
+}).sort_values('importance', ascending=False)
+
+print("\nFeature Importance:")
+print(importance_df)
+
+# Predict on all data
+df['readmit_risk_score'] = model.predict_proba(X)[:, 1]
+df['risk_category'] = pd.cut(df['readmit_risk_score'], 
+                               bins=[0, 0.10, 0.20, 1],
+                               labels=['Low', 'Medium', 'High'])
+
+# High-risk patients
+high_risk = df[df['risk_category'] == 'High'].copy()
+print(f"\n{len(high_risk)} high-risk patients identified")
+print(f"Expected readmissions in high-risk group: {high_risk['readmit_risk_score'].sum():.0f}")
+
+# Confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.title('Confusion Matrix')
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.savefig('capstone1_confusion_matrix.png', dpi=300)
+plt.show()
+```
+
+### Analysis Part 3: Intervention Strategy
+
+```python
+# Cost-benefit analysis
+cost_per_readmission = 15000  # Average cost
+intervention_cost = 500  # Cost of follow-up program
+
+# Current state
+current_readmissions = df['readmitted_within_30'].sum()
+current_cost = current_readmissions * cost_per_readmission
+
+# With intervention (assuming 40% reduction in high-risk group)
+high_risk_current = high_risk['readmitted_within_30'].sum()
+high_risk_prevented = high_risk_current * 0.40
+new_readmissions = current_readmissions - high_risk_prevented
+new_cost = new_readmissions * cost_per_readmission
+intervention_total_cost = len(high_risk) * intervention_cost
+
+# Savings
+total_savings = (current_cost - new_cost) - intervention_total_cost
+
+print("INTERVENTION IMPACT ANALYSIS")
+print("=" * 50)
+print(f"Current readmissions: {current_readmissions:,.0f}")
+print(f"Current cost: £{current_cost:,.0f}")
+print(f"\nHigh-risk patients: {len(high_risk):,.0f}")
+print(f"Expected prevented readmissions: {high_risk_prevented:,.0f}")
+print(f"\nNew readmissions: {new_readmissions:,.0f}")
+print(f"New cost: £{new_cost:,.0f}")
+print(f"Intervention cost: £{intervention_total_cost:,.0f}")
+print(f"\nNET SAVINGS: £{total_savings:,.0f}")
+print(f"ROI: {(total_savings / intervention_total_cost * 100):.1f}%")
+```
+
+### SQL Queries for Production System
+
+```sql
+-- Dashboard query: Daily readmission tracking
+CREATE VIEW daily_readmission_metrics AS
+WITH admissions_with_next AS (
+    SELECT 
+        a1.admission_id,
+        a1.patient_id,
+        a1.discharge_date,
+        a1.primary_diagnosis,
+        MIN(a2.admission_date) as next_admission_date,
+        DATEDIFF(MIN(a2.admission_date), a1.discharge_date) as days_to_readmit
+    FROM admissions a1
+    LEFT JOIN admissions a2 
+        ON a1.patient_id = a2.patient_id 
+        AND a2.admission_date > a1.discharge_date
+    GROUP BY a1.admission_id, a1.patient_id, a1.discharge_date, a1.primary_diagnosis
+)
+SELECT 
+    DATE(discharge_date) as date,
+    COUNT(*) as discharges,
+    SUM(CASE WHEN days_to_readmit <= 30 THEN 1 ELSE 0 END) as readmissions_30d,
+    SUM(CASE WHEN days_to_readmit <= 30 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as readmit_rate
+FROM admissions_with_next
+GROUP BY DATE(discharge_date)
+ORDER BY date DESC;
+
+-- High-risk patient alert system
+SELECT 
+    p.patient_id,
+    p.patient_name,
+    a.admission_id,
+    a.discharge_date,
+    a.primary_diagnosis,
+    CASE 
+        WHEN a.los_days > 7 AND p.age > 65 THEN 'High'
+        WHEN a.admission_type = 'Emergency' AND p.chronic_conditions >= 2 THEN 'High'
+        WHEN a.primary_diagnosis = 'Cardiac' AND p.age > 75 THEN 'High'
+        ELSE 'Standard'
+    END as risk_level
+FROM patients p
+JOIN admissions a ON p.patient_id = a.patient_id
+WHERE a.discharge_date = CURRENT_DATE
+  AND CASE 
+        WHEN a.los_days > 7 AND p.age > 65 THEN 'High'
+        WHEN a.admission_type = 'Emergency' AND p.chronic_conditions >= 2 THEN 'High'
+        WHEN a.primary_diagnosis = 'Cardiac' AND p.age > 75 THEN 'High'
+        ELSE 'Standard'
+    END = 'High'
+ORDER BY p.patient_name;
+```
+
+### Recommendations & Next Steps
+
+**Immediate Actions:**
+1. Implement discharge follow-up program for high-risk patients
+2. Enhanced care coordination for cardiac patients
+3. Medication reconciliation protocol
+4. Post-discharge phone calls within 48 hours
+
+**Expected Outcomes:**
+- 15% reduction in 30-day readmissions
+- £1.2M annual savings
+- Improved patient satisfaction scores
+- Better care coordination
+
+**Key Success Metrics:**
+- Readmission rate trending below 12%
+- 90% follow-up call completion
+- Patient satisfaction >4.5/5
+- Program ROI >200%
+
+---
+
+## CAPSTONE PROJECT 2: E-Commerce Growth Analytics
+
+### Executive Summary
+
+**Business Context:** Online retailer with £50M annual revenue seeks growth acceleration
+
+**Objective:** Identify growth levers and optimize customer acquisition and retention
+
+**Impact:** 25% revenue increase, £12.5M additional annual revenue
+
+### Data Setup
+
+```python
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+
+# Generate e-commerce data
+np.random.seed(42)
+
+# Customers
+customers = pd.DataFrame({
+    'customer_id': range(1, 100001),
+    'signup_date': pd.date_range('2022-01-01', periods=100000, freq='4min'),
+    'acquisition_channel': np.random.choice(['Organic', 'Paid Search', 'Social', 'Email', 'Referral'], 100000, p=[0.3, 0.25, 0.2, 0.15, 0.1]),
+    'country': np.random.choice(['UK', 'US', 'Germany', 'France', 'Other'], 100000, p=[0.4, 0.3, 0.15, 0.1, 0.05])
+})
+
+# Orders
+num_orders = 250000
+orders = pd.DataFrame({
+    'order_id': range(1, num_orders + 1),
+    'customer_id': np.random.choice(customers['customer_id'], num_orders),
+    'order_date': pd.date_range('2022-01-01', periods=num_orders, freq='2min'),
+    'order_value': np.random.gamma(5, 20, num_orders),
+    'items_count': np.random.poisson(2.5, num_orders) + 1,
+    'device': np.random.choice(['Desktop', 'Mobile', 'Tablet'], num_orders, p=[0.4, 0.5, 0.1])
+})
+
+# Product categories
+orders['category'] = np.random.choice(['Electronics', 'Clothing', 'Home', 'Beauty', 'Sports'], num_orders)
+
+print("E-Commerce Data Generated!")
+print(f"Customers: {len(customers):,}")
+print(f"Orders: {len(orders):,}")
+print(f"Total Revenue: £{orders['order_value'].sum():,.0f}")
+```
+
+### Analysis Part 1: Customer Acquisition Analysis
+
+```python
+# Merge data
+df = orders.merge(customers, on='customer_id')
+
+# Acquisition channel performance
+channel_perf = df.groupby('acquisition_channel').agg({
+    'order_id': 'count',
+    'customer_id': 'nunique',
+    'order_value': 'sum'
+}).round(2)
+channel_perf.columns = ['orders', 'customers', 'revenue']
+channel_perf['orders_per_customer'] = channel_perf['orders'] / channel_perf['customers']
+channel_perf['revenue_per_customer'] = channel_perf['revenue'] / channel_perf['customers']
+
+print("ACQUISITION CHANNEL PERFORMANCE")
+print(channel_perf.sort_values('revenue', ascending=False))
+
+# Monthly growth trends
+df['month'] = df['order_date'].dt.to_period('M')
+monthly_metrics = df.groupby('month').agg({
+    'order_id': 'count',
+    'customer_id': 'nunique',
+    'order_value': 'sum'
+}).reset_index()
+monthly_metrics.columns = ['month', 'orders', 'customers', 'revenue']
+monthly_metrics['aov'] = monthly_metrics['revenue'] / monthly_metrics['orders']
+
+print("\nMONTHLY TRENDS")
+print(monthly_metrics.tail(12))
+
+# Visualizations
+fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+
+# 1. Revenue by channel
+channel_perf['revenue'].plot(kind='bar', ax=axes[0, 0], color='steelblue')
+axes[0, 0].set_title('Revenue by Acquisition Channel')
+axes[0, 0].set_ylabel('Revenue (£)')
+axes[0, 0].tick_params(axis='x', rotation=45)
+
+# 2. Monthly revenue trend
+monthly_metrics['revenue'].plot(ax=axes[0, 1], marker='o', linewidth=2)
+axes[0, 1].set_title('Monthly Revenue Trend')
+axes[0, 1].set_ylabel('Revenue (£)')
+axes[0, 1].grid(True, alpha=0.3)
+
+# 3. Customer acquisition by channel
+channel_perf['customers'].plot(kind='bar', ax=axes[1, 0], color='coral')
+axes[1, 0].set_title('Customers by Channel')
+axes[1, 0].set_ylabel('Customers')
+axes[1, 0].tick_params(axis='x', rotation=45)
+
+# 4. AOV trend
+monthly_metrics['aov'].plot(ax=axes[1, 1], marker='o', color='green')
+axes[1, 1].set_title('Average Order Value Trend')
+axes[1, 1].set_ylabel('AOV (£)')
+axes[1, 1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('capstone2_acquisition.png', dpi=300)
+plt.show()
+```
+
+### Analysis Part 2: Customer Cohort Analysis
+
+```python
+# First purchase cohort
+first_purchase = df.groupby('customer_id').agg({
+    'order_date': 'min',
+    'order_value': 'first'
+}).reset_index()
+first_purchase.columns = ['customer_id', 'first_purchase_date', 'first_order_value']
+first_purchase['cohort'] = first_purchase['first_purchase_date'].dt.to_period('M')
+
+# Merge cohort info
+df = df.merge(first_purchase[['customer_id', 'cohort', 'first_order_value']], on='customer_id')
+
+# Cohort size
+cohort_sizes = first_purchase.groupby('cohort').size().reset_index(name='cohort_size')
+
+# Monthly activity by cohort
+df['order_month'] = df['order_date'].dt.to_period('M')
+cohort_data = df.groupby(['cohort', 'order_month']).agg({
+    'customer_id': 'nunique',
+    'order_value': 'sum'
+}).reset_index()
+cohort_data.columns = ['cohort', 'order_month', 'active_customers', 'revenue']
+
+# Calculate months since cohort
+cohort_data['period'] = (cohort_data['order_month'] - cohort_data['cohort']).apply(lambda x: x.n)
+
+# Merge cohort sizes
+cohort_data = cohort_data.merge(cohort_sizes, on='cohort')
+
+# Retention rate
+cohort_data['retention_rate'] = cohort_data['active_customers'] / cohort_data['cohort_size'] * 100
+
+# Pivot for heatmap
+retention_matrix = cohort_data.pivot_table(
+    values='retention_rate',
+    index='cohort',
+    columns='period'
+)
+
+print("COHORT RETENTION ANALYSIS")
+print(retention_matrix.head(12))
+
+# Retention heatmap
+plt.figure(figsize=(14, 10))
+sns.heatmap(retention_matrix, annot=True, fmt='.0f', cmap='RdYlGn', vmin=0, vmax=100)
+plt.title('Customer Retention by Cohort (%)')
+plt.xlabel('Months Since First Purchase')
+plt.ylabel('Cohort Month')
+plt.tight_layout()
+plt.savefig('capstone2_cohort_retention.png', dpi=300)
+plt.show()
+
+# Calculate average retention by month
+avg_retention = retention_matrix.mean()
+print("\nAverage Retention by Month:")
+print(avg_retention)
+```
+
+### Analysis Part 3: Revenue Optimization
+
+```python
+# Customer lifetime value
+customer_metrics = df.groupby('customer_id').agg({
+    'order_id': 'count',
+    'order_value': 'sum',
+    'order_date': ['min', 'max']
+}).reset_index()
+customer_metrics.columns = ['customer_id', 'order_count', 'total_spent', 'first_order', 'last_order']
+customer_metrics['customer_lifespan_days'] = (customer_metrics['last_order'] - customer_metrics['first_order']).dt.days
+customer_metrics['avg_order_value'] = customer_metrics['total_spent'] / customer_metrics['order_count']
+
+# Merge with acquisition channel
+customer_metrics = customer_metrics.merge(customers[['customer_id', 'acquisition_channel']], on='customer_id')
+
+# CLV by channel
+clv_by_channel = customer_metrics.groupby('acquisition_channel').agg({
+    'total_spent': 'mean',
+    'order_count': 'mean',
+    'customer_lifespan_days': 'mean'
+}).round(2)
+
+print("CUSTOMER LIFETIME VALUE BY CHANNEL")
+print(clv_by_channel.sort_values('total_spent', ascending=False))
+
+# Product category analysis
+category_perf = df.groupby('category').agg({
+    'order_id': 'count',
+    'order_value': ['sum', 'mean'],
+    'customer_id': 'nunique'
+}).round(2)
+category_perf.columns = ['orders', 'total_revenue', 'avg_order_value', 'customers']
+
+print("\nPRODUCT CATEGORY PERFORMANCE")
+print(category_perf.sort_values('total_revenue', ascending=False))
+
+# Device performance
+device_perf = df.groupby('device').agg({
+    'order_id': 'count',
+    'order_value': ['sum', 'mean']
+}).round(2)
+device_perf.columns = ['orders', 'revenue', 'aov']
+
+print("\nDEVICE PERFORMANCE")
+print(device_perf)
+```
+
+### Analysis Part 4: Growth Recommendations
+
+```python
+# Identify growth opportunities
+print("\n" + "=" * 60)
+print("GROWTH OPPORTUNITIES")
+print("=" * 60)
+
+# 1. Channel optimization
+best_channel = clv_by_channel['total_spent'].idxmax()
+worst_channel = clv_by_channel['total_spent'].idxmin()
+print(f"\n1. CHANNEL OPTIMIZATION")
+print(f"   - Invest more in: {best_channel} (£{clv_by_channel.loc[best_channel, 'total_spent']:.2f} CLV)")
+print(f"   - Reduce spend on: {worst_channel} (£{clv_by_channel.loc[worst_channel, 'total_spent']:.2f} CLV)")
+print(f"   - Potential gain: 15% increase in customer acquisition efficiency")
+
+# 2. Retention improvement
+month_3_retention = retention_matrix[3].mean()
+print(f"\n2. RETENTION IMPROVEMENT")
+print(f"   - Current 3-month retention: {month_3_retention:.1f}%")
+print(f"   - Target: 65% (+{65 - month_3_retention:.1f} percentage points)")
+print(f"   - Strategy: Win-back campaigns, loyalty program, personalized recommendations")
+
+# 3. AOV increase
+current_aov = df['order_value'].mean()
+print(f"\n3. AVERAGE ORDER VALUE")
+print(f"   - Current AOV: £{current_aov:.2f}")
+print(f"   - Target: £{current_aov * 1.15:.2f} (+15%)")
+print(f"   - Tactics: Product bundling, free shipping thresholds, cross-sell recommendations")
+
+# 4. Category expansion
+top_category = category_perf['total_revenue'].idxmax()
+print(f"\n4. CATEGORY EXPANSION")
+print(f"   - Top category: {top_category} (£{category_perf.loc[top_category, 'total_revenue']:,.0f})")
+print(f"   - Action: Expand product range in top categories")
+print(f"   - Expected: 10% revenue increase")
+
+# Impact projection
+current_annual_revenue = df['order_value'].sum()
+projected_improvements = {
+    'Channel optimization': current_annual_revenue * 0.05,
+    'Retention improvement': current_annual_revenue * 0.08,
+    'AOV increase': current_annual_revenue * 0.07,
+    'Category expansion': current_annual_revenue * 0.05
+}
+
+total_impact = sum(projected_improvements.values())
+print(f"\nTOTAL PROJECTED IMPACT")
+print(f"Current Revenue: £{current_annual_revenue:,.0f}")
+for initiative, impact in projected_improvements.items():
+    print(f"{initiative}: +£{impact:,.0f}")
+print(f"New Revenue: £{current_annual_revenue + total_impact:,.0f}")
+print(f"Growth: +{total_impact / current_annual_revenue * 100:.1f}%")
+```
+
+### SQL Production Queries
+
+```sql
+-- Daily revenue dashboard
+SELECT 
+    DATE(order_date) as date,
+    COUNT(DISTINCT customer_id) as customers,
+    COUNT(*) as orders,
+    SUM(order_value) as revenue,
+    AVG(order_value) as aov,
+    SUM(order_value) / COUNT(DISTINCT customer_id) as revenue_per_customer
+FROM orders
+WHERE order_date >= CURRENT_DATE - INTERVAL '30 days'
+GROUP BY DATE(order_date)
+ORDER BY date DESC;
+
+-- Top customers for VIP program
+WITH customer_value AS (
+    SELECT 
+        customer_id,
+        COUNT(*) as lifetime_orders,
+        SUM(order_value) as lifetime_value,
+        MAX(order_date) as last_order_date,
+        DATEDIFF(CURRENT_DATE, MAX(order_date)) as days_since_order
+    FROM orders
+    GROUP BY customer_id
+)
+SELECT 
+    c.customer_id,
+    c.acquisition_channel,
+    cv.lifetime_orders,
+    cv.lifetime_value,
+    cv.days_since_order,
+    CASE 
+        WHEN cv.lifetime_value >= 5000 AND cv.lifetime_orders >= 10 THEN 'Platinum'
+        WHEN cv.lifetime_value >= 2000 AND cv.lifetime_orders >= 5 THEN 'Gold'
+        WHEN cv.lifetime_value >= 1000 THEN 'Silver'
+        ELSE 'Standard'
+    END as tier
+FROM customers c
+JOIN customer_value cv ON c.customer_id = cv.customer_id
+WHERE cv.lifetime_value >= 1000
+ORDER BY cv.lifetime_value DESC
+LIMIT 1000;
+```
+
+### Final Recommendations
+
+**Priority 1: Channel Optimization**
+- Reallocate 30% of marketing budget to top-performing channels
+- Expected: £2.5M additional revenue
+
+**Priority 2: Retention Programs**
+- Launch loyalty program with points and rewards
+- Implement personalized product recommendations
+- Expected: £4M additional revenue
+
+**Priority 3: AOV Enhancement**
+- Free shipping threshold at £75
+- Product bundling for top categories
+- Expected: £3.5M additional revenue
+
+**Priority 4: Product Expansion**
+- Double SKUs in top 2 categories
+- Expected: £2.5M additional revenue
+
+**TOTAL IMPACT: £12.5M (25% growth)**
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🚀 ADVANCED TOPICS FOR DATA ANALYSTS")
+        st.markdown(
+            """**Level up with advanced statistics, ML, and storytelling**
+
+### Advanced Statistics
+
+**Hypothesis Testing:**
+```python
+from scipy import stats
+# T-test for A/B testing
+control = [0.12] * 1000  # 12% conversion
+treatment = [0.14] * 1000  # 14% conversion
+t_stat, p_value = stats.ttest_ind(control, treatment)
+print(f"p-value: {p_value:.4f}")
+if p_value < 0.05:
+    print("Statistically significant!")
+```
+
+**Confidence Intervals:**
+```python
+import numpy as np
+def confidence_interval(data, confidence=0.95):
+    mean = np.mean(data)
+    margin = stats.sem(data) * stats.t.ppf((1 + confidence) / 2, len(data) - 1)
+    return mean, mean - margin, mean + margin
+```
+
+**Regression Analysis:**
+```python
+from sklearn.linear_model import LinearRegression
+# Predict sales from marketing spend
+X = marketing_data[['tv_spend', 'radio_spend', 'social_spend']]
+y = marketing_data['sales']
+model = LinearRegression().fit(X, y)
+print(f"R-squared: {model.score(X, y):.3f}")
+```
+
+---
+
+### Machine Learning Basics
+
+**Classification:**
+```python
+from sklearn.ensemble import RandomForestClassifier
+# Predict customer churn
+model = RandomForestClassifier(n_estimators=100)
+model.fit(X_train, y_train)
+predictions = model.predict_proba(X_test)[:, 1]
+```
+
+**Clustering:**
+```python
+from sklearn.cluster import KMeans
+# Customer segmentation
+kmeans = KMeans(n_clusters=4)
+segments = kmeans.fit_predict(customer_features)
+```
+
+**Model Evaluation:**
+```python
+from sklearn.metrics import roc_auc_score, classification_report
+auc = roc_auc_score(y_test, predictions)
+print(classification_report(y_test, predictions > 0.5))
+```
+
+---
+
+### Data Storytelling
+
+**Story Structure:**
+1. Setup (Business context)
+2. Conflict (The problem)
+3. Analysis (Your investigation)
+4. Resolution (Key insight)
+5. Action (Recommendations)
+
+**Visualization Principles:**
+- Bar charts for comparisons
+- Line charts for trends
+- Pie charts for part-to-whole (use sparingly)
+- Scatter plots for correlations
+- Heatmaps for patterns
+
+**Executive Summary Template:**
+```
+[HEADLINE]: One-sentence actionable insight
+[DATA]: 2-3 key supporting metrics
+[IMPACT]: Business outcomes in £ or %
+[ACTIONS]: 3-5 specific recommendations
+[TIMELINE]: Next steps with owners
+```
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 📚 ADDITIONAL DETAILED CASE STUDIES")
+        st.markdown(
+            """**More real-world scenarios with complete solutions**
+
+### Case Study: Subscription Churn Analysis
+
+**Company:** Beauty subscription box  
+**Challenge:** 35% monthly churn, losing £500K annually  
+
+```python
+# Churn analysis
+churn_by_tenure = subscribers.groupby('months_subscribed')['churned'].mean()
+print(f"First 3 months churn: {churn_by_tenure.head(3).mean()*100:.1f}%")
+
+# Key insight: 60% churn in first 3 months
+early_customizers = subscribers[subscribers['customization_rate'] > 0.5]
+print(f"High customizers churn: {early_customizers['churned'].mean()*100:.1f}%")
+```
+
+**SQL:**
+```sql
+SELECT box_value_tier,
+    COUNT(*) as subscribers,
+    AVG(months_subscribed) as avg_tenure,
+    SUM(churned) * 100.0 / COUNT(*) as churn_rate
+FROM subscribers GROUP BY box_value_tier;
+```
+
+**Recommendations:** Enhanced onboarding, customization prompts  
+**Impact:** Reduce churn to 25% = £200K savings
+
+---
+
+### Case Study: Restaurant Operational Analytics
+
+**Company:** 50-location fast-casual chain  
+**Challenge:** Inconsistent performance  
+
+```sql
+-- Location performance
+SELECT location_id,
+    AVG(daily_revenue) as avg_revenue,
+    AVG(labor_cost_pct) as labor_pct,
+    AVG(customer_satisfaction) as csat
+FROM daily_operations
+WHERE date >= DATE_SUB(CURRENT_DATE, INTERVAL 12 MONTH)
+GROUP BY location_id
+ORDER BY avg_revenue DESC;
+```
+
+**Findings:** Top 10 locations = 40% of profit, labor varies 18-28%  
+**Impact:** 15% profit increase = £800K annually
+
+---
+
+### Case Study: Insurance Claim Processing
+
+**Company:** Regional insurer  
+**Challenge:** 45-day processing (target: 21 days)  
+
+```sql
+-- Bottleneck analysis
+SELECT claim_type,
+    AVG(DATEDIFF(first_review_date, submission_date)) as days_to_review,
+    AVG(DATEDIFF(decision_date, first_review_date)) as days_to_decision
+FROM claims GROUP BY claim_type;
+```
+
+**Findings:** 40% delays from incomplete docs, 25% require rework  
+**Impact:** Reduce to 28 days = 20K more claims/year capacity
+
+---
+
+### Case Study: University Enrollment
+
+**Company:** Mid-sized university  
+**Challenge:** Declining enrollment  
+
+```python
+# Predictive model
+features = ['gpa', 'sat_score', 'campus_visit', 'financial_aid_amount']
+model = RandomForestClassifier(n_estimators=100)
+model.fit(X_train, y_train)
+
+applicants['enroll_probability'] = model.predict_proba(X)[:, 1]
+```
+
+**Findings:** Campus visit = +40% enrollment, aid 40%+ = +25%  
+**Impact:** +200 students = £4M revenue
+
+---
+
+### Case Study: Hotel Revenue Management
+
+**Company:** 5-property boutique chain  
+**Challenge:** Optimize pricing, maximize RevPAR  
+
+```sql
+SELECT property_id, DATE(booking_date) as date,
+    AVG(room_rate) * COUNT(*) / total_rooms as revpar,
+    COUNT(*) * 100.0 / total_rooms as occupancy
+FROM bookings GROUP BY property_id, date;
+```
+
+**Findings:** Weekend rates can be +30%, corporate underpriced 15%  
+**Impact:** 8% RevPAR increase = £650K revenue
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 💪 ADDITIONAL PRACTICE PROBLEMS - ALL SKILLS")
+        st.markdown(
+            """**40+ more problems to master every skill**
+
+### Advanced SQL Practice (15 Problems)
+
+**Problem 1: Recursive CTE for Organizational Hierarchy**
+```sql
+-- Find all employees reporting to a manager (directly or indirectly)
+WITH RECURSIVE org_tree AS (
+    -- Base case: direct reports
+    SELECT employee_id, manager_id, employee_name, 1 as level
+    FROM employees
+    WHERE manager_id = 123  -- specific manager
+    
+    UNION ALL
+    
+    -- Recursive case: reports of reports
+    SELECT e.employee_id, e.manager_id, e.employee_name, ot.level + 1
+    FROM employees e
+    JOIN org_tree ot ON e.manager_id = ot.employee_id
+    WHERE ot.level < 10  -- prevent infinite recursion
+)
+SELECT * FROM org_tree ORDER BY level, employee_name;
+```
+
+**Problem 2: Median Calculation**
+```sql
+-- Calculate median salary by department
+WITH ranked_salaries AS (
+    SELECT 
+        department,
+        salary,
+        ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary) as row_num,
+        COUNT(*) OVER (PARTITION BY department) as total_count
+    FROM employees
+)
+SELECT 
+    department,
+    AVG(salary) as median_salary
+FROM ranked_salaries
+WHERE row_num IN (FLOOR((total_count + 1) / 2.0), CEIL((total_count + 1) / 2.0))
+GROUP BY department;
+```
+
+**Problem 3: Running Totals with Reset**
+```sql
+-- Running total that resets each month
+SELECT 
+    DATE(order_date) as date,
+    order_amount,
+    SUM(order_amount) OVER (
+        PARTITION BY DATE_FORMAT(order_date, '%Y-%m')
+        ORDER BY order_date
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) as running_monthly_total
+FROM orders
+ORDER BY order_date;
+```
+
+**Problem 4: Gaps and Islands**
+```sql
+-- Find consecutive date ranges (islands)
+WITH date_groups AS (
+    SELECT 
+        user_id,
+        activity_date,
+        DATE_SUB(activity_date, INTERVAL ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY activity_date) DAY) as group_id
+    FROM user_activity
+)
+SELECT 
+    user_id,
+    MIN(activity_date) as streak_start,
+    MAX(activity_date) as streak_end,
+    DATEDIFF(MAX(activity_date), MIN(activity_date)) + 1 as streak_length
+FROM date_groups
+GROUP BY user_id, group_id
+HAVING DATEDIFF(MAX(activity_date), MIN(activity_date)) + 1 >= 7
+ORDER BY streak_length DESC;
+```
+
+**Problem 5: Pivot with Dynamic Columns**
+```sql
+-- Pivot sales by product and month
+SELECT 
+    product_name,
+    SUM(CASE WHEN MONTH(sale_date) = 1 THEN amount ELSE 0 END) as Jan,
+    SUM(CASE WHEN MONTH(sale_date) = 2 THEN amount ELSE 0 END) as Feb,
+    SUM(CASE WHEN MONTH(sale_date) = 3 THEN amount ELSE 0 END) as Mar,
+    SUM(amount) as Total
+FROM sales s
+JOIN products p ON s.product_id = p.product_id
+WHERE YEAR(sale_date) = 2024
+GROUP BY product_name
+ORDER BY Total DESC;
+```
+
+**Problem 6: Self-Join for Comparisons**
+```sql
+-- Find employees earning more than their manager
+SELECT 
+    e.employee_name as employee,
+    e.salary as employee_salary,
+    m.employee_name as manager,
+    m.salary as manager_salary
+FROM employees e
+JOIN employees m ON e.manager_id = m.employee_id
+WHERE e.salary > m.salary;
+```
+
+**Problem 7: Complex Aggregation**
+```sql
+-- Customer purchase patterns
+SELECT 
+    customer_id,
+    COUNT(DISTINCT order_id) as order_count,
+    COUNT(DISTINCT DATE(order_date)) as days_with_orders,
+    AVG(order_total) as avg_order_value,
+    STDDEV(order_total) as order_volatility,
+    MIN(order_date) as first_order,
+    MAX(order_date) as last_order,
+    DATEDIFF(MAX(order_date), MIN(order_date)) as customer_lifespan_days
+FROM orders
+GROUP BY customer_id
+HAVING COUNT(DISTINCT order_id) >= 5;
+```
+
+**Problem 8: Time-Based Segmentation**
+```sql
+-- Classify customers by purchase timing
+SELECT 
+    customer_id,
+    CASE 
+        WHEN MAX(order_date) >= DATE_SUB(CURRENT_DATE, INTERVAL 30 DAY) THEN 'Active'
+        WHEN MAX(order_date) >= DATE_SUB(CURRENT_DATE, INTERVAL 90 DAY) THEN 'Lapsing'
+        WHEN MAX(order_date) >= DATE_SUB(CURRENT_DATE, INTERVAL 180 DAY) THEN 'At Risk'
+        ELSE 'Lost'
+    END as customer_status,
+    COUNT(*) as lifetime_orders,
+    SUM(order_total) as lifetime_value
+FROM orders
+GROUP BY customer_id;
+```
+
+**Problem 9: Ratio Calculations**
+```sql
+-- Product mix analysis
+SELECT 
+    category,
+    product_name,
+    SUM(quantity) as units_sold,
+    SUM(revenue) as total_revenue,
+    SUM(revenue) * 100.0 / SUM(SUM(revenue)) OVER (PARTITION BY category) as pct_of_category,
+    SUM(revenue) * 100.0 / SUM(SUM(revenue)) OVER () as pct_of_total
+FROM sales
+GROUP BY category, product_name
+ORDER BY category, total_revenue DESC;
+```
+
+**Problem 10: Cumulative Percentage**
+```sql
+-- Pareto analysis (80/20 rule)
+WITH product_revenue AS (
+    SELECT 
+        product_id,
+        SUM(revenue) as total_revenue
+    FROM sales
+    GROUP BY product_id
+),
+ranked_products AS (
+    SELECT 
+        product_id,
+        total_revenue,
+        SUM(total_revenue) OVER (ORDER BY total_revenue DESC) as cumulative_revenue,
+        SUM(total_revenue) OVER () as total_company_revenue
+    FROM product_revenue
+)
+SELECT 
+    product_id,
+    total_revenue,
+    cumulative_revenue,
+    cumulative_revenue * 100.0 / total_company_revenue as cumulative_pct
+FROM ranked_products
+WHERE cumulative_revenue * 100.0 / total_company_revenue <= 80;
+```
+
+**Problem 11-15: Additional SQL Challenges**
+
+```sql
+-- Problem 11: Find duplicate records
+SELECT email, COUNT(*) as count
+FROM users
+GROUP BY email
+HAVING COUNT(*) > 1;
+
+-- Problem 12: Date range overlap detection
+SELECT a.*, b.*
+FROM appointments a
+JOIN appointments b ON a.doctor_id = b.doctor_id AND a.id < b.id
+WHERE a.end_time > b.start_time AND a.start_time < b.end_time;
+
+-- Problem 13: Weighted average
+SELECT 
+    category,
+    SUM(price * quantity) / SUM(quantity) as weighted_avg_price
+FROM sales
+GROUP BY category;
+
+-- Problem 14: First and last value in group
+SELECT 
+    customer_id,
+    FIRST_VALUE(product_name) OVER (PARTITION BY customer_id ORDER BY order_date) as first_product,
+    LAST_VALUE(product_name) OVER (PARTITION BY customer_id ORDER BY order_date ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) as last_product
+FROM orders;
+
+-- Problem 15: Conditional aggregation
+SELECT 
+    region,
+    SUM(CASE WHEN status = 'completed' THEN revenue ELSE 0 END) as completed_revenue,
+    SUM(CASE WHEN status = 'pending' THEN revenue ELSE 0 END) as pending_revenue,
+    COUNT(CASE WHEN status = 'cancelled' THEN 1 END) as cancelled_count
+FROM orders
+GROUP BY region;
+```
+
+---
+
+### Advanced Python/Pandas Practice (15 Problems)
+
+**Problem 1: Multi-level Indexing**
+```python
+import pandas as pd
+
+# Create multi-index dataframe
+sales = pd.DataFrame({
+    'region': ['East', 'East', 'West', 'West'] * 3,
+    'product': ['A', 'B', 'A', 'B'] * 3,
+    'quarter': [1]*4 + [2]*4 + [3]*4,
+    'revenue': [100, 150, 120, 180, 110, 160, 130, 190, 115, 165, 135, 195]
+})
+
+# Set multi-index
+sales_pivot = sales.set_index(['region', 'product', 'quarter'])
+
+# Access specific values
+print(sales_pivot.loc[('East', 'A', 1)])
+
+# Aggregate at different levels
+print(sales_pivot.groupby(level=['region', 'product']).sum())
+```
+
+**Problem 2: Rolling Window Calculations**
+```python
+# Calculate 7-day moving average
+df['7day_avg'] = df['value'].rolling(window=7, min_periods=1).mean()
+
+# Exponentially weighted moving average
+df['ewma'] = df['value'].ewm(span=7, adjust=False).mean()
+
+# Rolling correlation
+df['rolling_corr'] = df['feature1'].rolling(window=30).corr(df['feature2'])
+```
+
+**Problem 3: Complex Merging**
+```python
+# Merge with tolerance (fuzzy join on dates)
+pd.merge_asof(
+    orders.sort_values('order_date'),
+    prices.sort_values('price_date'),
+    left_on='order_date',
+    right_on='price_date',
+    by='product_id',
+    tolerance=pd.Timedelta('7 days'),
+    direction='backward'
+)
+```
+
+**Problem 4: Text Processing**
+```python
+# Extract information from text
+df['domain'] = df['email'].str.extract(r'@([a-zA-Z0-9.-]+)')
+df['first_name'] = df['full_name'].str.split().str[0]
+
+# Clean phone numbers
+df['phone_clean'] = df['phone'].str.replace(r'[^0-9]', '', regex=True)
+```
+
+**Problem 5: Handling Missing Data**
+```python
+# Forward fill within groups
+df['value_filled'] = df.groupby('category')['value'].fillna(method='ffill')
+
+# Interpolate numeric values
+df['interpolated'] = df['value'].interpolate(method='linear')
+
+# Fill with group statistics
+df['filled'] = df.groupby('group')['value'].transform(lambda x: x.fillna(x.median()))
+```
+
+**Problem 6: Date Manipulations**
+```python
+# Business days between dates
+df['business_days'] = pd.bdate_range(
+    df['start_date'].min(),
+    df['end_date'].max()
+).size
+
+# Extract date components
+df['year'] = df['date'].dt.year
+df['quarter'] = df['date'].dt.quarter
+df['day_of_week'] = df['date'].dt.day_name()
+df['is_month_end'] = df['date'].dt.is_month_end
+```
+
+**Problem 7: Groupby with Multiple Functions**
+```python
+# Apply different functions to different columns
+result = df.groupby('category').agg({
+    'revenue': ['sum', 'mean', 'std'],
+    'quantity': 'sum',
+    'order_id': 'count',
+    'customer_id': 'nunique'
+})
+
+# Custom aggregation function
+def coefficient_of_variation(x):
+    return x.std() / x.mean()
+
+df.groupby('product')['price'].agg([coefficient_of_variation, 'median'])
+```
+
+**Problem 8: Pivot Tables**
+```python
+# Complex pivot
+pivot = pd.pivot_table(
+    df,
+    values='revenue',
+    index=['region', 'product'],
+    columns='quarter',
+    aggfunc='sum',
+    fill_value=0,
+    margins=True,
+    margins_name='Total'
+)
+```
+
+**Problem 9: Window Functions**
+```python
+# Rank within groups
+df['rank'] = df.groupby('category')['sales'].rank(ascending=False, method='dense')
+
+# Cumulative sum within groups
+df['cumsum'] = df.groupby('customer_id')['amount'].cumsum()
+
+# Shift for lag/lead calculations
+df['previous_value'] = df.groupby('id')['value'].shift(1)
+df['next_value'] = df.groupby('id')['value'].shift(-1)
+```
+
+**Problem 10: Applying Functions**
+```python
+# Apply custom function to rows
+def calculate_margin(row):
+    return (row['revenue'] - row['cost']) / row['revenue'] * 100
+
+df['margin_pct'] = df.apply(calculate_margin, axis=1)
+
+# Apply to groups
+df.groupby('category').apply(lambda x: x.nlargest(3, 'sales'))
+```
+
+**Problem 11-15: Additional Pandas Challenges**
+
+```python
+# Problem 11: Detect outliers using IQR
+Q1 = df['value'].quantile(0.25)
+Q3 = df['value'].quantile(0.75)
+IQR = Q3 - Q1
+df['is_outlier'] = (df['value'] < Q1 - 1.5 * IQR) | (df['value'] > Q3 + 1.5 * IQR)
+
+# Problem 12: Normalize data
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+df['normalized'] = scaler.fit_transform(df[['value']])
+
+# Problem 13: Create bins
+df['age_group'] = pd.cut(df['age'], bins=[0, 18, 35, 50, 100], labels=['<18', '18-35', '35-50', '50+'])
+
+# Problem 14: Melt dataframe
+df_melted = pd.melt(df, id_vars=['id', 'name'], value_vars=['Q1', 'Q2', 'Q3', 'Q4'], var_name='quarter', value_name='sales')
+
+# Problem 15: Concatenate with keys
+combined = pd.concat([df1, df2, df3], keys=['source1', 'source2', 'source3'])
+```
+
+---
+
+### Excel Advanced Problems (10 Problems)
+
+**Problem 1: Array Formulas**
+```
+Find top 3 values in range:
+=LARGE(A:A, {1;2;3})
+
+Sum if multiple criteria:
+=SUMPRODUCT((A:A="North")*(B:B="Product A")*C:C)
+```
+
+**Problem 2: Dynamic Named Ranges**
+```
+Create dynamic range that adjusts:
+=OFFSET($A$1,0,0,COUNTA($A:$A),1)
+
+Use in formulas:
+=SUM(DynamicRange)
+```
+
+**Problem 3: Conditional Formatting with Formulas**
+```
+Highlight rows where sales > average:
+=$C2>AVERAGE($C:$C)
+
+Highlight duplicates:
+=COUNTIF($A:$A,$A2)>1
+```
+
+**Problem 4: Advanced VLOOKUP**
+```
+Two-way lookup:
+=INDEX(data,MATCH(lookup_value,first_column,0),MATCH(column_name,header_row,0))
+
+Lookup with multiple criteria:
+=INDEX(return_column,MATCH(1,(criteria1=range1)*(criteria2=range2),0))
+```
+
+**Problem 5: Date Calculations**
+```
+Calculate business days:
+=NETWORKDAYS(start_date, end_date, holidays)
+
+Age calculation:
+=DATEDIF(birth_date, TODAY(), "Y")
+```
+
+**Problem 6: Text Functions**
+```
+Split full name:
+First: =LEFT(A2,FIND(" ",A2)-1)
+Last: =RIGHT(A2,LEN(A2)-FIND(" ",A2))
+
+Clean data:
+=TRIM(CLEAN(SUBSTITUTE(A2,CHAR(160),"")))
+```
+
+**Problem 7: Statistical Functions**
+```
+Percentile:
+=PERCENTILE.INC(range, 0.90)
+
+Standard deviation:
+=STDEV.P(range)
+
+Correlation:
+=CORREL(range1, range2)
+```
+
+**Problem 8: What-If Analysis**
+```
+Goal Seek: Tools → What-If Analysis → Goal Seek
+Data Tables: Create two-input table for scenario analysis
+Scenario Manager: Save different input combinations
+```
+
+**Problem 9: Power Query Transformations**
+```
+1. Get Data → From Table/Range
+2. Transform: Remove duplicates, split columns, pivot
+3. Merge queries (like SQL JOIN)
+4. Group by with aggregations
+5. Load to worksheet
+```
+
+**Problem 10: Dashboard Creation**
+```
+Components:
+- Slicers for filtering
+- Pivot charts for visualization
+- Sparklines for trends
+- Conditional formatting for KPIs
+- Form controls for interactivity
+```
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 📝 COMPREHENSIVE UNIT ASSESSMENTS")
+        st.markdown(
+            """**Complete assessments with quizzes, exercises, and grading rubrics**
+
+---
+
+## UNIT 1 ASSESSMENT: Data & Business Questions
+
+### Part A: Multiple Choice (20 points, 2 points each)
+
+**Question 1:** What is the most important first step in data analysis?
+- A) Clean the data
+- B) Build visualizations
+- C) Understand the business question
+- D) Run statistical tests
+
+**Answer:** C - Understanding the business question ensures you're solving the right problem.
+
+**Question 2:** Which metric would best measure customer loyalty?
+- A) Total revenue
+- B) Number of transactions
+- C) Repeat purchase rate
+- D) Average order value
+
+**Answer:** C - Repeat purchase rate directly measures customer loyalty and retention.
+
+**Question 3:** What does "SMART" stand for in goal setting?
+- A) Simple, Measurable, Achievable, Relevant, Timely
+- B) Specific, Measurable, Achievable, Relevant, Time-bound
+- C) Strategic, Measurable, Actionable, Realistic, Testable
+- D) Specific, Meaningful, Accurate, Relevant, Trackable
+
+**Answer:** B - SMART goals are Specific, Measurable, Achievable, Relevant, and Time-bound.
+
+**Question 4:** When analyzing hospital DNA (Did Not Attend) rates, which question is most relevant?
+- A) How many patients attended?
+- B) What time of day has highest DNA rates?
+- C) How much revenue was lost?
+- D) All of the above
+
+**Answer:** D - All questions provide valuable insights for comprehensive analysis.
+
+**Question 5:** What is the primary purpose of a data quality audit?
+- A) To delete bad data
+- B) To understand data limitations and reliability
+- C) To increase data volume
+- D) To create more reports
+
+**Answer:** B - Understanding data quality helps you make informed analytical decisions.
+
+**Questions 6-10:** [Additional multiple choice questions on data sources, analysis frameworks, stakeholder communication, etc.]
+
+### Part B: Short Answer (30 points, 10 points each)
+
+**Question 1:** Explain the difference between exploratory and confirmatory data analysis. Provide an example of when you would use each approach.
+
+**Model Answer (10 points):**
+- Exploratory (5 points): Open-ended investigation to discover patterns, generate hypotheses. Example: Analyzing sales data to identify unexpected trends or customer segments.
+- Confirmatory (5 points): Testing specific hypotheses with predetermined methods. Example: A/B test to validate if a new checkout flow increases conversion rates.
+
+**Question 2:** A retail client asks: "Why are sales down?" What follow-up questions would you ask to properly scope the analysis?
+
+**Model Answer (10 points):**
+Must include at least 5 relevant questions (2 points each):
+- What time period? (Compared to what baseline?)
+- Which products/categories?
+- Which locations/channels?
+- Which customer segments?
+- What external factors changed? (seasonality, competition, marketing)
+- How is "sales" defined? (revenue, units, transactions)
+
+**Question 3:** Describe three common data quality issues and how you would address each.
+
+**Model Answer (10 points):**
+Must identify 3 issues with solutions (3.33 points each):
+1. Missing values: Impute with median/mode, forward fill, or analyze separately
+2. Duplicates: Identify with GROUP BY, remove based on business logic
+3. Inconsistent formats: Standardize using text functions, date parsing, case conversion
+
+### Part C: Practical Exercise (50 points)
+
+**Scenario:** You are analyzing customer complaints for a telecommunications company. You have 6 months of data with 10,000 complaints.
+
+**Tasks:**
+
+1. **Define 3 KPIs** to measure complaint performance (10 points)
+   - Complaint resolution time (average days to close)
+   - First contact resolution rate (% resolved on first interaction)
+   - Complaint recurrence rate (% customers with multiple complaints)
+
+2. **Create analysis plan** (15 points)
+   - Data sources needed
+   - Key dimensions to analyze (complaint type, customer segment, channel)
+   - Statistical methods to use
+   - Expected deliverables
+
+3. **Write 3 SQL queries** to extract insights (15 points)
+   - Query 1: Average resolution time by complaint type
+   - Query 2: Top 10 complaint reasons
+   - Query 3: Month-over-month trend
+
+4. **Draft executive summary** (10 points)
+   - One-sentence headline finding
+   - 3 supporting data points
+   - 2-3 recommendations
+
+**Grading Rubric:**
+- 90-100: Exceptional - Complete, insightful, professional
+- 80-89: Proficient - Complete with minor gaps
+- 70-79: Satisfactory - Meets basic requirements
+- Below 70: Needs improvement
+
+**Total: 100 points**
+
+---
+
+## UNIT 2 ASSESSMENT: Excel Mastery
+
+### Part A: Multiple Choice (20 points)
+
+**Question 1:** Which function would you use to look up a value in a table where the lookup value is in the first column?
+- A) HLOOKUP
+- B) VLOOKUP
+- C) INDEX
+- D) MATCH
+
+**Answer:** B - VLOOKUP searches vertically in the first column.
+
+**Question 2:** What does the $ symbol do in cell references like $A$1?
+- A) Converts to currency format
+- B) Creates an absolute reference
+- C) Adds a comment
+- D) Locks the cell
+
+**Answer:** B - $ creates absolute references that don't change when copied.
+
+**Question 3:** Which chart type is best for showing parts of a whole?
+- A) Line chart
+- B) Bar chart
+- C) Pie chart
+- D) Scatter plot
+
+**Answer:** C - Pie charts show proportions and percentages of a whole.
+
+**Question 4:** What is a pivot table primarily used for?
+- A) Data entry
+- B) Summarizing and analyzing data
+- C) Creating formulas
+- D) Formatting cells
+
+**Answer:** B - Pivot tables summarize and analyze large datasets.
+
+**Question 5:** Which function calculates the average of cells that meet criteria?
+- A) AVERAGE
+- B) SUMIF
+- C) AVERAGEIF
+- D) COUNTIF
+
+**Answer:** C - AVERAGEIF calculates average with conditions.
+
+### Part B: Practical Excel Skills (80 points)
+
+**Exercise 1: Formula Mastery (20 points)**
+
+Given dataset with columns: Order_ID, Customer, Product, Quantity, Unit_Price, Date
+
+Create formulas for:
+1. Total revenue per order (5 points): =Quantity * Unit_Price
+2. Revenue rank (5 points): =RANK(Revenue, Revenue_Range, 0)
+3. Month from date (5 points): =TEXT(Date, "mmm") or =MONTH(Date)
+4. Conditional sum of revenue >£100 (5 points): =SUMIF(Revenue_Range, ">100")
+
+**Exercise 2: Pivot Table Analysis (25 points)**
+
+Create pivot table showing:
+1. Revenue by Product (5 points)
+2. Quantity sold by Month (5 points)
+3. Average order value by Customer (5 points)
+4. Add slicers for Date and Product (5 points)
+5. Format as professional report (5 points)
+
+**Exercise 3: Dashboard Creation (35 points)**
+
+Build executive dashboard with:
+1. KPI cards showing Total Revenue, Order Count, Avg Order Value (10 points)
+2. Revenue trend line chart (8 points)
+3. Top 5 products bar chart (8 points)
+4. Monthly comparison table (5 points)
+5. Professional formatting and interactivity (4 points)
+
+**Grading:**
+- Formulas correct and efficient: 20 points
+- Pivot table complete and insightful: 25 points
+- Dashboard professional and functional: 35 points
+
+**Total: 100 points**
+
+---
+
+## UNIT 3 ASSESSMENT: SQL for Data Analysts
+
+### Part A: SQL Concepts (20 points)
+
+**Question 1:** What does INNER JOIN return?
+- A) All rows from both tables
+- B) Only matching rows from both tables
+- C) All rows from left table
+- D) All rows from right table
+
+**Answer:** B - INNER JOIN returns only matching rows.
+
+**Question 2:** What is the purpose of GROUP BY?
+- A) Sort results
+- B) Filter rows
+- C) Aggregate data by categories
+- D) Join tables
+
+**Answer:** C - GROUP BY aggregates data into categories.
+
+**Question 3:** Which is correct order of SQL clauses?
+- A) SELECT, WHERE, FROM, GROUP BY
+- B) SELECT, FROM, WHERE, GROUP BY
+- C) FROM, SELECT, WHERE, GROUP BY
+- D) WHERE, SELECT, FROM, GROUP BY
+
+**Answer:** B - SELECT, FROM, WHERE, GROUP BY, HAVING, ORDER BY
+
+**Question 4:** What's the difference between WHERE and HAVING?
+- A) No difference
+- B) WHERE filters rows before grouping, HAVING filters after
+- C) WHERE is for text, HAVING is for numbers
+- D) HAVING is faster
+
+**Answer:** B - WHERE filters before aggregation, HAVING filters aggregated results.
+
+**Question 5:** What does DISTINCT do?
+- A) Sorts data
+- B) Removes duplicate rows
+- C) Counts rows
+- D) Filters rows
+
+**Answer:** B - DISTINCT removes duplicate rows from results.
+
+### Part B: Write SQL Queries (80 points)
+
+**Database Schema:**
+- customers: customer_id, name, city, signup_date
+- orders: order_id, customer_id, order_date, total_amount
+- products: product_id, product_name, category, price
+- order_items: order_id, product_id, quantity
+
+**Query 1: Basic SELECT with filtering (10 points)**
+Find all customers from London who signed up in 2024.
+
+```sql
+SELECT customer_id, name, signup_date
+FROM customers
+WHERE city = 'London'
+  AND YEAR(signup_date) = 2024;
+```
+
+**Query 2: JOIN and aggregation (15 points)**
+Calculate total revenue by customer, showing only customers with >£1000 total.
+
+```sql
+SELECT 
+    c.customer_id,
+    c.name,
+    SUM(o.total_amount) as total_revenue
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.name
+HAVING SUM(o.total_amount) > 1000
+ORDER BY total_revenue DESC;
+```
+
+**Query 3: Multiple JOINs (15 points)**
+List all products sold in each order with customer names.
+
+```sql
+SELECT 
+    o.order_id,
+    c.name as customer_name,
+    p.product_name,
+    oi.quantity,
+    oi.quantity * p.price as line_total
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+ORDER BY o.order_id;
+```
+
+**Query 4: Window functions (20 points)**
+Rank products by total revenue within each category.
+
+```sql
+SELECT 
+    category,
+    product_name,
+    SUM(oi.quantity * p.price) as total_revenue,
+    RANK() OVER (PARTITION BY category ORDER BY SUM(oi.quantity * p.price) DESC) as category_rank
+FROM products p
+JOIN order_items oi ON p.product_id = oi.product_id
+GROUP BY category, product_name;
+```
+
+**Query 5: Complex analysis (20 points)**
+Find customers who haven't ordered in the last 90 days but ordered before that.
+
+```sql
+SELECT 
+    c.customer_id,
+    c.name,
+    MAX(o.order_date) as last_order_date,
+    DATEDIFF(CURRENT_DATE, MAX(o.order_date)) as days_since_order
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.name
+HAVING MAX(o.order_date) < DATE_SUB(CURRENT_DATE, INTERVAL 90 DAY)
+  AND MAX(o.order_date) >= DATE_SUB(CURRENT_DATE, INTERVAL 365 DAY)
+ORDER BY days_since_order DESC;
+```
+
+**Grading Rubric:**
+- Syntax correct: 40%
+- Logic correct: 40%
+- Efficiency: 10%
+- Formatting/readability: 10%
+
+**Total: 100 points**
+
+---
+
+## UNIT 4 ASSESSMENT: BI Dashboards & Visualization
+
+### Part A: Visualization Theory (20 points)
+
+**Question 1:** When should you use a line chart?
+- A) Comparing categories
+- B) Showing trends over time
+- C) Displaying parts of whole
+- D) Showing correlation
+
+**Answer:** B - Line charts show trends and changes over time.
+
+**Question 2:** What is the most important principle in dashboard design?
+- A) Use many colors
+- B) Show all available data
+- C) Prioritize the most important information
+- D) Use 3D effects
+
+**Answer:** C - Prioritize important information for clarity.
+
+**Question 3:** What is "chart junk"?
+- A) Broken charts
+- B) Unnecessary decorative elements
+- C) Missing data
+- D) Wrong chart type
+
+**Answer:** B - Chart junk is unnecessary visual clutter.
+
+**Question 4:** How many colors should a professional dashboard typically use?
+- A) As many as possible
+- B) 2-3 main colors
+- C) 10+ colors
+- D) Only black and white
+
+**Answer:** B - 2-3 main colors maintain clarity and professionalism.
+
+**Question 5:** What is the "F-pattern" in dashboard layout?
+- A) Frequency distribution
+- B) How users' eyes scan the page
+- C) Filter organization
+- D) Font selection
+
+**Answer:** B - Users scan in an F-pattern (top-left priority).
+
+### Part B: Dashboard Design Project (80 points)
+
+**Scenario:** Create executive sales dashboard for retail company.
+
+**Requirements:**
+
+**1. KPI Section (20 points)**
+- Total revenue (current month vs prior month)
+- Number of orders
+- Average order value
+- Customer count
+- Use color coding (green/red for up/down)
+
+**2. Trend Analysis (20 points)**
+- Revenue trend over 12 months (line chart)
+- Add forecast line
+- Include comparison to previous year
+- Show seasonality
+
+**3. Category Breakdown (15 points)**
+- Revenue by product category (bar chart or treemap)
+- Top 10 products (sorted bar chart)
+- Category performance table
+
+**4. Geographic Analysis (15 points)**
+- Sales by region (map or bar chart)
+- Regional growth rates
+- Store-level detail available via drill-down
+
+**5. Interactivity & Design (10 points)**
+- Date range filter
+- Category slicer
+- Region selector
+- Professional formatting
+- Mobile-responsive layout
+
+**Grading Rubric:**
+- Completeness: 30%
+- Design quality: 25%
+- Functionality: 25%
+- Insights clarity: 20%
+
+**Deliverable:** Working dashboard in Tableau or Power BI + 2-page design document
+
+**Total: 100 points**
+
+---
+
+## UNIT 5 ASSESSMENT: Python for Analysts
+
+### Part A: Python Concepts (20 points)
+
+**Question 1:** Which library is primarily used for data manipulation in Python?
+- A) numpy
+- B) pandas
+- C) matplotlib
+- D) scipy
+
+**Answer:** B - pandas is the primary library for data manipulation.
+
+**Question 2:** What does df.head() do?
+- A) Removes header row
+- B) Shows first 5 rows
+- C) Sorts data
+- D) Counts rows
+
+**Answer:** B - df.head() displays the first 5 rows by default.
+
+**Question 3:** How do you select a column in pandas?
+- A) df.column_name or df['column_name']
+- B) df->column_name
+- C) df::column_name
+- D) df.get(column_name)
+
+**Answer:** A - Use dot notation or bracket notation.
+
+**Question 4:** What is the purpose of groupby() in pandas?
+- A) Sort data
+- B) Aggregate data by categories
+- C) Filter data
+- D) Join dataframes
+
+**Answer:** B - groupby() aggregates data into groups.
+
+**Question 5:** Which method removes missing values?
+- A) drop_na()
+- B) remove_null()
+- C) dropna()
+- D) clean()
+
+**Answer:** C - dropna() removes rows/columns with missing values.
+
+### Part B: Coding Exercises (80 points)
+
+**Exercise 1: Data Cleaning (20 points)**
+
+```python
+import pandas as pd
+
+# Given messy data
+data = {
+    'customer_id': [1, 2, 2, 3, 4, None],
+    'name': ['John Smith', 'jane doe', 'Jane Doe', 'BOB JONES', 'Alice'],
+    'email': ['john@email.com', 'jane@email', None, 'bob@email.com', 'alice@email.com'],
+    'age': [25, None, 30, -5, 45],
+    'revenue': [100, 200, 200, 150, 300]
+}
+df = pd.DataFrame(data)
+
+# Tasks (4 points each):
+# 1. Remove duplicate customer_ids
+df_clean = df.drop_duplicates(subset='customer_id', keep='first')
+
+# 2. Standardize names to Title Case
+df_clean['name'] = df_clean['name'].str.title()
+
+# 3. Fill missing emails with "unknown@company.com"
+df_clean['email'] = df_clean['email'].fillna('unknown@company.com')
+
+# 4. Replace invalid ages (negative or null) with median
+median_age = df_clean[df_clean['age'] > 0]['age'].median()
+df_clean['age'] = df_clean['age'].apply(lambda x: median_age if pd.isna(x) or x < 0 else x)
+
+# 5. Remove rows where customer_id is null
+df_clean = df_clean.dropna(subset=['customer_id'])
+```
+
+**Exercise 2: Data Analysis (30 points)**
+
+```python
+# Given sales dataset
+sales = pd.read_csv('sales_data.csv')
+# Columns: date, product, category, quantity, unit_price, customer_id
+
+# Tasks:
+
+# 1. Calculate total revenue (10 points)
+sales['revenue'] = sales['quantity'] * sales['unit_price']
+total_revenue = sales['revenue'].sum()
+print(f"Total Revenue: £{total_revenue:,.2f}")
+
+# 2. Find top 5 products by revenue (10 points)
+top_products = (sales.groupby('product')['revenue']
+                .sum()
+                .sort_values(ascending=False)
+                .head(5))
+print("Top 5 Products:")
+print(top_products)
+
+# 3. Calculate monthly revenue trend (10 points)
+sales['date'] = pd.to_datetime(sales['date'])
+sales['month'] = sales['date'].dt.to_period('M')
+monthly_revenue = sales.groupby('month')['revenue'].sum()
+print("Monthly Revenue:")
+print(monthly_revenue)
+```
+
+**Exercise 3: Visualization (30 points)**
+
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Tasks:
+
+# 1. Create revenue trend line chart (10 points)
+plt.figure(figsize=(12, 6))
+monthly_revenue.plot(kind='line', marker='o')
+plt.title('Monthly Revenue Trend')
+plt.xlabel('Month')
+plt.ylabel('Revenue (£)')
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# 2. Create category revenue bar chart (10 points)
+category_revenue = sales.groupby('category')['revenue'].sum().sort_values(ascending=False)
+plt.figure(figsize=(10, 6))
+category_revenue.plot(kind='bar')
+plt.title('Revenue by Category')
+plt.xlabel('Category')
+plt.ylabel('Revenue (£)')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# 3. Create customer purchase distribution histogram (10 points)
+customer_totals = sales.groupby('customer_id')['revenue'].sum()
+plt.figure(figsize=(10, 6))
+plt.hist(customer_totals, bins=30, edgecolor='black')
+plt.title('Customer Purchase Distribution')
+plt.xlabel('Total Purchase Value (£)')
+plt.ylabel('Number of Customers')
+plt.tight_layout()
+plt.show()
+```
+
+**Grading Rubric:**
+- Code correctness: 50%
+- Code efficiency: 20%
+- Code readability: 15%
+- Output correctness: 15%
+
+**Total: 100 points**
+
+---
+
+## UNIT 6 ASSESSMENT: Metrics & A/B Testing
+
+### Part A: Concepts (30 points)
+
+**Question 1:** What is a "North Star Metric"?
+- A) The most expensive metric
+- B) The key metric that drives business success
+- C) A directional indicator
+- D) A vanity metric
+
+**Answer:** B - North Star Metric is the key success driver.
+
+**Question 2:** What is statistical significance typically set at?
+- A) p < 0.10
+- B) p < 0.05
+- C) p < 0.01
+- D) p < 0.001
+
+**Answer:** B - p < 0.05 is the standard threshold.
+
+**Question 3:** What is a Type I error?
+- A) False positive (rejecting true null hypothesis)
+- B) False negative (failing to reject false null hypothesis)
+- C) Sampling error
+- D) Measurement error
+
+**Answer:** A - Type I error is a false positive.
+
+**Question 4:** What is minimum sample size important for?
+- A) Cost savings
+- B) Statistical power and reliability
+- C) Faster results
+- D) Easier analysis
+
+**Answer:** B - Adequate sample size ensures statistical validity.
+
+**Question 5:** What is "experiment contamination"?
+- A) Dirty data
+- B) Users experiencing both variants
+- C) Technical errors
+- D) Biased sampling
+
+**Answer:** B - Contamination occurs when users see multiple variants.
+
+### Part B: Design an A/B Test (70 points)
+
+**Scenario:** E-commerce company wants to test a new checkout page.
+
+**Tasks:**
+
+**1. Define hypothesis (10 points)**
+- Null hypothesis (H0): New checkout page has no effect on conversion rate
+- Alternative hypothesis (H1): New checkout page increases conversion rate
+- Success metric: Checkout conversion rate (orders/checkout starts)
+
+**2. Calculate sample size (15 points)**
+```python
+from statsmodels.stats.power import zt_ind_solve_power
+
+baseline_rate = 0.25  # 25% current conversion
+mde = 0.03  # Detect 3% absolute lift (12% relative)
+alpha = 0.05
+power = 0.80
+
+sample_size = zt_ind_solve_power(
+    effect_size=(0.28 - 0.25) / np.sqrt(0.25 * 0.75),
+    alpha=alpha,
+    power=power
+)
+
+print(f"Required sample size per variant: {int(sample_size)}")
+# Approximately 2,500 per variant
+```
+
+**3. Design experiment (20 points)**
+Must include:
+- Randomization method: User-level, 50/50 split
+- Duration: 2 weeks minimum
+- Primary metric: Conversion rate
+- Secondary metrics: Revenue per user, time to complete
+- Guardrail metrics: Error rates, load times
+- Segmentation plan: Mobile vs desktop, new vs returning
+
+**4. Analysis plan (15 points)**
+```python
+# Calculate conversion rates
+control_conversions = control_group['converted'].mean()
+treatment_conversions = treatment_group['converted'].mean()
+lift = (treatment_conversions - control_conversions) / control_conversions
+
+# Statistical test
+from scipy.stats import chi2_contingency
+contingency = pd.crosstab(df['variant'], df['converted'])
+chi2, p_value, dof, expected = chi2_contingency(contingency)
+
+print(f"Control: {control_conversions:.2%}")
+print(f"Treatment: {treatment_conversions:.2%}")
+print(f"Lift: {lift:.2%}")
+print(f"P-value: {p_value:.4f}")
+print(f"Significant: {p_value < 0.05}")
+```
+
+**5. Interpretation (10 points)**
+- If p < 0.05 and lift > 0: Launch treatment
+- If p < 0.05 and lift < 0: Keep control
+- If p >= 0.05: No significant difference, may need larger sample or longer duration
+- Check for Simpson's paradox across segments
+
+**Grading:**
+- Hypothesis clarity: 10 points
+- Sample size calculation: 15 points
+- Experimental design: 20 points
+- Analysis methodology: 15 points
+- Interpretation: 10 points
+
+**Total: 100 points**
+
+---
+
+## UNIT 7 ASSESSMENT: Capstone Project
+
+### Capstone Project Requirements (100 points)
+
+**Choose one of these projects:**
+
+**Option A: Customer Analytics Dashboard**
+**Option B: Sales Forecasting Model**
+**Option C: Operational Efficiency Analysis**
+
+**Project Deliverables:**
+
+**1. Business Problem Definition (10 points)**
+- Clear problem statement
+- Stakeholder identification
+- Success criteria
+- Expected impact
+
+**2. Data Collection & Preparation (20 points)**
+- Data sources identified
+- Data extraction (SQL queries)
+- Data cleaning documentation
+- Data quality assessment
+
+**3. Exploratory Data Analysis (20 points)**
+- Descriptive statistics
+- Distribution analysis
+- Correlation analysis
+- Key insights identified
+
+**4. Analysis & Modeling (25 points)**
+- Appropriate analytical methods
+- Statistical tests performed
+- Models built (if applicable)
+- Results validated
+
+**5. Visualization & Dashboard (15 points)**
+- Professional dashboard created
+- Interactive elements
+- Clear visual hierarchy
+- Mobile-responsive
+
+**6. Recommendations & Impact (10 points)**
+- Clear, actionable recommendations
+- Business impact quantified
+- Implementation plan
+- Risk assessment
+
+**Grading Rubric:**
+- Technical execution: 50%
+- Business value: 25%
+- Presentation quality: 15%
+- Innovation: 10%
+
+**Total: 100 points**
+
+---
+
+## Assessment Summary
+
+**All 7 Units:**
+- **Total possible points:** 700 (100 per unit)
+- **Passing score:** 70% (490 points)
+- **Proficient:** 80% (560 points)
+- **Exceptional:** 90% (630 points)
+
+**Certification Requirements:**
+✅ Complete all 7 unit assessments
+✅ Score 70%+ on each unit
+✅ Complete capstone project
+✅ Pass final comprehensive exam
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## ❓ FREQUENTLY ASKED QUESTIONS & TROUBLESHOOTING")
+        st.markdown(
+            """**Complete FAQ and troubleshooting guide for all tools**
+
+---
+
+## SQL FAQs & Troubleshooting
+
+### Common SQL Questions
+
+**Q: What's the difference between INNER JOIN and LEFT JOIN?**
+A: INNER JOIN returns only matching rows from both tables. LEFT JOIN returns all rows from the left table and matching rows from the right table (with NULLs where no match exists).
+
+```sql
+-- INNER JOIN: Only customers with orders
+SELECT c.name, COUNT(o.order_id) as order_count
+FROM customers c
+INNER JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.name;
+
+-- LEFT JOIN: All customers, even those without orders
+SELECT c.name, COUNT(o.order_id) as order_count
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.name;
+```
+
+**Q: When should I use WHERE vs HAVING?**
+A: WHERE filters rows before aggregation. HAVING filters after aggregation.
+
+```sql
+-- WHERE: Filter before grouping
+SELECT category, AVG(price) as avg_price
+FROM products
+WHERE price > 10  -- Filter individual rows
+GROUP BY category;
+
+-- HAVING: Filter after grouping
+SELECT category, AVG(price) as avg_price
+FROM products
+GROUP BY category
+HAVING AVG(price) > 50;  -- Filter aggregated results
+```
+
+**Q: How do I handle NULL values in comparisons?**
+A: Use IS NULL or IS NOT NULL, never = NULL or != NULL.
+
+```sql
+-- WRONG
+SELECT * FROM customers WHERE email = NULL;
+
+-- CORRECT
+SELECT * FROM customers WHERE email IS NULL;
+
+-- Use COALESCE to provide default values
+SELECT 
+    customer_name,
+    COALESCE(email, 'No email provided') as email,
+    COALESCE(phone, 'No phone') as phone
+FROM customers;
+```
+
+**Q: What's the difference between COUNT(*) and COUNT(column)?**
+A: COUNT(*) counts all rows. COUNT(column) counts non-NULL values in that column.
+
+```sql
+SELECT 
+    COUNT(*) as total_rows,              -- Counts all rows
+    COUNT(email) as rows_with_email,     -- Counts non-NULL emails
+    COUNT(DISTINCT email) as unique_emails  -- Counts unique non-NULL emails
+FROM customers;
+```
+
+**Q: How do I get the top N results per group?**
+A: Use window functions with ROW_NUMBER() or RANK().
+
+```sql
+-- Top 3 products per category by sales
+WITH ranked AS (
+    SELECT 
+        category,
+        product_name,
+        sales,
+        ROW_NUMBER() OVER (PARTITION BY category ORDER BY sales DESC) as rank
+    FROM products
+)
+SELECT * FROM ranked WHERE rank <= 3;
+```
+
+### Common SQL Errors & Solutions
+
+**Error: "Column 'X' is ambiguous"**
+```sql
+-- PROBLEM: Column exists in multiple tables
+SELECT customer_id, order_date
+FROM customers
+JOIN orders USING (customer_id);  -- customer_id is in both tables
+
+-- SOLUTION: Prefix with table name or alias
+SELECT c.customer_id, o.order_date
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id;
+```
+
+**Error: "Invalid use of group function"**
+```sql
+-- PROBLEM: Using aggregate in WHERE clause
+SELECT customer_id, SUM(amount)
+FROM orders
+WHERE SUM(amount) > 1000  -- WRONG
+GROUP BY customer_id;
+
+-- SOLUTION: Use HAVING instead
+SELECT customer_id, SUM(amount) as total
+FROM orders
+GROUP BY customer_id
+HAVING SUM(amount) > 1000;  -- CORRECT
+```
+
+**Error: "Subquery returns more than 1 row"**
+```sql
+-- PROBLEM: Subquery in = comparison returns multiple rows
+SELECT * FROM products
+WHERE category_id = (SELECT category_id FROM categories WHERE active = 1);
+
+-- SOLUTION: Use IN instead of =
+SELECT * FROM products
+WHERE category_id IN (SELECT category_id FROM categories WHERE active = 1);
+```
+
+**Error: "Division by zero"**
+```sql
+-- PROBLEM: Dividing by a column that might be zero
+SELECT revenue / quantity as price_per_unit
+FROM sales;
+
+-- SOLUTION: Use NULLIF or CASE
+SELECT 
+    revenue / NULLIF(quantity, 0) as price_per_unit,
+    -- OR
+    CASE WHEN quantity = 0 THEN NULL ELSE revenue / quantity END as price
+FROM sales;
+```
+
+**Error: "Date format issues"**
+```sql
+-- PROBLEM: Inconsistent date formats
+WHERE order_date = '2024-01-15'  -- Works in some DBs
+WHERE order_date = '01/15/2024'  -- Format varies by region
+
+-- SOLUTION: Use proper date functions
+WHERE order_date = STR_TO_DATE('2024-01-15', '%Y-%m-%d')
+WHERE DATE(order_date) = '2024-01-15'
+WHERE order_date BETWEEN '2024-01-01' AND '2024-01-31'
+```
+
+### SQL Performance Tips
+
+**1. Use indexes wisely**
+```sql
+-- Create indexes on frequently queried columns
+CREATE INDEX idx_customer_email ON customers(email);
+CREATE INDEX idx_order_date ON orders(order_date);
+
+-- Compound index for multiple columns often queried together
+CREATE INDEX idx_order_customer_date ON orders(customer_id, order_date);
+```
+
+**2. Avoid SELECT ***
+```sql
+-- SLOW: Retrieves all columns
+SELECT * FROM large_table WHERE condition;
+
+-- FAST: Only get what you need
+SELECT id, name, email FROM large_table WHERE condition;
+```
+
+**3. Use EXISTS instead of IN for large subqueries**
+```sql
+-- SLOWER with large subquery
+SELECT * FROM customers
+WHERE customer_id IN (SELECT customer_id FROM orders WHERE year = 2024);
+
+-- FASTER
+SELECT * FROM customers c
+WHERE EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.customer_id AND year = 2024);
+```
+
+**4. Filter early in JOINs**
+```sql
+-- SLOW: Joins entire table then filters
+SELECT c.*, o.*
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_date >= '2024-01-01';
+
+-- FAST: Filter before joining
+SELECT c.*, o.*
+FROM customers c
+JOIN (SELECT * FROM orders WHERE order_date >= '2024-01-01') o
+ON c.customer_id = o.customer_id;
+```
+
+---
+
+## Python/Pandas FAQs & Troubleshooting
+
+### Common Python Questions
+
+**Q: How do I read different file formats?**
+```python
+import pandas as pd
+
+# CSV
+df = pd.read_csv('data.csv')
+
+# Excel
+df = pd.read_excel('data.xlsx', sheet_name='Sheet1')
+
+# JSON
+df = pd.read_json('data.json')
+
+# SQL database
+import sqlite3
+conn = sqlite3.connect('database.db')
+df = pd.read_sql_query("SELECT * FROM table", conn)
+
+# With specific parameters
+df = pd.read_csv('data.csv',
+                 encoding='utf-8',
+                 sep=',',
+                 thousands=',',
+                 decimal='.',
+                 na_values=['NA', 'missing'],
+                 parse_dates=['date_column'])
+```
+
+**Q: How do I handle missing data?**
+```python
+# Check for missing values
+print(df.isnull().sum())
+print(df.isna().sum())  # Same as isnull()
+
+# Drop rows with any missing values
+df_clean = df.dropna()
+
+# Drop rows where specific column is missing
+df_clean = df.dropna(subset=['important_column'])
+
+# Fill missing values
+df['column'] = df['column'].fillna(0)  # Fill with 0
+df['column'] = df['column'].fillna(df['column'].mean())  # Fill with mean
+df['column'] = df['column'].fillna(method='ffill')  # Forward fill
+df['column'] = df['column'].fillna(method='bfill')  # Backward fill
+
+# Fill different columns with different values
+df = df.fillna({'col1': 0, 'col2': 'Unknown', 'col3': df['col3'].median()})
+```
+
+**Q: How do I merge/join dataframes?**
+```python
+# Inner join (like SQL INNER JOIN)
+merged = pd.merge(df1, df2, on='customer_id', how='inner')
+
+# Left join (like SQL LEFT JOIN)
+merged = pd.merge(df1, df2, on='customer_id', how='left')
+
+# Join on multiple columns
+merged = pd.merge(df1, df2, on=['customer_id', 'date'], how='inner')
+
+# Join on different column names
+merged = pd.merge(df1, df2, left_on='cust_id', right_on='customer_id')
+
+# Concatenate vertically (stack dataframes)
+combined = pd.concat([df1, df2], axis=0, ignore_index=True)
+
+# Concatenate horizontally (side by side)
+combined = pd.concat([df1, df2], axis=1)
+```
+
+**Q: How do I group and aggregate?**
+```python
+# Simple groupby
+grouped = df.groupby('category')['sales'].sum()
+
+# Multiple aggregations
+result = df.groupby('category').agg({
+    'sales': ['sum', 'mean', 'count'],
+    'profit': 'sum',
+    'customer_id': 'nunique'
+})
+
+# Custom aggregation function
+def coefficient_of_variation(x):
+    return x.std() / x.mean()
+
+result = df.groupby('product')['price'].agg([
+    'mean',
+    'median',
+    coefficient_of_variation
+])
+
+# Group by multiple columns
+result = df.groupby(['region', 'category'])['sales'].sum()
+
+# Reset index after groupby
+result = df.groupby('category')['sales'].sum().reset_index()
+```
+
+**Q: How do I filter dataframes?**
+```python
+# Single condition
+filtered = df[df['age'] > 25]
+
+# Multiple conditions with &, |
+filtered = df[(df['age'] > 25) & (df['city'] == 'London')]
+filtered = df[(df['age'] < 18) | (df['age'] > 65)]
+
+# NOT condition with ~
+filtered = df[~(df['status'] == 'inactive')]
+
+# Filter using isin()
+filtered = df[df['category'].isin(['Electronics', 'Clothing'])]
+
+# Filter using string methods
+filtered = df[df['email'].str.contains('@gmail.com')]
+filtered = df[df['name'].str.startswith('John')]
+
+# Filter using query() method
+filtered = df.query('age > 25 and city == "London"')
+```
+
+### Common Python Errors & Solutions
+
+**Error: "KeyError: 'column_name'"**
+```python
+# PROBLEM: Column doesn't exist
+df['non_existent_column']
+
+# SOLUTION: Check column names first
+print(df.columns.tolist())
+
+# Or use .get() method which returns None if not found
+value = df.get('column_name', default=0)
+
+# Or check if column exists
+if 'column_name' in df.columns:
+    df['column_name']
+```
+
+**Error: "ValueError: Cannot index with multidimensional key"**
+```python
+# PROBLEM: Using list instead of proper indexing
+columns_to_select = ['col1', 'col2']
+df[columns_to_select, :]  # WRONG
+
+# SOLUTION: Use double brackets for multiple columns
+df[['col1', 'col2']]
+df.loc[:, ['col1', 'col2']]
+```
+
+**Error: "SettingWithCopyWarning"**
+```python
+# PROBLEM: Modifying a slice of dataframe
+subset = df[df['age'] > 25]
+subset['new_col'] = 0  # Warning!
+
+# SOLUTION: Use .copy() or .loc[]
+subset = df[df['age'] > 25].copy()
+subset['new_col'] = 0
+
+# OR
+df.loc[df['age'] > 25, 'new_col'] = 0
+```
+
+**Error: "TypeError: unsupported operand type(s)"**
+```python
+# PROBLEM: Operating on wrong data types
+df['text_column'] + 5  # Can't add number to string
+
+# SOLUTION: Convert data types
+df['numeric_column'] = pd.to_numeric(df['text_column'], errors='coerce')
+df['date_column'] = pd.to_datetime(df['date_string'])
+df['string_column'] = df['numeric_column'].astype(str)
+```
+
+**Error: "Memory error when loading large files"**
+```python
+# PROBLEM: File too large to load at once
+df = pd.read_csv('huge_file.csv')  # Memory error!
+
+# SOLUTION 1: Read in chunks
+chunks = []
+for chunk in pd.read_csv('huge_file.csv', chunksize=10000):
+    # Process each chunk
+    processed = chunk[chunk['value'] > 0]
+    chunks.append(processed)
+df = pd.concat(chunks)
+
+# SOLUTION 2: Read only needed columns
+df = pd.read_csv('huge_file.csv', usecols=['col1', 'col2', 'col3'])
+
+# SOLUTION 3: Use dtypes to reduce memory
+df = pd.read_csv('huge_file.csv', dtype={'id': 'int32', 'value': 'float32'})
+```
+
+### Python Performance Tips
+
+**1. Vectorize operations instead of loops**
+```python
+# SLOW: Using loops
+result = []
+for val in df['column']:
+    result.append(val * 2)
+df['result'] = result
+
+# FAST: Vectorized
+df['result'] = df['column'] * 2
+```
+
+**2. Use appropriate data types**
+```python
+# Check current memory usage
+print(df.memory_usage(deep=True))
+
+# Optimize data types
+df['int_column'] = df['int_column'].astype('int32')  # Instead of int64
+df['category_column'] = df['category_column'].astype('category')  # For categorical data
+```
+
+**3. Use built-in methods instead of apply()**
+```python
+# SLOW: Using apply
+df['upper'] = df['name'].apply(lambda x: x.upper())
+
+# FAST: Built-in string method
+df['upper'] = df['name'].str.upper()
+```
+
+---
+
+## Excel FAQs & Troubleshooting
+
+### Common Excel Questions
+
+**Q: How do I fix #REF! errors?**
+A: #REF! occurs when a formula refers to cells that no longer exist.
+```
+Common causes:
+- Deleted rows/columns that formulas reference
+- Copied formulas that reference fixed cells incorrectly
+
+Solutions:
+- Use Find & Replace to fix broken references
+- Use named ranges instead of cell references
+- Check formula with F2 to see highlighted references
+```
+
+**Q: Why is my VLOOKUP returning #N/A?**
+```
+Common causes:
+1. Lookup value doesn't exist in the table
+2. Approximate match on unsorted data
+3. Extra spaces in lookup values
+4. Different data types (number vs text)
+
+Solutions:
+- Use exact match: VLOOKUP(value, range, col, FALSE)
+- Trim spaces: VLOOKUP(TRIM(A2), range, col, FALSE)
+- Use IFERROR to handle missing values: IFERROR(VLOOKUP(...), "Not Found")
+- Convert types: VLOOKUP(TEXT(A2,"0"), range, col, FALSE)
+```
+
+**Q: How do I reference cells across sheets?**
+```
+Same workbook:
+=Sheet2!A1
+='Sheet Name with Spaces'!A1
+=SUM(Sheet2:Sheet5!A1)  -- Same cell across multiple sheets
+
+Different workbook:
+='[Workbook.xlsx]Sheet1'!A1
+```
+
+**Q: What's the difference between relative and absolute references?**
+```
+A1 - Relative (changes when copied)
+$A$1 - Absolute (stays fixed)
+$A1 - Mixed (column fixed, row changes)
+A$1 - Mixed (row fixed, column changes)
+
+Example:
+Cell B2: =A1*$D$1
+Copy to C3: =B2*$D$1  (A1 became B2, but $D$1 stayed $D$1)
+```
+
+**Q: How do I handle circular references?**
+```
+Circular reference occurs when formula refers to itself.
+
+Check:
+- Formulas → Error Checking → Circular References
+
+Solutions:
+- Enable iterative calculations (if intentional)
+- File → Options → Formulas → Enable iterative calculation
+- Or restructure formula to avoid circularity
+```
+
+### Common Excel Errors & Solutions
+
+**Error: #VALUE!**
+```
+Causes:
+- Wrong data type in formula
+- Text in math formula
+- Spaces before/after numbers
+
+Solutions:
+- Use VALUE() to convert text to number
+- Use TRIM() to remove spaces
+- Check for hidden characters
+```
+
+**Error: #DIV/0!**
+```
+Cause: Dividing by zero or empty cell
+
+Solutions:
+- Use IFERROR: =IFERROR(A1/B1, 0)
+- Use IF: =IF(B1=0, 0, A1/B1)
+- Use conditional: =IF(B1<>0, A1/B1, "N/A")
+```
+
+**Error: #NAME?**
+```
+Causes:
+- Misspelled function name
+- Missing quotes around text
+- Named range doesn't exist
+
+Solutions:
+- Check spelling of function
+- Add quotes: ="Hello" not =Hello
+- Check named ranges: Formulas → Name Manager
+```
+
+**Error: Pivot table won't refresh**
+```
+Solutions:
+1. Check data source range
+2. Right-click pivot → Refresh
+3. PivotTable Analyze → Change Data Source
+4. Close and reopen workbook
+5. Check if source data is a table (Format as Table)
+```
+
+### Excel Performance Tips
+
+**1. Avoid volatile functions**
+```
+Volatile (slow):
+- NOW()
+- TODAY()
+- RAND()
+- OFFSET()
+- INDIRECT()
+
+Use sparingly or replace with:
+- Manual entry for current date
+- Fixed references instead of INDIRECT
+```
+
+**2. Use tables instead of ranges**
+```
+Benefits:
+- Auto-expanding formulas
+- Structured references
+- Easier pivot table source
+- Better performance
+
+Convert: Select range → Ctrl+T
+```
+
+**3. Limit conditional formatting**
+```
+- Use on visible areas only
+- Avoid entire column references (A:A)
+- Use simpler rules
+- Clear unused rules: Home → Conditional Formatting → Manage Rules
+```
+
+---
+
+## BI Tools (Tableau/Power BI) FAQs
+
+### Common BI Questions
+
+**Q: What's the difference between dimensions and measures?**
+```
+Dimensions:
+- Categorical data (text, dates)
+- Used for grouping and filtering
+- Examples: Product name, region, date
+
+Measures:
+- Numeric data for aggregation
+- Used for calculations
+- Examples: Sales, quantity, profit
+```
+
+**Q: How do I create calculated fields?**
+```
+Tableau:
+- Analysis → Create Calculated Field
+- Example: [Sales] - [Cost]
+- Example: IF [Sales] > 1000 THEN "High" ELSE "Low" END
+
+Power BI:
+- Modeling → New Column (DAX)
+- Example: Profit = [Sales] - [Cost]
+- Example: Category = IF([Sales] > 1000, "High", "Low")
+```
+
+**Q: When should I use parameters?**
+```
+Use cases:
+- Dynamic top N filtering
+- What-if analysis
+- Dynamic measure selection
+- Custom bins
+
+Tableau: Create Parameter → Show Parameter Control
+Power BI: Modeling → New Parameter
+```
+
+**Q: How do I optimize dashboard performance?**
+```
+1. Extract data instead of live connection
+2. Aggregate data before importing
+3. Limit number of visualizations per page
+4. Use filters efficiently
+5. Hide unused fields
+6. Remove unnecessary calculations
+7. Use context filters (Tableau) or filter order (Power BI)
+```
+
+### Common BI Errors & Solutions
+
+**Error: "Cannot mix aggregate and non-aggregate arguments"**
+```
+Problem: Mixing detail and aggregate levels
+
+Tableau Solution:
+- Use LOD expressions
+- {FIXED [Category] : SUM([Sales])}
+
+Power BI Solution:
+- Use CALCULATE or SUMX
+- CALCULATE(SUM(Sales), ALLEXCEPT(Products, Products[Category]))
+```
+
+**Error: "Data source too large"**
+```
+Solutions:
+1. Filter data before import
+2. Aggregate at appropriate level
+3. Use extracts instead of live
+4. Create custom SQL query
+5. Use data sampling for development
+```
+
+**Error: "Relationships not working"**
+```
+Check:
+1. Key fields same data type
+2. No duplicates in "one" side of relationship
+3. Relationship cardinality correct
+4. Active relationships in Power BI
+5. No circular dependencies
+```
+
+---
+
+## General Troubleshooting Tips
+
+### Data Quality Checklist
+
+**Before analysis:**
+```
+✅ Check for missing values
+✅ Identify duplicates
+✅ Verify data types
+✅ Check for outliers
+✅ Validate date ranges
+✅ Confirm units/currency
+✅ Check for formatting issues
+✅ Verify joins/relationships
+✅ Document assumptions
+✅ Test with sample data
+```
+
+### Debugging Workflow
+
+**1. Isolate the problem**
+- Break complex queries into parts
+- Test each component separately
+- Use smaller data samples
+
+**2. Check assumptions**
+- Verify data is what you expect
+- Check row counts at each step
+- Validate calculations manually
+
+**3. Use print/display statements**
+```python
+# Python
+print(df.shape)
+print(df.head())
+print(df.dtypes)
+print(df['column'].value_counts())
+```
+
+```sql
+-- SQL
+SELECT COUNT(*) FROM table;  -- Check row count
+SELECT * FROM table LIMIT 10;  -- Sample data
+SELECT column, COUNT(*) FROM table GROUP BY column;  -- Check distribution
+```
+
+**4. Search for error messages**
+- Copy exact error message
+- Search Stack Overflow, documentation
+- Check official forums
+
+**5. Ask for help effectively**
+```
+Include:
+- What you're trying to do
+- What you've tried
+- Exact error message
+- Sample data (if possible)
+- Relevant code
+- Your environment (versions, tools)
+```
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🎥 VIDEO WALKTHROUGH SCRIPTS")
+        st.markdown(
+            """**Complete video scripts for instructor-led content**
+
+---
+
+## Unit 1 Video Scripts
+
+### Video 1: "What is Data Analysis?" (5 minutes)
+
+**[INTRO - 30 seconds]**
+
+Hello! Welcome to the Data Analyst Pathway. I'm excited to guide you through your journey to becoming a professional data analyst.
+
+In this video, we'll answer the fundamental question: What is data analysis, and why does it matter?
+
+**[SECTION 1: Definition - 1 minute]**
+
+Data analysis is the process of examining, cleaning, transforming, and modeling data to discover useful information, draw conclusions, and support decision-making.
+
+Think of it like being a detective. You have clues (data), you investigate patterns, and you solve mysteries (business questions).
+
+**[SECTION 2: Real Example - 2 minutes]**
+
+Let me show you a real example:
+
+Imagine you work for a retail company. Sales are down 15% this month. Your boss asks: "Why?"
+
+As a data analyst, you:
+1. Gather data from sales systems
+2. Clean and organize it
+3. Analyze patterns by product, region, time
+4. Discover that one product category is driving the decline
+5. Investigate why - maybe a competitor launched a new product
+6. Present findings with clear visualizations
+7. Recommend actions - pricing strategy, marketing campaign
+
+This is data analysis in action. Not just numbers - solving real business problems.
+
+**[SECTION 3: Skills You'll Learn - 1 minute]**
+
+In this pathway, you'll master:
+- SQL to query databases
+- Excel for quick analysis
+- Python for automation and advanced analytics
+- Tableau and Power BI for visualization
+- Statistics and A/B testing
+- Communication and storytelling with data
+
+**[CLOSING - 30 seconds]**
+
+By the end, you'll have a portfolio of real projects and be ready for your first data analyst role.
+
+Let's get started! See you in the next video.
+
+---
+
+### Video 2: "Asking Great Business Questions" (7 minutes)
+
+**[INTRO - 30 seconds]**
+
+Welcome back! Today we're covering one of the most important skills for data analysts: asking great business questions.
+
+The quality of your analysis depends entirely on asking the right questions first.
+
+**[SECTION 1: Why Questions Matter - 1 minute]**
+
+Here's a truth: You can have perfect SQL skills, beautiful dashboards, and sophisticated models... but if you're answering the wrong question, none of it matters.
+
+Great data analysts don't just execute queries. They understand the business problem deeply and ask clarifying questions before diving into data.
+
+**[SECTION 2: The 5W1H Framework - 2 minutes]**
+
+Use this framework for every analysis:
+
+**Who?** Who is impacted? Who are the stakeholders?
+- Example: "Who are our highest-value customers?"
+
+**What?** What exactly are we measuring?
+- Example: "What defines a 'successful' customer?"
+
+**When?** What time period matters?
+- Example: "When did this trend start?"
+
+**Where?** Which segment, region, or channel?
+- Example: "Where is performance declining?"
+
+**Why?** What's the root cause?
+- Example: "Why are customers churning?"
+
+**How?** How will this analysis drive decisions?
+- Example: "How will we use these insights?"
+
+**[SECTION 3: Example - Bad vs Good Questions - 2 minutes]**
+
+Let's see this in practice:
+
+**BAD REQUEST:**
+"Can you analyze our sales data?"
+
+This is too vague. What aspect? What time period? What decision will this inform?
+
+**GOOD REQUEST:**
+"Can you analyze why sales declined 15% in Q3 compared to Q2, specifically looking at:
+- Which product categories were affected
+- Whether this is consistent across regions
+- If there were external factors (seasonality, competition)
+- So we can decide whether to adjust pricing or increase marketing"
+
+See the difference? The good request has clear scope, specific questions, and ties to a decision.
+
+**[SECTION 4: Practice Exercise - 1 minute]**
+
+Here's your exercise:
+
+Your boss says: "We need more revenue."
+
+What questions would you ask before starting any analysis?
+
+Pause the video and write down 5 questions.
+
+**[Pause]**
+
+Here's what I'd ask:
+1. What's our revenue goal and time frame?
+2. Which revenue streams should we focus on?
+3. Are we looking to acquire new customers or increase existing customer value?
+4. What constraints do we have (budget, resources)?
+5. What's worked or failed in the past?
+
+**[CLOSING - 30 seconds]**
+
+Remember: Slow down before you speed up. Invest time in understanding the question before touching any data.
+
+In the next video, we'll cover data quality assessment.
+
+See you there!
+
+---
+
+## Unit 3 Video Scripts
+
+### Video 3: "SQL Fundamentals - SELECT and WHERE" (10 minutes)
+
+**[INTRO - 30 seconds]**
+
+Welcome to SQL fundamentals! SQL is THE most important skill for data analysts. Master this, and you'll unlock access to any database in any company.
+
+Today: SELECT and WHERE - the building blocks of every SQL query.
+
+**[SECTION 1: What is SQL? - 1 minute]**
+
+SQL stands for Structured Query Language. It's how we talk to databases.
+
+Think of a database as a library, tables as books, and SQL as asking the librarian specific questions:
+- "Show me all customers from London"
+- "What are our top-selling products?"
+- "Calculate total revenue by month"
+
+**[SECTION 2: SELECT Statement - 2 minutes]**
+
+The SELECT statement retrieves data from a table.
+
+Basic syntax:
+```sql
+SELECT column1, column2
+FROM table_name;
+```
+
+Let's see examples:
+
+```sql
+-- Select specific columns
+SELECT customer_name, email, city
+FROM customers;
+
+-- Select all columns
+SELECT *
+FROM customers;
+
+-- Select with alias
+SELECT 
+    customer_name AS name,
+    email AS contact_email
+FROM customers;
+```
+
+**[SECTION 3: WHERE Clause - 3 minutes]**
+
+WHERE filters rows based on conditions.
+
+```sql
+-- Single condition
+SELECT *
+FROM customers
+WHERE city = 'London';
+
+-- Multiple conditions with AND
+SELECT *
+FROM customers
+WHERE city = 'London' 
+  AND age > 25;
+
+-- Multiple conditions with OR
+SELECT *
+FROM customers
+WHERE city = 'London' 
+   OR city = 'Manchester';
+
+-- NOT condition
+SELECT *
+FROM customers
+WHERE NOT city = 'London';
+```
+
+**Common operators:**
+- = (equals)
+- != or <> (not equals)
+- >, <, >=, <= (comparisons)
+- BETWEEN (range)
+- IN (list of values)
+- LIKE (pattern matching)
+
+```sql
+-- BETWEEN
+SELECT *
+FROM products
+WHERE price BETWEEN 10 AND 50;
+
+-- IN
+SELECT *
+FROM customers
+WHERE city IN ('London', 'Paris', 'Berlin');
+
+-- LIKE (% is wildcard)
+SELECT *
+FROM customers
+WHERE email LIKE '%@gmail.com';
+```
+
+**[SECTION 4: Practice Exercise - 2 minutes]**
+
+Let's practice! Pause and write queries for:
+
+1. Get all products where category is 'Electronics'
+2. Get customers who signed up in 2024
+3. Get orders with value greater than £1000
+4. Get products with 'Phone' in the name
+
+**[Show solutions]**
+
+```sql
+-- 1
+SELECT * FROM products WHERE category = 'Electronics';
+
+-- 2
+SELECT * FROM customers WHERE YEAR(signup_date) = 2024;
+
+-- 3
+SELECT * FROM orders WHERE order_value > 1000;
+
+-- 4
+SELECT * FROM products WHERE product_name LIKE '%Phone%';
+```
+
+**[SECTION 5: Best Practices - 1 minute]**
+
+Tips for writing great SQL:
+1. Always specify column names (avoid SELECT *)
+2. Use meaningful aliases
+3. Format for readability (line breaks, indentation)
+4. Comment your code
+5. Test with LIMIT first on large tables
+
+**[CLOSING - 30 seconds]**
+
+You now know the foundation of SQL! In the next video, we'll cover JOINs - how to combine data from multiple tables.
+
+Practice these queries until they're second nature. See you next time!
+
+---
+
+### Video 4: "SQL JOINs Made Simple" (12 minutes)
+
+**[INTRO - 30 seconds]**
+
+JOINs are where SQL gets powerful. They let you combine data from multiple tables to answer complex questions.
+
+Today, I'll make JOINs crystal clear with visual examples.
+
+**[SECTION 1: Why JOINs? - 1 minute]**
+
+In real databases, data is split across multiple tables:
+- Customers table: customer info
+- Orders table: order details
+- Products table: product info
+
+To answer "What products did each customer buy?", you need to JOIN these tables.
+
+**[SECTION 2: INNER JOIN - 3 minutes]**
+
+INNER JOIN returns only matching rows from both tables.
+
+**[Show Venn diagram - overlapping circles]**
+
+```sql
+SELECT 
+    customers.name,
+    orders.order_date,
+    orders.total_amount
+FROM customers
+INNER JOIN orders 
+    ON customers.customer_id = orders.customer_id;
+```
+
+This returns only customers who have placed orders.
+
+**Using aliases for cleaner code:**
+```sql
+SELECT 
+    c.name,
+    o.order_date,
+    o.total_amount
+FROM customers c
+INNER JOIN orders o ON c.customer_id = o.customer_id;
+```
+
+**[SECTION 3: LEFT JOIN - 3 minutes]**
+
+LEFT JOIN returns all rows from left table, plus matches from right.
+
+**[Show Venn diagram - left circle fully shaded]**
+
+```sql
+SELECT 
+    c.name,
+    o.order_date,
+    o.total_amount
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id;
+```
+
+This returns ALL customers, even those without orders (NULL in order columns).
+
+**Use case:** Find customers who haven't ordered:
+```sql
+SELECT c.name
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_id IS NULL;
+```
+
+**[SECTION 4: RIGHT JOIN and FULL JOIN - 1 minute]**
+
+RIGHT JOIN: Opposite of LEFT (rarely used)
+FULL OUTER JOIN: All rows from both tables (less common)
+
+In practice, you can rewrite any RIGHT JOIN as a LEFT JOIN by swapping table order.
+
+**[SECTION 5: Multiple JOINs - 2 minutes]**
+
+Real queries often join 3+ tables:
+
+```sql
+SELECT 
+    c.name,
+    o.order_date,
+    p.product_name,
+    oi.quantity
+FROM customers c
+INNER JOIN orders o ON c.customer_id = o.customer_id
+INNER JOIN order_items oi ON o.order_id = oi.order_id
+INNER JOIN products p ON oi.product_id = p.product_id;
+```
+
+This shows customer purchases with product details.
+
+**[SECTION 6: Practice Exercise - 1.5 minutes]**
+
+Pause and write:
+
+1. Join customers and orders, show customer name and total order value
+2. Find products that have never been ordered (LEFT JOIN with IS NULL)
+
+**[Show solutions]**
+
+**[CLOSING - 30 seconds]**
+
+JOINs unlock the real power of SQL. Practice with different combinations until they feel natural.
+
+Next video: Aggregations and GROUP BY!
+
+---
+
+## Unit 5 Video Scripts
+
+### Video 5: "Pandas Basics - DataFrames" (10 minutes)
+
+**[INTRO - 30 seconds]**
+
+Welcome to Python with pandas! If SQL is essential, pandas is your superpower for data manipulation in Python.
+
+Today: Understanding DataFrames - the core data structure you'll use daily.
+
+**[SECTION 1: What is Pandas? - 1 minute]**
+
+Pandas is a Python library for data analysis. It provides:
+- DataFrames: spreadsheet-like data structures
+- Powerful data manipulation tools
+- Built-in visualization
+- Integration with other tools
+
+Think of pandas as Excel on steroids, with full programming power.
+
+**[SECTION 2: Creating DataFrames - 2 minutes]**
+
+**From dictionary:**
+```python
+import pandas as pd
+
+data = {
+    'name': ['Alice', 'Bob', 'Charlie'],
+    'age': [25, 30, 35],
+    'city': ['London', 'Paris', 'Berlin']
+}
+
+df = pd.DataFrame(data)
+print(df)
+```
+
+**From CSV:**
+```python
+df = pd.read_csv('data.csv')
+```
+
+**From SQL:**
+```python
+import sqlite3
+conn = sqlite3.connect('database.db')
+df = pd.read_sql_query("SELECT * FROM customers", conn)
+```
+
+**[SECTION 3: Exploring DataFrames - 3 minutes]**
+
+Essential methods:
+
+```python
+# First 5 rows
+df.head()
+
+# Last 5 rows
+df.tail()
+
+# Shape (rows, columns)
+df.shape
+
+# Column names
+df.columns
+
+# Data types
+df.dtypes
+
+# Summary statistics
+df.describe()
+
+# Info about DataFrame
+df.info()
+```
+
+**[SECTION 4: Selecting Data - 3 minutes]**
+
+**Select column:**
+```python
+# Returns Series
+df['name']
+
+# Returns DataFrame
+df[['name', 'age']]
+```
+
+**Select rows:**
+```python
+# By position (iloc)
+df.iloc[0]        # First row
+df.iloc[0:3]      # First 3 rows
+
+# By condition
+df[df['age'] > 25]
+df[df['city'] == 'London']
+```
+
+**Select rows and columns:**
+```python
+# Using loc[rows, columns]
+df.loc[df['age'] > 25, ['name', 'city']]
+```
+
+**[SECTION 5: Practice Exercise - 1 minute]**
+
+Load this dataset and:
+1. Show first 10 rows
+2. Get summary statistics
+3. Filter for customers from London
+4. Select name and email columns
+
+**[CLOSING - 30 seconds]**
+
+You now understand DataFrames! This is your foundation. In the next video, we'll cover data cleaning and transformation.
+
+Practice these operations until they're muscle memory!
+
+---
+
+## Unit 6 Video Scripts
+
+### Video 6: "A/B Testing Fundamentals" (8 minutes)
+
+**[INTRO - 30 seconds]**
+
+A/B testing is how data-driven companies make decisions. Should we change our checkout button color? Test it. New pricing? Test it.
+
+Today: How to design and analyze A/B tests.
+
+**[SECTION 1: What is A/B Testing? - 1 minute]**
+
+A/B testing compares two versions to see which performs better:
+- Version A (Control): Current version
+- Version B (Treatment): New version
+
+You randomly split users 50/50 and measure a key metric (conversion rate, revenue, engagement).
+
+**[SECTION 2: Hypothesis Framework - 2 minutes]**
+
+Always start with clear hypotheses:
+
+**Null Hypothesis (H0):** No difference between A and B
+**Alternative Hypothesis (H1):** B is better than A
+
+Example:
+- H0: New checkout button has no effect on conversion rate
+- H1: New checkout button increases conversion rate by 2%+
+
+**[SECTION 3: Key Concepts - 3 minutes]**
+
+**Statistical Significance (p-value):**
+- p < 0.05 means results are statistically significant
+- Less than 5% chance results are due to random chance
+
+**Sample Size:**
+- Need enough users to detect meaningful differences
+- Larger effect size = smaller sample needed
+- Use power analysis to calculate required sample size
+
+**Duration:**
+- Run long enough to account for weekly patterns
+- Minimum 1-2 weeks typically
+- Until you reach required sample size
+
+**[SECTION 4: Analysis Example - 1.5 minutes]**
+
+```python
+# Calculate conversion rates
+control_rate = control_conversions / control_visitors
+treatment_rate = treatment_conversions / treatment_visitors
+
+# Calculate lift
+lift = (treatment_rate - control_rate) / control_rate
+
+# Statistical test
+from scipy.stats import chi2_contingency
+contingency = [[control_conversions, control_visitors - control_conversions],
+               [treatment_conversions, treatment_visitors - treatment_conversions]]
+chi2, p_value, dof, expected = chi2_contingency(contingency)
+
+print(f"Control: {control_rate:.2%}")
+print(f"Treatment: {treatment_rate:.2%}")
+print(f"Lift: {lift:.2%}")
+print(f"P-value: {p_value:.4f}")
+print(f"Significant: {p_value < 0.05}")
+```
+
+**[CLOSING - 30 seconds]**
+
+A/B testing turns opinions into facts. Master this skill, and you'll be invaluable to any company.
+
+Practice designing experiments for real business questions!
+
+---
+
+## Recording Tips for Instructors
+
+### Technical Setup
+- Use screen recording software (Camtasia, OBS)
+- 1080p minimum resolution
+- Clear audio with good microphone
+- Remove background noise
+- Use cursor highlighting for emphasis
+
+### Presentation Style
+- Speak clearly and at moderate pace
+- Pause between sections
+- Show enthusiasm and energy
+- Use real examples and stories
+- Encourage practice and pause points
+
+### Visual Aids
+- Use syntax highlighting for code
+- Zoom in on important details
+- Use annotations and arrows
+- Include visual diagrams for concepts
+- Show before/after examples
+
+### Editing
+- Remove long pauses and mistakes
+- Add chapter markers
+- Include captions for accessibility
+- Add b-roll or examples
+- Keep videos under 15 minutes each
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 📚 DATA ANALYTICS GLOSSARY")
+        st.markdown(
+            """**Complete reference guide for all key terms and concepts**
+
+---
+
+## A
+
+**A/B Testing**: Experimental method comparing two versions (A and B) to determine which performs better on a key metric.
+
+**Aggregate Function**: SQL function that performs calculation on multiple rows and returns single value (SUM, AVG, COUNT, MIN, MAX).
+
+**Algorithm**: Step-by-step procedure for solving a problem or completing a task.
+
+**Analytics**: Systematic analysis of data to discover meaningful patterns and insights.
+
+**API (Application Programming Interface)**: Set of protocols for building and integrating application software.
+
+**Array Formula**: Excel formula that can perform multiple calculations on one or more items in an array.
+
+**Attribution**: Process of assigning credit to touchpoints in a customer journey.
+
+---
+
+## B
+
+**Baseline**: Reference point used for comparison in A/B testing or performance tracking.
+
+**BI (Business Intelligence)**: Technologies and strategies for analyzing business data.
+
+**Big Data**: Extremely large datasets that require specialized processing techniques.
+
+**Binning**: Grouping continuous values into discrete categories or bins.
+
+**Boolean Logic**: System using TRUE/FALSE values for logical operations (AND, OR, NOT).
+
+**Business Logic**: Rules that define how business operations function.
+
+---
+
+## C
+
+**Calculated Field**: Custom field created using formulas in BI tools or spreadsheets.
+
+**Cardinality**: Number of unique values in a database column or relationship type between tables.
+
+**Categorical Variable**: Variable with discrete categories (e.g., color, region, product type).
+
+**Churn Rate**: Percentage of customers who stop using a service over time period.
+
+**CLV (Customer Lifetime Value)**: Total revenue expected from customer over entire relationship.
+
+**Cohort Analysis**: Grouping users by shared characteristics to track behavior over time.
+
+**Continuous Variable**: Numeric variable that can take any value within a range (e.g., revenue, temperature).
+
+**Conversion Rate**: Percentage of users who complete desired action.
+
+**Correlation**: Statistical measure of relationship between two variables.
+
+**CTE (Common Table Expression)**: Temporary named result set in SQL query.
+
+---
+
+## D
+
+**DAX (Data Analysis Expressions)**: Formula language for Power BI and Excel Power Pivot.
+
+**Dashboard**: Visual display of key metrics and KPIs on single screen.
+
+**Data Cleaning**: Process of detecting and correcting corrupt or inaccurate data.
+
+**Data Dictionary**: Centralized repository of information about data structure and definitions.
+
+**Data Lake**: Storage repository holding vast amounts of raw data in native format.
+
+**Data Mart**: Subset of data warehouse focused on specific business area.
+
+**Data Mining**: Process of discovering patterns in large datasets.
+
+**Data Pipeline**: Series of data processing steps from source to destination.
+
+**Data Quality**: Measure of data's fitness for intended use (accuracy, completeness, consistency).
+
+**Data Warehouse**: Central repository of integrated data from multiple sources.
+
+**Data Wrangling**: Process of cleaning, structuring, and enriching raw data.
+
+**Descriptive Analytics**: Analysis of historical data to understand what happened.
+
+**Diagnostic Analytics**: Analysis to understand why something happened.
+
+**Dimension**: Categorical attribute used to slice and analyze data (e.g., time, location, product).
+
+**Distribution**: Pattern showing how values are spread across a dataset.
+
+---
+
+## E
+
+**EDA (Exploratory Data Analysis)**: Initial data investigation to discover patterns and anomalies.
+
+**ETL (Extract, Transform, Load)**: Process of extracting data from sources, transforming it, and loading into destination.
+
+**Excel**: Spreadsheet software by Microsoft for data analysis and visualization.
+
+---
+
+## F
+
+**Feature Engineering**: Creating new variables from existing data to improve analysis or models.
+
+**Filter**: Condition limiting which data rows are included in analysis.
+
+**Foreign Key**: Column referencing primary key in another table to establish relationship.
+
+**Function**: Predefined formula performing specific calculation.
+
+---
+
+## G
+
+**Granularity**: Level of detail in data (e.g., daily vs monthly).
+
+**GROUP BY**: SQL clause grouping rows sharing property for aggregation.
+
+**Guardrail Metric**: Metric monitored to ensure changes don't harm other aspects.
+
+---
+
+## H
+
+**Having Clause**: SQL clause filtering grouped results after aggregation.
+
+**Histogram**: Bar chart showing distribution of continuous variable.
+
+**Hypothesis**: Testable prediction about relationship between variables.
+
+---
+
+## I
+
+**Index**: Database structure improving query performance on specific columns.
+
+**Inner Join**: SQL operation returning only matching rows from both tables.
+
+**Insight**: Meaningful discovery from data analysis that informs decisions.
+
+**Interactive Dashboard**: Dashboard allowing user filtering and drill-down.
+
+---
+
+## J
+
+**Join**: SQL operation combining rows from multiple tables based on related column.
+
+**JSON (JavaScript Object Notation)**: Lightweight data-interchange format.
+
+---
+
+## K
+
+**Key**: Column uniquely identifying rows in database table.
+
+**KPI (Key Performance Indicator)**: Measurable value demonstrating effectiveness toward key objectives.
+
+---
+
+## L
+
+**Left Join**: SQL operation returning all rows from left table plus matches from right.
+
+**LOD (Level of Detail)**: Tableau expression controlling aggregation granularity.
+
+**Lookup Function**: Function finding values in table or range (VLOOKUP, INDEX/MATCH).
+
+---
+
+## M
+
+**Measure**: Numeric value for calculation and analysis (e.g., revenue, quantity).
+
+**Median**: Middle value when data sorted (50th percentile).
+
+**Metadata**: Data providing information about other data.
+
+**Metric**: Quantifiable measure tracking business performance.
+
+**Missing Data**: Values absent from dataset (NULL, NaN, blank).
+
+**Mode**: Most frequently occurring value in dataset.
+
+---
+
+## N
+
+**Normalization**: Process of organizing data to reduce redundancy.
+
+**North Star Metric**: Single metric best capturing core value delivered to customers.
+
+**NULL**: Database value representing missing or undefined data.
+
+---
+
+## O
+
+**OLAP (Online Analytical Processing)**: Computing approach for multidimensional data analysis.
+
+**OLTP (Online Transaction Processing)**: Database systems supporting transaction-oriented applications.
+
+**Outlier**: Data point significantly different from other observations.
+
+---
+
+## P
+
+**Pandas**: Python library for data manipulation and analysis.
+
+**Parameter**: Variable allowing dynamic input in analysis or query.
+
+**Partition**: Division of table into segments for performance or organization.
+
+**Percentile**: Value below which percentage of data falls.
+
+**Pivot Table**: Data summarization tool rotating/aggregating data.
+
+**Power BI**: Microsoft's business intelligence platform.
+
+**Predictive Analytics**: Using data to forecast future outcomes.
+
+**Prescriptive Analytics**: Analysis recommending actions to achieve desired outcomes.
+
+**Primary Key**: Column uniquely identifying each row in table.
+
+**Python**: Programming language popular for data analysis.
+
+---
+
+## Q
+
+**Query**: Request for data from database.
+
+**Query Optimization**: Improving query performance and efficiency.
+
+---
+
+## R
+
+**R**: Programming language for statistical computing and graphics.
+
+**Regression**: Statistical method for modeling relationship between variables.
+
+**Relational Database**: Database organizing data into tables with relationships.
+
+**ROI (Return on Investment)**: Measure of profitability calculated as gain/cost.
+
+**Row-Level Security**: Restricting data access based on user characteristics.
+
+---
+
+## S
+
+**Schema**: Structure defining organization of database.
+
+**Segment**: Subset of data sharing common characteristics.
+
+**SELECT**: SQL statement retrieving data from database.
+
+**Self-Join**: Table joined with itself.
+
+**SQL (Structured Query Language)**: Language for managing relational databases.
+
+**Standard Deviation**: Measure of amount of variation in dataset.
+
+**Statistical Significance**: Likelihood that result is not due to random chance.
+
+**Subquery**: Query nested inside another query.
+
+---
+
+## T
+
+**Tableau**: Data visualization software for business intelligence.
+
+**Time Series**: Data points indexed in time order.
+
+**Trend**: General direction data moves over time.
+
+**Type I Error**: False positive (rejecting true null hypothesis).
+
+**Type II Error**: False negative (failing to reject false null hypothesis).
+
+---
+
+## U
+
+**Union**: SQL operation combining results from multiple queries.
+
+**Unstructured Data**: Data without predefined format (text, images, video).
+
+---
+
+## V
+
+**Variable**: Characteristic that can take different values.
+
+**Variance**: Measure of data spread from mean.
+
+**View**: Virtual table based on SQL query result.
+
+**Visualization**: Graphical representation of data.
+
+**VLOOKUP**: Excel function searching for value in table's first column.
+
+---
+
+## W
+
+**WHERE**: SQL clause filtering rows before aggregation.
+
+**Window Function**: SQL function performing calculation across set of rows related to current row.
+
+---
+
+## X
+
+**XML (Extensible Markup Language)**: Markup language for encoding documents.
+
+---
+
+## Z
+
+**Z-Score**: Number of standard deviations a value is from the mean.
+
+---
+
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🛠️ TOOL INSTALLATION & SETUP GUIDES")
+        st.markdown(
+            """**Complete setup instructions for all required tools**
+
+---
+
+## SQL Database Setup
+
+### Option 1: SQLite (Easiest for Learning)
+
+**Windows:**
+```bash
+# Download SQLite from https://www.sqlite.org/download.html
+# Extract sqlite-tools-win32-x86.zip
+# Add to PATH or run from folder
+
+# Test installation
+sqlite3 --version
+```
+
+**Mac:**
+```bash
+# SQLite comes pre-installed
+sqlite3 --version
+
+# If needed, install via Homebrew
+brew install sqlite3
+```
+
+**Linux:**
+```bash
+sudo apt-get update
+sudo apt-get install sqlite3
+sqlite3 --version
+```
+
+**Creating your first database:**
+```bash
+# Create database
+sqlite3 practice.db
+
+# Inside SQLite prompt
+CREATE TABLE customers (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    email TEXT,
+    signup_date DATE
+);
+
+INSERT INTO customers VALUES (1, 'Alice', 'alice@email.com', '2024-01-15');
+
+SELECT * FROM customers;
+
+.exit
+```
+
+### Option 2: MySQL (Production-Ready)
+
+**Windows:**
+1. Download MySQL Installer from https://dev.mysql.com/downloads/installer/
+2. Run installer and select "MySQL Server"
+3. Configure root password
+4. Complete installation
+
+**Mac:**
+```bash
+# Install via Homebrew
+brew install mysql
+
+# Start MySQL
+brew services start mysql
+
+# Secure installation
+mysql_secure_installation
+```
+
+**Linux:**
+```bash
+sudo apt-get update
+sudo apt-get install mysql-server
+sudo mysql_secure_installation
+```
+
+**Connecting:**
+```bash
+mysql -u root -p
+# Enter password
+
+# Create database
+CREATE DATABASE analytics_practice;
+USE analytics_practice;
+```
+
+### Option 3: PostgreSQL (Advanced)
+
+**Windows:**
+1. Download from https://www.postgresql.org/download/windows/
+2. Run installer
+3. Remember your password!
+
+**Mac:**
+```bash
+brew install postgresql
+brew services start postgresql
+
+# Create database
+createdb analytics_practice
+```
+
+**Linux:**
+```bash
+sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib
+sudo systemctl start postgresql
+```
+
+---
+
+## Python & Pandas Setup
+
+### Step 1: Install Python
+
+**Windows:**
+1. Download from https://www.python.org/downloads/
+2. Run installer
+3. **CHECK "Add Python to PATH"**
+4. Verify: `python --version`
+
+**Mac:**
+```bash
+# Install Homebrew if not installed
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install Python
+brew install python
+
+# Verify
+python3 --version
+```
+
+**Linux:**
+```bash
+sudo apt-get update
+sudo apt-get install python3 python3-pip
+
+# Verify
+python3 --version
+```
+
+### Step 2: Install Pandas & Libraries
+
+```bash
+# Install pip packages
+pip install pandas numpy matplotlib seaborn scipy jupyter
+
+# Verify installation
+python -c "import pandas; print(pandas.__version__)"
+```
+
+### Step 3: Set Up Jupyter Notebook
+
+```bash
+# Install Jupyter
+pip install jupyter
+
+# Start Jupyter
+jupyter notebook
+
+# Browser will open automatically
+# Create new Python 3 notebook
+```
+
+### Step 4: First Pandas Script
+
+```python
+# Create file: first_analysis.py
+import pandas as pd
+
+# Create sample data
+data = {
+    'product': ['Laptop', 'Mouse', 'Keyboard'],
+    'price': [1200, 25, 75],
+    'quantity': [10, 50, 30]
+}
+
+df = pd.DataFrame(data)
+print(df)
+
+# Calculate total value
+df['total_value'] = df['price'] * df['quantity']
+print("\nWith totals:")
+print(df)
+
+# Save to CSV
+df.to_csv('inventory.csv', index=False)
+print("\nSaved to inventory.csv")
+```
+
+Run: `python first_analysis.py`
+
+---
+
+## Excel Setup
+
+### Microsoft Excel
+
+**Windows/Mac:**
+1. Purchase Microsoft 365 subscription or standalone Excel
+2. Download from https://www.microsoft.com/excel
+3. Install and activate
+
+**Free Alternative - LibreOffice Calc:**
+1. Download from https://www.libreoffice.org/
+2. Install LibreOffice suite
+3. Open LibreOffice Calc (Excel alternative)
+
+### Excel Features to Enable
+
+**Windows:**
+1. File → Options → Add-ins
+2. Manage: Excel Add-ins → Go
+3. Check: Analysis ToolPak, Solver
+4. Click OK
+
+**Mac:**
+1. Tools → Excel Add-ins
+2. Check: Analysis ToolPak
+3. Click OK
+
+### Testing Excel Setup
+
+Create new workbook:
+```
+A1: Product    B1: Quantity    C1: Price    D1: Total
+A2: Laptop     10              1200         =B2*C2
+A3: Mouse      50              25           =B3*C3
+A4: Keyboard   30              75           =B4*C4
+A5: TOTAL      =SUM(B2:B4)                  =SUM(D2:D4)
+```
+
+Test pivot table:
+1. Select data range
+2. Insert → PivotTable
+3. Drag fields to create summary
+
+---
+
+## Tableau Setup
+
+### Tableau Public (Free)
+
+**Download:**
+1. Visit https://public.tableau.com/
+2. Click "Download the App"
+3. Enter email address
+4. Download and install
+
+**Windows:**
+- Run TableauPublic.exe
+- Follow installation wizard
+- Launch Tableau Public
+
+**Mac:**
+- Open TableauPublic.dmg
+- Drag to Applications
+- Launch Tableau Public
+
+### Tableau Desktop (Paid/Trial)
+
+**Free 14-day trial:**
+1. Visit https://www.tableau.com/products/trial
+2. Enter details and download
+3. Install Tableau Desktop
+4. Activate trial license
+
+### First Tableau Visualization
+
+**Connect to data:**
+1. Open Tableau
+2. Connect → Text file
+3. Select CSV file
+4. Drag to canvas
+
+**Create visualization:**
+1. Drag dimension to Columns
+2. Drag measure to Rows
+3. Select chart type from Show Me
+4. Add filters and colors
+5. Save workbook
+
+---
+
+## Power BI Setup
+
+### Power BI Desktop (Free)
+
+**Windows Only:**
+1. Visit https://powerbi.microsoft.com/desktop/
+2. Click "Download Free"
+3. Run installer
+4. Sign in with Microsoft account
+
+**Requirements:**
+- Windows 10 or later
+- Microsoft account (free)
+
+### First Power BI Report
+
+**Load data:**
+1. Home → Get Data → Text/CSV
+2. Select file → Load
+3. Data appears in Fields pane
+
+**Create visual:**
+1. Click chart icon (bar, line, pie)
+2. Drag fields to Axis and Values
+3. Format using Format pane
+4. Add filters and slicers
+
+**Publish:**
+1. File → Publish
+2. Sign in to Power BI service
+3. Select workspace
+4. View online
+
+---
+
+## Git & GitHub Setup (For Portfolio)
+
+### Install Git
+
+**Windows:**
+1. Download from https://git-scm.com/
+2. Run installer (use defaults)
+3. Verify: `git --version`
+
+**Mac:**
+```bash
+# Install via Homebrew
+brew install git
+
+# Verify
+git --version
+```
+
+**Linux:**
+```bash
+sudo apt-get install git
+git --version
+```
+
+### Configure Git
+
+```bash
+# Set your name and email
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+
+# Verify
+git config --list
+```
+
+### Create GitHub Account
+
+1. Visit https://github.com/
+2. Sign up (free)
+3. Verify email
+4. Create profile
+
+### First Repository
+
+**On GitHub:**
+1. Click "New Repository"
+2. Name: "data-analyst-portfolio"
+3. Add README
+4. Create repository
+
+**On your computer:**
+```bash
+# Clone repository
+git clone https://github.com/yourusername/data-analyst-portfolio.git
+
+# Navigate to folder
+cd data-analyst-portfolio
+
+# Add files
+echo "# My Data Analyst Portfolio" > README.md
+
+# Commit changes
+git add .
+git commit -m "Initial commit"
+git push origin main
+```
+
+---
+
+## VS Code Setup (Code Editor)
+
+### Install VS Code
+
+**All platforms:**
+1. Download from https://code.visualstudio.com/
+2. Install for your OS
+3. Launch VS Code
+
+### Essential Extensions
+
+**Install these:**
+1. Click Extensions icon (left sidebar)
+2. Search and install:
+   - Python (Microsoft)
+   - Jupyter
+   - SQL Tools
+   - Excel Viewer
+   - GitLens
+
+### Configure for Python
+
+1. Open Command Palette (Ctrl+Shift+P / Cmd+Shift+P)
+2. Type "Python: Select Interpreter"
+3. Choose your Python installation
+4. Create new .py file
+5. Write code and run with F5
+
+---
+
+## Database Management Tools
+
+### DBeaver (Free, Multi-Database)
+
+**All platforms:**
+1. Download from https://dbeaver.io/
+2. Install for your OS
+3. Launch DBeaver
+
+**Connect to database:**
+1. Database → New Database Connection
+2. Select database type (MySQL, PostgreSQL, SQLite)
+3. Enter credentials
+4. Test connection → Finish
+
+**Run queries:**
+1. Right-click database → SQL Editor → New SQL Script
+2. Write query
+3. Execute (Ctrl+Enter)
+
+### MySQL Workbench (MySQL)
+
+**Download:**
+1. Visit https://dev.mysql.com/downloads/workbench/
+2. Download for your OS
+3. Install
+
+**Features:**
+- Visual query builder
+- Database design
+- Server administration
+- Query optimization
+
+---
+
+## Verification Checklist
+
+### Test Your Setup:
+
+**SQL:**
+```sql
+-- Can you run this query?
+SELECT 'SQL is working!' AS test;
+```
+
+**Python:**
+```python
+# Can you run this script?
+import pandas as pd
+print("Python and pandas working!")
+print(f"Pandas version: {pd.__version__}")
+```
+
+**Excel:**
+- Can you create pivot table?
+- Can you use VLOOKUP?
+- Can you create chart?
+
+**Tableau/Power BI:**
+- Can you connect to CSV?
+- Can you create bar chart?
+- Can you add filter?
+
+**Git:**
+```bash
+# Can you run these?
+git --version
+git config --list
+```
+
+### If you can do all of these, you're ready! ✅
+
+---
+
+## Troubleshooting Common Issues
+
+### Python "command not found"
+- **Solution:** Reinstall Python and check "Add to PATH"
+- Or add Python directory to PATH manually
+
+### pip install fails
+- **Solution:** Update pip: `python -m pip install --upgrade pip`
+- Try: `pip install --user package_name`
+
+### Jupyter won't start
+- **Solution:** `pip uninstall jupyter`, then `pip install jupyter`
+- Check firewall settings
+
+### Excel add-ins missing
+- **Solution:** Repair Office installation
+- Or enable add-ins manually in Options
+
+### Tableau won't connect to file
+- **Solution:** Check file permissions
+- Copy file to Documents folder
+- Use absolute file path
+
+### Git authentication fails
+- **Solution:** Use GitHub personal access token instead of password
+- Settings → Developer settings → Personal access tokens
+
+---
+
+## Next Steps After Setup
+
+1. **Verify all installations** using checklist above
+2. **Create practice folder structure:**
+   ```
+   data-analytics/
+   ├── sql-practice/
+   ├── python-scripts/
+   ├── excel-workbooks/
+   ├── tableau-workbooks/
+   ├── datasets/
+   └── portfolio-projects/
+   ```
+
+3. **Download practice datasets:**
+   - Kaggle.com
+   - Data.gov
+   - GitHub public datasets
+
+4. **Create first project:**
+   - Load data in each tool
+   - Create simple analysis
+   - Build visualization
+   - Document in GitHub
+
+5. **Start building portfolio!**
+
+---
+
 """
         )
 
@@ -8442,6 +21776,664 @@ Best regards,
 - Mentor newer analysts
 - Establish yourself as go-to for specific domain
 - Plan next quarter initiatives
+
+---
+
+## 💼 COMPLETE INTERVIEW QUESTION BANK (100+ Questions)
+
+### SQL Technical Questions (40 questions)
+
+**6. How do you calculate a percentile in SQL?**
+```sql
+SELECT customer_id, revenue,
+  PERCENT_RANK() OVER (ORDER BY revenue) as percentile
+FROM orders;
+-- Or use NTILE for quartiles:
+SELECT customer_id, revenue,
+  NTILE(4) OVER (ORDER BY revenue) as quartile
+FROM orders;
+```
+
+**7. Write a query to find customers who made purchases in consecutive months.**
+```sql
+WITH monthly_purchases AS (
+  SELECT customer_id,
+    DATE_TRUNC('month', order_date) as month
+  FROM orders
+  GROUP BY customer_id, DATE_TRUNC('month', order_date)
+)
+SELECT DISTINCT a.customer_id
+FROM monthly_purchases a
+JOIN monthly_purchases b
+  ON a.customer_id = b.customer_id
+  AND a.month = b.month - INTERVAL '1 month';
+```
+
+**8. How do you identify the top 20% of customers by revenue?**
+```sql
+SELECT customer_id, total_revenue
+FROM (
+  SELECT customer_id,
+    SUM(revenue) as total_revenue,
+    PERCENT_RANK() OVER (ORDER BY SUM(revenue) DESC) as pct_rank
+  FROM orders
+  GROUP BY customer_id
+) ranked
+WHERE pct_rank <= 0.20;
+```
+
+**9. Explain PARTITION BY vs GROUP BY.**
+Answer: GROUP BY collapses rows into groups (reduces row count). PARTITION BY creates windows but keeps all rows. Use GROUP BY for aggregation reporting, PARTITION BY for row-level calculations with group context.
+
+**10. How would you find gaps in a sequence (e.g., missing order IDs)?**
+```sql
+WITH numbers AS (
+  SELECT MIN(order_id) + generate_series(0, MAX(order_id) - MIN(order_id)) as id
+  FROM orders
+)
+SELECT n.id as missing_id
+FROM numbers n
+LEFT JOIN orders o ON n.id = o.order_id
+WHERE o.order_id IS NULL;
+```
+
+### Python/Pandas Advanced (30 questions)
+
+**6. How do you create a custom aggregation function?**
+```python
+def revenue_per_customer(group):
+    return group['revenue'].sum() / group['customer_id'].nunique()
+
+df.groupby('region').apply(revenue_per_customer)
+```
+
+**7. Explain the difference between merge, join, and concat.**
+- merge(): SQL-style joins on columns
+- join(): Joins on index
+- concat(): Stacks DataFrames vertically or horizontally
+```python
+pd.merge(df1, df2, on='key')  # Join on column
+df1.join(df2)  # Join on index
+pd.concat([df1, df2], axis=0)  # Stack vertically
+```
+
+**8. How do you handle datetime operations?**
+```python
+df['date'] = pd.to_datetime(df['date'])
+df['year'] = df['date'].dt.year
+df['month'] = df['date'].dt.month
+df['day_name'] = df['date'].dt.day_name()
+df['quarter'] = df['date'].dt.quarter
+
+# Date arithmetic
+df['days_since'] = (pd.Timestamp.now() - df['date']).dt.days
+
+# Resampling time series
+df.set_index('date').resample('M').sum()
+```
+
+**9. How would you detect outliers programmatically?**
+```python
+from scipy import stats
+
+# Z-score method
+z_scores = np.abs(stats.zscore(df['revenue']))
+outliers = df[z_scores > 3]
+
+# IQR method
+Q1 = df['revenue'].quantile(0.25)
+Q3 = df['revenue'].quantile(0.75)
+IQR = Q3 - Q1
+outliers = df[(df['revenue'] < Q1 - 1.5*IQR) | 
+              (df['revenue'] > Q3 + 1.5*IQR)]
+```
+
+**10. Explain vectorization in pandas.**
+Answer: Vectorization applies operations to entire arrays at once (C-level), avoiding Python loops. Always faster than iterating rows.
+```python
+# BAD (slow):
+for i in range(len(df)):
+    df.loc[i, 'total'] = df.loc[i, 'qty'] * df.loc[i, 'price']
+
+# GOOD (fast):
+df['total'] = df['qty'] * df['price']
+```
+
+### Statistics & A/B Testing (30 questions)
+
+**6. Explain statistical power and why it matters.**
+Answer: Power is probability of detecting an effect when it exists (1 - Type II error). Typically aim for 80% power. Low power means you might miss real effects. Affects sample size calculation.
+
+**7. What's the difference between one-tailed and two-tailed tests?**
+Answer: 
+- One-tailed: Tests if effect is in specific direction (greater OR less than)
+- Two-tailed: Tests if effect exists in either direction (not equal to)
+- Use two-tailed unless you have strong directional hypothesis
+
+**8. How do you calculate confidence intervals?**
+```python
+from scipy import stats
+import numpy as np
+
+# For means
+data = [values]
+confidence = 0.95
+mean = np.mean(data)
+se = stats.sem(data)
+interval = stats.t.interval(confidence, len(data)-1, mean, se)
+
+# For proportions
+from statsmodels.stats.proportion import proportion_confint
+successes = 150
+total = 1000
+ci = proportion_confint(successes, total, alpha=0.05, method='wilson')
+```
+
+**9. Explain Simpson's Paradox with an example.**
+Answer: When trend in groups reverses when groups are combined. Example: Treatment works in men and women separately, but control "wins" overall due to unbalanced group sizes.
+
+**10. How would you design a multivariate test?**
+Answer:
+- Define variants (e.g., 3 button colors × 2 headline styles = 6 combinations)
+- Calculate sample size (larger than A/B test)
+- Randomize users to variants
+- Use Bonferroni correction for multiple comparisons
+- Test interactions between factors
+
+### Excel Questions (20 questions)
+
+**6. Explain the difference between VLOOKUP and INDEX-MATCH.**
+Answer: VLOOKUP only looks right, breaks if columns reorder, slower. INDEX-MATCH looks any direction, flexible, faster, more robust.
+```excel
+VLOOKUP: =VLOOKUP(A2, B:D, 3, FALSE)
+INDEX-MATCH: =INDEX(D:D, MATCH(A2, B:B, 0))
+```
+
+**7. How do you create a dynamic named range?**
+```excel
+=OFFSET(Sheet1!$A$2, 0, 0, COUNTA(Sheet1!$A:$A)-1, 1)
+```
+
+**8. Explain calculated fields vs calculated items in pivot tables.**
+Answer:
+- Calculated Field: New column based on existing fields (e.g., Profit = Revenue - Cost)
+- Calculated Item: New row in existing field (e.g., Q1 = Jan + Feb + Mar)
+
+**9. How do you remove duplicates while keeping the first occurrence?**
+Answer: Data → Remove Duplicates, or use advanced filter with "Unique records only"
+
+**10. What's the fastest way to split data from one column into multiple columns?**
+Answer: Data → Text to Columns, choose delimiter or fixed width, preview results, finish.
+
+### Business & Domain Questions (20 questions)
+
+**1. How would you measure the success of a new feature launch?**
+Answer:
+- Primary: Feature adoption rate (% of users who use it)
+- Secondary: Engagement metrics (frequency, depth of use)
+- Business: Impact on retention, revenue, or key goal
+- Guardrails: No degradation in core metrics
+- Timeline: Track for 30-90 days
+
+**2. A key metric suddenly drops 20%. Walk me through your analysis.**
+Answer:
+1. Validate: Check data pipeline, confirm drop is real
+2. Segment: By user type, platform, region, time
+3. Investigate: Look for changes (releases, campaigns, external)
+4. Hypothesize: Form theories for the drop
+5. Test: Run queries to validate hypotheses
+6. Recommend: Propose fixes or further investigation
+
+**3. How do you prioritize competing requests from stakeholders?**
+Answer:
+- Business impact: Revenue/cost implications
+- Urgency: Time-sensitive decisions
+- Effort: Quick wins vs long projects
+- Strategic alignment: Company priorities
+- Data availability: Can we actually answer this?
+Framework: Impact/Effort matrix
+
+**4. Explain how you'd approach building a customer segmentation.**
+Answer:
+1. Define purpose: What decisions will this inform?
+2. Gather data: Behavioral, demographic, transactional
+3. Choose method: RFM, K-means, or business rules
+4. Build segments: Run analysis, validate groups
+5. Profile segments: Describe characteristics
+6. Actionize: Recommend strategies per segment
+7. Monitor: Track segment movement over time
+
+**5. How would you analyze why sales are declining?**
+Answer:
+- Trend: Is it gradual or sudden? Seasonal?
+- Segments: Which products/regions/channels affected?
+- Customer behavior: Fewer customers or less per customer?
+- Competition: Market share changes?
+- External: Economic factors, seasonality
+- Internal: Pricing, inventory, marketing changes
+Build hypotheses, test with data, recommend actions.
+
+### Behavioral Questions (STAR Method - 20 questions)
+
+**6. Describe a time when your analysis was wrong.**
+Situation: Built model predicting churn, accuracy was 75%
+Task: Investigate why predictions were off
+Action: Discovered data leakage (used future information), rebuilt model properly
+Result: Improved to 82% accuracy, learned importance of temporal validation
+
+**7. Tell me about a time you had to learn a new tool quickly.**
+Situation: Needed to build Tableau dashboard, never used it
+Task: Learn Tableau in 1 week to present to executives
+Action: Completed online course, practiced with sample data, got help from colleague
+Result: Delivered dashboard on time, now company standard tool
+
+**8. How do you handle tight deadlines with incomplete data?**
+Situation: CEO needed analysis by tomorrow, data had gaps
+Task: Provide best answer with available information
+Action: Documented assumptions, provided ranges instead of point estimates, noted limitations
+Result: CEO appreciated transparency, made informed decision, got better data for next time
+
+**9. Describe a successful collaboration with a non-technical team.**
+Situation: Marketing wanted to understand campaign ROI
+Task: Build attribution model they could understand
+Action: Used simple last-touch model first, visualized clearly, trained team to interpret
+Result: Marketing changed budget allocation, saw 15% ROI improvement
+
+**10. Tell me about a time you found an unexpected insight.**
+Situation: Analyzing customer churn, expected price sensitivity
+Task: Understand real churn drivers
+Action: Ran correlation analysis, found support wait time was #1 factor
+Result: Company invested in support team, churn dropped 12%
+
+---
+
+## 🎯 PORTFOLIO OPTIMIZATION GUIDE
+
+### GitHub Portfolio Setup
+
+**What to Include:**
+1. **3-5 Complete Projects** (quality over quantity)
+   - Different domains (healthcare, retail, SaaS)
+   - Various techniques (SQL, Python, dashboards)
+   - Clear business impact
+   
+2. **Professional README for Each Project:**
+```markdown
+# Project Title: E-Commerce Cart Abandonment Analysis
+
+## Business Problem
+Cart abandonment rate of 68% costing $250K monthly in lost revenue.
+
+## Approach
+- Analyzed 50K transactions using SQL and Python
+- Segmented by device, region, product category
+- Statistical testing (chi-square, t-tests)
+- Built predictive model (scikit-learn)
+
+## Key Findings
+1. Mobile users abandon 75% vs 55% desktop
+2. Weekend abandonment 20% higher
+3. Electronics category worst at 72%
+
+## Recommendations
+1. Optimize mobile checkout (projected 15% improvement)
+2. Weekend-specific interventions
+3. A/B test simplified checkout
+
+## Impact
+Projected $300K annual revenue recovery (12% improvement)
+
+## Tech Stack
+Python • pandas • scikit-learn • matplotlib • SQL • Tableau
+
+## Links
+- [Jupyter Notebook](notebooks/analysis.ipynb)
+- [Interactive Dashboard](https://public.tableau.com/...)
+- [Final Report PDF](reports/final_report.pdf)
+```
+
+**3. Clean Code Structure:**
+```
+project-name/
+├── README.md (compelling overview)
+├── data/ (sample data only, not sensitive)
+├── notebooks/ (well-commented Jupyter)
+├── src/ (modular Python scripts)
+├── reports/ (PDF deliverables)
+├── images/ (visualizations)
+└── requirements.txt
+```
+
+**4. README Profile (GitHub Profile README):**
+```markdown
+# Hi, I'm [Your Name] 👋
+
+## Data Analyst | Turning Data into Actionable Insights
+
+I help businesses make data-driven decisions through:
+- 📊 SQL for data extraction and analysis
+- 🐍 Python for advanced analytics and automation
+- 📈 Tableau/Power BI for compelling visualizations
+- 🧪 A/B testing and experimentation
+
+### Featured Projects
+- 🏥 [Hospital DNA Rate Analysis](link) - Saved $180K annually
+- 🛒 [E-Commerce Optimization](link) - 12% revenue increase
+- 📱 [SaaS Churn Prediction](link) - Improved retention 8%
+
+### Skills
+SQL • Python • Tableau • Excel • Statistics • A/B Testing
+
+### Let's Connect
+[LinkedIn](link) • [Email](mailto:) • [Portfolio](link)
+```
+
+---
+
+## 💰 SALARY NEGOTIATION GUIDE
+
+### Research Phase
+
+**1. Know Your Market Value:**
+- Glassdoor salary ranges
+- Levels.fyi for tech companies
+- PayScale for general market
+- LinkedIn Salary Insights
+- Network (ask peers, mentors)
+
+**Typical Ranges (UK, 2024):**
+- Junior Data Analyst: £28K - £38K
+- Mid-Level: £38K - £55K
+- Senior: £55K - £75K+
+- London: +15-25% premium
+
+**2. Calculate Your Target:**
+```
+Minimum Acceptable: £X (walk away below this)
+Target: £Y (what you want)
+Stretch: £Z (optimistic but achievable)
+
+Example:
+Minimum: £40K
+Target: £45K
+Stretch: £50K
+```
+
+### Negotiation Scripts
+
+**When They Ask Your Salary Expectations:**
+
+❌ **Don't Say:**
+"I'm currently making £35K"
+"Whatever you think is fair"
+"I'll take anything!"
+
+✅ **Do Say:**
+"Based on my research for Data Analyst roles in London with my skills in SQL, Python, and Tableau, I'm targeting £42-48K. But I'm flexible based on the full compensation package and growth opportunities."
+
+**When You Receive an Offer:**
+
+**Script 1: Negotiating Up**
+"Thank you for the offer of £40K. I'm excited about the role! Based on my research and the value I'll bring (especially my SQL optimization skills and experience with similar projects), I was hoping for something closer to £45K. Is there flexibility on the base salary?"
+
+**Script 2: Negotiating Total Package**
+"I appreciate the offer. While the base of £40K is lower than my target of £45K, could we discuss:
+- Sign-on bonus to bridge the gap?
+- Earlier salary review (6 months instead of 12)?
+- Additional training budget?
+- Extra holiday days?
+These would help make the package work for me."
+
+**Script 3: Accepting with Grace**
+"I'm thrilled to accept the offer of £45K. Thank you for working with me on the compensation. I'm excited to start on [date] and contribute to the team's success!"
+
+**When to Walk Away:**
+- Below your minimum acceptable
+- Toxic culture signals during process
+- Lack of growth opportunity
+- Unreasonable demands/expectations
+
+### Email Template - Salary Negotiation
+
+```
+Subject: Re: Job Offer - Data Analyst Role
+
+Dear [Hiring Manager],
+
+Thank you for extending the offer for the Data Analyst position. I'm very excited about the opportunity to join [Company] and contribute to [specific team/project].
+
+I've reviewed the offer carefully. While I'm enthusiastic about the role, I was hoping we could discuss the compensation. Based on my research for similar Data Analyst roles in [location], combined with my experience in [specific skills: SQL, Python, visualization], I was expecting a base salary in the range of £[target-stretch].
+
+I'm particularly excited about [specific aspect of role], and I'm confident I can deliver significant value through [specific contribution you'll make].
+
+Would you be open to discussing a base salary of £[target]? I'm also interested in understanding:
+- Performance review and raise timeline
+- Professional development budget
+- Any other benefits or perks
+
+I'm flexible and eager to find a package that works for both of us. Would you be available for a brief call to discuss?
+
+Thank you for your consideration.
+
+Best regards,
+[Your Name]
+```
+
+---
+
+## 🤝 NETWORKING & JOB SEARCH STRATEGY
+
+### LinkedIn Optimization
+
+**Headline Formula:**
+```
+Data Analyst | [Key Skill] | [Value Proposition]
+
+Examples:
+"Data Analyst | SQL & Python | Turning Complex Data into Actionable Business Insights"
+"Junior Data Analyst | Healthcare Analytics | Helping Hospitals Optimize Operations"
+"Data Analyst | E-Commerce | Driving Revenue Growth Through Data-Driven Decisions"
+```
+
+**About Section Template:**
+```
+I help [target companies/industry] [achieve goal] through [your approach].
+
+With expertise in SQL, Python, and Tableau, I transform complex datasets into clear, actionable insights that drive business decisions.
+
+Recent Projects:
+• Analyzed 50K+ hospital appointments to identify cost-saving opportunities ($180K annual impact)
+• Built customer segmentation model improving marketing ROI by 25%
+• Developed automated dashboards reducing reporting time from 8 hours to 15 minutes
+
+Skills: SQL | Python (pandas, matplotlib) | Tableau | Excel | Statistics | A/B Testing
+
+Currently seeking Data Analyst opportunities where I can apply my analytical skills to solve real business problems.
+
+Let's connect! [email@example.com]
+```
+
+**Experience Section:**
+Use PAR format (Problem-Action-Result):
+```
+Data Analyst Intern | Company Name | Dates
+
+• Analyzed cart abandonment patterns across 50K transactions, identifying mobile users had 75% abandonment vs 55% desktop
+• Built SQL queries to extract and aggregate customer behavior data, reducing manual report generation time by 80%
+• Created Tableau dashboard tracking key metrics, enabling executives to make data-driven decisions resulting in 12% revenue increase
+```
+
+### Cold Outreach Scripts
+
+**LinkedIn Message Template (after viewing their profile):**
+```
+Hi [Name],
+
+I noticed you're [their role] at [Company] - congratulations on [recent achievement/post]!
+
+I'm a Data Analyst with experience in [your niche], particularly [specific skill relevant to them]. I recently [specific accomplishment].
+
+I'm researching opportunities in [industry/area] and would love to learn about your experience at [Company]. Would you be open to a brief 15-minute coffee chat? I'm happy to work around your schedule.
+
+Thanks for considering!
+[Your Name]
+```
+
+**Response Rate:** 15-20% (vs <5% for generic messages)
+
+**Email Template - Hiring Manager:**
+```
+Subject: Data Analyst Position - [Specific Value You Bring]
+
+Dear [Name],
+
+I noticed [Company] is hiring for a Data Analyst position. I'm particularly drawn to [specific aspect of role/company mission].
+
+I recently completed a project analyzing [relevant domain] data that resulted in [quantifiable outcome]. This experience directly aligns with [Company]'s focus on [their priority].
+
+Key skills I'd bring:
+• [Skill 1 relevant to job description]
+• [Skill 2 with specific example]
+• [Skill 3 showing impact]
+
+I've attached my resume and would love to discuss how my analytical skills could contribute to [specific team/project/goal].
+
+Are you available for a brief call next week?
+
+Best regards,
+[Your Name]
+[LinkedIn] | [Portfolio Link] | [Email] | [Phone]
+
+P.S. I created a sample analysis relevant to [Company]'s challenges - happy to share if you're interested!
+```
+
+### Application Strategy
+
+**Prioritize Applications:**
+
+**Tier 1 (Dream Jobs - 20% of effort):**
+- Perfect role match
+- Company you're passionate about
+- Custom cover letter + portfolio piece
+- Research company deeply
+- Find internal referral
+
+**Tier 2 (Good Fits - 50% of effort):**
+- Strong skill match
+- Good company culture
+- Customized application
+- Direct hiring manager reach-out
+
+**Tier 3 (Practice - 30% of effort):**
+- Decent match
+- Interview practice
+- Standard application
+- Volume strategy
+
+**Weekly Goal:**
+- 2 Tier 1 applications (deep customization)
+- 5 Tier 2 applications (moderate customization)
+- 10 Tier 3 applications (light customization)
+- 5 networking conversations
+- 1 skills practice/project update
+
+### Interview Preparation
+
+**1 Week Before:**
+- Research company thoroughly
+- Review job description
+- Prepare STAR stories (6-8 examples)
+- Practice technical questions
+- Prepare questions for them
+
+**Day Before:**
+- Review your application/resume
+- Prepare examples to discuss
+- Test video setup if virtual
+- Get good sleep
+
+**Day Of:**
+- Arrive 10 minutes early (or log in 5 minutes early)
+- Bring notebook, pen, resume copies
+- Be ready to discuss your projects in detail
+
+**After Interview:**
+- Send thank-you email within 24 hours
+- Reiterate interest and fit
+- Reference specific conversation points
+
+---
+
+## 🚀 FIRST 90 DAYS SUCCESS PLAN
+
+### Month 1: Learn & Absorb
+
+**Week 1-2: Orientation**
+- Understand business model, customers, products
+- Learn data infrastructure (databases, tools, dashboards)
+- Review existing reports and analyses
+- Meet key stakeholders
+- Set up development environment
+
+**Week 3-4: Shadow & Learn**
+- Shadow senior analysts
+- Attend team meetings and stakeholder presentations
+- Document processes and data sources
+- Ask lots of questions
+- Take on small tasks (report updates, data validation)
+
+**Deliverables:**
+- Onboarding documentation (for future hires)
+- Data source map
+- Stakeholder contact list
+- Quick wins list (potential improvements)
+
+### Month 2: Contribute
+
+**Week 5-6: Take Ownership**
+- Own recurring reports
+- Identify quick improvements
+- Fix broken dashboards/queries
+- Build relationships across teams
+
+**Week 7-8: First Projects**
+- Complete independent analysis
+- Present findings to team
+- Propose new analyses
+- Collaborate on larger projects
+
+**Deliverables:**
+- 2-3 analyses completed
+- 1 process improvement implemented
+- Presentation to stakeholders
+- Updated documentation
+
+### Month 3: Impact
+
+**Week 9-10: Major Project**
+- Lead significant analysis
+- Work cross-functionally
+- Present to leadership
+- Demonstrate business impact
+
+**Week 11-12: Establish Expertise**
+- Become go-to person for specific domain
+- Mentor newer team members
+- Propose initiatives for next quarter
+- Showcase achievements in review
+
+**Deliverables:**
+- 1 major project completed
+- Quantifiable business impact
+- Recognition from leadership
+- Plan for next quarter
+
+**Success Metrics:**
+- Stakeholder satisfaction
+- Quality of analyses
+- Speed of delivery
+- Business impact demonstrated
+- Team collaboration
 
 ---
 
