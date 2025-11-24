@@ -250,11 +250,132 @@ unittest.TextTestRunner(verbosity=2).run(suite)
         st.markdown(
             """**Objective:** Handle delayed data arrivals and backfills
 
-**Part A:** Simulate late confirmations (0-72 hours delay)  
-**Part B:** Compute features with time-aware logic  
-**Part C:** Implement backfill strategy
+**Part A: Simulate Late Confirmations (25 min)**
+```python
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
 
-*Full lab code available in course notebooks*
+# Simulate payment confirmations arriving late
+np.random.seed(42)
+n_txns = 500
+
+transactions = pd.DataFrame({
+    'txn_id': range(n_txns),
+    'customer_id': np.random.randint(1, 100, n_txns),
+    'txn_date': pd.date_range('2024-01-01', periods=n_txns, freq='H'),
+    'amount': np.random.gamma(2, 50, n_txns),
+    'status': 'pending'
+})
+
+# Add confirmation delays (0-72 hours)
+transactions['delay_hours'] = np.random.choice(
+    [0, 24, 48, 72], 
+    size=n_txns,
+    p=[0.6, 0.2, 0.15, 0.05]
+)
+
+transactions['confirmation_date'] = transactions['txn_date'] + pd.to_timedelta(
+    transactions['delay_hours'], unit='h'
+)
+
+print("Late Data Distribution:")
+print(transactions['delay_hours'].value_counts().sort_index())
+print(f"\\nLate arrivals: {(transactions['delay_hours'] > 0).mean():.1%}")
+```
+
+**Part B: Time-Aware Feature Computation (25 min)**
+```python
+def compute_features_as_of(txns_df, as_of_date, lookback_days=7):
+    \"\"\"
+    Compute features using ONLY data confirmed by as_of_date.
+    This prevents future data leakage.
+    \"\"\"
+    # Filter to confirmed transactions
+    confirmed = txns_df[txns_df['confirmation_date'] <= as_of_date].copy()
+    
+    # Lookback window
+    window_start = as_of_date - timedelta(days=lookback_days)
+    windowed = confirmed[confirmed['txn_date'] >= window_start]
+    
+    # Aggregate by customer
+    features = windowed.groupby('customer_id').agg({
+        'txn_id': 'count',
+        'amount': ['sum', 'mean', 'std']
+    }).reset_index()
+    
+    features.columns = ['customer_id', 'txn_count_7d', 'txn_sum_7d', 
+                        'txn_avg_7d', 'txn_std_7d']
+    features = features.fillna(0)
+    
+    return features
+
+# Compare features at different dates
+dates = pd.date_range('2024-01-08', '2024-01-11', freq='D')
+
+for date in dates:
+    feats = compute_features_as_of(transactions, as_of_date=date)
+    print(f"\\n{date.date()}: {len(feats)} customers, avg txn count: {feats['txn_count_7d'].mean():.1f}")
+    
+# Key insight: Features change as late data arrives!
+```
+
+**Part C: Backfill Strategy (25 min)**
+```python
+class SimpleFeatureStore:
+    \"\"\"Feature store that handles backfills\"\"\"
+    
+    def __init__(self):
+        self.features = []
+        
+    def write_features(self, features_df, as_of_date, version):
+        features_df = features_df.copy()
+        features_df['as_of_date'] = as_of_date
+        features_df['version'] = version
+        features_df['computed_at'] = datetime.now()
+        self.features.append(features_df)
+        
+    def read_features(self, as_of_date):
+        if not self.features:
+            return pd.DataFrame()
+        
+        all_feats = pd.concat(self.features)
+        relevant = all_feats[all_feats['as_of_date'] == as_of_date]
+        
+        # Get latest version for each customer
+        latest = relevant.sort_values('version').groupby('customer_id').tail(1)
+        return latest
+    
+    def backfill(self, txns_df, dates_to_backfill):
+        print(f"Backfilling {len(dates_to_backfill)} dates...")
+        for date in dates_to_backfill:
+            feats = compute_features_as_of(txns_df, as_of_date=date)
+            version = len([f for f in self.features 
+                          if f['as_of_date'].iloc[0] == date]) + 1
+            self.write_features(feats, as_of_date=date, version=version)
+            print(f"  ✅ {date.date()} (v{version})")
+
+# Usage
+store = SimpleFeatureStore()
+
+# Initial computation
+initial_date = pd.Timestamp('2024-01-10')
+feats = compute_features_as_of(transactions, as_of_date=initial_date)
+store.write_features(feats, as_of_date=initial_date, version=1)
+
+# Later: backfill when late data arrives
+backfill_dates = pd.date_range('2024-01-08', '2024-01-09', freq='D')
+store.backfill(transactions, backfill_dates)
+
+print(f"\\n✅ Feature store now has {len(store.features)} snapshots")
+```
+
+**Lab 2 Completion Checklist:**
+- ☐ Simulated late-arriving data
+- ☐ Implemented point-in-time feature computation
+- ☐ Built simple feature store
+- ☐ Tested backfill strategy
+- ☐ Verified no data leakage
 """
         )
 
@@ -263,19 +384,227 @@ unittest.TextTestRunner(verbosity=2).run(suite)
         st.markdown(
             """**Objective:** Build simplified feature store with versioning
 
-**Part A:** Design feature registry with metadata  
-**Part B:** Implement offline + online stores  
-**Part C:** Feature monitoring dashboard
+**Part A: Feature Registry (30 min)**
+```python
+import json
+from datetime import datetime
 
-*Full mini-project code available in course repository*
+class FeatureRegistry:
+    \"\"\"Track feature definitions and lineage\"\"\"
+    
+    def __init__(self):
+        self.features = {}
+        
+    def register_feature(self, name, definition, owner, source_tables, dependencies=None):
+        self.features[name] = {
+            'name': name,
+            'definition': definition,
+            'owner': owner,
+            'source_tables': source_tables,
+            'dependencies': dependencies or [],
+            'created_at': datetime.now().isoformat(),
+            'version': 1
+        }
+        
+    def get_feature(self, name):
+        return self.features.get(name)
+    
+    def list_features(self):
+        return list(self.features.keys())
+    
+    def get_lineage(self, name):
+        \"\"\"Get full dependency tree for a feature\"\"\"
+        feature = self.features.get(name)
+        if not feature:
+            return None
+            
+        lineage = {
+            'feature': name,
+            'source_tables': feature['source_tables'],
+            'dependencies': feature['dependencies']
+        }
+        return lineage
+
+# Usage
+registry = FeatureRegistry()
+
+registry.register_feature(
+    name='customer_rfm_score',
+    definition='RFM (Recency, Frequency, Monetary) score for customer segmentation',
+    owner='data-science-team',
+    source_tables=['orders', 'customers'],
+    dependencies=['recency_days', 'frequency_count', 'monetary_value']
+)
+
+registry.register_feature(
+    name='recency_days',
+    definition='Days since last order',
+    owner='data-science-team',
+    source_tables=['orders']
+)
+
+print("Registered features:", registry.list_features())
+print("\\nLineage for customer_rfm_score:")
+print(json.dumps(registry.get_lineage('customer_rfm_score'), indent=2))
+```
+
+**Part B: Offline + Online Stores (30 min)**
+```python
+import pandas as pd
+
+class FeatureStore:
+    \"\"\"Simplified feature store with offline/online storage\"\"\"
+    
+    def __init__(self):
+        self.offline_store = {}  # In production: Parquet files on S3
+        self.online_store = {}   # In production: Redis/DynamoDB
+        self.registry = FeatureRegistry()
+        
+    def write_offline(self, feature_name, features_df, as_of_date):
+        \"\"\"Write to offline store (training data)\"\"\"
+        key = f"{feature_name}_{as_of_date.date()}"
+        self.offline_store[key] = features_df.copy()
+        print(f"✅ Wrote {len(features_df)} rows to offline store: {key}")
+        
+    def write_online(self, feature_name, features_df):
+        \"\"\"Write to online store (serving, latest values only)\"\"\"
+        self.online_store[feature_name] = features_df.set_index('customer_id').to_dict('index')
+        print(f"✅ Wrote {len(features_df)} rows to online store: {feature_name}")
+        
+    def read_offline(self, feature_name, as_of_date):
+        \"\"\"Read from offline store for training\"\"\"
+        key = f"{feature_name}_{as_of_date.date()}"
+        return self.offline_store.get(key, pd.DataFrame())
+        
+    def read_online(self, feature_name, customer_ids):
+        \"\"\"Read from online store for real-time serving\"\"\"
+        store_data = self.online_store.get(feature_name, {})
+        results = []
+        for cust_id in customer_ids:
+            if cust_id in store_data:
+                row = {'customer_id': cust_id}
+                row.update(store_data[cust_id])
+                results.append(row)
+        return pd.DataFrame(results)
+
+# Usage example
+store = FeatureStore()
+
+# Compute features
+from sklearn.base import BaseEstimator, TransformerMixin
+
+class RFMTransformer(BaseEstimator, TransformerMixin):
+    def __init__(self, as_of_date):
+        self.as_of_date = as_of_date
+    def fit(self, X, y=None):
+        return self
+    def transform(self, df):
+        return df.groupby('customer_id').agg({
+            'order_date': lambda x: (self.as_of_date - x.max()).days,
+            'order_id': 'count',
+            'amount': 'sum'
+        }).reset_index()
+
+# Sample data
+orders = pd.DataFrame({
+    'customer_id': [1,1,2,2,3],
+    'order_id': [1,2,3,4,5],
+    'order_date': pd.to_datetime(['2024-01-01', '2024-01-15', 
+                                   '2024-01-10', '2024-01-20', '2024-01-05']),
+    'amount': [100, 150, 200, 250, 75]
+})
+
+# Write offline (for training)
+as_of = pd.Timestamp('2024-01-20')
+transformer = RFMTransformer(as_of_date=as_of)
+features = transformer.transform(orders)
+features.columns = ['customer_id', 'recency', 'frequency', 'monetary']
+store.write_offline('rfm_features', features, as_of_date=as_of)
+
+# Write online (for serving)
+store.write_online('rfm_features', features)
+
+# Read online (low latency)
+online_features = store.read_online('rfm_features', customer_ids=[1, 2])
+print("\\nOnline features for customers 1 & 2:")
+print(online_features)
+```
+
+**Part C: Feature Monitoring (30 min)**
+```python
+class FeatureMonitor:
+    \"\"\"Monitor feature quality and drift\"\"\"
+    
+    def __init__(self):
+        self.baselines = {}
+        self.alerts = []
+        
+    def set_baseline(self, feature_name, features_df):
+        \"\"\"Set baseline statistics for monitoring\"\"\"
+        self.baselines[feature_name] = {
+            'mean': features_df.select_dtypes(include='number').mean().to_dict(),
+            'std': features_df.select_dtypes(include='number').std().to_dict(),
+            'null_rate': features_df.isnull().mean().to_dict(),
+            'row_count': len(features_df)
+        }
+        
+    def check_drift(self, feature_name, current_df, threshold=2.0):
+        \"\"\"Check if features have drifted beyond threshold std devs\"\"\"
+        if feature_name not in self.baselines:
+            return []
+            
+        baseline = self.baselines[feature_name]
+        alerts = []
+        
+        # Check mean drift
+        for col in current_df.select_dtypes(include='number').columns:
+            if col in baseline['mean']:
+                current_mean = current_df[col].mean()
+                baseline_mean = baseline['mean'][col]
+                baseline_std = baseline['std'][col]
+                
+                if baseline_std > 0:
+                    z_score = abs(current_mean - baseline_mean) / baseline_std
+                    if z_score > threshold:
+                        alerts.append(f"⚠️ {col}: mean drift ({z_score:.1f} std devs)")
+        
+        # Check null rate increase
+        current_nulls = current_df.isnull().mean()
+        for col in current_nulls.index:
+            if col in baseline['null_rate']:
+                if current_nulls[col] > baseline['null_rate'][col] * 1.5:
+                    alerts.append(f"⚠️ {col}: null rate increased")
+        
+        return alerts
+
+# Usage
+monitor = FeatureMonitor()
+
+# Set baseline
+monitor.set_baseline('rfm_features', features)
+
+# Simulate drift
+drifted_features = features.copy()
+drifted_features['monetary'] = drifted_features['monetary'] * 2  # Artificial drift
+
+# Check
+alerts = monitor.check_drift('rfm_features', drifted_features, threshold=1.5)
+for alert in alerts:
+    print(alert)
+    
+if not alerts:
+    print("✅ No drift detected")
+else:
+    print(f"\\n🚨 {len(alerts)} alerts triggered!")
+```
 
 **Lab 3 Completion Checklist:**
-- ☐ Feature registry with lineage
-- ☐ Offline store (Parquet)
-- ☐ Online store (in-memory)
-- ☐ Monitoring alerts
-- ☐ Point-in-time joins
-- ☐ Portfolio-ready project
+- ☐ Built feature registry with lineage tracking
+- ☐ Implemented offline store (training)
+- ☐ Implemented online store (serving)
+- ☐ Created feature monitoring system
+- ☐ Tested drift detection
+- ☐ Portfolio-ready feature store mini-project
 """
         )
 
@@ -370,11 +699,104 @@ with mlflow.start_run(run_name="rf_baseline"):
         st.markdown(
             """**Objective:** Fair model comparison using CV
 
-**Part A:** k-fold CV with logging  
-**Part B:** Nested CV for hyperparameter tuning  
-**Part C:** Statistical significance testing
+**Part A: k-Fold CV with MLflow Logging (25 min)**
+```python
+import mlflow
+import numpy as np
+from sklearn.model_selection import cross_val_score, KFold
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
 
-*Full code in course notebooks*
+# Generate sample data
+X, y = make_classification(n_samples=1000, n_features=20, n_informative=15, random_state=42)
+
+mlflow.set_experiment("cross_validation_comparison")
+
+models = {
+    'rf_50': RandomForestClassifier(n_estimators=50, random_state=42),
+    'rf_100': RandomForestClassifier(n_estimators=100, random_state=42),
+    'rf_200': RandomForestClassifier(n_estimators=200, random_state=42)
+}
+
+kf = KFold(n_splits=5, shuffle=True, random_state=42)
+
+for name, model in models.items():
+    with mlflow.start_run(run_name=name):
+        # Perform CV
+        cv_scores = cross_val_score(model, X, y, cv=kf, scoring='f1')
+        
+        # Log each fold
+        for fold, score in enumerate(cv_scores, 1):
+            mlflow.log_metric(f"fold_{fold}_f1", score)
+        
+        # Log aggregated metrics
+        mlflow.log_metric("mean_cv_f1", cv_scores.mean())
+        mlflow.log_metric("std_cv_f1", cv_scores.std())
+        mlflow.log_param("n_estimators", model.n_estimators)
+        mlflow.log_param("cv_folds", 5)
+        
+        print(f"{name}: {cv_scores.mean():.3f} ± {cv_scores.std():.3f}")
+```
+
+**Part B: Nested CV (25 min)**
+```python
+from sklearn.model_selection import GridSearchCV
+
+param_grid = {
+    'n_estimators': [50, 100, 200],
+    'max_depth': [5, 10, None]
+}
+
+# Outer CV for evaluation
+outer_cv = KFold(n_splits=5, shuffle=True, random_state=42)
+
+# Inner CV for hyperparameter tuning
+inner_cv = KFold(n_splits=3, shuffle=True, random_state=42)
+
+outer_scores = []
+
+for train_idx, test_idx in outer_cv.split(X):
+    X_train, X_test = X[train_idx], X[test_idx]
+    y_train, y_test = y[train_idx], y[test_idx]
+    
+    # Inner loop: find best hyperparameters
+    grid = GridSearchCV(RandomForestClassifier(random_state=42),
+                       param_grid, cv=inner_cv, scoring='f1')
+    grid.fit(X_train, y_train)
+    
+    # Outer loop: evaluate with best params
+    score = grid.score(X_test, y_test)
+    outer_scores.append(score)
+
+print(f"\nNested CV F1: {np.mean(outer_scores):.3f} ± {np.std(outer_scores):.3f}")
+print("✅ Unbiased estimate (no data leakage)")
+```
+
+**Part C: Statistical Significance Testing (25 min)**
+```python
+from scipy.stats import ttest_rel
+
+# Compare two models statistically
+model_a_scores = cross_val_score(models['rf_50'], X, y, cv=kf, scoring='f1')
+model_b_scores = cross_val_score(models['rf_200'], X, y, cv=kf, scoring='f1')
+
+t_stat, p_value = ttest_rel(model_a_scores, model_b_scores)
+
+print(f"Model A (RF-50): {model_a_scores.mean():.3f}")
+print(f"Model B (RF-200): {model_b_scores.mean():.3f}")
+print(f"\nt-statistic: {t_stat:.3f}")
+print(f"p-value: {p_value:.4f}")
+
+if p_value < 0.05:
+    print("\n✅ Statistically significant difference")
+else:
+    print("\n❌ No significant difference")
+
+# Completion checklist
+print("\n- ☐ Performed 5-fold CV with logging")
+print("- ☐ Implemented nested CV")
+print("- ☐ Statistical significance test")
+```
 """
         )
 
@@ -383,13 +805,109 @@ with mlflow.start_run(run_name="rf_baseline"):
         st.markdown(
             """**Objective:** Build automated model comparison system
 
-**Part A:** Define model zoo (Logistic, RF, XGBoost, LightGBM)  
-**Part B:** Automated training + logging  
-**Part C:** Select best model with confidence intervals
+**Part A: Define Model Zoo (30 min)**
+```python
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.svm import SVC
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
 
-- ☐ Compared 6+ models
-- ☐ Statistical comparison
-- ☐ Production model selected
+model_zoo = {
+    'logistic': LogisticRegression(max_iter=1000, random_state=42),
+    'random_forest': RandomForestClassifier(n_estimators=100, random_state=42),
+    'gradient_boosting': GradientBoostingClassifier(n_estimators=100, random_state=42),
+    'svm': SVC(probability=True, random_state=42),
+    'xgboost': XGBClassifier(n_estimators=100, random_state=42, eval_metric='logloss'),
+    'lightgbm': LGBMClassifier(n_estimators=100, random_state=42, verbose=-1)
+}
+
+print(f"Model zoo contains {len(model_zoo)} models")
+```
+
+**Part B: Automated Training + Logging (30 min)**
+```python
+import mlflow
+import time
+from sklearn.model_selection import cross_val_score
+
+mlflow.set_experiment("automated_model_selection")
+
+results = []
+
+for name, model in model_zoo.items():
+    print(f"\nTraining {name}...")
+    start_time = time.time()
+    
+    with mlflow.start_run(run_name=name):
+        # Cross-validation
+        cv_scores = cross_val_score(model, X, y, cv=5, scoring='f1')
+        
+        # Log metrics
+        mean_f1 = cv_scores.mean()
+        std_f1 = cv_scores.std()
+        training_time = time.time() - start_time
+        
+        mlflow.log_metric("mean_f1", mean_f1)
+        mlflow.log_metric("std_f1", std_f1)
+        mlflow.log_metric("training_time_sec", training_time)
+        mlflow.log_param("model_type", name)
+        
+        # Train on full data and save
+        model.fit(X, y)
+        mlflow.sklearn.log_model(model, "model")
+        
+        results.append({
+            'model': name,
+            'mean_f1': mean_f1,
+            'std_f1': std_f1,
+            'time': training_time
+        })
+        
+        print(f"  F1: {mean_f1:.3f} ± {std_f1:.3f} ({training_time:.1f}s)")
+```
+
+**Part C: Select Best Model (30 min)**
+```python
+import pandas as pd
+
+# Compare models
+results_df = pd.DataFrame(results).sort_values('mean_f1', ascending=False)
+
+print("\n" + "="*60)
+print("MODEL COMPARISON RESULTS")
+print("="*60)
+print(results_df.to_string(index=False))
+
+# Statistical selection with confidence intervals
+best_model_name = results_df.iloc[0]['model']
+best_f1 = results_df.iloc[0]['mean_f1']
+std = results_df.iloc[0]['std_f1']
+
+# 95% confidence interval
+from scipy.stats import t
+ci = t.interval(0.95, df=4, loc=best_f1, scale=std/np.sqrt(5))
+
+print(f"\n" + "="*60)
+print("SELECTED MODEL")
+print("="*60)
+print(f"Model: {best_model_name}")
+print(f"F1 Score: {best_f1:.3f} ± {std:.3f}")
+print(f"95% CI: [{ci[0]:.3f}, {ci[1]:.3f}]")
+
+# Check if significantly better than second best
+if len(results_df) > 1:
+    second_f1 = results_df.iloc[1]['mean_f1']
+    if best_f1 - std > second_f1:
+        print("\n✅ Clear winner (statistically better)")
+    else:
+        print("\n⚠️ Close race - consider both models")
+
+print("\n- ☐ Compared 6 models")
+print("- ☐ Logged all experiments")
+print("- ☐ Selected best with CI")
+print("- ☐ Production model identified")
+```
 """
         )
 
@@ -482,11 +1000,111 @@ lgb_model.fit(X_train, y_train)
         st.markdown(
             """**Objective:** Build stacking and blending ensembles
 
-**Part A:** Voting classifier (soft/hard)  
-**Part B:** Stacking with meta-learner  
-**Part C:** Weighted blending optimization
+**Part A: Voting Classifier (25 min)**
+```python
+from sklearn.ensemble import VotingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
 
-*Full code available*
+# Base models
+lr = LogisticRegression(random_state=42)
+dt = DecisionTreeClassifier(random_state=42)
+rf = RandomForestClassifier(n_estimators=50, random_state=42)
+
+# Hard voting
+voting_hard = VotingClassifier(
+    estimators=[('lr', lr), ('dt', dt), ('rf', rf)],
+    voting='hard'
+)
+
+# Soft voting (uses probabilities)
+voting_soft = VotingClassifier(
+    estimators=[('lr', lr), ('dt', dt), ('rf', rf)],
+    voting='soft'
+)
+
+# Compare
+print("Individual models:")
+for name, model in [('Logistic', lr), ('Tree', dt), ('Forest', rf)]:
+    score = cross_val_score(model, X, y, cv=5, scoring='f1').mean()
+    print(f"  {name}: {score:.3f}")
+
+print("\nEnsembles:")
+hard_score = cross_val_score(voting_hard, X, y, cv=5, scoring='f1').mean()
+soft_score = cross_val_score(voting_soft, X, y, cv=5, scoring='f1').mean()
+print(f"  Hard Voting: {hard_score:.3f}")
+print(f"  Soft Voting: {soft_score:.3f}")
+```
+
+**Part B: Stacking with Meta-Learner (25 min)**
+```python
+from sklearn.ensemble import StackingClassifier
+
+# Base models (level 0)
+base_models = [
+    ('rf', RandomForestClassifier(n_estimators=50, random_state=42)),
+    ('xgb', xgb.XGBClassifier(n_estimators=50, random_state=42)),
+    ('lgb', lgb.LGBMClassifier(n_estimators=50, random_state=42, verbose=-1))
+]
+
+# Meta-model (level 1)
+meta_model = LogisticRegression()
+
+# Stacking ensemble
+stacking = StackingClassifier(
+    estimators=base_models,
+    final_estimator=meta_model,
+    cv=5
+)
+
+# Train and evaluate
+stacking.fit(X_train, y_train)
+stack_score = stacking.score(X_test, y_test)
+
+print(f"Stacking F1: {stack_score:.3f}")
+print("✅ Meta-learner combines base model predictions")
+```
+
+**Part C: Weighted Blending (25 min)**
+```python
+from sklearn.metrics import f1_score
+import numpy as np
+
+# Train base models
+models = {
+    'rf': RandomForestClassifier(n_estimators=100, random_state=42),
+    'xgb': xgb.XGBClassifier(n_estimators=100, random_state=42),
+    'lgb': lgb.LGBMClassifier(n_estimators=100, random_state=42, verbose=-1)
+}
+
+# Get predictions
+predictions = {}
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    predictions[name] = model.predict_proba(X_test)[:, 1]
+
+# Optimize weights
+from scipy.optimize import minimize
+
+def blend_objective(weights):
+    weights = weights / weights.sum()  # Normalize
+    blended = sum(w * pred for w, pred in zip(weights, predictions.values()))
+    y_pred = (blended > 0.5).astype(int)
+    return -f1_score(y_test, y_pred)  # Negative for minimization
+
+x0 = np.ones(len(models)) / len(models)  # Initial equal weights
+result = minimize(blend_objective, x0, bounds=[(0, 1)] * len(models))
+
+optimal_weights = result.x / result.x.sum()
+
+print("Optimal weights:")
+for name, weight in zip(models.keys(), optimal_weights):
+    print(f"  {name}: {weight:.3f}")
+
+print(f"\nBlended F1: {-result.fun:.3f}")
+```
 """
         )
 
@@ -495,13 +1113,115 @@ lgb_model.fit(X_train, y_train)
         st.markdown(
             """**Objective:** Calibrate probabilities for better decisions
 
-**Part A:** Calibration curves  
-**Part B:** Platt scaling / Isotonic regression  
-**Part C:** Conformal prediction intervals
+**Part A: Calibration Curves (30 min)**
+```python
+from sklearn.calibration import calibration_curve
+import matplotlib.pyplot as plt
 
-- ☐ Calibrated probabilities
-- ☐ Reliable confidence scores
-- ☐ Portfolio-ready uncertainty quantification
+# Train uncalibrated model
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf.fit(X_train, y_train)
+y_proba = rf.predict_proba(X_test)[:, 1]
+
+# Calibration curve
+fraction_of_positives, mean_predicted_value = calibration_curve(
+    y_test, y_proba, n_bins=10
+)
+
+plt.figure(figsize=(10, 6))
+plt.plot([0, 1], [0, 1], 'k--', label='Perfectly calibrated')
+plt.plot(mean_predicted_value, fraction_of_positives, 's-', 
+         label='Random Forest')
+plt.xlabel('Mean Predicted Probability')
+plt.ylabel('Fraction of Positives')
+plt.title('Calibration Curve')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+print("Calibration analysis:")
+print(f"  Predicted avg: {y_proba.mean():.3f}")
+print(f"  Actual positive rate: {y_test.mean():.3f}")
+if abs(y_proba.mean() - y_test.mean()) > 0.05:
+    print("  ⚠️ Model is miscalibrated!")
+```
+
+**Part B: Platt Scaling & Isotonic Regression (30 min)**
+```python
+from sklearn.calibration import CalibratedClassifierCV
+
+# Platt scaling (logistic regression)
+rf_platt = CalibratedClassifierCV(rf, method='sigmoid', cv=5)
+rf_platt.fit(X_train, y_train)
+y_proba_platt = rf_platt.predict_proba(X_test)[:, 1]
+
+# Isotonic regression (non-parametric)
+rf_isotonic = CalibratedClassifierCV(rf, method='isotonic', cv=5)
+rf_isotonic.fit(X_train, y_train)
+y_proba_isotonic = rf_isotonic.predict_proba(X_test)[:, 1]
+
+# Compare calibration
+fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+
+for ax, proba, title in zip(axes, 
+                             [y_proba, y_proba_platt, y_proba_isotonic],
+                             ['Uncalibrated', 'Platt Scaling', 'Isotonic']):
+    frac_pos, mean_pred = calibration_curve(y_test, proba, n_bins=10)
+    ax.plot([0, 1], [0, 1], 'k--')
+    ax.plot(mean_pred, frac_pos, 's-')
+    ax.set_title(title)
+    ax.set_xlabel('Predicted')
+    ax.set_ylabel('Actual')
+    ax.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+print("✅ Calibrated models provide reliable probabilities")
+```
+
+**Part C: Conformal Prediction Intervals (30 min)**
+```python
+from sklearn.model_selection import train_test_split
+
+# Split for conformal prediction
+X_train_cal, X_cal, y_train_cal, y_cal = train_test_split(
+    X_train, y_train, test_size=0.2, random_state=42
+)
+
+# Train model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train_cal, y_train_cal)
+
+# Calibration scores (non-conformity scores)
+cal_proba = model.predict_proba(X_cal)[:, 1]
+cal_scores = np.abs(y_cal - cal_proba)
+
+# Compute prediction intervals
+alpha = 0.1  # 90% confidence
+quantile = np.quantile(cal_scores, 1 - alpha)
+
+# Test predictions with intervals
+test_proba = model.predict_proba(X_test)[:, 1]
+test_lower = np.clip(test_proba - quantile, 0, 1)
+test_upper = np.clip(test_proba + quantile, 0, 1)
+
+# Evaluate coverage
+coverage = ((y_test >= test_lower) & (y_test <= test_upper)).mean()
+
+print(f"Conformal Prediction Results:")
+print(f"  Target coverage: {1-alpha:.1%}")
+print(f"  Actual coverage: {coverage:.1%}")
+print(f"  Avg interval width: {(test_upper - test_lower).mean():.3f}")
+
+if coverage >= 1 - alpha - 0.05:
+    print("  ✅ Valid prediction intervals")
+
+print("\n- ☐ Analyzed calibration curves")
+print("- ☐ Applied Platt scaling & isotonic regression")
+print("- ☐ Implemented conformal prediction")
+print("- ☐ Portfolio-ready uncertainty quantification")
+```
 """
         )
 
