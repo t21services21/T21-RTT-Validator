@@ -3709,24 +3709,653 @@ if train_acc - test_acc > 0.1:
 def _render_unit3_labs():
     """Labs and mini-project ideas for Unit 3."""
 
-    st.markdown("### 🧪 Labs & Mini Projects – Unit 3")
+    st.markdown("### 🧪 HANDS-ON LABS: Unit 3 Classification")
     st.markdown(
-        """Suggested activities:
+        """**Complete these 3 labs to master classification:**
 
-- **Lab 1 – Baseline classifier**
-  - Build a logistic regression model for a binary outcome.
-  - Plot the confusion matrix and compute precision/recall/F1.
+---
 
-- **Lab 2 – Handling class imbalance**
-  - Try re-weighting classes or simple resampling.
-  - Compare metrics at different thresholds.
+## Lab 1: Binary Classification Fundamentals (80 min)
 
-- **Mini project – Risk scoring model**
-  - Choose a realistic risk prediction task (e.g. churn, default).
-  - Train at least two classifiers and compare them using appropriate metrics.
-  - Write a short summary focusing on the business impact of errors.
+**Objective:** Build and evaluate customer churn prediction models
 
-The notebook `U3_classification_metrics.ipynb` provides a scaffold for these experiments.
+**Setup: Create Dataset**
+
+```python
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (confusion_matrix, classification_report, 
+                             roc_auc_score, roc_curve, precision_recall_curve)
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create realistic churn dataset
+np.random.seed(42)
+n = 2000
+
+df = pd.DataFrame({
+    'tenure_months': np.random.randint(1, 72, n),
+    'monthly_charges': np.random.normal(50, 20, n),
+    'total_charges': np.random.normal(1500, 800, n),
+    'num_support_calls': np.random.poisson(2, n),
+    'num_late_payments': np.random.poisson(1, n),
+    'has_streaming': np.random.choice([0, 1], n, p=[0.6, 0.4]),
+    'contract_type': np.random.choice([0, 1, 2], n, p=[0.5, 0.3, 0.2])  # 0=month, 1=1yr, 2=2yr
+})
+
+# Generate churn with realistic relationships
+churn_logit = (
+    -2 +
+    -0.05 * df['tenure_months'] +
+    0.02 * df['monthly_charges'] +
+    0.4 * df['num_support_calls'] +
+    0.3 * df['num_late_payments'] +
+    -0.5 * df['has_streaming'] +
+    -0.8 * df['contract_type']
+)
+churn_prob = 1 / (1 + np.exp(-churn_logit))
+df['churned'] = (np.random.random(n) < churn_prob).astype(int)
+
+# Save
+df.to_csv('customer_churn.csv', index=False)
+print(f"✅ Created customer_churn.csv")
+print(f"Shape: {df.shape}")
+print(f"\\nChurn rate: {df['churned'].mean():.1%}")
+print(f"Churned: {df['churned'].sum()}, Not churned: {(1-df['churned']).sum()}")
+```
+
+---
+
+**Part A: Baseline Logistic Regression (25 min)**
+
+```python
+df = pd.read_csv('customer_churn.csv')
+
+# Prepare data
+X = df.drop('churned', axis=1)
+y = df['churned']
+
+# Stratified split (maintain class proportions)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print(f"Training set: {X_train.shape}")
+print(f"Test set: {X_test.shape}")
+print(f"Train churn rate: {y_train.mean():.1%}")
+print(f"Test churn rate: {y_test.mean():.1%}")
+
+# Train logistic regression
+model = LogisticRegression(max_iter=1000, random_state=42)
+model.fit(X_train, y_train)
+
+# Predictions
+y_pred = model.predict(X_test)
+y_pred_proba = model.predict_proba(X_test)[:, 1]
+
+# Coefficients
+print("\\nModel Coefficients:")
+coef_df = pd.DataFrame({
+    'Feature': X.columns,
+    'Coefficient': model.coef_[0]
+}).sort_values('Coefficient', key=abs, ascending=False)
+print(coef_df)
+
+print(f"\\nAccuracy: {model.score(X_test, y_test):.3f}")
+```
+
+---
+
+**Part B: Confusion Matrix & Metrics (25 min)**
+
+```python
+# Confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=['Not Churn', 'Churn'],
+            yticklabels=['Not Churn', 'Churn'])
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.show()
+
+# Extract values
+tn, fp, fn, tp = cm.ravel()
+print(f"True Negatives: {tn}")
+print(f"False Positives: {fp}")
+print(f"False Negatives: {fn}")
+print(f"True Positives: {tp}")
+
+# Classification report
+print("\\nClassification Report:")
+print(classification_report(y_test, y_pred, 
+                          target_names=['Not Churn', 'Churn']))
+
+# Manual metric calculation
+accuracy = (tp + tn) / (tp + tn + fp + fn)
+precision = tp / (tp + fp)
+recall = tp / (tp + fn)
+f1 = 2 * (precision * recall) / (precision + recall)
+
+print(f"\\nManual Calculations:")
+print(f"Accuracy: {accuracy:.3f}")
+print(f"Precision: {precision:.3f}")
+print(f"Recall: {recall:.3f}")
+print(f"F1 Score: {f1:.3f}")
+
+# Business interpretation
+print("\\n📊 Business Interpretation:")
+print(f"• Of {fp} customers flagged as churners, they didn't churn (wasted retention effort)")
+print(f"• Of {fn} actual churners, we missed them (lost revenue)")
+print(f"• We correctly identified {tp} out of {tp+fn} churners ({recall:.1%} recall)")
+```
+
+---
+
+**Part C: ROC Curve & Threshold Analysis (30 min)**
+
+```python
+# ROC Curve
+fpr, tpr, roc_thresholds = roc_curve(y_test, y_pred_proba)
+roc_auc = roc_auc_score(y_test, y_pred_proba)
+
+plt.figure(figsize=(10, 6))
+plt.plot(fpr, tpr, label=f'ROC Curve (AUC = {roc_auc:.3f})', linewidth=2)
+plt.plot([0, 1], [0, 1], 'k--', label='Random Classifier')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate (Recall)')
+plt.title('ROC Curve')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Precision-Recall Curve
+precision, recall, pr_thresholds = precision_recall_curve(y_test, y_pred_proba)
+
+plt.figure(figsize=(10, 6))
+plt.plot(recall, precision, linewidth=2)
+plt.xlabel('Recall')
+plt.ylabel('Precision')
+plt.title('Precision-Recall Curve')
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Find optimal threshold
+f1_scores = 2 * (precision * recall) / (precision + recall + 1e-10)
+optimal_idx = np.argmax(f1_scores)
+optimal_threshold = pr_thresholds[optimal_idx]
+
+print(f"\\nDefault threshold (0.5):")
+print(f"  Precision: {precision_score(y_test, y_pred):.3f}")
+print(f"  Recall: {recall_score(y_test, y_pred):.3f}")
+print(f"  F1: {f1_score(y_test, y_pred):.3f}")
+
+y_pred_optimal = (y_pred_proba >= optimal_threshold).astype(int)
+print(f"\\nOptimal threshold ({optimal_threshold:.3f}):")
+print(f"  Precision: {precision_score(y_test, y_pred_optimal):.3f}")
+print(f"  Recall: {recall_score(y_test, y_pred_optimal):.3f}")
+print(f"  F1: {f1_score(y_test, y_pred_optimal):.3f}")
+
+# Plot threshold impact
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Precision & Recall vs Threshold
+axes[0].plot(pr_thresholds, precision[:-1], label='Precision')
+axes[0].plot(pr_thresholds, recall[:-1], label='Recall')
+axes[0].plot(pr_thresholds, f1_scores[:-1], label='F1 Score')
+axes[0].axvline(optimal_threshold, color='r', linestyle='--', 
+                label=f'Optimal={optimal_threshold:.3f}')
+axes[0].set_xlabel('Threshold')
+axes[0].set_ylabel('Score')
+axes[0].set_title('Metrics vs Threshold')
+axes[0].legend()
+axes[0].grid(True, alpha=0.3)
+
+# Prediction distribution
+axes[1].hist(y_pred_proba[y_test==0], bins=30, alpha=0.5, label='Not Churn', density=True)
+axes[1].hist(y_pred_proba[y_test==1], bins=30, alpha=0.5, label='Churn', density=True)
+axes[1].axvline(0.5, color='r', linestyle='--', label='Default threshold')
+axes[1].axvline(optimal_threshold, color='g', linestyle='--', label='Optimal threshold')
+axes[1].set_xlabel('Predicted Probability')
+axes[1].set_ylabel('Density')
+axes[1].set_title('Prediction Distribution by Class')
+axes[1].legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Lab 2: Handling Class Imbalance (90 min)
+
+**Objective:** Master techniques for imbalanced classification
+
+**Part A: Create Imbalanced Dataset (15 min)**
+
+```python
+# Create highly imbalanced fraud detection dataset
+np.random.seed(42)
+n = 5000
+
+df_imb = pd.DataFrame({
+    'transaction_amount': np.random.lognormal(4, 1, n),
+    'account_age_days': np.random.exponential(365, n),
+    'num_transactions_today': np.random.poisson(3, n),
+    'distance_from_home_km': np.random.exponential(20, n),
+    'unusual_time': np.random.choice([0, 1], n, p=[0.9, 0.1])
+})
+
+# Generate fraud (1% rate)
+fraud_logit = (
+    -5 +
+    0.001 * df_imb['transaction_amount'] +
+    -0.005 * df_imb['account_age_days'] +
+    0.3 * df_imb['num_transactions_today'] +
+    0.05 * df_imb['distance_from_home_km'] +
+    1.5 * df_imb['unusual_time']
+)
+fraud_prob = 1 / (1 + np.exp(-fraud_logit))
+df_imb['is_fraud'] = (np.random.random(n) < fraud_prob).astype(int)
+
+# Adjust to get ~1% fraud rate
+fraud_rate = df_imb['is_fraud'].mean()
+if fraud_rate > 0.02:  # If too high, randomly remove some frauds
+    fraud_indices = df_imb[df_imb['is_fraud'] == 1].index
+    keep_fraud = np.random.choice(fraud_indices, size=int(n * 0.01), replace=False)
+    df_imb.loc[~df_imb.index.isin(keep_fraud), 'is_fraud'] = 0
+
+print(f"Fraud rate: {df_imb['is_fraud'].mean():.2%}")
+print(f"Fraudulent: {df_imb['is_fraud'].sum()}")
+print(f"Legitimate: {(~df_imb['is_fraud'].astype(bool)).sum()}")
+
+df_imb.to_csv('fraud_detection.csv', index=False)
+```
+
+---
+
+**Part B: Baseline vs Class Weights (30 min)**
+
+```python
+from sklearn.metrics import balanced_accuracy_score, average_precision_score
+
+df_imb = pd.read_csv('fraud_detection.csv')
+
+X = df_imb.drop('is_fraud', axis=1)
+y = df_imb['is_fraud']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print(f"Train fraud rate: {y_train.mean():.2%}")
+print(f"Test fraud rate: {y_test.mean():.2%}")
+
+# Model 1: Standard logistic regression
+model_std = LogisticRegression(max_iter=1000, random_state=42)
+model_std.fit(X_train, y_train)
+y_pred_std = model_std.predict(X_test)
+y_pred_proba_std = model_std.predict_proba(X_test)[:, 1]
+
+print("\\n" + "="*60)
+print("STANDARD MODEL")
+print("="*60)
+print(classification_report(y_test, y_pred_std, target_names=['Legitimate', 'Fraud']))
+
+# Model 2: Balanced class weights
+model_balanced = LogisticRegression(class_weight='balanced', max_iter=1000, random_state=42)
+model_balanced.fit(X_train, y_train)
+y_pred_balanced = model_balanced.predict(X_test)
+y_pred_proba_balanced = model_balanced.predict_proba(X_test)[:, 1]
+
+print("\\n" + "="*60)
+print("BALANCED CLASS WEIGHTS")
+print("="*60)
+print(classification_report(y_test, y_pred_balanced, target_names=['Legitimate', 'Fraud']))
+
+# Compare
+comparison = pd.DataFrame({
+    'Model': ['Standard', 'Balanced'],
+    'Accuracy': [
+        accuracy_score(y_test, y_pred_std),
+        accuracy_score(y_test, y_pred_balanced)
+    ],
+    'Balanced Accuracy': [
+        balanced_accuracy_score(y_test, y_pred_std),
+        balanced_accuracy_score(y_test, y_pred_balanced)
+    ],
+    'Precision': [
+        precision_score(y_test, y_pred_std),
+        precision_score(y_test, y_pred_balanced)
+    ],
+    'Recall': [
+        recall_score(y_test, y_pred_std),
+        recall_score(y_test, y_pred_balanced)
+    ],
+    'F1': [
+        f1_score(y_test, y_pred_std),
+        f1_score(y_test, y_pred_balanced)
+    ],
+    'ROC-AUC': [
+        roc_auc_score(y_test, y_pred_proba_std),
+        roc_auc_score(y_test, y_pred_proba_balanced)
+    ],
+    'PR-AUC': [
+        average_precision_score(y_test, y_pred_proba_std),
+        average_precision_score(y_test, y_pred_proba_balanced)
+    ]
+})
+
+print("\\n" + "="*60)
+print("COMPARISON")
+print("="*60)
+print(comparison.to_string(index=False))
+```
+
+---
+
+**Part C: SMOTE Resampling (25 min)**
+
+```python
+from imblearn.over_sampling import SMOTE
+from imblearn.under_sampling import RandomUnderSampler
+
+# SMOTE oversampling
+smote = SMOTE(random_state=42)
+X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
+
+print(f"Original training set: {X_train.shape}")
+print(f"Original class distribution: {np.bincount(y_train)}")
+print(f"\\nAfter SMOTE: {X_train_smote.shape}")
+print(f"SMOTE class distribution: {np.bincount(y_train_smote)}")
+
+# Train on SMOTE data
+model_smote = LogisticRegression(max_iter=1000, random_state=42)
+model_smote.fit(X_train_smote, y_train_smote)
+y_pred_smote = model_smote.predict(X_test)
+y_pred_proba_smote = model_smote.predict_proba(X_test)[:, 1]
+
+print("\\n" + "="*60)
+print("SMOTE MODEL")
+print("="*60)
+print(classification_report(y_test, y_pred_smote, target_names=['Legitimate', 'Fraud']))
+
+# Combined: SMOTE + Undersampling
+from imblearn.pipeline import Pipeline as ImbPipeline
+
+resampler = ImbPipeline([
+    ('smote', SMOTE(random_state=42)),
+    ('undersample', RandomUnderSampler(random_state=42))
+])
+
+X_train_combined, y_train_combined = resampler.fit_resample(X_train, y_train)
+
+print(f"\\nCombined resampling: {X_train_combined.shape}")
+print(f"Class distribution: {np.bincount(y_train_combined)}")
+```
+
+---
+
+**Part D: Cost-Sensitive Threshold Tuning (20 min)**
+
+```python
+# Business costs
+cost_fp = 10  # Cost of investigating false alarm
+cost_fn = 1000  # Cost of missing fraud
+
+print(f"Business Context:")
+print(f"  Cost of False Positive (false alarm): £{cost_fp}")
+print(f"  Cost of False Negative (missed fraud): £{cost_fn}")
+
+# Test different thresholds
+thresholds_to_test = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+results = []
+
+for threshold in thresholds_to_test:
+    y_pred_thresh = (y_pred_proba_balanced >= threshold).astype(int)
+    cm = confusion_matrix(y_test, y_pred_thresh)
+    tn, fp, fn, tp = cm.ravel()
+    
+    total_cost = (fp * cost_fp) + (fn * cost_fn)
+    cost_per_transaction = total_cost / len(y_test)
+    
+    results.append({
+        'Threshold': threshold,
+        'TP': tp,
+        'FP': fp,
+        'FN': fn,
+        'TN': tn,
+        'Precision': tp / (tp + fp) if (tp + fp) > 0 else 0,
+        'Recall': tp / (tp + fn) if (tp + fn) > 0 else 0,
+        'Total Cost': total_cost,
+        'Cost per Txn': cost_per_transaction
+    })
+
+results_df = pd.DataFrame(results)
+best_idx = results_df['Total Cost'].idxmin()
+best_threshold = results_df.loc[best_idx, 'Threshold']
+
+print("\\n" + "="*80)
+print("THRESHOLD ANALYSIS")
+print("="*80)
+print(results_df.to_string(index=False))
+print(f"\\n✅ Best threshold: {best_threshold} (minimizes total cost)")
+
+# Visualize
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+axes[0].plot(results_df['Threshold'], results_df['Precision'], marker='o', label='Precision')
+axes[0].plot(results_df['Threshold'], results_df['Recall'], marker='s', label='Recall')
+axes[0].axvline(best_threshold, color='r', linestyle='--', label=f'Best={best_threshold}')
+axes[0].set_xlabel('Threshold')
+axes[0].set_ylabel('Score')
+axes[0].set_title('Metrics vs Threshold')
+axes[0].legend()
+axes[0].grid(True, alpha=0.3)
+
+axes[1].plot(results_df['Threshold'], results_df['Total Cost'], marker='o', color='red')
+axes[1].axvline(best_threshold, color='g', linestyle='--', label=f'Optimal={best_threshold}')
+axes[1].set_xlabel('Threshold')
+axes[1].set_ylabel('Total Cost (£)')
+axes[1].set_title('Business Cost vs Threshold')
+axes[1].legend()
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Lab 3: Multi-Model Comparison (75 min)
+
+**Objective:** Compare 6 classification algorithms systematically
+
+**Part A: Train Multiple Models (30 min)**
+
+```python
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+import xgboost as xgb
+from sklearn.model_selection import cross_val_score
+import time
+
+# Use churn dataset
+df = pd.read_csv('customer_churn.csv')
+X = df.drop('churned', axis=1)
+y = df['churned']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+# Define models
+models = {
+    'Logistic Regression': LogisticRegression(max_iter=1000, random_state=42),
+    'Decision Tree': DecisionTreeClassifier(max_depth=5, random_state=42),
+    'Random Forest': RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42),
+    'Gradient Boosting': GradientBoostingClassifier(n_estimators=100, random_state=42),
+    'XGBoost': xgb.XGBClassifier(n_estimators=100, random_state=42, eval_metric='logloss'),
+    'Naive Bayes': GaussianNB()
+}
+
+# Train and evaluate
+results = []
+for name, model in models.items():
+    print(f"\\nTraining {name}...")
+    
+    # Training time
+    start_time = time.time()
+    
+    # Cross-validation
+    cv_scores = cross_val_score(model, X_train, y_train, cv=5, scoring='f1')
+    
+    # Train on full training set
+    model.fit(X_train, y_train)
+    train_time = time.time() - start_time
+    
+    # Predictions
+    y_pred = model.predict(X_test)
+    y_pred_proba = model.predict_proba(X_test)[:, 1] if hasattr(model, 'predict_proba') else None
+    
+    # Calculate metrics
+    results.append({
+        'Model': name,
+        'CV F1 (mean)': cv_scores.mean(),
+        'CV F1 (std)': cv_scores.std(),
+        'Train Time (s)': train_time,
+        'Accuracy': accuracy_score(y_test, y_pred),
+        'Precision': precision_score(y_test, y_pred),
+        'Recall': recall_score(y_test, y_pred),
+        'F1': f1_score(y_test, y_pred),
+        'ROC-AUC': roc_auc_score(y_test, y_pred_proba) if y_pred_proba is not None else None
+    })
+
+results_df = pd.DataFrame(results).sort_values('F1', ascending=False)
+```
+
+---
+
+**Part B: Visualize Comparison (25 min)**
+
+```python
+print("\\n" + "="*100)
+print("MODEL COMPARISON RESULTS")
+print("="*100)
+print(results_df.to_string(index=False))
+
+# Visualizations
+fig, axes = plt.subplots(2, 3, figsize=(16, 10))
+
+# 1. F1 Score
+axes[0, 0].barh(results_df['Model'], results_df['F1'])
+axes[0, 0].set_xlabel('F1 Score')
+axes[0, 0].set_title('F1 Score Comparison')
+axes[0, 0].set_xlim(0, 1)
+
+# 2. Accuracy
+axes[0, 1].barh(results_df['Model'], results_df['Accuracy'])
+axes[0, 1].set_xlabel('Accuracy')
+axes[0, 1].set_title('Accuracy Comparison')
+axes[0, 1].set_xlim(0, 1)
+
+# 3. ROC-AUC
+axes[0, 2].barh(results_df['Model'], results_df['ROC-AUC'].fillna(0))
+axes[0, 2].set_xlabel('ROC-AUC')
+axes[0, 2].set_title('ROC-AUC Comparison')
+axes[0, 2].set_xlim(0, 1)
+
+# 4. Precision vs Recall
+axes[1, 0].scatter(results_df['Recall'], results_df['Precision'], s=100)
+for idx, model in enumerate(results_df['Model']):
+    axes[1, 0].annotate(model, 
+                       (results_df.iloc[idx]['Recall'], results_df.iloc[idx]['Precision']),
+                       fontsize=8)
+axes[1, 0].set_xlabel('Recall')
+axes[1, 0].set_ylabel('Precision')
+axes[1, 0].set_title('Precision vs Recall Trade-off')
+axes[1, 0].set_xlim(0, 1)
+axes[1, 0].set_ylim(0, 1)
+
+# 5. Training Time
+axes[1, 1].barh(results_df['Model'], results_df['Train Time (s)'])
+axes[1, 1].set_xlabel('Training Time (seconds)')
+axes[1, 1].set_title('Training Time Comparison')
+
+# 6. CV F1 with error bars
+axes[1, 2].barh(results_df['Model'], results_df['CV F1 (mean)'])
+axes[1, 2].errorbar(results_df['CV F1 (mean)'], range(len(results_df)), 
+                    xerr=results_df['CV F1 (std)'], fmt='none', color='red')
+axes[1, 2].set_xlabel('CV F1 Score')
+axes[1, 2].set_title('Cross-Validation F1 (with std)')
+axes[1, 2].set_xlim(0, 1)
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+**Part C: Feature Importance Analysis (20 min)**
+
+```python
+# For tree-based models, show feature importance
+tree_models = {
+    'Random Forest': RandomForestClassifier(n_estimators=100, random_state=42),
+    'Gradient Boosting': GradientBoostingClassifier(n_estimators=100, random_state=42),
+    'XGBoost': xgb.XGBClassifier(n_estimators=100, random_state=42, eval_metric='logloss')
+}
+
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+
+for idx, (name, model) in enumerate(tree_models.items()):
+    model.fit(X_train, y_train)
+    
+    importance_df = pd.DataFrame({
+        'feature': X.columns,
+        'importance': model.feature_importances_
+    }).sort_values('importance', ascending=False)
+    
+    axes[idx].barh(importance_df['feature'], importance_df['importance'])
+    axes[idx].set_xlabel('Importance')
+    axes[idx].set_title(f'{name} Feature Importance')
+
+plt.tight_layout()
+plt.show()
+
+# Summary recommendations
+print("\\n" + "="*100)
+print("RECOMMENDATIONS")
+print("="*100)
+best_model = results_df.iloc[0]
+print(f"\\n🏆 Best Overall Model: {best_model['Model']}")
+print(f"   F1 Score: {best_model['F1']:.3f}")
+print(f"   ROC-AUC: {best_model['ROC-AUC']:.3f}")
+print(f"   Training Time: {best_model['Train Time (s)']:.2f}s")
+
+fastest_model = results_df.loc[results_df['Train Time (s)'].idxmin()]
+print(f"\\n⚡ Fastest Model: {fastest_model['Model']}")
+print(f"   F1 Score: {fastest_model['F1']:.3f}")
+print(f"   Training Time: {fastest_model['Train Time (s)']:.2f}s")
+```
+
+---
+
+**Lab Completion Checklist:**
+- ☐ Built logistic regression classifier
+- ☐ Analyzed confusion matrix
+- ☐ Plotted ROC and PR curves
+- ☐ Tuned decision threshold
+- ☐ Handled class imbalance with weights and SMOTE
+- ☐ Performed cost-sensitive analysis
+- ☐ Compared 6 classification algorithms
+- ☐ Interpreted feature importances
+- ☐ Made model selection recommendations
+
+**Next:** Unit 4 teaches cross-validation and model evaluation!
 """
     )
 
@@ -3943,31 +4572,1184 @@ to over-optimistic conclusions, and practice fixing them.
 """
     )
 
+    st.markdown("---")
+    st.markdown("#### 🎯 Train/Validation/Test Split Strategy")
+    st.markdown(
+        """**The Golden Rule: Never touch your test set until final evaluation**
+
+**Standard Split (70/15/15):**
+```python
+from sklearn.model_selection import train_test_split
+
+# First split: separate test set
+X_temp, X_test, y_temp, y_test = train_test_split(
+    X, y, test_size=0.15, random_state=42, stratify=y
+)
+
+# Second split: training and validation
+X_train, X_val, y_train, y_val = train_test_split(
+    X_temp, y_temp, test_size=0.176, random_state=42, stratify=y_temp  # 0.176 of 0.85 ≈ 0.15
+)
+
+print(f"Train: {len(X_train)} ({len(X_train)/len(X)*100:.1f}%)")
+print(f"Val:   {len(X_val)} ({len(X_val)/len(X)*100:.1f}%)")
+print(f"Test:  {len(X_test)} ({len(X_test)/len(X)*100:.1f}%)")
+```
+
+**Purpose of each set:**
+1. **Training Set:** Fit model parameters (weights, coefficients)
+2. **Validation Set:** Tune hyperparameters, select features, choose models
+3. **Test Set:** Final unbiased performance estimate (use once!)
+
+---
+
+**Why This Matters:**
+```python
+# ❌ WRONG: Tuning on test set
+best_alpha = None
+best_score = 0
+
+for alpha in [0.1, 1, 10]:
+    model = Ridge(alpha=alpha)
+    model.fit(X_train, y_train)
+    score = model.score(X_test, y_test)  # Using test set!
+    if score > best_score:
+        best_score = score
+        best_alpha = alpha
+
+# This gives overly optimistic estimate
+
+# ✅ RIGHT: Tuning on validation set
+best_alpha = None
+best_score = 0
+
+for alpha in [0.1, 1, 10]:
+    model = Ridge(alpha=alpha)
+    model.fit(X_train, y_train)
+    score = model.score(X_val, y_val)  # Using validation set
+    if score > best_score:
+        best_score = score
+        best_alpha = alpha
+
+# Final evaluation on test set (once!)
+final_model = Ridge(alpha=best_alpha)
+final_model.fit(X_train, y_train)
+test_score = final_model.score(X_test, y_test)
+print(f"Unbiased test score: {test_score:.3f}")
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🔁 Cross-Validation Deep Dive")
+    st.markdown(
+        """**K-Fold Cross-Validation:**
+
+Splits data into k folds, trains on k-1 folds, validates on remaining fold. Repeats k times.
+
+```python
+from sklearn.model_selection import cross_val_score, cross_validate
+from sklearn.linear_model import LogisticRegression
+import numpy as np
+
+model = LogisticRegression()
+
+# Simple cross-validation (returns scores only)
+cv_scores = cross_val_score(model, X_train, y_train, cv=5, scoring='accuracy')
+
+print(f"CV Scores: {cv_scores}")
+print(f"Mean: {cv_scores.mean():.3f}")
+print(f"Std:  {cv_scores.std():.3f}")
+print(f"95% CI: [{cv_scores.mean() - 1.96*cv_scores.std():.3f}, "
+      f"{cv_scores.mean() + 1.96*cv_scores.std():.3f}]")
+
+# Advanced cross-validation (returns multiple metrics)
+cv_results = cross_validate(
+    model, X_train, y_train, 
+    cv=5,
+    scoring=['accuracy', 'precision', 'recall', 'f1', 'roc_auc'],
+    return_train_score=True
+)
+
+print("\\nDetailed Results:")
+for metric in ['accuracy', 'precision', 'recall', 'f1', 'roc_auc']:
+    test_scores = cv_results[f'test_{metric}']
+    train_scores = cv_results[f'train_{metric}']
+    print(f"{metric.capitalize():12} - Train: {train_scores.mean():.3f} | Test: {test_scores.mean():.3f}")
+```
+
+---
+
+**Stratified K-Fold (for classification):**
+
+Maintains class proportions in each fold.
+
+```python
+from sklearn.model_selection import StratifiedKFold
+
+skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+for fold, (train_idx, val_idx) in enumerate(skf.split(X_train, y_train), 1):
+    X_fold_train, X_fold_val = X_train[train_idx], X_train[val_idx]
+    y_fold_train, y_fold_val = y_train[train_idx], y_train[val_idx]
+    
+    print(f"Fold {fold}:")
+    print(f"  Train class distribution: {np.bincount(y_fold_train)}")
+    print(f"  Val class distribution:   {np.bincount(y_fold_val)}")
+```
+
+---
+
+**Choosing K:**
+- **k=5:** Good balance (faster, slightly higher bias)
+- **k=10:** More stable estimates (slower, lower bias)
+- **k=n (Leave-One-Out):** Maximum data usage (very slow, high variance)
+
+**Rule of thumb:** Use k=5 for large datasets (>10K), k=10 for smaller datasets
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### ⏱ Time-Series Cross-Validation")
+    st.markdown(
+        """**Why Standard CV Fails for Time Series:**
+
+```python
+# ❌ WRONG: Random shuffle leaks future into past
+cv_scores = cross_val_score(model, X, y, cv=5)  # Shuffles data randomly!
+
+# ✅ RIGHT: Time-based splits
+from sklearn.model_selection import TimeSeriesSplit
+
+tscv = TimeSeriesSplit(n_splits=5)
+
+for fold, (train_idx, val_idx) in enumerate(tscv.split(X), 1):
+    X_train_fold = X[train_idx]
+    y_train_fold = y[train_idx]
+    X_val_fold = X[val_idx]
+    y_val_fold = y[val_idx]
+    
+    print(f"Fold {fold}:")
+    print(f"  Train: {min(train_idx)} to {max(train_idx)}")
+    print(f"  Val:   {min(val_idx)} to {max(val_idx)}")
+```
+
+**Visualization:**
+```
+Fold 1: [Train        ] [Val]
+Fold 2: [Train             ] [Val]
+Fold 3: [Train                  ] [Val]
+Fold 4: [Train                       ] [Val]
+Fold 5: [Train                            ] [Val]
+```
+
+Each fold trains on more historical data, validates on future data.
+
+---
+
+**Gap Between Train and Validation:**
+
+```python
+class TimeSeriesSplitWithGap:
+    def __init__(self, n_splits=5, test_size=None, gap=0):
+        self.n_splits = n_splits
+        self.test_size = test_size
+        self.gap = gap
+    
+    def split(self, X):
+        n_samples = len(X)
+        
+        if self.test_size is None:
+            test_size = n_samples // (self.n_splits + 1)
+        else:
+            test_size = self.test_size
+        
+        indices = np.arange(n_samples)
+        
+        for i in range(self.n_splits):
+            start_test = (i + 1) * test_size
+            end_test = start_test + test_size
+            
+            if end_test > n_samples:
+                break
+            
+            train_end = start_test - self.gap
+            
+            yield (indices[:train_end], indices[start_test:end_test])
+
+# Use with 7-day gap (e.g., for model deployment delay)
+tscv_gap = TimeSeriesSplitWithGap(n_splits=5, gap=7)
+
+for fold, (train_idx, val_idx) in enumerate(tscv_gap.split(X), 1):
+    print(f"Fold {fold}: Train until day {train_idx[-1]}, validate from day {val_idx[0]}")
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 📊 Bias-Variance Tradeoff")
+    st.markdown(
+        """**Understanding the Tradeoff:**
+
+$$\\text{Total Error} = \\text{Bias}^2 + \\text{Variance} + \\text{Irreducible Error}$$
+
+- **Bias:** Error from wrong assumptions (underfitting)
+- **Variance:** Error from sensitivity to training data (overfitting)
+- **Irreducible Error:** Noise in data
+
+```python
+from sklearn.model_selection import learning_curve
+import matplotlib.pyplot as plt
+
+# Generate learning curves
+train_sizes, train_scores, val_scores = learning_curve(
+    model, X, y,
+    train_sizes=np.linspace(0.1, 1.0, 10),
+    cv=5,
+    scoring='neg_mean_squared_error',
+    n_jobs=-1
+)
+
+# Convert to positive RMSE
+train_scores_mean = np.sqrt(-train_scores.mean(axis=1))
+train_scores_std = np.sqrt(-train_scores.std(axis=1))
+val_scores_mean = np.sqrt(-val_scores.mean(axis=1))
+val_scores_std = np.sqrt(-val_scores.std(axis=1))
+
+# Plot
+plt.figure(figsize=(10, 6))
+plt.plot(train_sizes, train_scores_mean, label='Training error', marker='o')
+plt.fill_between(train_sizes, 
+                 train_scores_mean - train_scores_std,
+                 train_scores_mean + train_scores_std, alpha=0.1)
+plt.plot(train_sizes, val_scores_mean, label='Validation error', marker='s')
+plt.fill_between(train_sizes,
+                 val_scores_mean - val_scores_std,
+                 val_scores_mean + val_scores_std, alpha=0.1)
+plt.xlabel('Training Set Size')
+plt.ylabel('RMSE')
+plt.title('Learning Curves')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Diagnose from curves
+if train_scores_mean[-1] < val_scores_mean[-1] * 0.8:
+    print("⚠️ High variance (overfitting) - Try:")
+    print("  • More training data")
+    print("  • Regularization")
+    print("  • Simpler model")
+elif train_scores_mean[-1] > val_scores_mean[-1] * 1.2:
+    print("⚠️ High bias (underfitting) - Try:")
+    print("  • More complex model")
+    print("  • More features")
+    print("  • Reduce regularization")
+else:
+    print("✅ Good balance")
+```
+
+---
+
+**Validation Curves (Hyperparameter Impact):**
+
+```python
+from sklearn.model_selection import validation_curve
+
+param_range = [0.001, 0.01, 0.1, 1, 10, 100]
+
+train_scores, val_scores = validation_curve(
+    Ridge(), X, y,
+    param_name='alpha',
+    param_range=param_range,
+    cv=5,
+    scoring='neg_mean_squared_error'
+)
+
+train_mean = np.sqrt(-train_scores.mean(axis=1))
+val_mean = np.sqrt(-val_scores.mean(axis=1))
+
+plt.figure(figsize=(10, 6))
+plt.semilogx(param_range, train_mean, label='Training', marker='o')
+plt.semilogx(param_range, val_mean, label='Validation', marker='s')
+plt.xlabel('Alpha (regularization)')
+plt.ylabel('RMSE')
+plt.title('Validation Curve for Ridge Regression')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Optimal alpha
+optimal_alpha = param_range[np.argmin(val_mean)]
+print(f"Optimal alpha: {optimal_alpha}")
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🎨 Nested Cross-Validation")
+    st.markdown(
+        """**Problem:** Standard CV + grid search can overestimate performance
+
+**Solution:** Nested CV
+
+```python
+from sklearn.model_selection import GridSearchCV, cross_val_score
+
+# Inner loop: Hyperparameter tuning
+param_grid = {'alpha': [0.001, 0.01, 0.1, 1, 10]}
+
+inner_cv = GridSearchCV(
+    Ridge(),
+    param_grid,
+    cv=5,  # Inner 5-fold CV
+    scoring='neg_mean_squared_error'
+)
+
+# Outer loop: Unbiased performance estimate
+outer_cv_scores = cross_val_score(
+    inner_cv,
+    X_train, y_train,
+    cv=5,  # Outer 5-fold CV
+    scoring='neg_mean_squared_error'
+)
+
+print(f"Nested CV RMSE: {np.sqrt(-outer_cv_scores.mean()):.3f} "
+      f"(+/- {np.sqrt(-outer_cv_scores.std()):.3f})")
+
+# Compare to non-nested (biased estimate)
+grid_search = GridSearchCV(Ridge(), param_grid, cv=5, scoring='neg_mean_squared_error')
+grid_search.fit(X_train, y_train)
+print(f"Non-nested (biased) RMSE: {np.sqrt(-grid_search.best_score_):.3f}")
+```
+
+**When to Use:**
+- Small datasets (<1000 samples)
+- Many hyperparameters to tune
+- Need publication-ready unbiased estimates
+
+**When Not to Use:**
+- Large datasets (computationally expensive)
+- Simple models with few hyperparameters
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### ⚠️ Common Evaluation Mistakes")
+    st.markdown(
+        """**Mistake 1: Data Leakage via Scaling**
+
+```python
+# ❌ WRONG: Scale before split
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)  # Learns from ALL data
+X_train, X_test = train_test_split(X_scaled)
+
+# Test set information leaked into training!
+
+# ✅ RIGHT: Scale after split
+X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)  # Learn from train only
+X_test_scaled = scaler.transform(X_test)  # Apply to test
+```
+
+---
+
+**Mistake 2: Using Test Set Multiple Times**
+
+```python
+# ❌ WRONG: Iterative test set usage
+models = [...]
+for model in models:
+    model.fit(X_train, y_train)
+    score = model.score(X_test, y_test)
+    print(f"{model}: {score}")
+    
+# Each test gives you info, you adjust, test again
+# Test set score becomes optimistically biased!
+
+# ✅ RIGHT: Use validation set for comparison
+models = [...]
+for model in models:
+    model.fit(X_train, y_train)
+    score = model.score(X_val, y_val)
+    print(f"{model}: {score}")
+
+# Select best model
+best_model = models[best_idx]
+best_model.fit(X_train, y_train)
+
+# Test ONCE at the very end
+final_score = best_model.score(X_test, y_test)
+```
+
+---
+
+**Mistake 3: Ignoring Class Imbalance in CV**
+
+```python
+# ❌ WRONG: Random CV on imbalanced data
+cv_scores = cross_val_score(model, X, y, cv=5)  # Random folds
+
+# Some folds may have no positive examples!
+
+# ✅ RIGHT: Stratified CV
+from sklearn.model_selection import StratifiedKFold
+
+cv_scores = cross_val_score(
+    model, X, y, 
+    cv=StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+)
+```
+
+---
+
+**Mistake 4: Comparing Models on Different Random Seeds**
+
+```python
+# ❌ WRONG: Different random states
+model1_score = cross_val_score(model1, X, y, cv=KFold(5, shuffle=True, random_state=1))
+model2_score = cross_val_score(model2, X, y, cv=KFold(5, shuffle=True, random_state=2))
+
+# Not comparable! Different data in folds.
+
+# ✅ RIGHT: Same CV splitter
+cv = KFold(5, shuffle=True, random_state=42)
+
+model1_score = cross_val_score(model1, X, y, cv=cv)
+model2_score = cross_val_score(model2, X, y, cv=cv)
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🎯 Interview Preparation")
+    st.markdown(
+        """**Q1: Explain train/validation/test split.**
+
+**Answer:**
+- **Training:** Fit model parameters (70%)
+- **Validation:** Tune hyperparameters, select models (15%)
+- **Test:** Final unbiased performance (15%) - use once!
+
+The test set simulates real-world deployment where model sees completely new data.
+
+---
+
+**Q2: Why use cross-validation instead of a single validation split?**
+
+**Answer:**
+- **More stable estimates:** Reduces variance from single random split
+- **Better data utilization:** Every sample used for both training and validation
+- **Confidence intervals:** Can compute std dev across folds
+
+**Trade-off:** Computational cost (k times slower)
+
+---
+
+**Q3: What is the difference between bias and variance?**
+
+**Answer:**
+- **Bias:** Error from wrong model assumptions
+  - High bias = underfitting (model too simple)
+  - Symptoms: High training error, high validation error
+  - Fix: More complex model, more features
+  
+- **Variance:** Error from sensitivity to training data
+  - High variance = overfitting (model too complex)
+  - Symptoms: Low training error, high validation error
+  - Fix: More data, regularization, simpler model
+
+---
+
+**Q4: How do you detect data leakage?**
+
+**Answer:**
+1. **Suspiciously high performance:** Test accuracy >> train accuracy
+2. **Check feature creation:** Are future features used?
+3. **Review preprocessing:** Scaling/imputation before split?
+4. **Temporal check:** Is future data used to predict past?
+
+**Prevention:**
+- Split data FIRST
+- Use pipelines (sklearn.pipeline.Pipeline)
+- Time-based splits for temporal data
+- Document feature creation process
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 📚 Key Takeaways")
+    st.markdown(
+        """**Validation Strategy Decision Tree:**
+
+```
+Is data time-ordered?
+├─ Yes → Use TimeSeriesSplit
+│         • No random shuffle
+│         • Include gap if needed
+│         • Validate on future data only
+│
+└─ No → Is dataset small (<5K)?
+    ├─ Yes → Use 10-fold CV
+    │         • More stable estimates
+    │         • Or nested CV for unbiased HP tuning
+    │
+    └─ No → Use train/val/test split
+              • 70/15/15 or 80/10/10
+              • Stratify for classification
+              • CV optional (expensive)
+```
+
+---
+
+**Critical Rules:**
+
+1. **Never touch test set** until final evaluation
+2. **Split before preprocessing** (scaling, imputation)
+3. **Stratify classification** data
+4. **Use same CV splitter** when comparing models
+5. **Report mean ± std** from CV
+6. **Check for data leakage** systematically
+
+---
+
+**What You Can Do Now:**
+- ✅ Design proper validation strategies
+- ✅ Implement k-fold and stratified CV
+- ✅ Handle time-series validation
+- ✅ Detect and prevent data leakage
+- ✅ Diagnose bias vs variance
+- ✅ Use nested CV for unbiased estimates
+- ✅ Avoid common evaluation mistakes
+
+**Next:** Unit 5 (Unsupervised Learning) explores clustering and dimensionality reduction!
+"""
+    )
+
 
 def _render_unit4_labs():
     """Labs and mini-project ideas for Unit 4."""
 
-    st.markdown("### 🧪 Labs & Mini Projects – Unit 4")
+    st.markdown("### 🧪 HANDS-ON LABS: Unit 4 Model Evaluation")
     st.markdown(
-        """Suggested activities:
+        """**Complete these 3 labs to master validation:**
 
-- **Lab 1 – Comparing validation strategies**
-  - Take a model from Units 2 or 3.
-  - Evaluate it with a hold-out split and with k-fold cross-validation.
-  - Compare the stability of the metrics.
+---
 
-- **Lab 2 – Metric selection for a real decision**
-  - Choose a regression or classification problem.
-  - Decide which metrics matter most for the stakeholders.
-  - Justify your choice in a short note.
+## Lab 1: Cross-Validation Strategies (70 min)
 
-- **Mini project – Evaluation review for a healthcare model**
-  - Take an existing model (e.g. readmission risk or clinic no-show).
-  - Audit how it was originally validated and identify any weaknesses
-    (e.g. test set reuse, wrong metric for class imbalance).
-  - Propose an improved validation plan.
+**Objective:** Compare validation approaches and understand their trade-offs
 
-For practical guidance, see `U4_model_validation.ipynb` in the Pathway 2 notebooks folder.
+**Setup: Create Dataset**
+
+```python
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, f1_score
+import matplotlib.pyplot as plt
+
+# Create customer churn dataset
+np.random.seed(42)
+n = 1000
+
+df = pd.DataFrame({
+    'tenure_months': np.random.randint(1, 72, n),
+    'monthly_charges': np.random.normal(50, 20, n),
+    'total_charges': np.random.normal(1500, 800, n),
+    'num_support_calls': np.random.poisson(2, n),
+    'contract_type': np.random.choice([0, 1, 2], n)
+})
+
+churn_logit = (-2 - 0.05*df['tenure_months'] + 0.02*df['monthly_charges'] + 
+               0.4*df['num_support_calls'] - 0.8*df['contract_type'])
+churn_prob = 1 / (1 + np.exp(-churn_logit))
+df['churned'] = (np.random.random(n) < churn_prob).astype(int)
+
+X = df.drop('churned', axis=1)
+y = df['churned']
+
+print(f"Dataset shape: {X.shape}")
+print(f"Churn rate: {y.mean():.1%}")
+```
+
+---
+
+**Part A: Single Train/Test Split Variability (20 min)**
+
+```python
+# Run same model with different random states
+results = []
+
+for seed in range(10):
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=seed, stratify=y
+    )
+    
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+    
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+    
+    results.append({'seed': seed, 'accuracy': accuracy, 'f1': f1})
+
+results_df = pd.DataFrame(results)
+
+print("Single Split Results (10 different random splits):")
+print(results_df.describe())
+print(f"\\nAccuracy range: {results_df['accuracy'].min():.3f} - {results_df['accuracy'].max():.3f}")
+print(f"Std deviation: {results_df['accuracy'].std():.3f}")
+
+# Visualize variability
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+axes[0].hist(results_df['accuracy'], bins=10, edgecolor='black')
+axes[0].axvline(results_df['accuracy'].mean(), color='r', linestyle='--', label='Mean')
+axes[0].set_xlabel('Accuracy')
+axes[0].set_ylabel('Frequency')
+axes[0].set_title('Single Split Accuracy Distribution')
+axes[0].legend()
+
+axes[1].scatter(results_df['seed'], results_df['accuracy'])
+axes[1].axhline(results_df['accuracy'].mean(), color='r', linestyle='--', label='Mean')
+axes[1].set_xlabel('Random Seed')
+axes[1].set_ylabel('Accuracy')
+axes[1].set_title('Accuracy vs Random Seed')
+axes[1].legend()
+
+plt.tight_layout()
+plt.show()
+
+print(f"\\n⚠️ Single split variance: Performance varies by up to "
+      f"{(results_df['accuracy'].max() - results_df['accuracy'].min()):.1%}")
+```
+
+---
+
+**Part B: K-Fold Cross-Validation (25 min)**
+
+```python
+from sklearn.model_selection import cross_validate
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Compare different k values
+k_values = [3, 5, 10, 20]
+cv_results = {}
+
+for k in k_values:
+    print(f"\\nTesting {k}-fold CV...")
+    
+    cv_scores = cross_validate(
+        model, X, y,
+        cv=StratifiedKFold(n_splits=k, shuffle=True, random_state=42),
+        scoring=['accuracy', 'f1'],
+        return_train_score=True,
+        n_jobs=-1
+    )
+    
+    cv_results[k] = {
+        'train_accuracy': cv_scores['train_accuracy'],
+        'test_accuracy': cv_scores['test_accuracy'],
+        'train_f1': cv_scores['train_f1'],
+        'test_f1': cv_scores['test_f1']
+    }
+    
+    print(f"  Train Accuracy: {cv_scores['train_accuracy'].mean():.3f} "
+          f"(±{cv_scores['train_accuracy'].std():.3f})")
+    print(f"  Test Accuracy:  {cv_scores['test_accuracy'].mean():.3f} "
+          f"(±{cv_scores['test_accuracy'].std():.3f})")
+
+# Compare stability
+comparison = []
+for k in k_values:
+    comparison.append({
+        'k': k,
+        'mean_accuracy': cv_results[k]['test_accuracy'].mean(),
+        'std_accuracy': cv_results[k]['test_accuracy'].std(),
+        'mean_f1': cv_results[k]['test_f1'].mean(),
+        'std_f1': cv_results[k]['test_f1'].std()
+    })
+
+comparison_df = pd.DataFrame(comparison)
+print("\\nCross-Validation Comparison:")
+print(comparison_df.to_string(index=False))
+
+# Visualize
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+for k in k_values:
+    axes[0].scatter([k]*k, cv_results[k]['test_accuracy'], alpha=0.6, label=f'{k}-fold')
+    axes[0].plot([k-0.2, k+0.2], 
+                 [cv_results[k]['test_accuracy'].mean()]*2, 
+                 'r-', linewidth=2)
+
+axes[0].set_xlabel('Number of Folds (k)')
+axes[0].set_ylabel('Accuracy')
+axes[0].set_title('CV Score Distribution by k')
+axes[0].legend()
+axes[0].grid(True, alpha=0.3)
+
+axes[1].plot(comparison_df['k'], comparison_df['std_accuracy'], marker='o')
+axes[1].set_xlabel('Number of Folds (k)')
+axes[1].set_ylabel('Standard Deviation')
+axes[1].set_title('CV Score Stability vs k')
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+print(f"\\n✅ CV is more stable: {comparison_df['std_accuracy'].min():.4f} std "
+      f"vs single split {results_df['accuracy'].std():.4f}")
+```
+
+---
+
+**Part C: Learning Curves (25 min)**
+
+```python
+from sklearn.model_selection import learning_curve
+
+# Generate learning curves with different training sizes
+train_sizes = np.linspace(0.1, 1.0, 10)
+
+train_sizes_abs, train_scores, val_scores = learning_curve(
+    RandomForestClassifier(n_estimators=100, random_state=42),
+    X, y,
+    train_sizes=train_sizes,
+    cv=5,
+    scoring='accuracy',
+    n_jobs=-1,
+    random_state=42
+)
+
+# Calculate statistics
+train_mean = train_scores.mean(axis=1)
+train_std = train_scores.std(axis=1)
+val_mean = val_scores.mean(axis=1)
+val_std = val_scores.std(axis=1)
+
+print("Learning Curve Results:")
+for i, size in enumerate(train_sizes_abs):
+    print(f"Training size {size:4d}: "
+          f"Train={train_mean[i]:.3f}(±{train_std[i]:.3f}) | "
+          f"Val={val_mean[i]:.3f}(±{val_std[i]:.3f})")
+
+# Plot learning curves
+plt.figure(figsize=(10, 6))
+plt.plot(train_sizes_abs, train_mean, 'o-', color='r', label='Training score')
+plt.fill_between(train_sizes_abs, train_mean - train_std, 
+                 train_mean + train_std, alpha=0.1, color='r')
+plt.plot(train_sizes_abs, val_mean, 'o-', color='g', label='CV score')
+plt.fill_between(train_sizes_abs, val_mean - val_std,
+                 val_mean + val_std, alpha=0.1, color='g')
+plt.xlabel('Training Set Size')
+plt.ylabel('Accuracy')
+plt.title('Learning Curves')
+plt.legend(loc='lower right')
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Diagnose
+gap = train_mean[-1] - val_mean[-1]
+if gap > 0.1:
+    print(f"\\n⚠️ High variance (overfitting): gap = {gap:.3f}")
+    print("   Solutions: More data, regularization, simpler model")
+elif val_mean[-1] < 0.7:
+    print(f"\\n⚠️ High bias (underfitting): val score = {val_mean[-1]:.3f}")
+    print("   Solutions: More complex model, more features")
+else:
+    print(f"\\n✅ Good fit: gap = {gap:.3f}, val score = {val_mean[-1]:.3f}")
+```
+
+---
+
+## Lab 2: Detecting Data Leakage (60 min)
+
+**Objective:** Identify and fix data leakage issues
+
+**Part A: Scaling Leakage (20 min)**
+
+```python
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+# Generate data
+X_leakage = np.random.randn(200, 5)
+y_leakage = (X_leakage[:, 0] + X_leakage[:, 1] > 0).astype(int)
+
+print("Scenario: Predict binary outcome from 5 features")
+print(f"True dependency: y = (X[0] + X[1] > 0)")
+print(f"Class balance: {y_leakage.mean():.1%} positive\\n")
+
+# ❌ WRONG: Scale before split
+scaler_wrong = StandardScaler()
+X_scaled_wrong = scaler_wrong.fit_transform(X_leakage)
+
+X_train_wrong, X_test_wrong, y_train_wrong, y_test_wrong = train_test_split(
+    X_scaled_wrong, y_leakage, test_size=0.2, random_state=42
+)
+
+model_wrong = LogisticRegression()
+model_wrong.fit(X_train_wrong, y_train_wrong)
+score_wrong = model_wrong.score(X_test_wrong, y_test_wrong)
+
+print(f"❌ WRONG (scale before split): Test accuracy = {score_wrong:.3f}")
+
+# ✅ RIGHT: Scale after split
+X_train_right, X_test_right, y_train_right, y_test_right = train_test_split(
+    X_leakage, y_leakage, test_size=0.2, random_state=42
+)
+
+scaler_right = StandardScaler()
+X_train_scaled_right = scaler_right.fit_transform(X_train_right)
+X_test_scaled_right = scaler_right.transform(X_test_right)
+
+model_right = LogisticRegression()
+model_right.fit(X_train_scaled_right, y_train_right)
+score_right = model_right.score(X_test_scaled_right, y_test_right)
+
+print(f"✅ RIGHT (scale after split): Test accuracy = {score_right:.3f}")
+
+print(f"\\nDifference: {abs(score_wrong - score_right):.3f}")
+print("With leakage, test set information contaminated training!")
+```
+
+---
+
+**Part B: Target Leakage (20 min)**
+
+```python
+# Create dataset with target leakage
+n = 1000
+age = np.random.randint(18, 80, n)
+income = np.random.normal(50000, 20000, n)
+credit_score = np.random.normal(650, 100, n)
+
+# Target: Loan default (binary)
+default_prob = 1 / (1 + np.exp(-(
+    -5 + 0.05*age + 0.00001*income - 0.01*credit_score
+)))
+loan_default = (np.random.random(n) < default_prob).astype(int)
+
+# ❌ Create leaky feature: "days_since_default"
+# This is ONLY known AFTER default happens!
+days_since_default = np.where(
+    loan_default == 1,
+    np.random.randint(1, 100, n),  # Days for defaulters
+    np.random.randint(300, 1000, n)  # Large number for non-defaulters
+)
+
+df_leaky = pd.DataFrame({
+    'age': age,
+    'income': income,
+    'credit_score': credit_score,
+    'days_since_default': days_since_default,  # LEAKY!
+    'loan_default': loan_default
+})
+
+# Model WITH leaky feature
+X_with_leak = df_leaky[['age', 'income', 'credit_score', 'days_since_default']]
+y = df_leaky['loan_default']
+
+X_train, X_test, y_train, y_test = train_test_split(X_with_leak, y, test_size=0.2, random_state=42)
+
+model_leak = LogisticRegression()
+model_leak.fit(X_train, y_train)
+score_leak = model_leak.score(X_test, y_test)
+
+print(f"❌ With leaky feature: Test accuracy = {score_leak:.3f}")
+print(f"Feature importances: {model_leak.coef_[0]}")
+
+# Model WITHOUT leaky feature
+X_no_leak = df_leaky[['age', 'income', 'credit_score']]
+
+X_train_clean, X_test_clean, y_train, y_test = train_test_split(
+    X_no_leak, y, test_size=0.2, random_state=42
+)
+
+model_clean = LogisticRegression()
+model_clean.fit(X_train_clean, y_train)
+score_clean = model_clean.score(X_test_clean, y_test)
+
+print(f"\\n✅ Without leaky feature: Test accuracy = {score_clean:.3f}")
+print(f"Feature importances: {model_clean.coef_[0]}")
+
+print(f"\\n⚠️ Suspicious accuracy drop: {score_leak - score_clean:.3f}")
+print("This indicates 'days_since_default' was leaking target information!")
+```
+
+---
+
+**Part C: Temporal Leakage (20 min)**
+
+```python
+from sklearn.model_selection import TimeSeriesSplit
+
+# Create time-ordered sales data
+dates = pd.date_range('2023-01-01', periods=365, freq='D')
+sales = 100 + np.cumsum(np.random.randn(365) * 10)  # Trending sales
+sales = sales.clip(min=50)
+
+# Feature: Moving average (using future data - WRONG!)
+window = 7
+sales_ma_wrong = pd.Series(sales).rolling(window=window, center=True).mean().fillna(sales)
+
+df_time = pd.DataFrame({
+    'date': dates,
+    'sales': sales,
+    'sales_ma_wrong': sales_ma_wrong,  # Uses future data!
+    'day_of_week': dates.dayofweek,
+    'month': dates.month
+})
+
+# Predict tomorrow's sales
+df_time['target'] = df_time['sales'].shift(-1)
+df_time = df_time.dropna()
+
+print("Temporal Data:")
+print(df_time.head())
+
+# ❌ WRONG: Random CV (shuffles time order!)
+X_temporal = df_time[['sales_ma_wrong', 'day_of_week', 'month']]
+y_temporal = df_time['target']
+
+cv_random = cross_val_score(
+    LinearRegression(), X_temporal, y_temporal, 
+    cv=5, scoring='r2'
+)
+
+print(f"\\n❌ Random CV (shuffled): R² = {cv_random.mean():.3f} (±{cv_random.std():.3f})")
+
+# ✅ RIGHT: Time series CV (preserves order)
+tscv = TimeSeriesSplit(n_splits=5)
+
+cv_time = cross_val_score(
+    LinearRegression(), X_temporal, y_temporal,
+    cv=tscv, scoring='r2'
+)
+
+print(f"✅ Time Series CV: R² = {cv_time.mean():.3f} (±{cv_time.std():.3f})")
+
+print(f"\\nDifference: {cv_random.mean() - cv_time.mean():.3f}")
+print("Random CV inflates performance by using future to predict past!")
+
+# Visualize splits
+fig, axes = plt.subplots(5, 1, figsize=(12, 10))
+
+for i, (train_idx, val_idx) in enumerate(tscv.split(X_temporal)):
+    axes[i].scatter(train_idx, [1]*len(train_idx), c='blue', marker='|', s=100, label='Train')
+    axes[i].scatter(val_idx, [1]*len(val_idx), c='red', marker='|', s=100, label='Val')
+    axes[i].set_xlim(0, len(X_temporal))
+    axes[i].set_ylim(0.5, 1.5)
+    axes[i].set_yticks([])
+    axes[i].set_title(f'Fold {i+1}')
+    axes[i].legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Lab 3: Hyperparameter Tuning & Nested CV (80 min)
+
+**Objective:** Properly tune hyperparameters without overfitting
+
+**Part A: Grid Search with Validation Set (25 min)**
+
+```python
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+
+# Use churn data from Lab 1
+X_train_full, X_test, y_train_full, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# Further split train into train and validation
+X_train, X_val, y_train, y_val = train_test_split(
+    X_train_full, y_train_full, test_size=0.25, random_state=42, stratify=y_train_full
+)
+
+print(f"Train: {X_train.shape}, Val: {X_val.shape}, Test: {X_test.shape}")
+
+# Define parameter grid
+param_grid = {
+    'n_estimators': [50, 100, 200],
+    'max_depth': [3, 5, 7, 10],
+    'min_samples_split': [2, 5, 10]
+}
+
+print(f"\\nTesting {len(param_grid['n_estimators']) * len(param_grid['max_depth']) * len(param_grid['min_samples_split'])} combinations")
+
+# Grid search
+grid_search = GridSearchCV(
+    RandomForestClassifier(random_state=42),
+    param_grid,
+    cv=5,  # 5-fold CV on training data
+    scoring='f1',
+    n_jobs=-1,
+    verbose=1
+)
+
+grid_search.fit(X_train, y_train)
+
+print(f"\\nBest parameters: {grid_search.best_params_}")
+print(f"Best CV F1: {grid_search.best_score_:.3f}")
+
+# Evaluate on validation set
+best_model = grid_search.best_estimator_
+val_score = f1_score(y_val, best_model.predict(X_val))
+print(f"Validation F1: {val_score:.3f}")
+
+# Final test (use once!)
+test_score = f1_score(y_test, best_model.predict(X_test))
+print(f"Test F1 (final): {test_score:.3f}")
+
+# Analyze results
+results_df = pd.DataFrame(grid_search.cv_results_)
+top_10 = results_df.nsmallest(10, 'rank_test_score')[
+    ['params', 'mean_test_score', 'std_test_score', 'rank_test_score']
+]
+
+print("\\nTop 10 parameter combinations:")
+print(top_10.to_string(index=False))
+```
+
+---
+
+**Part B: Nested Cross-Validation (30 min)**
+
+```python
+from sklearn.model_selection import cross_val_score
+
+# Nested CV: Inner CV for hyperparameter tuning, outer CV for unbiased estimate
+
+# Define inner CV grid search
+inner_cv = GridSearchCV(
+    RandomForestClassifier(random_state=42),
+    param_grid={
+        'n_estimators': [50, 100],
+        'max_depth': [3, 5, 7]
+    },
+    cv=3,  # Inner 3-fold CV
+    scoring='f1',
+    n_jobs=-1
+)
+
+# Outer CV for performance estimation
+outer_cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+# Run nested CV
+nested_scores = cross_val_score(
+    inner_cv,
+    X_train_full, y_train_full,
+    cv=outer_cv,
+    scoring='f1',
+    n_jobs=-1
+)
+
+print("Nested CV Results:")
+print(f"F1 scores per outer fold: {nested_scores}")
+print(f"Mean F1: {nested_scores.mean():.3f}")
+print(f"Std F1:  {nested_scores.std():.3f}")
+print(f"95% CI:  [{nested_scores.mean() - 1.96*nested_scores.std():.3f}, "
+      f"{nested_scores.mean() + 1.96*nested_scores.std():.3f}]")
+
+# Compare to non-nested (biased)
+non_nested_grid = GridSearchCV(
+    RandomForestClassifier(random_state=42),
+    param_grid={'n_estimators': [50, 100], 'max_depth': [3, 5, 7]},
+    cv=5,
+    scoring='f1'
+)
+
+non_nested_grid.fit(X_train_full, y_train_full)
+non_nested_score = non_nested_grid.best_score_
+
+print(f"\\nNon-nested CV (biased): {non_nested_score:.3f}")
+print(f"Nested CV (unbiased):    {nested_scores.mean():.3f}")
+print(f"Optimism bias:           {non_nested_score - nested_scores.mean():.3f}")
+
+print("\\n⚠️ Non-nested CV overestimates performance!")
+print("   Use nested CV for publication-ready estimates.")
+```
+
+---
+
+**Part C: Validation Curves (25 min)**
+
+```python
+from sklearn.model_selection import validation_curve
+
+# Study effect of max_depth on performance
+param_range = [1, 2, 3, 5, 7, 10, 15, 20]
+
+train_scores, val_scores = validation_curve(
+    RandomForestClassifier(n_estimators=100, random_state=42),
+    X_train_full, y_train_full,
+    param_name='max_depth',
+    param_range=param_range,
+    cv=5,
+    scoring='f1',
+    n_jobs=-1
+)
+
+train_mean = train_scores.mean(axis=1)
+train_std = train_scores.std(axis=1)
+val_mean = val_scores.mean(axis=1)
+val_std = val_scores.std(axis=1)
+
+# Plot validation curve
+plt.figure(figsize=(10, 6))
+plt.plot(param_range, train_mean, 'o-', color='r', label='Training F1')
+plt.fill_between(param_range, train_mean - train_std, 
+                 train_mean + train_std, alpha=0.1, color='r')
+plt.plot(param_range, val_mean, 'o-', color='g', label='Validation F1')
+plt.fill_between(param_range, val_mean - val_std,
+                 val_mean + val_std, alpha=0.1, color='g')
+plt.xlabel('max_depth')
+plt.ylabel('F1 Score')
+plt.title('Validation Curve: max_depth')
+plt.legend(loc='lower right')
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Find optimal depth
+optimal_depth = param_range[np.argmax(val_mean)]
+print(f"Optimal max_depth: {optimal_depth}")
+print(f"Best validation F1: {val_mean.max():.3f}")
+
+# Diagnose overfitting
+for i, depth in enumerate(param_range):
+    gap = train_mean[i] - val_mean[i]
+    print(f"Depth {depth:2d}: Train={train_mean[i]:.3f}, Val={val_mean[i]:.3f}, Gap={gap:.3f}")
+
+print(f"\\n⚠️ Beyond depth {optimal_depth}, model starts overfitting")
+```
+
+---
+
+**Lab Completion Checklist:**
+- ☐ Compared single split vs cross-validation stability
+- ☐ Implemented k-fold and stratified CV
+- ☐ Generated learning curves
+- ☐ Detected scaling leakage
+- ☐ Identified target leakage
+- ☐ Handled temporal leakage with TimeSeriesSplit
+- ☐ Performed grid search with proper validation
+- ☐ Implemented nested CV for unbiased estimates
+- ☐ Created validation curves
+
+**Next:** Unit 5 explores unsupervised learning and clustering!
 """
     )
 
@@ -4184,38 +5966,1103 @@ just high internal scores.
 """
     )
 
+    st.markdown("---")
+    st.markdown("#### 🎯 K-Means Clustering")
+    st.markdown(
+        """**Algorithm:** Partitions data into k clusters by minimizing within-cluster variance
+
+**How it works:**
+1. Randomly initialize k centroids
+2. Assign each point to nearest centroid
+3. Recalculate centroids as mean of assigned points
+4. Repeat steps 2-3 until convergence
+
+```python
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Create customer data
+np.random.seed(42)
+n = 300
+
+df = pd.DataFrame({
+    'avg_purchase': np.concatenate([
+        np.random.normal(50, 10, 100),   # Low spenders
+        np.random.normal(150, 20, 100),  # Medium spenders
+        np.random.normal(300, 30, 100)   # High spenders
+    ]),
+    'visit_frequency': np.concatenate([
+        np.random.normal(2, 0.5, 100),   # Infrequent
+        np.random.normal(8, 1, 100),     # Regular
+        np.random.normal(20, 3, 100)     # Very frequent
+    ]),
+    'account_age_months': np.random.uniform(1, 60, n)
+})
+
+# Scale features (CRITICAL for k-means!)
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(df)
+
+# Fit k-means
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+clusters = kmeans.fit_predict(X_scaled)
+
+df['cluster'] = clusters
+
+print(f"Cluster sizes: {np.bincount(clusters)}")
+print(f"\\nInertia (within-cluster sum of squares): {kmeans.inertia_:.2f}")
+
+# Cluster centroids (in original scale)
+centroids = scaler.inverse_transform(kmeans.cluster_centers_)
+centroids_df = pd.DataFrame(centroids, columns=df.columns[:-1])
+print("\\nCluster Centroids:")
+print(centroids_df)
+
+# Visualize
+plt.figure(figsize=(10, 6))
+scatter = plt.scatter(df['avg_purchase'], df['visit_frequency'], 
+                     c=df['cluster'], cmap='viridis', alpha=0.6)
+plt.scatter(centroids[:, 0], centroids[:, 1], 
+           c='red', marker='X', s=200, edgecolors='black', label='Centroids')
+plt.xlabel('Average Purchase ($)')
+plt.ylabel('Visit Frequency (per month)')
+plt.title('Customer Segments (K-Means)')
+plt.colorbar(scatter, label='Cluster')
+plt.legend()
+plt.show()
+```
+
+**Choosing k (Elbow Method):**
+
+```python
+inertias = []
+silhouette_scores = []
+k_range = range(2, 11)
+
+for k in k_range:
+    kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+    kmeans.fit(X_scaled)
+    inertias.append(kmeans.inertia_)
+    
+    from sklearn.metrics import silhouette_score
+    score = silhouette_score(X_scaled, kmeans.labels_)
+    silhouette_scores.append(score)
+
+# Plot elbow curve
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+axes[0].plot(k_range, inertias, 'o-')
+axes[0].set_xlabel('Number of clusters (k)')
+axes[0].set_ylabel('Inertia')
+axes[0].set_title('Elbow Method')
+axes[0].grid(True, alpha=0.3)
+
+axes[1].plot(k_range, silhouette_scores, 'o-', color='green')
+axes[1].set_xlabel('Number of clusters (k)')
+axes[1].set_ylabel('Silhouette Score')
+axes[1].set_title('Silhouette Analysis')
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+optimal_k = k_range[np.argmax(silhouette_scores)]
+print(f"\\nOptimal k (by silhouette): {optimal_k}")
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🌳 Hierarchical Clustering")
+    st.markdown(
+        """**Algorithm:** Builds tree of clusters (dendrogram)
+
+**Types:**
+- **Agglomerative (bottom-up):** Start with each point as cluster, merge similar ones
+- **Divisive (top-down):** Start with one cluster, split recursively
+
+```python
+from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import dendrogram, linkage
+from scipy.spatial.distance import pdist
+
+# Compute linkage matrix
+linkage_matrix = linkage(X_scaled, method='ward')
+
+# Plot dendrogram
+plt.figure(figsize=(12, 6))
+dendrogram(linkage_matrix, truncate_mode='lastp', p=20)
+plt.xlabel('Sample Index or (Cluster Size)')
+plt.ylabel('Distance')
+plt.title('Hierarchical Clustering Dendrogram')
+plt.axhline(y=10, color='r', linestyle='--', label='Cut height')
+plt.legend()
+plt.show()
+
+# Fit hierarchical clustering
+hc = AgglomerativeClustering(n_clusters=3, linkage='ward')
+hc_clusters = hc.fit_predict(X_scaled)
+
+df['hc_cluster'] = hc_clusters
+
+print(f"Hierarchical cluster sizes: {np.bincount(hc_clusters)}")
+
+# Compare with k-means
+from sklearn.metrics import adjusted_rand_score
+
+ari = adjusted_rand_score(clusters, hc_clusters)
+print(f"\\nAgreement with k-means (ARI): {ari:.3f}")
+```
+
+**Linkage Methods:**
+- **Ward:** Minimizes within-cluster variance (similar to k-means)
+- **Complete:** Maximum distance between clusters
+- **Average:** Average distance between all pairs
+- **Single:** Minimum distance (can create chains)
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🔍 DBSCAN (Density-Based Clustering)")
+    st.markdown(
+        """**Algorithm:** Finds clusters as dense regions, identifies outliers
+
+**Parameters:**
+- **eps:** Maximum distance between points in same cluster
+- **min_samples:** Minimum points to form dense region
+
+```python
+from sklearn.cluster import DBSCAN
+
+# DBSCAN
+dbscan = DBSCAN(eps=0.5, min_samples=5)
+dbscan_clusters = dbscan.fit_predict(X_scaled)
+
+df['dbscan_cluster'] = dbscan_clusters
+
+# -1 = noise/outliers
+n_clusters = len(set(dbscan_clusters)) - (1 if -1 in dbscan_clusters else 0)
+n_noise = list(dbscan_clusters).count(-1)
+
+print(f"Number of clusters: {n_clusters}")
+print(f"Number of noise points: {n_noise}")
+print(f"Cluster sizes: {np.bincount(dbscan_clusters[dbscan_clusters >= 0])}")
+
+# Visualize with noise
+plt.figure(figsize=(10, 6))
+colors = ['red' if x == -1 else plt.cm.viridis(x / n_clusters) 
+          for x in dbscan_clusters]
+plt.scatter(df['avg_purchase'], df['visit_frequency'], c=colors, alpha=0.6)
+plt.xlabel('Average Purchase ($)')
+plt.ylabel('Visit Frequency')
+plt.title('DBSCAN Clustering (red = noise)')
+plt.show()
+```
+
+**When to use DBSCAN:**
+- ✅ Non-spherical clusters
+- ✅ Varying cluster sizes
+- ✅ Need to identify outliers
+- ❌ High-dimensional data (curse of dimensionality)
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 📊 Clustering Evaluation Metrics")
+    st.markdown(
+        """**1. Silhouette Score (-1 to 1)**
+
+Measures how similar a point is to its own cluster vs other clusters.
+
+```python
+from sklearn.metrics import silhouette_score, silhouette_samples
+
+# Overall silhouette score
+sil_score = silhouette_score(X_scaled, clusters)
+print(f"Silhouette Score: {sil_score:.3f}")
+
+# Per-sample silhouette values
+sil_samples = silhouette_samples(X_scaled, clusters)
+
+# Silhouette plot
+fig, ax = plt.subplots(figsize=(10, 6))
+
+y_lower = 10
+for i in range(3):
+    cluster_sil_values = sil_samples[clusters == i]
+    cluster_sil_values.sort()
+    
+    size_cluster_i = cluster_sil_values.shape[0]
+    y_upper = y_lower + size_cluster_i
+    
+    color = plt.cm.viridis(i / 3)
+    ax.fill_betweenx(np.arange(y_lower, y_upper), 0, cluster_sil_values,
+                     facecolor=color, edgecolor=color, alpha=0.7,
+                     label=f'Cluster {i}')
+    
+    y_lower = y_upper + 10
+
+ax.axvline(x=sil_score, color="red", linestyle="--", label=f'Average={sil_score:.2f}')
+ax.set_xlabel("Silhouette Coefficient")
+ax.set_ylabel("Cluster")
+ax.set_title("Silhouette Plot")
+ax.legend()
+plt.show()
+
+# Interpretation
+if sil_score > 0.5:
+    print("✅ Good clustering: Clusters are well-separated")
+elif sil_score > 0.25:
+    print("⚠️ Moderate clustering: Some overlap between clusters")
+else:
+    print("❌ Poor clustering: Clusters are not well-defined")
+```
+
+---
+
+**2. Davies-Bouldin Index (lower is better)**
+
+```python
+from sklearn.metrics import davies_bouldin_score
+
+db_score = davies_bouldin_score(X_scaled, clusters)
+print(f"Davies-Bouldin Score: {db_score:.3f}")
+print("Lower is better (well-separated, compact clusters)")
+```
+
+---
+
+**3. Calinski-Harabasz Index (higher is better)**
+
+```python
+from sklearn.metrics import calinski_harabasz_score
+
+ch_score = calinski_harabasz_score(X_scaled, clusters)
+print(f"Calinski-Harabasz Score: {ch_score:.1f}")
+print("Higher is better (dense, well-separated clusters)")
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🎨 Dimensionality Reduction")
+    st.markdown(
+        """**Why reduce dimensions?**
+- Visualize high-dimensional data
+- Remove noise
+- Speed up algorithms
+- Avoid curse of dimensionality
+
+---
+
+**PCA (Principal Component Analysis)**
+
+Finds orthogonal axes that maximize variance.
+
+```python
+from sklearn.decomposition import PCA
+
+# Fit PCA
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_scaled)
+
+print(f"Explained variance ratio: {pca.explained_variance_ratio_}")
+print(f"Total variance explained: {pca.explained_variance_ratio_.sum():.1%}")
+
+# Visualize in 2D
+plt.figure(figsize=(10, 6))
+scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=clusters, cmap='viridis', alpha=0.6)
+plt.xlabel(f'PC1 ({pca.explained_variance_ratio_[0]:.1%} variance)')
+plt.ylabel(f'PC2 ({pca.explained_variance_ratio_[1]:.1%} variance)')
+plt.title('PCA Projection with Clusters')
+plt.colorbar(scatter, label='Cluster')
+plt.show()
+
+# Scree plot (choose number of components)
+pca_full = PCA()
+pca_full.fit(X_scaled)
+
+plt.figure(figsize=(10, 6))
+plt.plot(range(1, len(pca_full.explained_variance_ratio_)+1),
+         np.cumsum(pca_full.explained_variance_ratio_), 'o-')
+plt.xlabel('Number of Components')
+plt.ylabel('Cumulative Explained Variance')
+plt.title('Scree Plot')
+plt.axhline(y=0.95, color='r', linestyle='--', label='95% threshold')
+plt.grid(True, alpha=0.3)
+plt.legend()
+plt.show()
+```
+
+---
+
+**t-SNE (t-Distributed Stochastic Neighbor Embedding)**
+
+Preserves local structure, great for visualization.
+
+```python
+from sklearn.manifold import TSNE
+
+# Fit t-SNE (slower than PCA)
+tsne = TSNE(n_components=2, random_state=42, perplexity=30)
+X_tsne = tsne.fit_transform(X_scaled)
+
+# Visualize
+plt.figure(figsize=(10, 6))
+scatter = plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=clusters, cmap='viridis', alpha=0.6)
+plt.xlabel('t-SNE 1')
+plt.ylabel('t-SNE 2')
+plt.title('t-SNE Projection with Clusters')
+plt.colorbar(scatter, label='Cluster')
+plt.show()
+```
+
+**PCA vs t-SNE:**
+| Feature | PCA | t-SNE |
+|---------|-----|-------|
+| Speed | ✅ Fast | ❌ Slow |
+| Interpretable | ✅ Yes (linear) | ❌ No (non-linear) |
+| Preserves | Global structure | Local structure |
+| Deterministic | ✅ Yes | ❌ No (random init) |
+| Use for | Feature engineering | Visualization only |
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 💼 Business Segmentation Example")
+    st.markdown(
+        """**Customer Segmentation for Marketing**
+
+```python
+# Profile each cluster
+cluster_profiles = df.groupby('cluster').agg({
+    'avg_purchase': ['mean', 'std', 'count'],
+    'visit_frequency': ['mean', 'std'],
+    'account_age_months': ['mean', 'std']
+}).round(2)
+
+print("Cluster Profiles:")
+print(cluster_profiles)
+
+# Assign business labels
+cluster_names = {
+    0: "Budget Shoppers (Low spend, infrequent)",
+    1: "Loyal Regulars (Medium spend, frequent)",
+    2: "Premium VIPs (High spend, very frequent)"
+}
+
+df['segment_name'] = df['cluster'].map(cluster_names)
+
+# Segment distribution
+print("\\nSegment Distribution:")
+print(df['segment_name'].value_counts())
+
+# Business recommendations
+recommendations = {
+    "Budget Shoppers": "Focus on promotions and discounts to increase frequency",
+    "Loyal Regulars": "Loyalty program with points and rewards",
+    "Premium VIPs": "Exclusive early access and personalized service"
+}
+
+for segment, action in recommendations.items():
+    count = (df['segment_name'] == segment).sum()
+    print(f"\\n{segment} ({count} customers): {action}")
+```
+
+**Visualize Segments:**
+
+```python
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+
+for i, col in enumerate(['avg_purchase', 'visit_frequency', 'account_age_months']):
+    df.boxplot(column=col, by='segment_name', ax=axes[i])
+    axes[i].set_title(f'{col} by Segment')
+    axes[i].set_xlabel('')
+
+plt.suptitle('')
+plt.tight_layout()
+plt.show()
+```
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 🎯 Interview Preparation")
+    st.markdown(
+        """**Q1: When would you use k-means vs hierarchical clustering?**
+
+**Answer:**
+- **K-means:** Large datasets (>10K), know approximate number of clusters, want speed
+- **Hierarchical:** Small datasets, explore different numbers of clusters, need dendrogram
+
+---
+
+**Q2: Why is feature scaling critical for k-means?**
+
+**Answer:**
+K-means uses Euclidean distance. Features with larger scales dominate the distance calculation.
+
+Example: Age (0-100) vs Income (£0-£200K) without scaling means income dominates.
+
+---
+
+**Q3: How do you choose the number of clusters (k)?**
+
+**Answer:**
+1. **Elbow method:** Plot inertia vs k, look for "elbow"
+2. **Silhouette score:** Maximize average silhouette
+3. **Business constraints:** Predefined segments (e.g., 3 pricing tiers)
+4. **Domain knowledge:** What's actionable/interpretable?
+
+No single "correct" answer - depends on business goals.
+
+---
+
+**Q4: What's the difference between PCA and t-SNE?**
+
+**Answer:**
+- **PCA:** Linear transformation, preserves global structure, deterministic, fast. Use for feature engineering.
+- **t-SNE:** Non-linear, preserves local structure, stochastic, slow. Use for visualization only.
+
+t-SNE is NOT for dimensionality reduction in pipelines (distances don't generalize to new data).
+"""
+    )
+
+    st.markdown("---")
+    st.markdown("#### 📚 Key Takeaways")
+    st.markdown(
+        """**Clustering Algorithm Comparison:**
+
+| Algorithm | Pros | Cons | When to Use |
+|-----------|------|------|-------------|
+| **K-Means** | Fast, scalable, simple | Needs k, assumes spherical | Large datasets, clear segments |
+| **Hierarchical** | No need to choose k, dendrogram | Slow (O(n³)), no new predictions | Small data, exploratory |
+| **DBSCAN** | Finds outliers, arbitrary shapes | Needs eps/min_samples tuning | Non-spherical clusters, noise |
+
+---
+
+**Critical Steps:**
+1. **Scale features** (StandardScaler)
+2. **Choose algorithm** based on data size and structure
+3. **Determine k** (elbow, silhouette, business)
+4. **Evaluate** (silhouette, business validation)
+5. **Profile clusters** (describe characteristics)
+6. **Name segments** (business-friendly labels)
+7. **Take action** (segment-specific strategies)
+
+---
+
+**What You Can Do Now:**
+- ✅ Perform k-means clustering with optimal k
+- ✅ Build hierarchical clustering dendrograms
+- ✅ Identify outliers with DBSCAN
+- ✅ Evaluate clusters with silhouette score
+- ✅ Reduce dimensions with PCA and t-SNE
+- ✅ Profile and name customer segments
+- ✅ Create actionable business strategies
+
+**Next:** Unit 6 (Model Deployment) covers productionizing ML models!
+"""
+    )
+
 
 def _render_unit5_labs():
     """Labs and mini-project ideas for Unit 5."""
 
-    st.markdown("### 🧪 Labs & Mini Projects – Unit 5")
+    st.markdown("### 🧪 HANDS-ON LABS: Unit 5 Unsupervised Learning")
     st.markdown(
-        """These labs focus on using clustering for practical segmentation.
+        """**Complete these 3 labs to master clustering:**
 
-- **Lab 1 – Customer or patient segmentation with k-means**
-  - Choose a dataset with entities (customers, patients, locations).
-  - Build a preprocessing pipeline (handle missing values, encode
-    categoricals, scale features).
-  - Apply k-means for several values of k.
-  - Inspect cluster centroids and basic metrics (e.g. silhouette score).
+---
 
-- **Lab 2 – Interpreting and labelling segments**
-  - Profile each cluster: average values, distributions, key differences.
-  - Give each cluster a descriptive business label (e.g. "high-usage
-    digital", "low-engagement occasional").
+## Lab 1: Customer Segmentation with K-Means (80 min)
 
-- **Mini project – Segmentation for a decision**
-  - Design a simple strategy that uses segments (e.g. tailored
-    communication, targeted support).
-  - Prepare a short slide or document explaining segments and how they
-    should influence actions.
+**Objective:** Build actionable customer segments from behavioral data
 
-- **Healthcare-flavoured extension**
-  - Imagine the data represents patients or service users.
-  - Describe how you would use segments to prioritise outreach,
-    education or follow-up appointments.
+**Setup: Create Customer Dataset**
 
-Use `U5_clustering_segmentation.ipynb` for a worked example of these steps.
+```python
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score, silhouette_samples
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create realistic customer data
+np.random.seed(42)
+n = 500
+
+# Generate 3 distinct customer segments
+segments = np.random.choice([0, 1, 2], n, p=[0.4, 0.35, 0.25])
+
+df = pd.DataFrame({
+    'customer_id': range(1, n+1),
+    'avg_monthly_spend': np.where(segments == 0, np.random.normal(30, 10, n),
+                                  np.where(segments == 1, np.random.normal(150, 30, n),
+                                          np.random.normal(400, 80, n))),
+    'visits_per_month': np.where(segments == 0, np.random.poisson(1, n),
+                                 np.where(segments == 1, np.random.poisson(6, n),
+                                         np.random.poisson(15, n))),
+    'account_age_months': np.random.uniform(1, 48, n),
+    'support_tickets': np.where(segments == 0, np.random.poisson(0.5, n),
+                               np.where(segments == 1, np.random.poisson(1.5, n),
+                                       np.random.poisson(0.3, n))),
+    'mobile_app_usage': np.where(segments == 0, np.random.choice([0, 1], n, p=[0.8, 0.2]),
+                                 np.where(segments == 1, np.random.choice([0, 1], n, p=[0.3, 0.7]),
+                                         np.random.choice([0, 1], n, p=[0.1, 0.9])))
+})
+
+# Clip to realistic ranges
+df['avg_monthly_spend'] = df['avg_monthly_spend'].clip(lower=10)
+df['visits_per_month'] = df['visits_per_month'].clip(lower=0)
+df['support_tickets'] = df['support_tickets'].clip(lower=0)
+
+print("Customer Dataset:")
+print(df.describe())
+df.to_csv('customer_data.csv', index=False)
+```
+
+---
+
+**Part A: Determine Optimal K (25 min)**
+
+```python
+df = pd.read_csv('customer_data.csv')
+
+# Features for clustering
+features = ['avg_monthly_spend', 'visits_per_month', 'account_age_months', 
+            'support_tickets', 'mobile_app_usage']
+X = df[features]
+
+# Scale features
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+print(f"Scaled data shape: {X_scaled.shape}")
+print(f"Feature means (should be ~0): {X_scaled.mean(axis=0).round(3)}")
+print(f"Feature stds (should be ~1): {X_scaled.std(axis=0).round(3)}")
+
+# Test different k values
+k_range = range(2, 11)
+inertias = []
+silhouette_scores = []
+
+for k in k_range:
+    kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+    labels = kmeans.fit_predict(X_scaled)
+    
+    inertias.append(kmeans.inertia_)
+    sil_score = silhouette_score(X_scaled, labels)
+    silhouette_scores.append(sil_score)
+    
+    print(f"k={k}: Inertia={kmeans.inertia_:.2f}, Silhouette={sil_score:.3f}")
+
+# Elbow method visualization
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Elbow plot
+axes[0].plot(k_range, inertias, 'o-', linewidth=2, markersize=8)
+axes[0].set_xlabel('Number of Clusters (k)')
+axes[0].set_ylabel('Inertia (Within-Cluster Sum of Squares)')
+axes[0].set_title('Elbow Method for Optimal k')
+axes[0].grid(True, alpha=0.3)
+
+# Silhouette plot
+axes[1].plot(k_range, silhouette_scores, 'o-', color='green', linewidth=2, markersize=8)
+axes[1].set_xlabel('Number of Clusters (k)')
+axes[1].set_ylabel('Silhouette Score')
+axes[1].set_title('Silhouette Score vs k')
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Optimal k
+optimal_k = k_range[np.argmax(silhouette_scores)]
+print(f"\\n✅ Recommended k: {optimal_k} (highest silhouette score)")
+```
+
+---
+
+**Part B: Fit & Evaluate K-Means (30 min)**
+
+```python
+# Fit final k-means
+k_final = 3
+kmeans_final = KMeans(n_clusters=k_final, random_state=42, n_init=10)
+clusters = kmeans_final.fit_predict(X_scaled)
+
+df['cluster'] = clusters
+
+print(f"Cluster distribution:\\n{df['cluster'].value_counts().sort_index()}")
+
+# Silhouette analysis
+sil_score = silhouette_score(X_scaled, clusters)
+sil_samples = silhouette_samples(X_scaled, clusters)
+
+print(f"\\nOverall Silhouette Score: {sil_score:.3f}")
+
+# Silhouette plot
+fig, ax = plt.subplots(figsize=(10, 6))
+
+y_lower = 10
+for i in range(k_final):
+    cluster_sil_values = sil_samples[clusters == i]
+    cluster_sil_values.sort()
+    
+    size_cluster_i = cluster_sil_values.shape[0]
+    y_upper = y_lower + size_cluster_i
+    
+    color = plt.cm.viridis(i / k_final)
+    ax.fill_betweenx(np.arange(y_lower, y_upper), 0, cluster_sil_values,
+                     facecolor=color, alpha=0.7, label=f'Cluster {i}')
+    
+    # Cluster mean
+    ax.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
+    
+    y_lower = y_upper + 10
+
+ax.axvline(x=sil_score, color="red", linestyle="--", 
+           linewidth=2, label=f'Average={sil_score:.2f}')
+ax.set_xlabel("Silhouette Coefficient", fontsize=12)
+ax.set_ylabel("Cluster", fontsize=12)
+ax.set_title("Silhouette Plot for Customer Segments", fontsize=14)
+ax.legend()
+plt.tight_layout()
+plt.show()
+
+# Cluster centroids (original scale)
+centroids = scaler.inverse_transform(kmeans_final.cluster_centers_)
+centroids_df = pd.DataFrame(centroids, columns=features)
+centroids_df.index = [f'Cluster {i}' for i in range(k_final)]
+
+print("\\nCluster Centroids (Original Scale):")
+print(centroids_df.round(2))
+```
+
+---
+
+**Part C: Profile & Label Segments (25 min)**
+
+```python
+# Detailed cluster profiling
+cluster_profiles = df.groupby('cluster').agg({
+    'avg_monthly_spend': ['mean', 'std', 'min', 'max'],
+    'visits_per_month': ['mean', 'std'],
+    'account_age_months': ['mean', 'std'],
+    'support_tickets': ['mean', 'sum'],
+    'mobile_app_usage': ['mean', 'sum'],
+    'customer_id': 'count'
+}).round(2)
+
+cluster_profiles.columns = ['_'.join(col).strip() for col in cluster_profiles.columns.values]
+print("\\nDetailed Cluster Profiles:")
+print(cluster_profiles)
+
+# Assign business-friendly names
+cluster_descriptions = {
+    0: "💰 Premium VIP (High spend, frequent, engaged)",
+    1: "🛒 Regular Shoppers (Medium spend, moderate frequency)",
+    2: "💸 Budget Browsers (Low spend, infrequent)"
+}
+
+# Map based on average spend (sort clusters by spend)
+cluster_spend = df.groupby('cluster')['avg_monthly_spend'].mean().sort_values(ascending=False)
+cluster_mapping = {old: new for new, old in enumerate(cluster_spend.index)}
+df['cluster_ordered'] = df['cluster'].map(cluster_mapping)
+df['segment_name'] = df['cluster_ordered'].map(cluster_descriptions)
+
+print("\\nSegment Distribution:")
+print(df['segment_name'].value_counts())
+
+# Visualization: Segment profiles
+fig, axes = plt.subplots(2, 3, figsize=(16, 10))
+
+for idx, col in enumerate(features):
+    row = idx // 3
+    col_idx = idx % 3
+    
+    df.boxplot(column=col, by='segment_name', ax=axes[row, col_idx])
+    axes[row, col_idx].set_title(f'{col}')
+    axes[row, col_idx].set_xlabel('')
+
+# Remove last subplot if odd number of features
+if len(features) % 3 != 0:
+    fig.delaxes(axes[1, 2])
+
+plt.suptitle('Customer Segment Profiles', fontsize=16, y=1.00)
+plt.tight_layout()
+plt.show()
+
+# Scatter plot: Key dimensions
+plt.figure(figsize=(12, 6))
+colors = ['#FF6B6B', '#4ECDC4', '#45B7D1']
+
+for i, (name, group) in enumerate(df.groupby('segment_name')):
+    plt.scatter(group['avg_monthly_spend'], group['visits_per_month'],
+               label=name, alpha=0.6, s=100, c=colors[i])
+
+# Plot centroids
+for i, row in centroids_df.iterrows():
+    plt.scatter(row['avg_monthly_spend'], row['visits_per_month'],
+               marker='X', s=500, c='black', edgecolors='white', linewidths=2)
+
+plt.xlabel('Average Monthly Spend ($)', fontsize=12)
+plt.ylabel('Visits per Month', fontsize=12)
+plt.title('Customer Segments: Spend vs Frequency', fontsize=14)
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Business recommendations
+recommendations = {
+    "💰 Premium VIP (High spend, frequent, engaged)": 
+        "• VIP customer service\\n• Early product access\\n• Personalized recommendations",
+    "🛒 Regular Shoppers (Medium spend, moderate frequency)": 
+        "• Loyalty rewards program\\n• Bundle offers\\n• Email marketing campaigns",
+    "💸 Budget Browsers (Low spend, infrequent)": 
+        "• Discount promotions\\n• Re-engagement campaigns\\n• Free shipping offers"
+}
+
+print("\\n" + "="*80)
+print("SEGMENT-SPECIFIC STRATEGIES")
+print("="*80)
+
+for segment, actions in recommendations.items():
+    count = (df['segment_name'] == segment).sum()
+    pct = count / len(df) * 100
+    total_spend = df[df['segment_name'] == segment]['avg_monthly_spend'].sum()
+    
+    print(f"\\n{segment}")
+    print(f"  Size: {count} customers ({pct:.1f}%)")
+    print(f"  Total monthly revenue: ${total_spend:,.0f}")
+    print(f"  Actions:\\n{actions}")
+```
+
+---
+
+## Lab 2: Clustering Algorithm Comparison (70 min)
+
+**Objective:** Compare k-means, hierarchical, and DBSCAN
+
+**Part A: Hierarchical Clustering (25 min)**
+
+```python
+from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import dendrogram, linkage
+
+# Hierarchical clustering with ward linkage
+hc = AgglomerativeClustering(n_clusters=3, linkage='ward')
+hc_labels = hc.fit_predict(X_scaled)
+
+df['hc_cluster'] = hc_labels
+
+print(f"Hierarchical cluster sizes: {np.bincount(hc_labels)}")
+
+# Compute linkage matrix for dendrogram
+linkage_matrix = linkage(X_scaled, method='ward')
+
+# Plot dendrogram
+plt.figure(figsize=(14, 6))
+dendrogram(linkage_matrix, 
+          truncate_mode='lastp',
+          p=30,
+          show_leaf_counts=True)
+plt.xlabel('Sample Index or (Cluster Size)', fontsize=12)
+plt.ylabel('Distance', fontsize=12)
+plt.title('Hierarchical Clustering Dendrogram', fontsize=14)
+plt.axhline(y=15, color='r', linestyle='--', linewidth=2, label='Cut at k=3')
+plt.legend()
+plt.tight_layout()
+plt.show()
+
+# Compare with k-means
+from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
+
+ari = adjusted_rand_score(clusters, hc_labels)
+nmi = normalized_mutual_info_score(clusters, hc_labels)
+
+print(f"\\nK-Means vs Hierarchical Clustering:")
+print(f"  Adjusted Rand Index: {ari:.3f}")
+print(f"  Normalized Mutual Info: {nmi:.3f}")
+print(f"  (1.0 = perfect agreement, 0 = random)")
+```
+
+---
+
+**Part B: DBSCAN (25 min)**
+
+```python
+from sklearn.cluster import DBSCAN
+from sklearn.neighbors import NearestNeighbors
+
+# Find optimal eps using k-distance plot
+neighbors = NearestNeighbors(n_neighbors=5)
+neighbors_fit = neighbors.fit(X_scaled)
+distances, indices = neighbors_fit.kneighbors(X_scaled)
+
+# Sort distances
+distances = np.sort(distances[:, -1], axis=0)
+
+plt.figure(figsize=(10, 6))
+plt.plot(distances)
+plt.xlabel('Data Points (sorted by distance)')
+plt.ylabel('5-NN Distance')
+plt.title('K-Distance Plot (Find Elbow for eps)')
+plt.axhline(y=1.5, color='r', linestyle='--', label='Suggested eps=1.5')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Fit DBSCAN
+dbscan = DBSCAN(eps=1.5, min_samples=5)
+dbscan_labels = dbscan.fit_predict(X_scaled)
+
+df['dbscan_cluster'] = dbscan_labels
+
+# Analyze results
+n_clusters = len(set(dbscan_labels)) - (1 if -1 in dbscan_labels else 0)
+n_noise = list(dbscan_labels).count(-1)
+
+print(f"\\nDBSCAN Results:")
+print(f"  Number of clusters: {n_clusters}")
+print(f"  Number of outliers: {n_noise} ({n_noise/len(df)*100:.1f}%)")
+
+if n_clusters > 0:
+    print(f"  Cluster sizes: {np.bincount(dbscan_labels[dbscan_labels >= 0])}")
+
+# Visualize outliers
+plt.figure(figsize=(12, 6))
+outliers = df[df['dbscan_cluster'] == -1]
+inliers = df[df['dbscan_cluster'] != -1]
+
+plt.scatter(inliers['avg_monthly_spend'], inliers['visits_per_month'],
+           c=inliers['dbscan_cluster'], cmap='viridis', alpha=0.6, s=100, label='Clusters')
+plt.scatter(outliers['avg_monthly_spend'], outliers['visits_per_month'],
+           c='red', marker='x', s=100, alpha=0.8, label=f'Outliers (n={n_noise})')
+
+plt.xlabel('Average Monthly Spend ($)')
+plt.ylabel('Visits per Month')
+plt.title('DBSCAN: Clusters and Outliers')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+```
+
+---
+
+**Part C: Algorithm Comparison Summary (20 min)**
+
+```python
+# Compare all three algorithms
+comparison = pd.DataFrame({
+    'Algorithm': ['K-Means', 'Hierarchical', 'DBSCAN'],
+    'N_Clusters': [
+        len(set(clusters)),
+        len(set(hc_labels)),
+        n_clusters
+    ],
+    'Silhouette': [
+        silhouette_score(X_scaled, clusters),
+        silhouette_score(X_scaled, hc_labels),
+        silhouette_score(X_scaled, dbscan_labels[dbscan_labels >= 0]) if n_clusters > 1 else np.nan
+    ],
+    'N_Outliers': [0, 0, n_noise],
+    'Speed': ['Fast', 'Slow', 'Medium']
+})
+
+print("\\nAlgorithm Comparison:")
+print(comparison.to_string(index=False))
+
+# Visualize agreement matrix
+from sklearn.metrics.cluster import contingency_matrix
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+# K-Means vs Hierarchical
+cm1 = contingency_matrix(clusters, hc_labels)
+sns.heatmap(cm1, annot=True, fmt='d', cmap='Blues', ax=axes[0])
+axes[0].set_title(f'K-Means vs Hierarchical\\n(ARI={ari:.3f})')
+axes[0].set_xlabel('Hierarchical Cluster')
+axes[0].set_ylabel('K-Means Cluster')
+
+# K-Means vs DBSCAN (excluding noise)
+mask = dbscan_labels != -1
+if mask.sum() > 0:
+    cm2 = contingency_matrix(clusters[mask], dbscan_labels[mask])
+    sns.heatmap(cm2, annot=True, fmt='d', cmap='Greens', ax=axes[1])
+    axes[1].set_title('K-Means vs DBSCAN (excl. outliers)')
+    axes[1].set_xlabel('DBSCAN Cluster')
+    axes[1].set_ylabel('K-Means Cluster')
+
+plt.tight_layout()
+plt.show()
+
+print("\\n✅ Recommendation: K-means provides best balance of performance and interpretability")
+```
+
+---
+
+## Lab 3: Dimensionality Reduction (60 min)
+
+**Objective:** Visualize high-dimensional data with PCA and t-SNE
+
+**Part A: PCA Analysis (25 min)**
+
+```python
+from sklearn.decomposition import PCA
+
+# Fit PCA with all components
+pca_full = PCA()
+X_pca_full = pca_full.fit_transform(X_scaled)
+
+# Explained variance
+explained_var = pca_full.explained_variance_ratio_
+cumulative_var = np.cumsum(explained_var)
+
+print("Explained Variance by Component:")
+for i, (ev, cv) in enumerate(zip(explained_var, cumulative_var)):
+    print(f"  PC{i+1}: {ev:.3f} ({cv:.1%} cumulative)")
+
+# Scree plot
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+axes[0].bar(range(1, len(explained_var)+1), explained_var)
+axes[0].set_xlabel('Principal Component')
+axes[0].set_ylabel('Explained Variance Ratio')
+axes[0].set_title('Scree Plot')
+axes[0].grid(True, alpha=0.3)
+
+axes[1].plot(range(1, len(cumulative_var)+1), cumulative_var, 'o-', linewidth=2)
+axes[1].axhline(y=0.95, color='r', linestyle='--', label='95% threshold')
+axes[1].set_xlabel('Number of Components')
+axes[1].set_ylabel('Cumulative Explained Variance')
+axes[1].set_title('Cumulative Variance Explained')
+axes[1].legend()
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# 2D PCA projection
+pca_2d = PCA(n_components=2)
+X_pca_2d = pca_2d.fit_transform(X_scaled)
+
+plt.figure(figsize=(10, 6))
+scatter = plt.scatter(X_pca_2d[:, 0], X_pca_2d[:, 1], 
+                     c=df['cluster_ordered'], cmap='viridis', alpha=0.6, s=100)
+plt.xlabel(f'PC1 ({pca_2d.explained_variance_ratio_[0]:.1%} variance)')
+plt.ylabel(f'PC2 ({pca_2d.explained_variance_ratio_[1]:.1%} variance)')
+plt.title(f'PCA Projection ({pca_2d.explained_variance_ratio_.sum():.1%} variance explained)')
+plt.colorbar(scatter, label='Cluster')
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Feature loadings
+loadings = pca_2d.components_.T * np.sqrt(pca_2d.explained_variance_)
+loading_df = pd.DataFrame(
+    loadings,
+    columns=['PC1', 'PC2'],
+    index=features
+)
+
+print("\\nFeature Loadings (Contribution to PCs):")
+print(loading_df.round(3))
+```
+
+---
+
+**Part B: t-SNE Visualization (20 min)**
+
+```python
+from sklearn.manifold import TSNE
+
+# Fit t-SNE
+tsne = TSNE(n_components=2, random_state=42, perplexity=30, n_iter=1000)
+X_tsne = tsne.fit_transform(X_scaled)
+
+print("t-SNE completed (non-deterministic, for visualization only)")
+
+# Visualize
+fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+
+# t-SNE colored by cluster
+scatter1 = axes[0].scatter(X_tsne[:, 0], X_tsne[:, 1],
+                          c=df['cluster_ordered'], cmap='viridis', alpha=0.6, s=100)
+axes[0].set_xlabel('t-SNE 1')
+axes[0].set_ylabel('t-SNE 2')
+axes[0].set_title('t-SNE Projection (colored by K-Means cluster)')
+plt.colorbar(scatter1, ax=axes[0], label='Cluster')
+
+# t-SNE colored by spend
+scatter2 = axes[1].scatter(X_tsne[:, 0], X_tsne[:, 1],
+                          c=df['avg_monthly_spend'], cmap='YlOrRd', alpha=0.6, s=100)
+axes[1].set_xlabel('t-SNE 1')
+axes[1].set_ylabel('t-SNE 2')
+axes[1].set_title('t-SNE Projection (colored by Spend)')
+plt.colorbar(scatter2, ax=axes[1], label='Avg Monthly Spend ($)')
+
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+**Part C: PCA vs t-SNE Comparison (15 min)**
+
+```python
+# Side-by-side comparison
+fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+
+# PCA
+scatter1 = axes[0].scatter(X_pca_2d[:, 0], X_pca_2d[:, 1],
+                          c=df['cluster_ordered'], cmap='viridis', alpha=0.6, s=100)
+axes[0].set_xlabel(f'PC1 ({pca_2d.explained_variance_ratio_[0]:.1%})')
+axes[0].set_ylabel(f'PC2 ({pca_2d.explained_variance_ratio_[1]:.1%})')
+axes[0].set_title('PCA: Linear, Deterministic, Fast')
+axes[0].grid(True, alpha=0.3)
+
+# t-SNE
+scatter2 = axes[1].scatter(X_tsne[:, 0], X_tsne[:, 1],
+                          c=df['cluster_ordered'], cmap='viridis', alpha=0.6, s=100)
+axes[1].set_xlabel('t-SNE 1')
+axes[1].set_ylabel('t-SNE 2')
+axes[1].set_title('t-SNE: Non-linear, Stochastic, Slow')
+
+plt.suptitle('Dimensionality Reduction Comparison', fontsize=16)
+plt.tight_layout()
+plt.show()
+
+print("\\nKey Differences:")
+print("PCA:")
+print("  ✅ Use for: Feature engineering, variance analysis")
+print("  ✅ Advantages: Fast, interpretable, deterministic")
+print("  ❌ Limitations: Only captures linear relationships")
+
+print("\\nt-SNE:")
+print("  ✅ Use for: Visualization only")
+print("  ✅ Advantages: Preserves local structure, reveals clusters")
+print("  ❌ Limitations: Slow, non-deterministic, can't transform new data")
+```
+
+---
+
+**Lab Completion Checklist:**
+- ☐ Created customer segmentation with k-means
+- ☐ Used elbow method and silhouette score to choose k
+- ☐ Profiled and named segments with business labels
+- ☐ Compared k-means, hierarchical, and DBSCAN
+- ☐ Identified outliers with DBSCAN
+- ☐ Performed PCA and interpreted components
+- ☐ Visualized clusters with t-SNE
+- ☐ Created actionable segment strategies
+
+**Next:** Unit 6 covers deploying models to production!
 """
     )
 
