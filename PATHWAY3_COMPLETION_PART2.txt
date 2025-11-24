@@ -1,0 +1,837 @@
+# PATHWAY 3 - COMPLETION PART 2
+# Remaining ~4,100 lines covering LinkedIn, Interview Prep, Career Strategy, and Best Practices
+
+# This content should be inserted before the render function in pathway3 module
+# Location: After the GitHub portfolio section (after line ~5443)
+
+UNIT_7_LAB_3_PART_B_AND_C = '''
+### Part B: LinkedIn & Professional Presence (60 min)
+
+LinkedIn is your inbound opportunity generator. Optimize every section.
+
+**LinkedIn Headline (220 characters max):**
+```
+Machine Learning Engineer | Production MLOps | Python & Docker | Built 5+ ML Systems Serving 1M+ Users | AWS Certified | Open Source | Hiring? Let's talk!
+```
+
+**About Section (2,600 characters - use them all!):**
+```
+I build machine learning systems that solve real business problems and drive measurable impact.
+
+🎯 WHAT I DO
+
+I specialize in the complete ML lifecycle—from feature engineering through production deployment and long-term monitoring. My focus is building systems that are:
+• Reliable (99.9% uptime, <100ms latency)
+• Fair (audited for bias across demographics)
+• Maintainable (monitored with automated retraining)
+• Scalable (serving millions of predictions)
+
+💼 RECENT IMPACT
+
+🎯 Customer Churn Prediction System
+• Reduced churn by 15%, saving $500K annually
+• Built with LightGBM, MLflow, FastAPI, Docker
+• F1=0.855, deployed to AWS with auto-scaling
+• Drift detection triggers automated retraining
+→ Production system handling 10K+ predictions/day
+
+📈 Demand Forecasting Platform
+• Cut inventory costs by 20%, improved product availability
+• Prophet + XGBoost hybrid approach
+• Handles 1000+ SKUs with confidence intervals
+• Interactive Streamlit dashboard for business users
+→ Forecasts used daily by operations team
+
+🔍 ML Fairness Auditing Framework
+• Open-source tool with 500+ GitHub stars
+• Detects bias across demographic groups
+• Automated mitigation strategies
+• Used by 10+ companies in production
+→ Helping teams build responsible AI
+
+🛠️ TECHNICAL EXPERTISE
+
+**Machine Learning & Deep Learning:**
+• Frameworks: scikit-learn, XGBoost, LightGBM, TensorFlow, PyTorch
+• Techniques: Feature engineering, hyperparameter optimization, ensemble methods
+• Domains: Time series forecasting, NLP, computer vision
+• Interpretability: SHAP, LIME, feature importance analysis
+
+**MLOps & Infrastructure:**
+• Experiment Tracking: MLflow, Weights & Biases, TensorBoard
+• Deployment: Docker, Kubernetes, FastAPI, gRPC
+• CI/CD: GitHub Actions, GitLab CI, Jenkins
+• Orchestration: Airflow, Prefect, Kubeflow
+
+**Cloud Platforms:**
+• AWS: SageMaker, EC2, S3, Lambda (Certified ML Specialty)
+• GCP: Vertex AI, Cloud Run, GCS
+• Azure: ML Studio, Functions
+
+**Monitoring & Observability:**
+• Prometheus, Grafana, Evidently AI
+• Custom drift detection systems
+• Performance tracking dashboards
+• Automated alerting
+
+📚 SHARING KNOWLEDGE
+
+• ✍️ Technical blog with 50K+ total views
+  - "Building Production ML Pipelines: 7 Lessons" (12K views)
+  - "Feature Stores Explained" (8K views)
+  - "Detecting Data Drift" (6K views)
+
+• 🤝 Open source contributions
+  - scikit-learn: Feature engineering utilities
+  - MLflow: Model registry improvements
+  - FastAPI: ML serving examples
+
+• 👨‍🏫 Mentoring aspiring ML engineers
+  - Code reviews, career guidance
+  - Helping others break into the field
+
+🌱 CURRENTLY EXPLORING
+
+• Large Language Models (LLMs) fine-tuning with LoRA/QLoRA
+• Real-time feature stores at scale (Feast, Tecton)
+• Kubernetes operators for ML workloads
+• Reading latest MLSys research papers
+
+🎓 CERTIFICATIONS
+
+• AWS Certified Machine Learning - Specialty
+• TensorFlow Developer Certificate
+• Kubernetes Application Developer (CKAD)
+
+💡 LOOKING FOR
+
+• ML Engineering roles
+• MLOps/Platform Engineering positions
+• Technical consulting opportunities
+• Collaboration on interesting ML projects
+
+I'm passionate about building ML systems that make a real difference. If you're working on challenging ML problems, let's connect!
+
+📧 your.email@gmail.com
+🔗 github.com/yourhandle
+📝 yourblog.com
+
+#MachineLearning #MLOps #DataScience #AI #Python #AWS #Docker #Kubernetes
+```
+
+**Experience Section - Self-Directed Projects:**
+```
+Machine Learning Engineer (Portfolio Projects)
+Self-Directed | Jan 2024 - Present | Remote
+
+Building production-grade ML systems demonstrating end-to-end MLOps capabilities.
+
+🎯 Customer Churn Prediction System
+• Developed production ML pipeline with complete MLOps infrastructure
+• Tech Stack: LightGBM, MLflow, FastAPI, Docker, GitHub Actions, AWS, Prometheus
+• Achievements:
+  - F1 Score: 0.855, AUC: 0.921 (31% improvement over baseline)
+  - <100ms prediction latency (P95), 1000+ req/s throughput
+  - 98% uptime over 6 months in production
+  - Automated drift detection triggering model retraining
+  - Complete CI/CD pipeline with automated testing (89% coverage)
+• Impact: Simulated 15% churn reduction ($500K annual savings)
+• Deployed: https://churn-api.herokuapp.com
+
+📈 Demand Forecasting Platform
+• Built time-series forecasting system for inventory optimization
+• Tech Stack: Prophet, XGBoost, Streamlit, Airflow, AWS S3, PostgreSQL
+• Achievements:
+  - Handles 10K+ daily forecasts across 1000+ SKUs
+  - Confidence intervals for uncertainty quantification
+  - Drift detection monitoring forecast accuracy
+  - Interactive Streamlit dashboard for business users
+  - Automated daily retraining via Airflow
+• Impact: 20% inventory cost reduction simulation
+• Deployed: https://forecast-app.streamlit.app
+
+🔍 ML Fairness Auditing Framework
+• Created open-source tool for detecting and mitigating ML bias
+• Tech Stack: Python, scikit-learn, Plotly, FastAPI, pytest
+• Achievements:
+  - 500+ GitHub stars, 50+ forks
+  - Used by 10+ companies in production
+  - Demographic parity analysis across protected groups
+  - Automated bias mitigation strategies
+  - Interactive visualization dashboard
+  - Published as PyPI package
+• Impact: Helping teams build responsible AI systems
+• GitHub: https://github.com/yourhandle/fairness-ml
+
+💡 Key Skills Demonstrated:
+• End-to-end ML pipeline development (features → deployment → monitoring)
+• Production-grade code with >85% test coverage
+• Docker containerization and Kubernetes orchestration
+• CI/CD automation with GitHub Actions
+• Model monitoring and drift detection
+• Technical documentation and knowledge sharing
+
+Skills: Machine Learning · Python · MLOps · Docker · Kubernetes · AWS · FastAPI · MLflow · scikit-learn · XGBoost · LightGBM · TensorFlow · CI/CD · Model Monitoring · Feature Engineering
+```
+
+**Education Section:**
+```
+Data Science Intensive Program
+[Your Bootcamp/Program] | [Dates]
+
+• Completed 3 advanced pathways covering ML fundamentals, production deployment, and MLOps
+• Built 18 hands-on labs with real-world applications
+• Capstone project: End-to-end churn prediction system
+• Focus: Production ML, MLOps, model monitoring, fairness, responsible AI
+
+Skills: Python, Machine Learning, Data Science, MLOps, Statistics, SQL
+```
+
+**Licenses & Certifications:**
+- AWS Certified Machine Learning - Specialty (Amazon Web Services)
+- TensorFlow Developer Certificate (Google)
+- Kubernetes Application Developer - CKAD (Cloud Native Computing Foundation)
+- [Add any Coursera/Udemy certificates]
+
+**Projects Section:**
+Add 3-5 top projects with:
+- Project name
+- One-line description
+- GitHub link
+- Live demo link (if applicable)
+- Key technologies
+
+**Skills Section (get endorsed!):**
+Top 30 skills to list:
+1. Machine Learning ⭐⭐⭐⭐⭐
+2. Python ⭐⭐⭐⭐⭐
+3. MLOps ⭐⭐⭐⭐⭐
+4. Docker ⭐⭐⭐⭐⭐
+5. AWS ⭐⭐⭐⭐⭐
+6. scikit-learn ⭐⭐⭐⭐⭐
+7. Data Science ⭐⭐⭐⭐
+8. Deep Learning ⭐⭐⭐⭐
+9. TensorFlow ⭐⭐⭐⭐
+10. SQL ⭐⭐⭐⭐
+11. Kubernetes ⭐⭐⭐⭐
+12. FastAPI ⭐⭐⭐⭐
+13. XGBoost ⭐⭐⭐⭐
+14. MLflow ⭐⭐⭐⭐
+15. Git ⭐⭐⭐⭐
+16. PyTorch ⭐⭐⭐
+17. Feature Engineering ⭐⭐⭐⭐
+18. Model Deployment ⭐⭐⭐⭐
+19. CI/CD ⭐⭐⭐⭐
+20. Pandas ⭐⭐⭐⭐
+21. NumPy ⭐⭐⭐⭐
+22. API Development ⭐⭐⭐⭐
+23. Time Series Analysis ⭐⭐⭐
+24. Natural Language Processing ⭐⭐⭐
+25. Computer Vision ⭐⭐⭐
+26. PostgreSQL ⭐⭐⭐
+27. MongoDB ⭐⭐⭐
+28. Redis ⭐⭐⭐
+29. Grafana ⭐⭐⭐
+30. Prometheus ⭐⭐⭐
+
+**Recommendations:**
+Request from:
+- Bootcamp instructors/mentors
+- Open source maintainers you've contributed to
+- Peers who reviewed your projects
+- Anyone familiar with your work
+
+**Activity - Post Regularly:**
+Share:
+- Project updates and milestones
+- Blog posts and technical articles
+- Learnings from building ML systems
+- Industry news and insights
+- Helpful resources for others
+
+**Post Cadence:**
+- 2-3 times per week minimum
+- Mix of original content and curated articles
+- Engage with others' posts (like, comment)
+- Use relevant hashtags
+
+**Sample LinkedIn Posts:**
+
+Post 1 - Project Launch:
+```
+🚀 Excited to share my latest project: Customer Churn Prediction System!
+
+After 3 months of development, I've built an end-to-end ML system that:
+✅ Predicts customer churn with 85.5% F1 score
+✅ Serves predictions in <100ms
+✅ Includes drift detection and automated retraining
+✅ Deployed with Docker + GitHub Actions
+
+Tech stack: LightGBM, MLflow, FastAPI, AWS
+
+Key learnings:
+1. Point-in-time correctness is crucial for feature engineering
+2. Model monitoring is not optional—it's essential
+3. Good documentation speeds up debugging 10x
+
+Check it out: [link]
+GitHub: [link]
+
+What's your experience with production ML systems? 💬
+
+#MachineLearning #MLOps #DataScience #Python #AWS
+```
+
+Post 2 - Technical Insight:
+```
+💡 5 lessons from deploying my first production ML model:
+
+1️⃣ Training accuracy ≠ production performance
+→ Always monitor with real data
+
+2️⃣ Data drift happens faster than you think
+→ Set up drift detection from day one
+
+3️⃣ Latency matters more than you expect
+→ <100ms is table stakes for user-facing apps
+
+4️⃣ Test coverage is your safety net
+→ I maintain >85% coverage, saved me multiple times
+
+5️⃣ Documentation is a gift to future you
+→ You'll forget why you made that decision
+
+What lessons have you learned from production ML?
+
+#MLOps #MachineLearning #ProductionML
+```
+
+Post 3 - Sharing Knowledge:
+```
+📝 New blog post: "Building Production ML Pipelines: 7 Hard-Earned Lessons"
+
+After building multiple end-to-end ML systems, here's what I wish I knew earlier:
+
+• Feature stores aren't just for big tech
+• Monitoring is easier to add at the start
+• Your first model won't be your best model
+• And 4 more insights...
+
+Read the full post: [link]
+
+Fellow ML engineers, what would you add to this list? 👇
+
+#MachineLearning #MLOps #DataScience
+```
+
+---
+
+### Part C: Interview Mastery & Job Search (60 min)
+
+**Technical Interview Preparation:**
+
+```python
+#================================================================
+# ML INTERVIEW QUESTIONS - COMPREHENSIVE ANSWERS
+#================================================================
+
+# Q1: Explain the bias-variance tradeoff
+\"\"\"
+DEFINITION:
+- Bias: Error from incorrect assumptions in the learning algorithm
+  → Leads to underfitting (model too simple)
+- Variance: Error from sensitivity to small fluctuations in training data
+  → Leads to overfitting (model too complex)
+
+THE TRADEOFF:
+Total Error = Bias² + Variance + Irreducible Error
+
+• Low Bias + Low Variance = Optimal (our goal!)
+• High Bias + Low Variance = Underfitting
+• Low Bias + High Variance = Overfitting
+• High Bias + High Variance = Worst case
+
+VISUAL INTUITION:
+Think of a dartboard:
+- High Bias: Arrows clustered but far from bullseye
+- High Variance: Arrows spread out
+- Low Bias + Low Variance: Tight cluster at bullseye
+
+PRACTICAL SOLUTIONS:
+
+High Bias (Underfitting):
+1. Add more features
+2. Increase model complexity
+3. Reduce regularization (lower lambda)
+4. Try polynomial features
+5. Use more sophisticated algorithms
+
+High Variance (Overfitting):
+1. Get more training data
+2. Regularization (L1, L2, Elastic Net)
+3. Feature selection
+4. Dropout (neural networks)
+5. Early stopping
+6. Cross-validation
+7. Ensemble methods (bagging)
+
+CODE EXAMPLE:
+from sklearn.model_selection import learning_curve
+import matplotlib.pyplot as plt
+
+# Plot learning curves to diagnose
+train_sizes, train_scores, val_scores = learning_curve(
+    model, X, y, cv=5,
+    train_sizes=np.linspace(0.1, 1.0, 10),
+    scoring='f1'
+)
+
+plt.plot(train_sizes, train_scores.mean(axis=1), label='Training score')
+plt.plot(train_sizes, val_scores.mean(axis=1), label='Validation score')
+plt.legend()
+
+# High bias: Both scores low and converge
+# High variance: Large gap between train and val
+\"\"\"
+
+# Q2: How do you handle imbalanced datasets in practice?
+\"\"\"
+COMPREHENSIVE APPROACH:
+
+1. UNDERSTAND THE PROBLEM FIRST:
+   - What's the class ratio? (90:10, 99:1, 999:1?)
+   - Cost of false positives vs false negatives?
+   - Is getting more minority class data possible?
+
+2. DATA-LEVEL TECHNIQUES:
+
+   a) Oversampling Minority Class:
+      - Random oversampling (with replacement)
+      - SMOTE (Synthetic Minority Over-sampling Technique)
+      - ADASYN (Adaptive Synthetic Sampling)
+      - Borderline-SMOTE (focus on borderline cases)
+   
+   b) Undersampling Majority Class:
+      - Random undersampling
+      - Tomek links (remove borderline majority samples)
+      - Edited Nearest Neighbors (ENN)
+      - NearMiss algorithm
+   
+   c) Combined Approaches:
+      - SMOTE + Tomek links
+      - SMOTE + ENN
+      
+3. ALGORITHM-LEVEL TECHNIQUES:
+
+   a) Class Weights:
+      from sklearn.ensemble import RandomForestClassifier
+      
+      # Automatically balance class weights
+      model = RandomForestClassifier(class_weight='balanced')
+      
+      # Or custom weights
+      class_weights = {0: 1, 1: 10}  # Penalize minority class errors 10x
+      model = RandomForestClassifier(class_weight=class_weights)
+   
+   b) Threshold Moving:
+      # Instead of default 0.5 threshold
+      y_prob = model.predict_proba(X_test)[:, 1]
+      
+      # Find optimal threshold via PR curve
+      from sklearn.metrics import precision_recall_curve
+      precision, recall, thresholds = precision_recall_curve(y_test, y_prob)
+      
+      # Choose threshold based on business needs
+      optimal_threshold = 0.3  # Lower for better recall
+      y_pred = (y_prob >= optimal_threshold).astype(int)
+   
+   c) Cost-Sensitive Learning:
+      # Penalize different types of errors differently
+      from sklearn.metrics import make_scorer, fbeta_score
+      
+      # F2 score emphasizes recall
+      scorer = make_scorer(fbeta_score, beta=2)
+
+4. EVALUATION METRICS (CRITICAL!):
+   
+   ❌ DON'T USE: Accuracy (misleading for imbalanced data)
+   
+   ✅ DO USE:
+   - Precision, Recall, F1 Score
+   - F-beta Score (adjust beta based on business needs)
+   - PR-AUC (better than ROC-AUC for imbalanced data)
+   - Confusion Matrix (full picture)
+   - Matthews Correlation Coefficient (MCC)
+
+5. ENSEMBLE APPROACHES:
+   
+   a) Balanced Bagging:
+      from imblearn.ensemble import BalancedBaggingClassifier
+      
+      model = BalancedBaggingClassifier(
+          base_estimator=DecisionTreeClassifier(),
+          n_estimators=100,
+          random_state=42
+      )
+   
+   b) Easy Ensemble:
+      from imblearn.ensemble import EasyEnsembleClassifier
+      
+      model = EasyEnsembleClassifier(n_estimators=100)
+   
+   c) Balanced Random Forest:
+      from imblearn.ensemble import BalancedRandomForestClassifier
+      
+      model = BalancedRandomForestClassifier(n_estimators=100)
+
+6. COMPLETE EXAMPLE:
+
+from imblearn.pipeline import Pipeline
+from imblearn.over_sampling import SMOTE
+from imblearn.under_sampling import RandomUnderSampler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+
+# Create pipeline
+pipeline = Pipeline([
+    ('over', SMOTE(sampling_strategy=0.5)),  # Oversample to 50%
+    ('under', RandomUnderSampler(sampling_strategy=0.8)),  # Undersample to 80%
+    ('model', RandomForestClassifier(class_weight='balanced', n_estimators=100))
+])
+
+# Cross-validation with F1 score
+scores = cross_val_score(
+    pipeline, X_train, y_train,
+    cv=5,
+    scoring='f1',
+    n_jobs=-1
+)
+
+print(f\"F1 Score: {scores.mean():.3f} (+/- {scores.std():.3f})\")
+
+# Fit and predict
+pipeline.fit(X_train, y_train)
+y_pred = pipeline.predict(X_test)
+
+# Comprehensive evaluation
+from sklearn.metrics import classification_report, confusion_matrix
+
+print(\"\\nClassification Report:\")
+print(classification_report(y_test, y_pred))
+
+print(\"\\nConfusion Matrix:\")
+print(confusion_matrix(y_test, y_pred))
+
+7. PRACTICAL RECOMMENDATIONS:
+
+- Start simple: Try class weights first
+- Then try SMOTE if weights aren't enough
+- Monitor multiple metrics (not just F1)
+- Consider business context (FP vs FN cost)
+- Always use stratified cross-validation
+- Be careful of data leakage (apply SMOTE in CV folds!)
+
+COMMON MISTAKES TO AVOID:
+❌ Applying SMOTE before train-test split
+❌ Using accuracy as main metric
+❌ Not considering business costs
+❌ Over-relying on one technique
+❌ Not validating with stratified folds
+\"\"\"
+
+# Q3: Walk me through deploying an ML model to production
+\"\"\"
+COMPLETE PRODUCTION DEPLOYMENT PIPELINE:
+
+1. MODEL PREPARATION:
+   
+   a) Save Model Artifacts:
+      import joblib
+      import mlflow
+      
+      # Option 1: Joblib (for sklearn)
+      joblib.dump(model, 'model.pkl')
+      joblib.dump(scaler, 'scaler.pkl')
+      
+      # Option 2: MLflow (recommended)
+      with mlflow.start_run():
+          mlflow.sklearn.log_model(model, \"model\")
+          mlflow.log_params(params)
+          mlflow.log_metrics(metrics)
+   
+   b) Version Control:
+      - Model file: models/churn_v1.0.pkl
+      - Training data hash: abc123
+      - Code commit: def456
+      - Training date: 2024-01-15
+      - Performance metrics: F1=0.855
+
+2. API DEVELOPMENT:
+   
+   from fastapi import FastAPI, HTTPException
+   from pydantic import BaseModel, Field
+   import joblib
+   import numpy as np
+   
+   app = FastAPI(
+       title=\"Churn Prediction API\",
+       version=\"1.0.0\",
+       description=\"Production ML API for customer churn prediction\"
+   )
+   
+   # Load model at startup
+   @app.on_event(\"startup\")
+   def load_model():
+       global model, scaler
+       model = joblib.load('models/model.pkl')
+       scaler = joblib.load('models/scaler.pkl')
+   
+   # Request schema with validation
+   class PredictionRequest(BaseModel):
+       customer_id: str = Field(..., example=\"C12345\")
+       recency_days: float = Field(..., ge=0, le=365)
+       frequency: int = Field(..., ge=0)
+       monetary_total: float = Field(..., ge=0)
+       # ... more features
+   
+   class PredictionResponse(BaseModel):
+       customer_id: str
+       churn_probability: float
+       churn_prediction: bool
+       risk_level: str
+       model_version: str
+   
+   @app.post(\"/predict\", response_model=PredictionResponse)
+   def predict(request: PredictionRequest):
+       try:
+           # Extract features
+           features = np.array([[
+               request.recency_days,
+               request.frequency,
+               request.monetary_total,
+               # ... more features
+           ]])
+           
+           # Preprocess
+           features_scaled = scaler.transform(features)
+           
+           # Predict
+           probability = model.predict_proba(features_scaled)[0, 1]
+           prediction = probability >= 0.5
+           
+           # Risk level
+           if probability < 0.3:
+               risk = \"LOW\"
+           elif probability < 0.7:
+               risk = \"MEDIUM\"
+           else:
+               risk = \"HIGH\"
+           
+           return PredictionResponse(
+               customer_id=request.customer_id,
+               churn_probability=round(probability, 4),
+               churn_prediction=bool(prediction),
+               risk_level=risk,
+               model_version=\"1.0.0\"
+           )
+       except Exception as e:
+           raise HTTPException(status_code=500, detail=str(e))
+   
+   @app.get(\"/health\")
+   def health_check():
+       return {
+           \"status\": \"healthy\",
+           \"model_loaded\": model is not None
+       }
+
+3. CONTAINERIZATION:
+   
+   # Dockerfile
+   FROM python:3.9-slim
+   
+   WORKDIR /app
+   
+   # Install dependencies
+   COPY requirements.txt .
+   RUN pip install --no-cache-dir -r requirements.txt
+   
+   # Copy application
+   COPY . .
+   
+   # Health check
+   HEALTHCHECK --interval=30s --timeout=3s --retries=3 \\
+     CMD curl -f http://localhost:8000/health || exit 1
+   
+   # Run
+   EXPOSE 8000
+   CMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]
+
+4. CI/CD PIPELINE:
+   
+   # .github/workflows/deploy.yml
+   name: Deploy ML Model
+   
+   on:
+     push:
+       branches: [main]
+   
+   jobs:
+     test:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v3
+         
+         - name: Set up Python
+           uses: actions/setup-python@v4
+           with:
+             python-version: '3.9'
+         
+         - name: Install dependencies
+           run: |
+             pip install -r requirements.txt
+             pip install pytest pytest-cov
+         
+         - name: Run tests
+           run: pytest tests/ --cov=src --cov-report=xml
+         
+         - name: Check coverage
+           run: |
+             COVERAGE=$(python -c \"import xml.etree.ElementTree as ET; tree = ET.parse('coverage.xml'); print(tree.getroot().attrib['line-rate'])\")
+             if (( $(echo \"$COVERAGE < 0.85\" | bc -l) )); then
+               echo \"Coverage $COVERAGE < 85%\"
+               exit 1
+             fi
+     
+     build:
+       needs: test
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v3
+         
+         - name: Build Docker image
+           run: docker build -t churn-prediction:${{ github.sha }} .
+         
+         - name: Run security scan
+           run: docker scan churn-prediction:${{ github.sha }}
+         
+         - name: Push to registry
+           run: |
+             echo \"${{ secrets.DOCKER_PASSWORD }}\" | docker login -u \"${{ secrets.DOCKER_USERNAME }}\" --password-stdin
+             docker push churn-prediction:${{ github.sha }}
+     
+     deploy:
+       needs: build
+       runs-on: ubuntu-latest
+       steps:
+         - name: Deploy to production
+           run: |
+             # Deploy to AWS/GCP/Azure
+             # Update Kubernetes deployment
+             kubectl set image deployment/churn-prediction \\
+               churn-prediction=churn-prediction:${{ github.sha }}
+
+5. MONITORING SETUP:
+   
+   from prometheus_client import Counter, Histogram, Gauge
+   import time
+   
+   # Metrics
+   prediction_counter = Counter(
+       'predictions_total',
+       'Total predictions made',
+       ['model_version', 'prediction']
+   )
+   
+   prediction_latency = Histogram(
+       'prediction_latency_seconds',
+       'Prediction latency'
+   )
+   
+   model_performance = Gauge(
+       'model_f1_score',
+       'Current F1 score'
+   )
+   
+   @app.post(\"/predict\")
+   def predict(request: PredictionRequest):
+       start_time = time.time()
+       
+       # ... prediction logic ...
+       
+       # Record metrics
+       prediction_counter.labels(
+           model_version=\"1.0.0\",
+           prediction=str(prediction)
+       ).inc()
+       
+       prediction_latency.observe(time.time() - start_time)
+       
+       # Log prediction for monitoring
+       log_prediction(request, prediction, probability)
+       
+       return response
+
+6. DEPLOYMENT CHECKLIST:
+
+   ✅ Model Performance:
+      - F1 score meets threshold
+      - Tested on holdout set
+      - Fairness audit completed
+   
+   ✅ API:
+      - Input validation working
+      - Error handling robust
+      - Documentation complete (/docs)
+      - Rate limiting implemented
+   
+   ✅ Infrastructure:
+      - Docker image built
+      - Security scan passed
+      - Health checks working
+      - Logging configured
+   
+   ✅ Monitoring:
+      - Prometheus metrics exposed
+      - Grafana dashboards created
+      - Alerts configured
+      - Drift detection active
+   
+   ✅ CI/CD:
+      - Tests passing (>85% coverage)
+      - Automated deployment working
+      - Rollback procedure tested
+   
+   ✅ Documentation:
+      - README complete
+      - API docs generated
+      - Runbooks written
+      - Incident procedures documented
+
+7. POST-DEPLOYMENT:
+   
+   - Monitor latency (P50, P95, P99)
+   - Track prediction distribution
+   - Watch for drift
+   - Measure business impact
+   - Collect feedback
+   - Plan next iteration
+
+PRODUCTION READINESS CHECKLIST:
+□ Comprehensive tests (unit, integration, API)
+□ Error handling and logging
+□ Input validation
+□ Output validation
+□ Rate limiting
+□ Authentication/authorization
+□ Docker containerization
+□ CI/CD pipeline
+□ Health checks
+□ Monitoring and alerting
+□ Documentation
+□ Rollback procedure
+□ Incident response plan
+\"\"\"
+'''
+
+# CONTINUE WITH MORE CONTENT...
+# This is Part 2 of the completion - more to add for full 11,000 lines
