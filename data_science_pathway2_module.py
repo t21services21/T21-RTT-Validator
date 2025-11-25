@@ -7839,6 +7839,129 @@ def _render_unit6_quiz():
             st.warning("Keep studying! Deployment is crucial for production ML.")
 
 
+def _render_unit7_learning_materials():
+    """Content for Unit 7: Pathway 2 Capstone Project."""
+    
+    st.markdown("### Unit 7: Pathway 2 Capstone Project")
+    st.markdown(
+        """**Build an end-to-end ML project** demonstrating all skills from Pathway 2.
+
+**Project Requirements:**
+
+1. **Problem Definition**
+   - Clear ML objective (regression or classification)
+   - Success metrics defined
+   - Dataset selected
+
+2. **Feature Engineering**
+   - Create meaningful features
+   - Handle missing data
+   - Feature selection
+
+3. **Model Development**
+   - Try multiple algorithms
+   - Hyperparameter tuning
+   - Cross-validation
+
+4. **Evaluation**
+   - Comprehensive metrics
+   - Validation strategy
+   - Model comparison
+
+5. **Documentation**
+   - Jupyter notebook with analysis
+   - README with instructions
+   - Results summary
+"""
+    )
+    
+    st.markdown("#### 🎯 Suggested Projects")
+    st.markdown(
+        """**Choose one:**
+
+1. **House Price Prediction**
+   - Regression problem
+   - Feature engineering from property data
+   - Compare linear, tree-based, and ensemble models
+
+2. **Customer Churn Prediction**
+   - Binary classification
+   - Handle class imbalance
+   - Feature importance analysis
+
+3. **Credit Risk Assessment**
+   - Classification with cost-sensitive learning
+   - Interpretable models required
+   - Regulatory considerations
+
+4. **Sales Forecasting**
+   - Time-series regression
+   - Seasonal patterns
+   - Multiple product categories
+
+5. **Customer Segmentation**
+   - Unsupervised learning
+   - K-means and hierarchical clustering
+   - Business insights from segments
+"""
+    )
+    
+    st.markdown("#### 📋 Deliverables")
+    st.markdown(
+        """**Submit:**
+
+1. **Jupyter Notebook**
+   - Complete analysis workflow
+   - Well-documented code
+   - Visualizations
+   - Results interpretation
+
+2. **README.md**
+   - Problem description
+   - Dataset information
+   - How to run the code
+   - Results summary
+
+3. **requirements.txt**
+   - All dependencies listed
+   - Version numbers included
+
+4. **Presentation (optional)**
+   - 5-10 slides
+   - Problem, approach, results
+   - Business impact
+"""
+    )
+    
+    st.markdown("#### 🏆 Evaluation Criteria")
+    st.markdown(
+        """**Graded on:**
+
+- **Technical Quality (40%)**
+  - Model performance
+  - Proper validation
+  - Code quality
+
+- **Feature Engineering (20%)**
+  - Creative features
+  - Proper handling of data
+  - Feature selection
+
+- **Analysis & Insights (20%)**
+  - Clear interpretation
+  - Business relevance
+  - Actionable recommendations
+
+- **Documentation (20%)**
+  - Clear explanations
+  - Reproducible code
+  - Professional presentation
+"""
+    )
+    
+    st.success("✅ Ready to build your Pathway 2 capstone!")
+
+
 def render_data_science_pathway2_module():
     """Main UI for Data Science Pathway 2 (Intermediate ML).
 
