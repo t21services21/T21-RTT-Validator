@@ -108,6 +108,250 @@ def _render_progress_header(enrollment):
         st.metric("Status", enrollment.get("status", "in_progress").title())
 
 
+def _render_unit1_labs():
+    """Labs for Unit 1: Advanced Feature Engineering"""
+    st.markdown("---")
+    st.markdown("## 🧪 HANDS-ON LABS: Unit 1")
+    
+    st.markdown("### Lab 1: Build a Feature Store (90 min)")
+    lab1_code = '''import pandas as pd
+import sqlite3
+from datetime import datetime
+import hashlib
+
+class SimpleFeatureStore:
+    def __init__(self, db_path="features.db"):
+        self.conn = sqlite3.connect(db_path)
+        self._create_tables()
+    
+    def _create_tables(self):
+        self.conn.execute("""CREATE TABLE IF NOT EXISTS features (
+            feature_id TEXT PRIMARY KEY,
+            feature_name TEXT,
+            entity_id TEXT,
+            feature_value REAL,
+            timestamp TEXT,
+            version TEXT
+        )""")
+        self.conn.commit()
+    
+    def write_features(self, entity_id, features, version="v1"):
+        timestamp = datetime.now().isoformat()
+        for feature_name, value in features.items():
+            feature_id = hashlib.md5(
+                f"{entity_id}_{feature_name}_{timestamp}".encode()
+            ).hexdigest()
+            self.conn.execute(
+                "INSERT INTO features VALUES (?, ?, ?, ?, ?, ?)",
+                (feature_id, feature_name, entity_id, value, timestamp, version)
+            )
+        self.conn.commit()
+    
+    def read_features(self, entity_id, feature_names, version="v1"):
+        placeholders = ",".join(["?"] * len(feature_names))
+        query = f"""SELECT feature_name, feature_value FROM features
+                    WHERE entity_id = ? AND feature_name IN ({placeholders})
+                    AND version = ? ORDER BY timestamp DESC"""
+        cursor = self.conn.execute(query, [entity_id] + feature_names + [version])
+        return dict(cursor.fetchall())
+
+# Example
+store = SimpleFeatureStore()
+store.write_features("customer_123", {
+    "total_purchases": 45,
+    "avg_order_value": 125.50
+})
+features = store.read_features("customer_123", ["total_purchases"])
+print(features)'''
+    st.code(lab1_code, language='python')
+    
+    st.markdown("### Lab 2: Feature Monitoring (60 min)")
+    lab2_code = '''import pandas as pd
+from scipy import stats
+
+def detect_feature_drift(train_features, prod_features, threshold=0.05):
+    drift_report = {}
+    for col in train_features.columns:
+        if train_features[col].dtype in ['float64', 'int64']:
+            stat, p_value = stats.ks_2samp(
+                train_features[col].dropna(),
+                prod_features[col].dropna()
+            )
+            drift_report[col] = {
+                'p_value': p_value,
+                'drift': p_value < threshold
+            }
+    return drift_report
+
+# Example
+train = pd.DataFrame({'feature1': [1, 2, 3, 4, 5]})
+prod = pd.DataFrame({'feature1': [10, 20, 30, 40, 50]})  # Drifted
+
+report = detect_feature_drift(train, prod)
+for feature, result in report.items():
+    status = "⚠️ DRIFT" if result['drift'] else "✅ OK"
+    print(f"{feature}: {status} (p={result['p_value']:.4f})")'''
+    st.code(lab2_code, language='python')
+    
+    st.success("✅ Unit 1 Labs Complete!")
+
+
+def _render_unit2_labs():
+    """Labs for Unit 2: Experiment Tracking"""
+    st.markdown("---")
+    st.markdown("## 🧪 HANDS-ON LABS: Unit 2")
+    
+    st.markdown("### Lab 1: MLflow Experiment Tracking (90 min)")
+    lab1_code = '''import mlflow
+import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_classification
+
+# Generate data
+X, y = make_classification(n_samples=1000, n_features=20, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Setup MLflow
+mlflow.set_experiment("my_experiment")
+
+# Run experiment
+with mlflow.start_run(run_name="rf_baseline"):
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+    
+    # Log parameters
+    mlflow.log_param("n_estimators", 100)
+    mlflow.log_param("max_depth", None)
+    
+    # Log metrics
+    train_score = model.score(X_train, y_train)
+    test_score = model.score(X_test, y_test)
+    mlflow.log_metric("train_accuracy", train_score)
+    mlflow.log_metric("test_accuracy", test_score)
+    
+    # Log model
+    mlflow.sklearn.log_model(model, "model")
+    
+    print(f"Train: {train_score:.3f}, Test: {test_score:.3f}")
+
+# View results: mlflow ui'''
+    st.code(lab1_code, language='python')
+    
+    st.markdown("### Lab 2: Cross-Validation Comparison (75 min)")
+    lab2_code = '''from sklearn.model_selection import cross_val_score, KFold
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+import numpy as np
+
+models = {
+    'Logistic': LogisticRegression(max_iter=1000),
+    'RF': RandomForestClassifier(n_estimators=100, random_state=42),
+    'GBM': GradientBoostingClassifier(n_estimators=100, random_state=42)
+}
+
+kf = KFold(n_splits=5, shuffle=True, random_state=42)
+
+for name, model in models.items():
+    scores = cross_val_score(model, X, y, cv=kf, scoring='accuracy')
+    print(f"{name}: {scores.mean():.3f} ± {scores.std():.3f}")
+    
+# Statistical comparison
+from scipy.stats import ttest_rel
+rf_scores = cross_val_score(models['RF'], X, y, cv=kf)
+gbm_scores = cross_val_score(models['GBM'], X, y, cv=kf)
+t_stat, p_value = ttest_rel(rf_scores, gbm_scores)
+print(f"\\nRF vs GBM: p-value = {p_value:.4f}")
+if p_value < 0.05:
+    print("✅ Statistically significant difference")
+else:
+    print("❌ No significant difference")'''
+    st.code(lab2_code, language='python')
+    
+    st.success("✅ Unit 2 Labs Complete!")
+
+
+def _render_unit3_labs():
+    """Labs for Unit 3: Hyperparameter Optimization"""
+    st.markdown("---")
+    st.markdown("## 🧪 HANDS-ON LABS: Unit 3")
+    
+    st.markdown("### Lab 1: Grid Search with MLflow (90 min)")
+    lab1_code = '''from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+import mlflow
+
+param_grid = {
+    'n_estimators': [50, 100, 200],
+    'max_depth': [5, 10, None],
+    'min_samples_split': [2, 5, 10]
+}
+
+mlflow.set_experiment("hyperparameter_tuning")
+
+with mlflow.start_run(run_name="grid_search"):
+    grid = GridSearchCV(
+        RandomForestClassifier(random_state=42),
+        param_grid,
+        cv=5,
+        scoring='accuracy',
+        n_jobs=-1
+    )
+    grid.fit(X_train, y_train)
+    
+    # Log best parameters
+    for param, value in grid.best_params_.items():
+        mlflow.log_param(f"best_{param}", value)
+    
+    # Log best score
+    mlflow.log_metric("best_cv_score", grid.best_score_)
+    mlflow.log_metric("test_score", grid.score(X_test, y_test))
+    
+    # Log model
+    mlflow.sklearn.log_model(grid.best_estimator_, "model")
+    
+    print(f"Best params: {grid.best_params_}")
+    print(f"Best CV score: {grid.best_score_:.3f}")'''
+    st.code(lab1_code, language='python')
+    
+    st.markdown("### Lab 2: Bayesian Optimization with Optuna (90 min)")
+    lab2_code = '''import optuna
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+
+def objective(trial):
+    # Define hyperparameter search space
+    n_estimators = trial.suggest_int('n_estimators', 50, 300)
+    max_depth = trial.suggest_int('max_depth', 3, 20)
+    min_samples_split = trial.suggest_int('min_samples_split', 2, 20)
+    
+    model = RandomForestClassifier(
+        n_estimators=n_estimators,
+        max_depth=max_depth,
+        min_samples_split=min_samples_split,
+        random_state=42
+    )
+    
+    # Evaluate with cross-validation
+    score = cross_val_score(model, X_train, y_train, cv=3, scoring='accuracy').mean()
+    return score
+
+# Run optimization
+study = optuna.create_study(direction='maximize')
+study.optimize(objective, n_trials=50)
+
+print(f"Best params: {study.best_params}")
+print(f"Best score: {study.best_value:.3f}")
+
+# Train final model
+best_model = RandomForestClassifier(**study.best_params, random_state=42)
+best_model.fit(X_train, y_train)
+print(f"Test score: {best_model.score(X_test, y_test):.3f}")'''
+    st.code(lab2_code, language='python')
+    
+    st.success("✅ Unit 3 Labs Complete!")
+
+
 def _render_unit_learning_materials(unit_number: int):
     unit = UNITS[unit_number]
     st.markdown(f"### Unit {unit_number}: {unit['name']}")
@@ -607,6 +851,9 @@ else:
 - ☐ Portfolio-ready feature store mini-project
 """
         )
+        
+        # Add labs for Unit 1
+        _render_unit1_labs()
 
     elif unit_number == 2:
         st.markdown("#### 📘 Why experiment tracking matters")
@@ -910,6 +1157,9 @@ print("- ☐ Production model identified")
 ```
 """
         )
+        
+        # Add labs for Unit 2
+        _render_unit2_labs()
 
     elif unit_number == 3:
         st.markdown("#### 📘 Why advanced supervised models?")
@@ -1224,6 +1474,9 @@ print("- ☐ Portfolio-ready uncertainty quantification")
 ```
 """
         )
+        
+        # Add labs for Unit 3
+        _render_unit3_labs()
 
     elif unit_number == 4:
         st.markdown("#### 📘 Why time-series forecasting?")
@@ -1548,8 +1801,115 @@ print("- ☐ Multi-step forecasting")
 
         st.markdown("---")
         st.markdown("## Lab 3: Demand Forecasting Mini-Project (90 min)")
-        st.markdown("**Objective:** Production-ready demand forecast")
-        st.code("""# Placeholder for Lab 3 content""", language="python")
+        st.markdown("**Objective:** Build production-ready demand forecasting system")
+        
+        st.markdown("### Part A: Load and Explore Retail Data (30 min)")
+        st.code('''import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from prophet import Prophet
+import matplotlib.pyplot as plt
+
+# Simulate retail sales data
+np.random.seed(42)
+dates = pd.date_range('2022-01-01', '2024-03-31', freq='D')
+
+# Components: base + trend + seasonality + noise
+base = 1000
+trend = np.linspace(0, 500, len(dates))
+seasonality_yearly = 200 * np.sin(2 * np.pi * np.arange(len(dates)) / 365.25)
+seasonality_weekly = 100 * np.sin(2 * np.pi * np.arange(len(dates)) / 7)
+promotions = np.random.choice([0, 300], size=len(dates), p=[0.9, 0.1])
+noise = np.random.normal(0, 50, len(dates))
+
+demand = base + trend + seasonality_yearly + seasonality_weekly + promotions + noise
+
+df_retail = pd.DataFrame({
+    'date': dates,
+    'demand': demand
+})
+df_retail.set_index('date', inplace=True)
+
+print(df_retail.head())
+print(f"\\nDate range: {df_retail.index.min()} to {df_retail.index.max()}")
+print(f"Average daily demand: {df_retail['demand'].mean():.2f}")
+
+# Visualize
+plt.figure(figsize=(14, 6))
+plt.plot(df_retail.index, df_retail['demand'])
+plt.title('Retail Demand Over Time')
+plt.xlabel('Date')
+plt.ylabel('Demand')
+plt.grid(True, alpha=0.3)
+plt.show()
+''', language='python')
+        
+        st.markdown("### Part B: Build ARIMA and Prophet Models (30 min)")
+        st.code('''# Split data
+train_retail = df_retail[:'2023-12-31']
+test_retail = df_retail['2024-01-01':]
+
+print(f"Train: {len(train_retail)} days")
+print(f"Test: {len(test_retail)} days")
+
+# ARIMA Model
+model_arima = ARIMA(train_retail['demand'], order=(7, 1, 7))
+model_arima_fit = model_arima.fit()
+print("\\nARIMA Model Summary:")
+print(model_arima_fit.summary())
+
+# Forecast
+arima_forecast = model_arima_fit.forecast(steps=len(test_retail))
+
+# Prophet Model
+df_prophet = train_retail.reset_index()
+df_prophet.columns = ['ds', 'y']
+
+model_prophet = Prophet(yearly_seasonality=True, weekly_seasonality=True)
+model_prophet.fit(df_prophet)
+
+future = model_prophet.make_future_dataframe(periods=len(test_retail))
+prophet_forecast = model_prophet.predict(future)
+prophet_forecast = prophet_forecast[['ds', 'yhat']].tail(len(test_retail))
+
+print("\\nProphet forecast ready!")
+''', language='python')
+        
+        st.markdown("### Part C: Evaluate and Deploy (30 min)")
+        st.code('''from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+# Evaluate ARIMA
+mae_arima = mean_absolute_error(test_retail['demand'], arima_forecast)
+rmse_arima = np.sqrt(mean_squared_error(test_retail['demand'], arima_forecast))
+
+# Evaluate Prophet
+mae_prophet = mean_absolute_error(test_retail['demand'], prophet_forecast['yhat'])
+rmse_prophet = np.sqrt(mean_squared_error(test_retail['demand'], prophet_forecast['yhat']))
+
+print("Model Comparison:")
+print(f"ARIMA  - MAE: {mae_arima:.2f}, RMSE: {rmse_arima:.2f}")
+print(f"Prophet - MAE: {mae_prophet:.2f}, RMSE: {rmse_prophet:.2f}")
+
+# Visualize forecasts
+plt.figure(figsize=(14, 6))
+plt.plot(test_retail.index, test_retail['demand'], 'k-', label='Actual', linewidth=2)
+plt.plot(test_retail.index, arima_forecast, 'b--', label='ARIMA')
+plt.plot(test_retail.index, prophet_forecast['yhat'].values, 'r--', label='Prophet')
+plt.xlabel('Date')
+plt.ylabel('Demand')
+plt.title('Demand Forecast Comparison')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Save best model
+import joblib
+best_model = model_prophet if mae_prophet < mae_arima else model_arima_fit
+joblib.dump(best_model, 'demand_forecast_model.pkl')
+print("\\nBest model saved!")
+''', language='python')
+        
+        st.success("✅ Lab 3 Complete: You've built a production-ready demand forecasting system!")
 
     elif unit_number == 5:
         st.markdown("#### 📘 Why packaging and environments matter")
@@ -2068,11 +2428,546 @@ Protected branches:
         )
 
         st.markdown("---")
-        st.markdown("## Labs for Unit 5")
-        st.markdown("**Lab content coming soon - focus on environments, packaging, and CI/CD**")
+        st.markdown("## 🧪 Labs for Unit 5: Packaging & Deployment")
+        
+        st.markdown("### Lab 1: Create requirements.txt and Virtual Environment (45 min)")
+        st.code('''# Step 1: Create virtual environment
+python -m venv ml_project_env
+
+# Step 2: Activate it
+# Windows:
+ml_project_env\\Scripts\\activate
+# Mac/Linux:
+source ml_project_env/bin/activate
+
+# Step 3: Install packages
+pip install pandas scikit-learn matplotlib joblib
+
+# Step 4: Generate requirements.txt
+pip freeze > requirements.txt
+
+# Step 5: Share with team - they can install with:
+pip install -r requirements.txt
+''', language='bash')
+        
+        st.markdown("### Lab 2: Package Your Model as a Python Module (60 min)")
+        st.code('''# File structure:
+# my_ml_package/
+#   __init__.py
+#   model.py
+#   preprocessing.py
+#   setup.py
+
+# model.py
+import joblib
+import pandas as pd
+
+class ChurnPredictor:
+    def __init__(self, model_path):
+        self.model = joblib.load(model_path)
+    
+    def predict(self, features):
+        """Predict churn probability"""
+        if isinstance(features, dict):
+            features = pd.DataFrame([features])
+        return self.model.predict_proba(features)[:, 1]
+    
+    def predict_batch(self, df):
+        """Batch predictions"""
+        return self.model.predict_proba(df)[:, 1]
+
+# setup.py
+from setuptools import setup, find_packages
+
+setup(
+    name="my_ml_package",
+    version="0.1.0",
+    packages=find_packages(),
+    install_requires=[
+        "pandas>=1.3.0",
+        "scikit-learn>=1.0.0",
+        "joblib>=1.0.0"
+    ]
+)
+
+# Install your package:
+# pip install -e .
+''', language='python')
+        
+        st.markdown("### Lab 3: Dockerize Your ML Application (75 min)")
+        st.code('''# Dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Copy requirements and install
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Expose port
+EXPOSE 8000
+
+# Run application
+CMD ["python", "app.py"]
+''', language='dockerfile')
+        
+        st.code('''# Build and run:
+docker build -t ml-app .
+docker run -p 8000:8000 ml-app
+
+# Push to registry:
+docker tag ml-app myregistry/ml-app:v1.0
+docker push myregistry/ml-app:v1.0
+''', language='bash')
+        
+        st.success("✅ Unit 5 Labs Complete: Your ML models are now packaged and deployable!")
         st.markdown("---")
-        st.markdown("## Labs for Unit 6")
-        st.markdown("**Lab content coming soon - focus on MLOps and monitoring**")
+        st.markdown("## 📊 Labs for Unit 6: MLOps & Monitoring")
+        
+        st.markdown("### Lab 1: Model Versioning with MLflow (60 min)")
+        st.code('''import mlflow
+import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+import pandas as pd
+
+# Start MLflow tracking
+mlflow.set_experiment("churn_prediction")
+
+with mlflow.start_run(run_name="rf_v1"):
+    # Train model
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    
+    model = RandomForestClassifier(n_estimators=100, max_depth=10)
+    model.fit(X_train, y_train)
+    
+    # Log parameters
+    mlflow.log_param("n_estimators", 100)
+    mlflow.log_param("max_depth", 10)
+    
+    # Log metrics
+    accuracy = model.score(X_test, y_test)
+    mlflow.log_metric("accuracy", accuracy)
+    
+    # Log model
+    mlflow.sklearn.log_model(model, "model")
+    
+    print(f"Model logged with accuracy: {accuracy:.3f}")
+
+# View experiments:
+# mlflow ui
+# Then open http://localhost:5000
+''', language='python')
+        
+        st.markdown("### Lab 2: Data Drift Detection (60 min)")
+        st.code('''import pandas as pd
+import numpy as np
+from scipy.stats import ks_2samp
+
+def detect_drift(reference_data, current_data, threshold=0.05):
+    """Detect distribution drift using Kolmogorov-Smirnov test"""
+    drift_report = {}
+    
+    for column in reference_data.columns:
+        if reference_data[column].dtype in [np.float64, np.int64]:
+            statistic, p_value = ks_2samp(
+                reference_data[column].dropna(),
+                current_data[column].dropna()
+            )
+            
+            drift_detected = p_value < threshold
+            drift_report[column] = {
+                'p_value': p_value,
+                'drift_detected': drift_detected
+            }
+    
+    return drift_report
+
+# Example usage
+reference = pd.read_csv('training_data.csv')
+current = pd.read_csv('production_data_today.csv')
+
+drift = detect_drift(reference, current)
+
+for col, result in drift.items():
+    if result['drift_detected']:
+        print(f"\u26a0\ufe0f DRIFT DETECTED in {col}: p-value={result['p_value']:.4f}")
+    else:
+        print(f"\u2705 {col}: No drift (p-value={result['p_value']:.4f})")
+''', language='python')
+        
+        st.markdown("### Lab 3: Production Monitoring Dashboard (90 min)")
+        st.code('''import streamlit as st
+import pandas as pd
+import plotly.express as px
+from datetime import datetime, timedelta
+
+st.title("📊 ML Model Monitoring Dashboard")
+
+# Load production logs
+logs = pd.read_csv('production_logs.csv')
+logs['timestamp'] = pd.to_datetime(logs['timestamp'])
+
+# Metrics
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric("Predictions Today", f"{len(logs):,}")
+
+with col2:
+    avg_confidence = logs['confidence'].mean()
+    st.metric("Avg Confidence", f"{avg_confidence:.2%}")
+
+with col3:
+    avg_latency = logs['latency_ms'].mean()
+    st.metric("Avg Latency", f"{avg_latency:.0f}ms")
+
+with col4:
+    error_rate = (logs['error'].sum() / len(logs)) * 100
+    st.metric("Error Rate", f"{error_rate:.2f}%")
+
+# Prediction volume over time
+fig = px.line(logs.groupby('timestamp').size().reset_index(name='count'),
+              x='timestamp', y='count', title='Prediction Volume Over Time')
+st.plotly_chart(fig)
+
+# Confidence distribution
+fig = px.histogram(logs, x='confidence', nbins=50,
+                   title='Prediction Confidence Distribution')
+st.plotly_chart(fig)
+
+# Alerts
+if error_rate > 5:
+    st.error(f"⚠\ufe0f HIGH ERROR RATE: {error_rate:.2f}% (threshold: 5%)")
+
+if avg_latency > 100:
+    st.warning(f"⚠\ufe0f HIGH LATENCY: {avg_latency:.0f}ms (threshold: 100ms)")
+''', language='python')
+        
+        st.success("✅ Unit 6 Labs Complete: You can now monitor and maintain production ML systems!")
+
+    elif unit_number == 6:
+        st.markdown("#### 📘 Why MLOps matters")
+        st.markdown(
+            """Machine learning in production requires **operational discipline**.
+MLOps brings DevOps practices to ML:
+
+- **Version control** for models, data, and code
+- **Automated testing** for model quality
+- **Continuous deployment** for rapid iteration
+- **Monitoring** to detect issues early
+- **Reproducibility** for debugging and compliance
+
+This unit covers the essential MLOps practices for production ML systems.
+"""
+        )
+
+        st.markdown("#### 🔄 Model Lifecycle Management")
+        st.markdown(
+            """**Managing models from training to retirement:**
+
+**1. Experimentation Phase:**
+- Track experiments with MLflow/Weights & Biases
+- Version datasets and code
+- Document hyperparameters and results
+
+**2. Model Registry:**
+- Register production-ready models
+- Tag versions (staging, production, archived)
+- Store model metadata and lineage
+
+**3. Deployment:**
+- A/B testing new models
+- Canary deployments (gradual rollout)
+- Blue-green deployments (instant switch)
+
+**4. Monitoring:**
+- Track prediction quality
+- Detect data drift
+- Monitor system performance
+
+**5. Retraining:**
+- Trigger on performance degradation
+- Automate retraining pipelines
+- Validate before deployment
+"""
+        )
+
+        st.markdown("#### 📊 Monitoring Production ML")
+        st.markdown(
+            """**What to monitor in production:**
+
+**Model Performance:**
+- Prediction accuracy (if ground truth available)
+- Confidence scores distribution
+- Prediction drift over time
+
+**Data Quality:**
+- Missing values
+- Out-of-range values
+- Distribution shifts (data drift)
+- Feature correlations
+
+**System Metrics:**
+- Prediction latency (p50, p95, p99)
+- Throughput (predictions/second)
+- Error rates
+- Resource usage (CPU, memory)
+
+**Business Metrics:**
+- Impact on KPIs
+- Cost per prediction
+- User satisfaction
+- Revenue impact
+"""
+        )
+
+        st.markdown("#### 🚨 Handling Model Failures")
+        st.markdown(
+            """**Strategies for robust ML systems:**
+
+**1. Graceful Degradation:**
+- Fallback to simpler model
+- Return cached predictions
+- Use rule-based defaults
+
+**2. Circuit Breakers:**
+- Stop calling failing models
+- Alert on-call engineers
+- Automatic rollback
+
+**3. Shadow Mode:**
+- Run new model alongside old
+- Compare predictions
+- Deploy only if better
+
+**4. Feature Store:**
+- Consistent feature computation
+- Cached features for low latency
+- Feature versioning
+"""
+        )
+
+    elif unit_number == 7:
+        st.markdown("#### 📘 Capstone Project Overview")
+        st.markdown(
+            """**Build a complete end-to-end ML system** that demonstrates all skills
+from Pathways 1, 2, and 3.
+
+**Project Requirements:**
+
+1. **Problem Definition**
+   - Clear business objective
+   - Success metrics defined
+   - Stakeholder requirements
+
+2. **Data Pipeline**
+   - Data collection and validation
+   - Feature engineering
+   - Train/test/validation splits
+
+3. **Model Development**
+   - Multiple algorithms tested
+   - Hyperparameter tuning
+   - Cross-validation
+   - Model selection with justification
+
+4. **Deployment**
+   - Packaged as Python module
+   - Dockerized application
+   - REST API or batch scoring
+
+5. **Monitoring**
+   - Logging predictions
+   - Performance dashboard
+   - Alerting system
+
+6. **Documentation**
+   - README with setup instructions
+   - Model card (performance, limitations)
+   - API documentation
+   - Deployment guide
+"""
+        )
+
+        st.markdown("#### 🎯 Suggested Capstone Projects")
+        st.markdown(
+            """**Choose one or design your own:**
+
+**1. Customer Churn Prevention System**
+- Predict which customers will churn
+- Deploy as real-time API
+- Monitor prediction quality
+- A/B test retention strategies
+
+**2. Demand Forecasting Platform**
+- Multi-step time-series forecasting
+- Handle seasonality and promotions
+- Inventory optimization recommendations
+- Automated retraining pipeline
+
+**3. Fraud Detection System**
+- Real-time transaction scoring
+- Handle class imbalance
+- Low-latency requirements (<100ms)
+- Explainable predictions
+
+**4. Recommendation Engine**
+- Collaborative filtering
+- Content-based recommendations
+- Cold-start handling
+- A/B testing framework
+
+**5. Predictive Maintenance**
+- Sensor data analysis
+- Failure prediction
+- Maintenance scheduling optimization
+- Cost-benefit analysis
+"""
+        )
+
+        st.markdown("#### 📋 Capstone Deliverables")
+        st.markdown(
+            """**What to submit:**
+
+**1. Code Repository (GitHub)**
+- Clean, documented code
+- requirements.txt or pyproject.toml
+- Dockerfile
+- CI/CD configuration
+- Tests (unit and integration)
+
+**2. Model Artifacts**
+- Trained model files
+- Feature engineering pipeline
+- Model metadata
+- Performance benchmarks
+
+**3. Documentation**
+- Project README
+- Model card
+- API documentation
+- Deployment guide
+- Architecture diagram
+
+**4. Presentation**
+- Problem and solution overview
+- Technical approach
+- Results and impact
+- Lessons learned
+- Future improvements
+
+**5. Demo**
+- Working application
+- Sample predictions
+- Monitoring dashboard
+- Live or recorded demo
+"""
+        )
+
+        st.markdown("#### 🏆 Evaluation Criteria")
+        st.markdown(
+            """**Your capstone will be evaluated on:**
+
+**Technical Excellence (40%)**
+- Model performance
+- Code quality
+- System design
+- Best practices followed
+
+**Completeness (30%)**
+- All requirements met
+- Documentation complete
+- Tests included
+- Deployment working
+
+**Innovation (15%)**
+- Creative problem-solving
+- Advanced techniques used
+- Novel approaches
+
+**Communication (15%)**
+- Clear documentation
+- Effective presentation
+- Business impact articulated
+- Technical decisions justified
+"""
+        )
+
+        st.markdown("---")
+        st.markdown("## 🚀 Capstone Project Resources")
+        
+        st.markdown("### Datasets for Capstone Projects")
+        st.code('''# Recommended public datasets:
+
+# 1. Customer Churn
+# - Telco Customer Churn (Kaggle)
+# - Bank Customer Churn (Kaggle)
+
+# 2. Demand Forecasting
+# - Store Sales Forecasting (Kaggle)
+# - Walmart Sales (Kaggle)
+
+# 3. Fraud Detection
+# - Credit Card Fraud (Kaggle)
+# - IEEE-CIS Fraud Detection (Kaggle)
+
+# 4. Recommendations
+# - MovieLens (GroupLens)
+# - Amazon Product Reviews (Kaggle)
+
+# 5. Predictive Maintenance
+# - NASA Turbofan Engine Degradation
+# - Microsoft Azure Predictive Maintenance
+''', language='python')
+        
+        st.markdown("### Project Template Structure")
+        st.code('''my_capstone_project/
+├── README.md
+├── requirements.txt
+├── Dockerfile
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   └── README.md
+├── notebooks/
+│   ├── 01_eda.ipynb
+│   ├── 02_feature_engineering.ipynb
+│   └── 03_modeling.ipynb
+├── src/
+│   ├── __init__.py
+│   ├── data/
+│   │   ├── load.py
+│   │   └── preprocess.py
+│   ├── features/
+│   │   └── build_features.py
+│   ├── models/
+│   │   ├── train.py
+│   │   ├── predict.py
+│   │   └── evaluate.py
+│   └── api/
+│       └── app.py
+├── tests/
+│   ├── test_data.py
+│   ├── test_features.py
+│   └── test_models.py
+├── models/
+│   └── model_v1.pkl
+├── reports/
+│   ├── model_card.md
+│   └── figures/
+└── deployment/
+    ├── docker-compose.yml
+    └── kubernetes/
+''', language='text')
+        
+        st.success("✅ Unit 7: Ready to build your capstone project!")
 
 
 def render_data_science_pathway3_module():
