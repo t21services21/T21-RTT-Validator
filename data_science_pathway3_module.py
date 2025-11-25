@@ -1547,11 +1547,12 @@ print("- ☐ Multi-step forecasting")
         )
 
         st.markdown("---")
-        st.markdown("## Lab 3: Demand Forecasting Mini-Project (90 min)")
-        st.markdown(
-            """**Objective:** Production-ready demand forecast
+        st.markdown("""## Lab 3: Demand Forecasting Mini-Project (90 min)
+
+**Objective:** Production-ready demand forecast
 
 **Part A: Load Retail Data & EDA (30 min)**
+
 ```python
 # Simulate retail sales data with realistic patterns
 np.random.seed(42)
