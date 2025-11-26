@@ -8435,7 +8435,139 @@ By the end of this pathway you will be able to:
         elif selected_unit_labs == 6:
             _render_unit6_labs()
         elif selected_unit_labs == 7:
-            st.info("🎯 Unit 7 is a self-directed capstone project. Review the Learning Materials tab for project requirements and guidance.")
+            st.markdown("### 🎯 Unit 7: Capstone Project Templates")
+            st.markdown("**Use these templates to kickstart your capstone project:**")
+            
+            st.markdown("---")
+            st.markdown("#### Template 1: Project Structure")
+            template1 = '''my_capstone_project/
+├── README.md                 # Project overview
+├── requirements.txt          # Dependencies
+├── data/
+│   ├── raw/                  # Original data
+│   └── processed/            # Cleaned data
+├── notebooks/
+│   ├── 01_eda.ipynb          # Exploratory analysis
+│   ├── 02_features.ipynb     # Feature engineering
+│   └── 03_modeling.ipynb     # Model training
+├── src/
+│   ├── data_loader.py        # Data loading functions
+│   ├── features.py           # Feature engineering
+│   ├── model.py              # Model training
+│   └── evaluate.py           # Evaluation metrics
+├── models/
+│   └── trained_model.pkl     # Saved model
+└── results/
+    ├── figures/              # Plots and visualizations
+    └── metrics.json          # Performance metrics'''
+            st.code(template1, language='text')
+            
+            st.markdown("---")
+            st.markdown("#### Template 2: Main Training Script")
+            template2 = '''import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+import joblib
+import json
+
+def main():
+    # 1. Load data
+    print("Loading data...")
+    df = pd.read_csv("data/processed/clean_data.csv")
+    
+    # 2. Split features and target
+    X = df.drop("target", axis=1)
+    y = df["target"]
+    
+    # 3. Train/test split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
+    
+    # 4. Train model
+    print("Training model...")
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+    
+    # 5. Evaluate
+    train_score = model.score(X_train, y_train)
+    test_score = model.score(X_test, y_test)
+    
+    print(f"Train Accuracy: {train_score:.3f}")
+    print(f"Test Accuracy: {test_score:.3f}")
+    
+    # 6. Save model
+    joblib.dump(model, "models/trained_model.pkl")
+    
+    # 7. Save metrics
+    metrics = {
+        "train_accuracy": train_score,
+        "test_accuracy": test_score,
+        "n_features": X.shape[1],
+        "n_samples": len(X)
+    }
+    with open("results/metrics.json", "w") as f:
+        json.dump(metrics, f, indent=2)
+    
+    print("\\nModel saved to models/trained_model.pkl")
+    print("Metrics saved to results/metrics.json")
+
+if __name__ == "__main__":
+    main()'''
+            st.code(template2, language='python')
+            
+            st.markdown("---")
+            st.markdown("#### Template 3: README.md Structure")
+            template3 = '''# Project Title
+
+Brief description of your capstone project.
+
+## Problem Statement
+
+Describe the business problem you're solving.
+
+## Dataset
+
+- **Source:** Where did you get the data?
+- **Size:** Number of rows and columns
+- **Target:** What are you predicting?
+
+## Approach
+
+1. **Data Cleaning:** How you handled missing values, outliers
+2. **Feature Engineering:** New features created
+3. **Modeling:** Algorithms tried and why
+4. **Evaluation:** Metrics used and results
+
+## Results
+
+- **Best Model:** RandomForestClassifier
+- **Test Accuracy:** 87.5%
+- **Key Insights:** Top 3 findings
+
+## How to Run
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run training
+python src/train.py
+
+# Run evaluation
+python src/evaluate.py
+```
+
+## Future Improvements
+
+- Try deep learning models
+- Collect more data
+- Deploy as web app'''
+            st.code(template3, language='markdown')
+            
+            st.success("✅ Use these templates to structure your capstone project!")
         else:
             st.info(
                 "Lab outlines for this unit will be added in a future update."
