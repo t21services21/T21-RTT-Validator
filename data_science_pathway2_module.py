@@ -7731,54 +7731,330 @@ def _render_unit6_labs():
     """Labs and mini-project ideas for Unit 6."""
 
     st.markdown("### 🧪 HANDS-ON LABS: Unit 6 Model Deployment")
-    st.markdown("**Complete these 3 labs to master deployment:**")
+    st.markdown("**Complete these 3 comprehensive labs to master deployment:**")
     
     st.markdown("---")
     st.markdown("## Lab 1: Production Pipeline & Batch Scoring (90 min)")
     st.markdown("**Objective:** Save models and create automated batch scoring")
-    st.code('''# Example: Save a trained model
+    
+    st.markdown("### Part A: Save Production Pipeline (30 min)")
+    lab1_code = '''import pandas as pd
+import numpy as np
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
 import joblib
-joblib.dump(model, "model.pkl")
+from datetime import datetime
 
-# Load and use it
-model = joblib.load("model.pkl")
-predictions = model.predict(new_data)
-''', language='python')
+# Create sample data
+np.random.seed(42)
+X = np.random.randn(1000, 10)
+y = (X[:, 0] + X[:, 1] > 0).astype(int)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Build production pipeline
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('classifier', RandomForestClassifier(n_estimators=100, random_state=42))
+])
+
+# Train
+pipeline.fit(X_train, y_train)
+accuracy = pipeline.score(X_test, y_test)
+print(f"Test Accuracy: {accuracy:.3f}")
+
+# Save with versioning
+version = "v1.0.0"
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+filename = f"model_{version}_{timestamp}.pkl"
+joblib.dump(pipeline, filename)
+print(f"Model saved: {filename}")
+
+# Save metadata
+import json
+metadata = {
+    "version": version,
+    "timestamp": timestamp,
+    "accuracy": accuracy,
+    "n_features": X_train.shape[1]
+}
+with open(f"metadata_{version}.json", "w") as f:
+    json.dump(metadata, f, indent=2)
+print("Metadata saved")'''
+    st.code(lab1_code, language='python')
+    
+    st.markdown("### Part B: Batch Scoring Script (30 min)")
+    lab1b_code = '''import pandas as pd
+import joblib
+import json
+from datetime import datetime
+
+def batch_score(input_csv, output_csv, model_path):
+    # Load model
+    print(f"Loading model: {model_path}")
+    pipeline = joblib.load(model_path)
+    
+    # Load data
+    print(f"Loading data: {input_csv}")
+    df = pd.read_csv(input_csv)
+    print(f"Records: {len(df)}")
+    
+    # Make predictions
+    X = df.values
+    predictions = pipeline.predict(X)
+    probabilities = pipeline.predict_proba(X)[:, 1]
+    
+    # Add results
+    df["prediction"] = predictions
+    df["probability"] = probabilities
+    df["scored_at"] = datetime.now()
+    
+    # Save
+    df.to_csv(output_csv, index=False)
+    print(f"Results saved: {output_csv}")
+    print(f"Positive predictions: {predictions.sum()} ({predictions.sum()/len(df)*100:.1f}%)")
+
+# Example usage
+batch_score(
+    input_csv="new_data.csv",
+    output_csv="predictions.csv",
+    model_path="model_v1.0.0_latest.pkl"
+)'''
+    st.code(lab1b_code, language='python')
+    
+    st.markdown("### Part C: Automated Scheduling (30 min)")
+    st.markdown("**Schedule with cron (Linux/Mac):**")
+    st.code("0 2 * * * cd /path/to/project && python batch_score.py", language='bash')
+    st.markdown("**Schedule with Task Scheduler (Windows):** Create a task that runs `python batch_score.py` daily at 2 AM")
+    st.success("✅ Lab 1 Complete: Production pipeline with batch scoring!")
     
     st.markdown("---")
     st.markdown("## Lab 2: Interactive Prediction App (80 min)")
     st.markdown("**Objective:** Build Streamlit app for model predictions")
-    st.code('''import streamlit as st
+    
+    st.markdown("### Complete Streamlit App with UI")
+    lab2_code = '''import streamlit as st
 import joblib
+import pandas as pd
+import json
 
-model = joblib.load("model.pkl")
+st.set_page_config(page_title="ML Predictor", page_icon="🤖", layout="wide")
 
-st.title("Prediction App")
-user_input = st.number_input("Enter value")
+@st.cache_resource
+def load_model():
+    pipeline = joblib.load("model_v1.0.0_latest.pkl")
+    with open("metadata_v1.0.0.json", "r") as f:
+        metadata = json.load(f)
+    return pipeline, metadata
 
-if st.button("Predict"):
-    prediction = model.predict([[user_input]])
-    st.write(f"Prediction: {prediction[0]}")
-''', language='python')
+pipeline, metadata = load_model()
+
+st.title("🤖 ML Prediction App")
+st.markdown(f"**Model Version:** {metadata['version']} | **Accuracy:** {metadata['accuracy']:.1%}")
+
+st.sidebar.header("📊 Input Features")
+
+# Create input fields
+features = {}
+for i in range(metadata['n_features']):
+    features[f'feature_{i}'] = st.sidebar.number_input(
+        f"Feature {i+1}",
+        value=0.0,
+        step=0.1,
+        key=f"feat_{i}"
+    )
+
+if st.sidebar.button("🚀 Predict", type="primary"):
+    # Prepare input
+    input_df = pd.DataFrame([features])
+    
+    # Make prediction
+    prediction = pipeline.predict(input_df)[0]
+    probability = pipeline.predict_proba(input_df)[0]
+    
+    # Display results
+    st.markdown("---")
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.metric("Prediction", "Positive" if prediction == 1 else "Negative")
+    
+    with col2:
+        st.metric("Confidence", f"{max(probability):.1%}")
+    
+    with col3:
+        risk = "🔴 High" if max(probability) > 0.7 else "🟡 Medium" if max(probability) > 0.4 else "🟢 Low"
+        st.metric("Risk Level", risk)
+    
+    # Show probabilities
+    st.markdown("### Probability Distribution")
+    prob_df = pd.DataFrame({
+        "Class": ["Negative", "Positive"],
+        "Probability": probability
+    })
+    st.bar_chart(prob_df.set_index("Class"))
+
+st.markdown("---")
+st.caption("Powered by scikit-learn & Streamlit")'''
+    st.code(lab2_code, language='python')
+    st.markdown("**Run with:** `streamlit run app.py`")
+    st.success("✅ Lab 2 Complete: Interactive prediction app!")
     
     st.markdown("---")
     st.markdown("## Lab 3: API Deployment (75 min)")
-    st.markdown("**Objective:** Deploy model as REST API")
-    st.code('''from flask import Flask, request, jsonify
+    st.markdown("**Objective:** Deploy model as REST API with Flask")
+    
+    st.markdown("### Part A: Flask API (40 min)")
+    lab3_code = '''from flask import Flask, request, jsonify
 import joblib
+import pandas as pd
+import json
+from datetime import datetime
 
 app = Flask(__name__)
-model = joblib.load("model.pkl")
+
+# Load model at startup
+print("Loading model...")
+pipeline = joblib.load("model_v1.0.0_latest.pkl")
+with open("metadata_v1.0.0.json", "r") as f:
+    metadata = json.load(f)
+print(f"Model loaded: {metadata['version']}")
+
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({
+        "status": "healthy",
+        "model_version": metadata["version"],
+        "timestamp": datetime.now().isoformat()
+    })
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    data = request.json
-    prediction = model.predict([data["features"]])
-    return jsonify({"prediction": prediction[0]})
+    try:
+        # Get input data
+        data = request.json
+        features = data.get("features")
+        
+        if not features:
+            return jsonify({"error": "No features provided"}), 400
+        
+        # Convert to DataFrame
+        input_df = pd.DataFrame([features])
+        
+        # Make prediction
+        prediction = int(pipeline.predict(input_df)[0])
+        probability = float(pipeline.predict_proba(input_df)[0][1])
+        
+        # Return result
+        return jsonify({
+            "prediction": prediction,
+            "probability": probability,
+            "model_version": metadata["version"],
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/batch", methods=["POST"])
+def batch_predict():
+    try:
+        data = request.json
+        records = data.get("records")
+        
+        if not records:
+            return jsonify({"error": "No records provided"}), 400
+        
+        # Convert to DataFrame
+        input_df = pd.DataFrame(records)
+        
+        # Make predictions
+        predictions = pipeline.predict(input_df).tolist()
+        probabilities = pipeline.predict_proba(input_df)[:, 1].tolist()
+        
+        return jsonify({
+            "predictions": predictions,
+            "probabilities": probabilities,
+            "count": len(predictions),
+            "model_version": metadata["version"]
+        })
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
-''', language='python')
+    app.run(host="0.0.0.0", port=5000, debug=False)'''
+    st.code(lab3_code, language='python')
+    
+    st.markdown("### Part B: Test the API (20 min)")
+    test_code = '''import requests
+import json
+
+# Test health endpoint
+response = requests.get("http://localhost:5000/health")
+print("Health:", response.json())
+
+# Test single prediction
+data = {
+    "features": {
+        "feature_0": 1.5,
+        "feature_1": -0.3,
+        "feature_2": 0.8,
+        "feature_3": 2.1,
+        "feature_4": -1.2,
+        "feature_5": 0.5,
+        "feature_6": 1.0,
+        "feature_7": -0.7,
+        "feature_8": 0.2,
+        "feature_9": 1.8
+    }
+}
+
+response = requests.post(
+    "http://localhost:5000/predict",
+    json=data,
+    headers={"Content-Type": "application/json"}
+)
+print("\\nPrediction:", json.dumps(response.json(), indent=2))
+
+# Test batch prediction
+batch_data = {
+    "records": [
+        {f"feature_{i}": i*0.1 for i in range(10)},
+        {f"feature_{i}": i*-0.1 for i in range(10)}
+    ]
+}
+
+response = requests.post(
+    "http://localhost:5000/batch",
+    json=batch_data
+)
+print("\\nBatch:", json.dumps(response.json(), indent=2))'''
+    st.code(test_code, language='python')
+    
+    st.markdown("### Part C: Deploy with Docker (15 min)")
+    st.markdown("**Dockerfile:**")
+    docker_code = '''FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["python", "api.py"]'''
+    st.code(docker_code, language='dockerfile')
+    
+    st.markdown("**Build and run:**")
+    st.code('''docker build -t ml-api .
+docker run -p 5000:5000 ml-api''', language='bash')
+    
+    st.success("✅ Lab 3 Complete: Production-ready REST API!")
 
 
 def _render_unit6_quiz():
@@ -8159,7 +8435,7 @@ By the end of this pathway you will be able to:
         elif selected_unit_labs == 6:
             _render_unit6_labs()
         elif selected_unit_labs == 7:
-            _render_unit7_labs()
+            st.info("🎯 Unit 7 is a self-directed capstone project. Review the Learning Materials tab for project requirements and guidance.")
         else:
             st.info(
                 "Lab outlines for this unit will be added in a future update."
