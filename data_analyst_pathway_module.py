@@ -7448,14 +7448,315 @@ print("Analysis complete!")
 
         st.markdown("---")
         st.markdown("## 🧪 Labs & Mini-Projects")
-        st.markdown("**Hands-on exercises for Unit 5 - Python for Data Analysis**")
-        st.code("""# Example: Load and analyze data with pandas
-import pandas as pd
+        st.markdown("**Comprehensive hands-on exercises for Unit 5 - Python for Data Analysis**")
+        
+        st.markdown("### LAB 1: Data Cleaning & Transformation with Pandas (90 min)")
+        st.markdown("**Objective:** Master data cleaning techniques for real-world messy data")
+        lab1_code = '''import pandas as pd
+import numpy as np
 
-df = pd.read_csv("data.csv")
+# Load messy customer data
+df = pd.read_csv('messy_customers.csv')
+
+print("Original Data:")
 print(df.head())
-print(df.describe())
-""", language="python")
+print(f"Shape: {df.shape}")
+print(f"\nMissing values:\n{df.isnull().sum()}")
+
+# 1. Handle missing values
+df['email'].fillna('no_email@company.com', inplace=True)
+df['phone'].fillna('Unknown', inplace=True)
+df.dropna(subset=['customer_id', 'name'], inplace=True)
+
+# 2. Remove duplicates
+print(f"\nDuplicates: {df.duplicated().sum()}")
+df.drop_duplicates(subset=['customer_id'], keep='first', inplace=True)
+
+# 3. Clean text data
+df['name'] = df['name'].str.strip().str.title()
+df['email'] = df['email'].str.lower().str.strip()
+df['country'] = df['country'].str.upper()
+
+# 4. Fix data types
+df['signup_date'] = pd.to_datetime(df['signup_date'], errors='coerce')
+df['total_spent'] = pd.to_numeric(df['total_spent'], errors='coerce')
+
+# 5. Handle outliers
+Q1 = df['total_spent'].quantile(0.25)
+Q3 = df['total_spent'].quantile(0.75)
+IQR = Q3 - Q1
+df = df[(df['total_spent'] >= Q1 - 1.5*IQR) & (df['total_spent'] <= Q3 + 1.5*IQR)]
+
+# 6. Create new features
+df['signup_year'] = df['signup_date'].dt.year
+df['signup_month'] = df['signup_date'].dt.month
+df['customer_segment'] = pd.cut(df['total_spent'], 
+                                 bins=[0, 100, 500, 1000, float('inf')],
+                                 labels=['Bronze', 'Silver', 'Gold', 'Platinum'])
+
+print("\nCleaned Data:")
+print(df.head())
+print(f"Final shape: {df.shape}")
+print(f"\nData types:\n{df.dtypes}")
+
+# Save cleaned data
+df.to_csv('cleaned_customers.csv', index=False)
+print("\n✅ Data cleaning complete!")'''
+        st.code(lab1_code, language='python')
+        
+        st.markdown("### LAB 2: Exploratory Data Analysis (EDA) with Pandas (120 min)")
+        st.markdown("**Objective:** Perform comprehensive EDA on sales data")
+        lab2_code = '''import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load sales data
+sales = pd.read_csv('sales_data.csv')
+sales['date'] = pd.to_datetime(sales['date'])
+
+print("📊 EXPLORATORY DATA ANALYSIS\n" + "="*50)
+
+# 1. Basic Statistics
+print("\n1. BASIC STATISTICS:")
+print(sales.describe())
+print(f"\nTotal Revenue: ${sales['revenue'].sum():,.2f}")
+print(f"Average Order Value: ${sales['revenue'].mean():.2f}")
+print(f"Total Orders: {len(sales):,}")
+
+# 2. Missing Data Analysis
+print("\n2. MISSING DATA:")
+missing = sales.isnull().sum()
+print(missing[missing > 0])
+
+# 3. Category Analysis
+print("\n3. SALES BY CATEGORY:")
+category_sales = sales.groupby('category').agg({
+    'revenue': ['sum', 'mean', 'count'],
+    'profit': 'sum'
+}).round(2)
+print(category_sales.sort_values(('revenue', 'sum'), ascending=False))
+
+# 4. Time-based Analysis
+print("\n4. MONTHLY TRENDS:")
+sales['year_month'] = sales['date'].dt.to_period('M')
+monthly = sales.groupby('year_month').agg({
+    'revenue': 'sum',
+    'order_id': 'count'
+}).rename(columns={'order_id': 'num_orders'})
+print(monthly.tail(12))
+
+# 5. Customer Segmentation
+print("\n5. CUSTOMER SEGMENTS:")
+customer_value = sales.groupby('customer_id')['revenue'].sum()
+segments = pd.cut(customer_value, 
+                  bins=[0, 100, 500, 1000, float('inf')],
+                  labels=['Low', 'Medium', 'High', 'VIP'])
+print(segments.value_counts())
+
+# 6. Product Performance
+print("\n6. TOP 10 PRODUCTS:")
+top_products = sales.groupby('product_name').agg({
+    'revenue': 'sum',
+    'quantity': 'sum'
+}).sort_values('revenue', ascending=False).head(10)
+print(top_products)
+
+# 7. Correlation Analysis
+print("\n7. CORRELATIONS:")
+numeric_cols = sales.select_dtypes(include=[np.number]).columns
+corr_matrix = sales[numeric_cols].corr()
+print(corr_matrix['revenue'].sort_values(ascending=False))
+
+# 8. Outlier Detection
+print("\n8. OUTLIERS IN REVENUE:")
+Q1 = sales['revenue'].quantile(0.25)
+Q3 = sales['revenue'].quantile(0.75)
+IQR = Q3 - Q1
+outliers = sales[(sales['revenue'] < Q1 - 1.5*IQR) | (sales['revenue'] > Q3 + 1.5*IQR)]
+print(f"Number of outliers: {len(outliers)} ({len(outliers)/len(sales)*100:.1f}%)")
+
+print("\n✅ EDA Complete!")'''
+        st.code(lab2_code, language='python')
+        
+        st.markdown("### LAB 3: Data Visualization with Matplotlib & Seaborn (90 min)")
+        st.markdown("**Objective:** Create professional visualizations for business insights")
+        lab3_code = '''import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+# Set style
+sns.set_style('whitegrid')
+plt.rcParams['figure.figsize'] = (12, 6)
+
+# Load data
+sales = pd.read_csv('sales_data.csv')
+sales['date'] = pd.to_datetime(sales['date'])
+
+# 1. Revenue Trend Over Time
+plt.figure(figsize=(14, 6))
+monthly_revenue = sales.groupby(sales['date'].dt.to_period('M'))['revenue'].sum()
+monthly_revenue.plot(kind='line', marker='o', linewidth=2, markersize=8)
+plt.title('Monthly Revenue Trend', fontsize=16, fontweight='bold')
+plt.xlabel('Month', fontsize=12)
+plt.ylabel('Revenue ($)', fontsize=12)
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('revenue_trend.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# 2. Category Performance - Bar Chart
+plt.figure(figsize=(10, 6))
+category_revenue = sales.groupby('category')['revenue'].sum().sort_values(ascending=False)
+ax = category_revenue.plot(kind='barh', color='steelblue')
+plt.title('Revenue by Category', fontsize=16, fontweight='bold')
+plt.xlabel('Revenue ($)', fontsize=12)
+plt.ylabel('Category', fontsize=12)
+for i, v in enumerate(category_revenue):
+    ax.text(v, i, f' ${v:,.0f}', va='center', fontsize=10)
+plt.tight_layout()
+plt.savefig('category_revenue.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# 3. Distribution - Histogram
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 2, 1)
+plt.hist(sales['revenue'], bins=50, color='skyblue', edgecolor='black', alpha=0.7)
+plt.title('Revenue Distribution', fontsize=14, fontweight='bold')
+plt.xlabel('Revenue ($)', fontsize=11)
+plt.ylabel('Frequency', fontsize=11)
+plt.axvline(sales['revenue'].mean(), color='red', linestyle='--', label=f'Mean: ${sales["revenue"].mean():.2f}')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.boxplot(sales['revenue'], vert=True)
+plt.title('Revenue Boxplot', fontsize=14, fontweight='bold')
+plt.ylabel('Revenue ($)', fontsize=11)
+plt.tight_layout()
+plt.savefig('revenue_distribution.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# 4. Correlation Heatmap
+plt.figure(figsize=(10, 8))
+numeric_cols = sales.select_dtypes(include=[np.number]).columns
+corr_matrix = sales[numeric_cols].corr()
+sns.heatmap(corr_matrix, annot=True, fmt='.2f', cmap='coolwarm', 
+            center=0, square=True, linewidths=1)
+plt.title('Correlation Matrix', fontsize=16, fontweight='bold')
+plt.tight_layout()
+plt.savefig('correlation_heatmap.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# 5. Scatter Plot with Regression
+plt.figure(figsize=(10, 6))
+sns.regplot(data=sales, x='quantity', y='revenue', scatter_kws={'alpha':0.5})
+plt.title('Quantity vs Revenue', fontsize=16, fontweight='bold')
+plt.xlabel('Quantity Sold', fontsize=12)
+plt.ylabel('Revenue ($)', fontsize=12)
+plt.tight_layout()
+plt.savefig('quantity_revenue_scatter.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+print("✅ All visualizations saved!")'''
+        st.code(lab3_code, language='python')
+        
+        st.markdown("### LAB 4: Advanced Data Analysis - Real Business Case (120 min)")
+        st.markdown("**Objective:** Complete end-to-end analysis for business decision-making")
+        lab4_code = '''import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime, timedelta
+
+print("💼 BUSINESS CASE: E-COMMERCE PERFORMANCE ANALYSIS\n" + "="*60)
+
+# Load multiple datasets
+customers = pd.read_csv('customers.csv')
+orders = pd.read_csv('orders.csv')
+products = pd.read_csv('products.csv')
+
+# Convert dates
+orders['order_date'] = pd.to_datetime(orders['order_date'])
+customers['signup_date'] = pd.to_datetime(customers['signup_date'])
+
+# ANALYSIS 1: Customer Lifetime Value (CLV)
+print("\n1. CUSTOMER LIFETIME VALUE ANALYSIS:")
+clv = orders.groupby('customer_id').agg({
+    'order_id': 'count',
+    'total_amount': 'sum',
+    'order_date': ['min', 'max']
+}).round(2)
+clv.columns = ['num_orders', 'total_spent', 'first_order', 'last_order']
+clv['avg_order_value'] = (clv['total_spent'] / clv['num_orders']).round(2)
+clv['customer_lifetime_days'] = (clv['last_order'] - clv['first_order']).dt.days
+
+print(f"Average CLV: ${clv['total_spent'].mean():.2f}")
+print(f"Top 10% customers contribute: ${clv['total_spent'].quantile(0.9):.2f}+")
+
+# ANALYSIS 2: Cohort Analysis
+print("\n2. COHORT RETENTION ANALYSIS:")
+orders['order_month'] = orders['order_date'].dt.to_period('M')
+customers['cohort_month'] = customers['signup_date'].dt.to_period('M')
+
+order_cohort = orders.merge(customers[['customer_id', 'cohort_month']], on='customer_id')
+order_cohort['cohort_age'] = (order_cohort['order_month'] - order_cohort['cohort_month']).apply(lambda x: x.n)
+
+cohort_data = order_cohort.groupby(['cohort_month', 'cohort_age'])['customer_id'].nunique().reset_index()
+cohort_pivot = cohort_data.pivot(index='cohort_month', columns='cohort_age', values='customer_id')
+retention = cohort_pivot.divide(cohort_pivot[0], axis=0) * 100
+
+print("Retention rates (%):\n", retention.head())
+
+# ANALYSIS 3: Product Performance
+print("\n3. PRODUCT PERFORMANCE:")
+product_sales = orders.merge(products, on='product_id')
+product_metrics = product_sales.groupby('product_name').agg({
+    'order_id': 'count',
+    'total_amount': 'sum',
+    'quantity': 'sum'
+}).sort_values('total_amount', ascending=False)
+
+print("Top 5 products by revenue:")
+print(product_metrics.head())
+
+# ANALYSIS 4: Churn Prediction
+print("\n4. CHURN RISK ANALYSIS:")
+last_order = orders.groupby('customer_id')['order_date'].max().reset_index()
+last_order.columns = ['customer_id', 'last_order_date']
+days_since_order = (datetime.now() - last_order['last_order_date']).dt.days
+
+churn_risk = pd.DataFrame({
+    'customer_id': last_order['customer_id'],
+    'days_since_order': days_since_order,
+    'churn_risk': pd.cut(days_since_order, 
+                         bins=[0, 30, 60, 90, float('inf')],
+                         labels=['Low', 'Medium', 'High', 'Critical'])
+})
+
+print("Churn risk distribution:")
+print(churn_risk['churn_risk'].value_counts())
+
+# ANALYSIS 5: Revenue Forecast
+print("\n5. SIMPLE REVENUE FORECAST:")
+monthly_revenue = orders.groupby(orders['order_date'].dt.to_period('M'))['total_amount'].sum()
+moving_avg = monthly_revenue.rolling(window=3).mean()
+
+print(f"Last 3 months average: ${moving_avg.iloc[-1]:.2f}")
+print(f"Projected next month: ${moving_avg.iloc[-1] * 1.05:.2f} (5% growth)")
+
+# RECOMMENDATIONS
+print("\n" + "="*60)
+print("💡 BUSINESS RECOMMENDATIONS:")
+print("="*60)
+print(f"1. Focus on top 20% customers (CLV > ${clv['total_spent'].quantile(0.8):.2f})")
+print(f"2. Re-engage {len(churn_risk[churn_risk['churn_risk']=='Critical'])} high-risk customers")
+print(f"3. Promote top 5 products more aggressively")
+print(f"4. Improve Month 1 retention (currently {retention[1].mean():.1f}%)")
+print("\n✅ Analysis complete! Ready for executive presentation.")'''
+        st.code(lab4_code, language='python')
+        
+        st.success("✅ Unit 5 Labs Complete: Python data analysis mastered!")
 
 
 def render_data_analyst_pathway_module():
@@ -10104,94 +10405,608 @@ else:
             )
         elif selected_unit == 6:
             st.markdown("### 🎯 Unit 6 Labs: Metrics, KPIs & A/B Testing")
-            st.markdown("""
-**LAB 1 - Design KPI Framework (75 min)**
+            st.markdown("**Comprehensive hands-on labs with executable Python code**")
+            
+            st.markdown("### LAB 1: A/B Test Analysis with Statistical Significance (90 min)")
+            st.markdown("**Objective:** Analyze A/B test results and determine statistical significance")
+            lab6_1 = '''import numpy as np
+import pandas as pd
+from scipy import stats
+import matplotlib.pyplot as plt
 
-**Objective:** Create actionable KPI set for business process
+print("🧪 A/B TEST ANALYSIS\n" + "="*60)
 
-**Choose ONE scenario:**
-1. E-commerce website
-2. Hospital appointments
-3. SaaS product
-4. Retail operations
+# Test Data
+control = {'visitors': 5000, 'conversions': 250}
+variant = {'visitors': 5000, 'conversions': 325}
 
-**Task:** Complete KPI Design Document
+# Calculate conversion rates
+control_rate = control['conversions'] / control['visitors']
+variant_rate = variant['conversions'] / variant['visitors']
 
-**Required Components:**
-- North Star Metric (1 metric)
-- Primary KPIs (3-5 metrics)
-- For each: Definition, calculation, target, owner, why it matters
+print("\n1. CONVERSION RATES:")
+print(f"Control (A): {control_rate:.2%} ({control['conversions']}/{control['visitors']})")
+print(f"Variant (B): {variant_rate:.2%} ({variant['conversions']}/{variant['visitors']})")
 
-**Template Available in Lab Materials**
+# Calculate lift
+lift = (variant_rate - control_rate) / control_rate
+print(f"\nRelative Lift: {lift:.1%}")
+print(f"Absolute Lift: {(variant_rate - control_rate):.2%}")
 
-**Assessment:**
-- ✅ KPIs are SMART and actionable
-- ✅ Avoids vanity metrics
-- ✅ Calculations are precise
-- ✅ Aligned with business goals
+# Statistical Significance Test (Two-proportion z-test)
+print("\n2. STATISTICAL SIGNIFICANCE:")
 
----
+# Pooled proportion
+p_pooled = (control['conversions'] + variant['conversions']) / (control['visitors'] + variant['visitors'])
 
-**LAB 2 - A/B Test Analysis (90 min)**
+# Standard error
+se = np.sqrt(p_pooled * (1 - p_pooled) * (1/control['visitors'] + 1/variant['visitors']))
 
-**Objective:** Analyze experiment and present findings
+# Z-score
+z_score = (variant_rate - control_rate) / se
 
-**Scenario:** E-commerce button test
-- Version A: 5,000 visitors, 250 purchases (5.0%)
-- Version B: 5,000 visitors, 325 purchases (6.5%)
+# P-value (two-tailed)
+p_value = 2 * (1 - stats.norm.cdf(abs(z_score)))
 
-**Tasks:**
-1. Calculate relative improvement
-2. Check statistical significance
-3. Calculate business impact
-4. Write executive summary
-5. Make recommendation
+print(f"Z-score: {z_score:.3f}")
+print(f"P-value: {p_value:.4f}")
 
-**Deliverable:** 
-- Calculations worksheet
-- Executive summary (1-page)
-- Presentation (5 slides)
+if p_value < 0.05:
+    print(f"✅ SIGNIFICANT: Reject null hypothesis (p < 0.05)")
+    print(f"   Variant B is statistically better than Control A")
+else:
+    print(f"❌ NOT SIGNIFICANT: Cannot reject null hypothesis (p >= 0.05)")
+    print(f"   Difference could be due to chance")
 
-**Assessment:**
-- ✅ Math correct
-- ✅ Significance properly interpreted
-- ✅ Business impact quantified
-- ✅ Clear recommendation
-- ✅ No jargon
+# Confidence Interval (95%)
+margin_of_error = 1.96 * se
+ci_lower = (variant_rate - control_rate) - margin_of_error
+ci_upper = (variant_rate - control_rate) + margin_of_error
 
----
+print(f"\n95% Confidence Interval: [{ci_lower:.2%}, {ci_upper:.2%}]")
 
-**MINI PROJECT - KPI Dashboard + Story (2-3 hours)**
+# Business Impact
+print("\n3. BUSINESS IMPACT:")
+avg_order_value = 50  # $50 per order
+monthly_visitors = 150000
 
-**Part 1:** Build dashboard tracking Lab 1 KPIs
-**Part 2:** Write 1-page performance story with recommendations
+additional_conversions = monthly_visitors * (variant_rate - control_rate)
+additional_revenue = additional_conversions * avg_order_value
 
-**Assessment:**
-- ✅ Dashboard professional and actionable
-- ✅ Insights data-driven
-- ✅ Recommendations prioritized
-- ✅ ROI calculated
+print(f"Expected monthly impact:")
+print(f"  Additional conversions: {additional_conversions:,.0f}")
+print(f"  Additional revenue: ${additional_revenue:,.2f}")
+print(f"  Annual revenue impact: ${additional_revenue * 12:,.2f}")
 
-**Portfolio Value:** Demonstrates end-to-end analyst skills
+# Recommendation
+print("\n4. RECOMMENDATION:")
+if p_value < 0.05 and lift > 0:
+    print("✅ IMPLEMENT VARIANT B")
+    print(f"   - {lift:.1%} improvement is statistically significant")
+    print(f"   - Expected annual revenue increase: ${additional_revenue * 12:,.2f}")
+    print(f"   - Risk: Low (p-value: {p_value:.4f})")
+else:
+    print("❌ KEEP CONTROL A or RUN LONGER TEST")
+    print(f"   - Results not statistically significant")
+    print(f"   - Consider running test longer for more data")
 
-**Full detailed instructions available in comprehensive lab materials above.**
-"""
-            )
+print("\n✅ Analysis complete!")'''
+            st.code(lab6_1, language='python')
+            
+            st.markdown("### LAB 2: KPI Dashboard & Metric Tracking (120 min)")
+            st.markdown("**Objective:** Build automated KPI tracking system")
+            lab6_2 = '''import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from datetime import datetime, timedelta
+
+print("📊 KPI DASHBOARD BUILDER\n" + "="*60)
+
+# Simulate business metrics data
+np.random.seed(42)
+dates = pd.date_range(end=datetime.now(), periods=90, freq='D')
+
+metrics_df = pd.DataFrame({
+    'date': dates,
+    'daily_revenue': np.random.normal(10000, 1500, 90),
+    'new_customers': np.random.poisson(50, 90),
+    'active_users': np.random.normal(5000, 500, 90),
+    'conversion_rate': np.random.normal(0.03, 0.005, 90),
+    'avg_order_value': np.random.normal(50, 10, 90),
+    'customer_satisfaction': np.random.normal(4.2, 0.3, 90)
+})
+
+# Calculate derived KPIs
+metrics_df['total_orders'] = (metrics_df['daily_revenue'] / metrics_df['avg_order_value']).astype(int)
+metrics_df['revenue_per_user'] = metrics_df['daily_revenue'] / metrics_df['active_users']
+
+print("\n1. KEY PERFORMANCE INDICATORS (Last 30 Days):")
+print("="*60)
+
+last_30 = metrics_df.tail(30)
+
+# Revenue KPIs
+total_revenue = last_30['daily_revenue'].sum()
+avg_daily_revenue = last_30['daily_revenue'].mean()
+revenue_growth = ((last_30['daily_revenue'].iloc[-7:].mean() / 
+                   last_30['daily_revenue'].iloc[:7].mean()) - 1) * 100
+
+print(f"\n💰 REVENUE METRICS:")
+print(f"  Total Revenue (30d): ${total_revenue:,.2f}")
+print(f"  Avg Daily Revenue: ${avg_daily_revenue:,.2f}")
+print(f"  Week-over-Week Growth: {revenue_growth:+.1f}%")
+
+# Customer KPIs
+total_new_customers = last_30['new_customers'].sum()
+avg_conversion = last_30['conversion_rate'].mean()
+customer_acquisition_cost = total_revenue / total_new_customers * 0.2  # Assume 20% marketing spend
+
+print(f"\n👥 CUSTOMER METRICS:")
+print(f"  New Customers (30d): {total_new_customers:,}")
+print(f"  Avg Conversion Rate: {avg_conversion:.2%}")
+print(f"  Customer Acquisition Cost: ${customer_acquisition_cost:.2f}")
+
+# Engagement KPIs
+avg_active_users = last_30['active_users'].mean()
+avg_satisfaction = last_30['customer_satisfaction'].mean()
+
+print(f"\n⭐ ENGAGEMENT METRICS:")
+print(f"  Avg Daily Active Users: {avg_active_users:,.0f}")
+print(f"  Customer Satisfaction: {avg_satisfaction:.2f}/5.0")
+print(f"  Revenue per User: ${last_30['revenue_per_user'].mean():.2f}")
+
+# Trend Analysis
+print("\n2. TREND ANALYSIS:")
+print("="*60)
+
+# Calculate 7-day moving averages
+metrics_df['revenue_ma7'] = metrics_df['daily_revenue'].rolling(7).mean()
+metrics_df['conversion_ma7'] = metrics_df['conversion_rate'].rolling(7).mean()
+
+print(f"\n7-Day Moving Averages (Current):")
+print(f"  Revenue: ${metrics_df['revenue_ma7'].iloc[-1]:,.2f}")
+print(f"  Conversion Rate: {metrics_df['conversion_ma7'].iloc[-1]:.2%}")
+
+# Identify trends
+revenue_trend = "\u2b06\ufe0f UP" if metrics_df['revenue_ma7'].iloc[-1] > metrics_df['revenue_ma7'].iloc[-8] else "⬇\ufe0f DOWN"
+conversion_trend = "⬆\ufe0f UP" if metrics_df['conversion_ma7'].iloc[-1] > metrics_df['conversion_ma7'].iloc[-8] else "⬇\ufe0f DOWN"
+
+print(f"\nTrends (vs. last week):")
+print(f"  Revenue: {revenue_trend}")
+print(f"  Conversion: {conversion_trend}")
+
+# Alerts
+print("\n3. ALERTS & RECOMMENDATIONS:")
+print("="*60)
+
+if avg_conversion < 0.025:
+    print("⚠\ufe0f  LOW CONVERSION: Below 2.5% threshold")
+    print("   Action: Review checkout process and pricing")
+
+if revenue_growth < -5:
+    print("⚠\ufe0f  REVENUE DECLINE: Week-over-week drop > 5%")
+    print("   Action: Investigate traffic sources and promotions")
+
+if avg_satisfaction < 4.0:
+    print("⚠\ufe0f  LOW SATISFACTION: Below 4.0 target")
+    print("   Action: Review customer feedback and support tickets")
+
+if customer_acquisition_cost > 100:
+    print("⚠\ufe0f  HIGH CAC: Above $100 threshold")
+    print("   Action: Optimize marketing spend and targeting")
+
+if all([avg_conversion >= 0.025, revenue_growth >= -5, avg_satisfaction >= 4.0]):
+    print("✅ All KPIs within target ranges!")
+
+print("\n✅ KPI Dashboard complete!")'''
+            st.code(lab6_2, language='python')
+            
+            st.markdown("### LAB 3: Cohort Analysis & Retention Metrics (90 min)")
+            st.markdown("**Objective:** Analyze customer retention and lifetime value by cohort")
+            lab6_3 = '''import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime, timedelta
+
+print("📈 COHORT RETENTION ANALYSIS\n" + "="*60)
+
+# Generate sample customer data
+np.random.seed(42)
+
+# Create customer cohorts
+cohorts = []
+for month in range(6):
+    cohort_date = datetime(2024, month+1, 1)
+    num_customers = np.random.randint(800, 1200)
+    
+    for _ in range(num_customers):
+        cohorts.append({
+            'customer_id': len(cohorts) + 1,
+            'signup_date': cohort_date,
+            'cohort_month': cohort_date.strftime('%Y-%m')
+        })
+
+customers = pd.DataFrame(cohorts)
+
+# Generate purchase data
+purchases = []
+for _, customer in customers.iterrows():
+    signup = customer['signup_date']
+    
+    # Simulate retention (decreasing probability over time)
+    for month_offset in range(6):
+        retention_prob = 0.8 * (0.85 ** month_offset)  # 80% initial, 15% decay
+        
+        if np.random.random() < retention_prob:
+            purchase_date = signup + timedelta(days=30*month_offset + np.random.randint(0, 30))
+            purchases.append({
+                'customer_id': customer['customer_id'],
+                'purchase_date': purchase_date,
+                'amount': np.random.normal(50, 15)
+            })
+
+purchases_df = pd.DataFrame(purchases)
+purchases_df['purchase_month'] = purchases_df['purchase_date'].dt.to_period('M')
+
+# Merge with customer data
+data = purchases_df.merge(customers, on='customer_id')
+data['cohort'] = pd.to_datetime(data['cohort_month'])
+data['cohort_age'] = ((data['purchase_month'].dt.to_timestamp() - data['cohort']).dt.days / 30).astype(int)
+
+print("\n1. COHORT RETENTION TABLE:")
+print("="*60)
+
+# Create cohort retention matrix
+cohort_data = data.groupby(['cohort_month', 'cohort_age'])['customer_id'].nunique().reset_index()
+cohort_pivot = cohort_data.pivot(index='cohort_month', columns='cohort_age', values='customer_id')
+
+# Calculate retention percentages
+retention_pct = cohort_pivot.divide(cohort_pivot[0], axis=0) * 100
+
+print("\nRetention Rates (%):\n")
+print(retention_pct.round(1))
+
+# Key retention metrics
+print("\n2. KEY RETENTION METRICS:")
+print("="*60)
+
+month_1_retention = retention_pct[1].mean()
+month_3_retention = retention_pct[3].mean() if 3 in retention_pct.columns else None
+month_6_retention = retention_pct[5].mean() if 5 in retention_pct.columns else None
+
+print(f"\nAverage Retention Rates:")
+print(f"  Month 1: {month_1_retention:.1f}%")
+if month_3_retention:
+    print(f"  Month 3: {month_3_retention:.1f}%")
+if month_6_retention:
+    print(f"  Month 6: {month_6_retention:.1f}%")
+
+# Customer Lifetime Value
+print("\n3. CUSTOMER LIFETIME VALUE (CLV):")
+print("="*60)
+
+clv_data = data.groupby('customer_id').agg({
+    'amount': ['sum', 'count', 'mean'],
+    'cohort_month': 'first'
+}).reset_index()
+
+clv_data.columns = ['customer_id', 'total_spent', 'num_purchases', 'avg_purchase', 'cohort']
+
+avg_clv = clv_data['total_spent'].mean()
+avg_purchases = clv_data['num_purchases'].mean()
+avg_purchase_value = clv_data['avg_purchase'].mean()
+
+print(f"\nAverage Customer Metrics:")
+print(f"  Lifetime Value: ${avg_clv:.2f}")
+print(f"  Number of Purchases: {avg_purchases:.1f}")
+print(f"  Average Purchase Value: ${avg_purchase_value:.2f}")
+
+# CLV by cohort
+clv_by_cohort = clv_data.groupby('cohort')['total_spent'].mean().sort_index()
+
+print(f"\nCLV by Cohort:")
+for cohort, clv in clv_by_cohort.items():
+    print(f"  {cohort}: ${clv:.2f}")
+
+# Recommendations
+print("\n4. RECOMMENDATIONS:")
+print("="*60)
+
+if month_1_retention < 70:
+    print("⚠\ufe0f  Month 1 retention below 70% - Focus on onboarding")
+else:
+    print("✅ Month 1 retention healthy")
+
+if month_3_retention and month_3_retention < 40:
+    print("⚠\ufe0f  Month 3 retention below 40% - Improve engagement campaigns")
+elif month_3_retention:
+    print("✅ Month 3 retention acceptable")
+
+if avg_purchases < 2:
+    print("⚠\ufe0f  Low repeat purchase rate - Implement loyalty program")
+else:
+    print("✅ Good repeat purchase behavior")
+
+print("\n✅ Cohort analysis complete!")'''
+            st.code(lab6_3, language='python')
+            
+            st.success("✅ Unit 6 Labs Complete: Metrics, KPIs & A/B testing mastered!")
         elif selected_unit == 7:
-            st.markdown(
-                """Use these milestones to structure your Data Analyst capstone.
+            st.markdown("### 🎯 Unit 7: Data Analyst Capstone Projects")
+            st.markdown("**Choose one comprehensive project to showcase your data analyst skills**")
+            
+            st.markdown("## 📊 Capstone Project Options")
+            
+            st.markdown("### Option 1: E-Commerce Sales Performance Analysis")
+            st.markdown("""
+**Objective:** Analyze sales data and create executive dashboard with actionable recommendations
 
-- **Milestone 1 – Problem & data**
-  - Choose a domain and dataset; clarify the decision-maker and
-    questions.
+**Dataset Requirements:**
+- Sales transactions (6+ months)
+- Customer demographics
+- Product catalog
+- Marketing campaigns
 
-- **Milestone 2 – Analysis & visuals**
-  - Build tables/charts answering the key questions.
+**Deliverables:**
+1. **Excel Analysis:**
+   - Data cleaning and validation
+   - Pivot tables for key metrics
+   - Sales trends and seasonality
+   - Customer segmentation (RFM analysis)
 
-- **Milestone 3 – Dashboard & story**
-  - Create a small dashboard and a short written or slide-based story.
-"""
-            )
+2. **SQL Queries:**
+   - Top products by revenue
+   - Customer lifetime value
+   - Cohort retention analysis
+   - Monthly/weekly performance
+
+3. **Python Analysis:**
+   - Advanced EDA with pandas
+   - Statistical analysis
+   - Predictive insights
+   - Visualization with matplotlib/seaborn
+
+4. **Dashboard (Tableau/Power BI):**
+   - Executive KPI summary
+   - Sales trends and forecasts
+   - Product performance
+   - Customer insights
+
+5. **Final Report:**
+   - Executive summary (1 page)
+   - Key findings (3-5 insights)
+   - Actionable recommendations
+   - Expected business impact
+
+**Skills Demonstrated:** Excel, SQL, Python, BI tools, business storytelling
+""")
+            
+            st.markdown("### Option 2: Customer Churn Analysis & Retention Strategy")
+            st.markdown("""
+**Objective:** Identify churn drivers and develop data-driven retention strategy
+
+**Dataset Requirements:**
+- Customer subscription data
+- Usage/engagement metrics
+- Support tickets
+- Billing history
+
+**Deliverables:**
+1. **Churn Analysis:**
+   - Churn rate calculation by segment
+   - Cohort retention analysis
+   - Identify high-risk customers
+   - Key churn indicators
+
+2. **SQL Analysis:**
+   - Customer lifetime value
+   - Engagement patterns
+   - Support ticket correlation
+   - Retention by acquisition channel
+
+3. **Python Modeling:**
+   - Churn prediction model
+   - Feature importance analysis
+   - Customer segmentation
+   - Risk scoring system
+
+4. **Retention Dashboard:**
+   - Real-time churn metrics
+   - At-risk customer alerts
+   - Retention campaign tracking
+   - ROI calculator
+
+5. **Strategy Document:**
+   - Retention initiatives (prioritized)
+   - Expected impact and costs
+   - Implementation timeline
+   - Success metrics
+
+**Skills Demonstrated:** Predictive analytics, customer analytics, strategic thinking
+""")
+            
+            st.markdown("### Option 3: Marketing Campaign Performance & ROI Analysis")
+            st.markdown("""
+**Objective:** Evaluate marketing effectiveness and optimize budget allocation
+
+**Dataset Requirements:**
+- Campaign data (email, social, paid ads)
+- Website analytics
+- Conversion data
+- Marketing spend
+
+**Deliverables:**
+1. **Campaign Analysis:**
+   - ROI by channel and campaign
+   - Conversion funnel analysis
+   - Customer acquisition cost
+   - Attribution modeling
+
+2. **A/B Test Analysis:**
+   - Statistical significance testing
+   - Lift calculations
+   - Segment performance
+   - Recommendations
+
+3. **Python Analysis:**
+   - Multi-touch attribution
+   - Predictive CLV
+   - Budget optimization
+   - Visualization dashboards
+
+4. **Marketing Dashboard:**
+   - Real-time campaign metrics
+   - Channel comparison
+   - Budget vs. actual
+   - Conversion tracking
+
+5. **Optimization Report:**
+   - Budget reallocation plan
+   - Expected ROI improvement
+   - Testing roadmap
+   - KPI framework
+
+**Skills Demonstrated:** Marketing analytics, A/B testing, ROI analysis, optimization
+""")
+            
+            st.markdown("### Option 4: Supply Chain & Inventory Optimization")
+            st.markdown("""
+**Objective:** Optimize inventory levels and reduce costs while maintaining service levels
+
+**Dataset Requirements:**
+- Inventory levels (historical)
+- Sales/demand data
+- Supplier lead times
+- Stockout incidents
+
+**Deliverables:**
+1. **Inventory Analysis:**
+   - ABC analysis (Pareto)
+   - Stock turnover rates
+   - Stockout frequency
+   - Carrying cost analysis
+
+2. **SQL Reporting:**
+   - Slow-moving inventory
+   - Reorder point calculations
+   - Supplier performance
+   - Demand patterns
+
+3. **Python Forecasting:**
+   - Demand forecasting model
+   - Safety stock calculations
+   - Reorder optimization
+   - Scenario analysis
+
+4. **Operations Dashboard:**
+   - Inventory health metrics
+   - Stockout alerts
+   - Supplier scorecards
+   - Cost tracking
+
+5. **Optimization Plan:**
+   - Inventory policy recommendations
+   - Cost savings projections
+   - Implementation roadmap
+   - Risk mitigation
+
+**Skills Demonstrated:** Operations analytics, forecasting, optimization, cost analysis
+""")
+            
+            st.markdown("### Option 5: Financial Performance & KPI Dashboard")
+            st.markdown("""
+**Objective:** Build comprehensive financial analytics system for executive decision-making
+
+**Dataset Requirements:**
+- Financial statements (P&L, Balance Sheet)
+- Transaction data
+- Budget vs. actuals
+- Department/product costs
+
+**Deliverables:**
+1. **Financial Analysis:**
+   - Profitability by product/segment
+   - Variance analysis (budget vs. actual)
+   - Trend analysis
+   - Financial ratios
+
+2. **SQL Reporting:**
+   - Revenue breakdown
+   - Cost center analysis
+   - Cash flow tracking
+   - Period-over-period comparisons
+
+3. **Python Analysis:**
+   - Automated financial reports
+   - Anomaly detection
+   - Forecasting
+   - Scenario modeling
+
+4. **Executive Dashboard:**
+   - Key financial KPIs
+   - P&L visualization
+   - Budget tracking
+   - Alerts and insights
+
+5. **CFO Report:**
+   - Financial health summary
+   - Key drivers and risks
+   - Strategic recommendations
+   - Forward-looking projections
+
+**Skills Demonstrated:** Financial analytics, business intelligence, executive reporting
+""")
+            
+            st.markdown("## 📝 Capstone Evaluation Rubric")
+            st.markdown("""
+**Your capstone will be evaluated on:**
+
+### 1. Data Analysis Quality (25%)
+- ✅ Thorough data cleaning and validation
+- ✅ Appropriate analytical methods
+- ✅ Accurate calculations
+- ✅ Insightful findings
+
+### 2. Technical Skills (25%)
+- ✅ Excel: Advanced formulas, pivot tables
+- ✅ SQL: Complex queries, joins, aggregations
+- ✅ Python: pandas, visualization, analysis
+- ✅ BI Tools: Professional dashboard
+
+### 3. Business Impact (20%)
+- ✅ Clear business problem definition
+- ✅ Actionable recommendations
+- ✅ Quantified impact (revenue, cost, etc.)
+- ✅ Implementation feasibility
+
+### 4. Communication (20%)
+- ✅ Executive summary (non-technical)
+- ✅ Clear visualizations
+- ✅ Logical story flow
+- ✅ Professional presentation
+
+### 5. Documentation (10%)
+- ✅ Clean, commented code
+- ✅ Methodology explained
+- ✅ Data sources cited
+- ✅ Reproducible analysis
+
+**Grading Scale:**
+- 90-100%: Exceptional - Portfolio-ready
+- 80-89%: Strong - Minor improvements needed
+- 70-79%: Good - Meets requirements
+- Below 70%: Needs revision
+
+**Bonus Points:**
+- Advanced statistical methods
+- Predictive modeling
+- Automated reporting
+- Interactive dashboards
+- Real business data (with permission)
+""")
+            
+            st.success("✅ Choose your capstone project and build something amazing!")
         else:
             st.markdown(
                 "Detailed lab descriptions for this unit will be added in a later build, "
