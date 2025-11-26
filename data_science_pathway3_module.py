@@ -165,6 +165,117 @@ features = store.read_features("customer_123", ["total_purchases"])
 print(features)'''
     st.code(lab1_code, language='python')
     
+    st.markdown("#### Part B: Feature Versioning (30 min)")
+    lab1b_code = '''import json
+from datetime import datetime
+
+class FeatureRegistry:
+    def __init__(self):
+        self.features = {}
+    
+    def register(self, name, description, dtype, source, owner, version="v1.0"):
+        self.features[name] = {
+            "description": description,
+            "dtype": dtype,
+            "source": source,
+            "owner": owner,
+            "version": version,
+            "created_at": datetime.now().isoformat()
+        }
+        print(f"✅ Registered {name} v{version}")
+    
+    def get_metadata(self, name):
+        return self.features.get(name, {})
+    
+    def save(self, filepath):
+        with open(filepath, 'w') as f:
+            json.dump(self.features, f, indent=2)
+        print(f"✅ Saved registry to {filepath}")
+
+# Example
+registry = FeatureRegistry()
+
+registry.register(
+    name="customer_lifetime_value",
+    description="Predicted CLV based on purchase history",
+    dtype="float",
+    source="transactions + ml_model",
+    owner="data-science-team",
+    version="v2.1"
+)
+
+registry.register(
+    name="churn_risk_score",
+    description="Probability of churn in next 30 days",
+    dtype="float",
+    source="churn_model_v3",
+    owner="ml-ops-team",
+    version="v3.0"
+)
+
+metadata = registry.get_metadata("customer_lifetime_value")
+print(f"\nMetadata: {json.dumps(metadata, indent=2)}")
+
+registry.save("feature_registry.json")'''
+    st.code(lab1b_code, language='python')
+    
+    st.markdown("#### Part C: Point-in-Time Correctness (30 min)")
+    lab1c_code = '''import pandas as pd
+from datetime import datetime, timedelta
+
+def compute_features_point_in_time(transactions_df, customer_id, as_of_date, lookback_days=90):
+    """Compute features using only data available before as_of_date"""
+    cutoff = pd.to_datetime(as_of_date)
+    start = cutoff - timedelta(days=lookback_days)
+    
+    # Filter: only transactions BEFORE as_of_date
+    valid_txns = transactions_df[
+        (transactions_df['customer_id'] == customer_id) &
+        (transactions_df['date'] < cutoff) &
+        (transactions_df['date'] >= start)
+    ]
+    
+    features = {
+        'as_of_date': as_of_date,
+        'total_transactions': len(valid_txns),
+        'total_spent': valid_txns['amount'].sum() if len(valid_txns) > 0 else 0,
+        'avg_transaction': valid_txns['amount'].mean() if len(valid_txns) > 0 else 0,
+        'days_since_last': (
+            (cutoff - valid_txns['date'].max()).days 
+            if len(valid_txns) > 0 else lookback_days
+        )
+    }
+    
+    return features
+
+# Example: Simulate time-travel
+import numpy as np
+np.random.seed(42)
+
+# Generate transactions over 1 year
+txns = []
+for day in range(365):
+    if np.random.random() < 0.3:  # 30% chance of transaction
+        txns.append({
+            'customer_id': 'C001',
+            'date': datetime(2023, 1, 1) + timedelta(days=day),
+            'amount': np.random.uniform(20, 200)
+        })
+
+txns_df = pd.DataFrame(txns)
+
+# Compute features as of different dates
+for month in [3, 6, 9, 12]:
+    as_of = datetime(2023, month, 1)
+    features = compute_features_point_in_time(txns_df, 'C001', as_of)
+    print(f"\nAs of {as_of.date()}:")
+    print(f"  Transactions: {features['total_transactions']}")
+    print(f"  Total spent: ${features['total_spent']:.2f}")
+    print(f"  Days since last: {features['days_since_last']}")
+
+print("\n✅ Point-in-time correctness prevents data leakage!")'''
+    st.code(lab1c_code, language='python')
+    
     st.markdown("### Lab 2: Feature Monitoring (60 min)")
     lab2_code = '''import pandas as pd
 from scipy import stats
@@ -193,7 +304,267 @@ for feature, result in report.items():
     print(f"{feature}: {status} (p={result['p_value']:.4f})")'''
     st.code(lab2_code, language='python')
     
-    st.success("✅ Unit 1 Labs Complete!")
+    st.markdown("#### Part B: Automated Monitoring Dashboard (30 min)")
+    lab2b_code = '''import pandas as pd
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+class FeatureMonitoringDashboard:
+    def __init__(self):
+        self.baselines = {}
+        self.alerts = []
+    
+    def set_baseline(self, feature_name, data):
+        self.baselines[feature_name] = {
+            'mean': data.mean(),
+            'std': data.std(),
+            'min': data.min(),
+            'max': data.max(),
+            'q25': data.quantile(0.25),
+            'q50': data.quantile(0.50),
+            'q75': data.quantile(0.75),
+            'data': data.values
+        }
+    
+    def check_feature(self, feature_name, current_data, threshold=0.05):
+        if feature_name not in self.baselines:
+            return {'error': 'No baseline set'}
+        
+        baseline = self.baselines[feature_name]
+        
+        # Statistical tests
+        ks_stat, ks_pval = stats.ks_2samp(baseline['data'], current_data.values)
+        
+        # Mean shift detection
+        current_mean = current_data.mean()
+        mean_shift_sigma = abs(current_mean - baseline['mean']) / baseline['std']
+        
+        # Variance change
+        variance_ratio = current_data.std() / baseline['std']
+        
+        # Determine alert level
+        drift_detected = ks_pval < threshold
+        if ks_pval < 0.01 or mean_shift_sigma > 3:
+            alert_level = '🔴 CRITICAL'
+        elif drift_detected or mean_shift_sigma > 2:
+            alert_level = '🟡 WARNING'
+        else:
+            alert_level = '🟢 OK'
+        
+        result = {
+            'feature': feature_name,
+            'alert_level': alert_level,
+            'drift_detected': drift_detected,
+            'ks_pvalue': ks_pval,
+            'mean_shift_sigma': mean_shift_sigma,
+            'variance_ratio': variance_ratio,
+            'baseline_mean': baseline['mean'],
+            'current_mean': current_mean
+        }
+        
+        if drift_detected:
+            self.alerts.append(result)
+        
+        return result
+    
+    def get_alerts(self):
+        return pd.DataFrame(self.alerts)
+
+# Example
+monitor = FeatureMonitoringDashboard()
+
+# Set baselines
+np.random.seed(42)
+for feature in ['age', 'income', 'credit_score']:
+    baseline_data = pd.Series(np.random.normal(50, 10, 1000))
+    monitor.set_baseline(feature, baseline_data)
+
+# Check current data (simulating drift)
+current_age = pd.Series(np.random.normal(55, 12, 500))  # Shifted
+current_income = pd.Series(np.random.normal(50, 10, 500))  # Normal
+current_credit = pd.Series(np.random.normal(60, 15, 500))  # Shifted + variance
+
+print("📊 Feature Monitoring Results:\n")
+for fname, data in [('age', current_age), ('income', current_income), ('credit_score', current_credit)]:
+    result = monitor.check_feature(fname, data)
+    print(f"{result['alert_level']} {result['feature']}")
+    print(f"  Drift: {result['drift_detected']}")
+    print(f"  p-value: {result['ks_pvalue']:.6f}")
+    print(f"  Mean shift: {result['mean_shift_sigma']:.2f} sigma")
+    print()
+
+alerts_df = monitor.get_alerts()
+if len(alerts_df) > 0:
+    print(f"⚠️ {len(alerts_df)} features with drift detected!")
+else:
+    print("✅ All features within normal range")'''
+    st.code(lab2b_code, language='python')
+    
+    st.markdown("### Lab 3: Feature Selection & Importance (90 min)")
+    st.markdown("**Identify and select the most important features for your model**")
+    
+    lab3_code = '''import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import SelectKBest, f_classif, RFE, mutual_info_classif
+from sklearn.inspection import permutation_importance
+import matplotlib.pyplot as plt
+
+class FeatureSelector:
+    def __init__(self, X, y):
+        self.X = X
+        self.y = y
+        self.results = {}
+    
+    def univariate_selection(self, k=10):
+        """Select features using univariate statistical tests"""
+        selector = SelectKBest(f_classif, k=k)
+        selector.fit(self.X, self.y)
+        
+        scores = pd.DataFrame({
+            'feature': self.X.columns,
+            'score': selector.scores_
+        }).sort_values('score', ascending=False)
+        
+        self.results['univariate'] = scores
+        return scores
+    
+    def tree_importance(self):
+        """Get feature importance from tree-based model"""
+        model = RandomForestClassifier(n_estimators=100, random_state=42)
+        model.fit(self.X, self.y)
+        
+        importance = pd.DataFrame({
+            'feature': self.X.columns,
+            'importance': model.feature_importances_
+        }).sort_values('importance', ascending=False)
+        
+        self.results['tree_importance'] = importance
+        return importance
+    
+    def permutation_importance_analysis(self, n_repeats=10):
+        """Calculate permutation importance"""
+        model = RandomForestClassifier(n_estimators=100, random_state=42)
+        model.fit(self.X, self.y)
+        
+        perm_importance = permutation_importance(
+            model, self.X, self.y,
+            n_repeats=n_repeats,
+            random_state=42
+        )
+        
+        importance = pd.DataFrame({
+            'feature': self.X.columns,
+            'importance_mean': perm_importance.importances_mean,
+            'importance_std': perm_importance.importances_std
+        }).sort_values('importance_mean', ascending=False)
+        
+        self.results['permutation'] = importance
+        return importance
+    
+    def recursive_feature_elimination(self, n_features=10):
+        """Use RFE to select features"""
+        model = RandomForestClassifier(n_estimators=50, random_state=42)
+        rfe = RFE(model, n_features_to_select=n_features)
+        rfe.fit(self.X, self.y)
+        
+        selected = pd.DataFrame({
+            'feature': self.X.columns,
+            'selected': rfe.support_,
+            'ranking': rfe.ranking_
+        }).sort_values('ranking')
+        
+        self.results['rfe'] = selected
+        return selected
+    
+    def mutual_information(self):
+        """Calculate mutual information"""
+        mi_scores = mutual_info_classif(self.X, self.y, random_state=42)
+        
+        mi = pd.DataFrame({
+            'feature': self.X.columns,
+            'mi_score': mi_scores
+        }).sort_values('mi_score', ascending=False)
+        
+        self.results['mutual_info'] = mi
+        return mi
+    
+    def get_consensus_features(self, top_n=10):
+        """Get features that rank high across multiple methods"""
+        # Normalize rankings
+        rankings = {}
+        
+        for method, df in self.results.items():
+            if method == 'rfe':
+                # For RFE, selected features get rank 1
+                rankings[method] = df[df['selected']]['feature'].tolist()
+            else:
+                # For others, take top N
+                rankings[method] = df.head(top_n)['feature'].tolist()
+        
+        # Count appearances
+        feature_counts = {}
+        for features in rankings.values():
+            for feature in features:
+                feature_counts[feature] = feature_counts.get(feature, 0) + 1
+        
+        # Sort by count
+        consensus = pd.DataFrame([
+            {'feature': f, 'method_count': c}
+            for f, c in feature_counts.items()
+        ]).sort_values('method_count', ascending=False)
+        
+        return consensus
+
+# Example
+from sklearn.datasets import make_classification
+
+X, y = make_classification(
+    n_samples=1000,
+    n_features=30,
+    n_informative=15,
+    n_redundant=10,
+    random_state=42
+)
+
+X_df = pd.DataFrame(X, columns=[f'feature_{i}' for i in range(30)])
+
+# Create selector
+selector = FeatureSelector(X_df, y)
+
+print("🔍 Running Feature Selection Methods...\n")
+
+# Run all methods
+print("1. Univariate Selection:")
+univariate = selector.univariate_selection(k=10)
+print(univariate.head())
+
+print("\n2. Tree-based Importance:")
+tree_imp = selector.tree_importance()
+print(tree_imp.head())
+
+print("\n3. Permutation Importance:")
+perm_imp = selector.permutation_importance_analysis()
+print(perm_imp.head())
+
+print("\n4. Recursive Feature Elimination:")
+rfe = selector.recursive_feature_elimination(n_features=10)
+print(rfe[rfe['selected']])
+
+print("\n5. Mutual Information:")
+mi = selector.mutual_information()
+print(mi.head())
+
+# Get consensus
+print("\n🏆 Consensus Features (appear in multiple methods):")
+consensus = selector.get_consensus_features(top_n=10)
+print(consensus.head(15))
+
+print(f"\n✅ Top features: {consensus.head(10)['feature'].tolist()}")'''
+    st.code(lab3_code, language='python')
+    
+    st.success("✅ Unit 1 Labs Complete: Production feature engineering mastered!")
 
 
 def _render_unit2_labs():
@@ -238,6 +609,81 @@ with mlflow.start_run(run_name="rf_baseline"):
 # View results: mlflow ui'''
     st.code(lab1_code, language='python')
     
+    st.markdown("#### Part B: Hyperparameter Tracking (30 min)")
+    lab1b_code = '''import mlflow
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+
+param_grid = {
+    'n_estimators': [50, 100, 200],
+    'max_depth': [5, 10, None],
+    'min_samples_split': [2, 5]
+}
+
+mlflow.set_experiment("hyperparameter_search")
+
+with mlflow.start_run(run_name="grid_search_rf"):
+    grid = GridSearchCV(
+        RandomForestClassifier(random_state=42),
+        param_grid,
+        cv=5,
+        scoring='accuracy',
+        n_jobs=-1
+    )
+    grid.fit(X_train, y_train)
+    
+    # Log all parameter combinations
+    for i, params in enumerate(grid.cv_results_['params']):
+        with mlflow.start_run(run_name=f"config_{i}", nested=True):
+            for param, value in params.items():
+                mlflow.log_param(param, value)
+            mlflow.log_metric("mean_cv_score", grid.cv_results_['mean_test_score'][i])
+            mlflow.log_metric("std_cv_score", grid.cv_results_['std_test_score'][i])
+    
+    # Log best configuration
+    mlflow.log_params(grid.best_params_)
+    mlflow.log_metric("best_cv_score", grid.best_score_)
+    mlflow.log_metric("test_score", grid.score(X_test, y_test))
+    mlflow.sklearn.log_model(grid.best_estimator_, "best_model")
+    
+    print(f"Best params: {grid.best_params_}")
+    print(f"Best CV score: {grid.best_score_:.3f}")
+    print(f"Test score: {grid.score(X_test, y_test):.3f}")'''
+    st.code(lab1b_code, language='python')
+    
+    st.markdown("#### Part C: Model Comparison Dashboard (30 min)")
+    lab1c_code = '''import mlflow
+import pandas as pd
+
+# Search for all runs in experiment
+experiment = mlflow.get_experiment_by_name("my_experiment")
+runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
+
+# Create comparison dataframe
+comparison = runs[[
+    'run_id',
+    'params.n_estimators',
+    'params.max_depth',
+    'metrics.train_accuracy',
+    'metrics.test_accuracy',
+    'start_time'
+]].copy()
+
+comparison['start_time'] = pd.to_datetime(comparison['start_time'])
+comparison = comparison.sort_values('metrics.test_accuracy', ascending=False)
+
+print("\n🏆 Top 5 Models:")
+print(comparison.head().to_string(index=False))
+
+# Find best model
+best_run = comparison.iloc[0]
+print(f"\n✅ Best Model:")
+print(f"  Run ID: {best_run['run_id']}")
+print(f"  Test Accuracy: {best_run['metrics.test_accuracy']:.3f}")
+print(f"  n_estimators: {best_run['params.n_estimators']}")
+print(f"  max_depth: {best_run['params.max_depth']}")'''
+    st.code(lab1c_code, language='python')
+    
     st.markdown("### Lab 2: Cross-Validation Comparison (75 min)")
     lab2_code = '''from sklearn.model_selection import cross_val_score, KFold
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
@@ -268,7 +714,458 @@ else:
     print("❌ No significant difference")'''
     st.code(lab2_code, language='python')
     
-    st.success("✅ Unit 2 Labs Complete!")
+    st.markdown("#### Part B: Nested Cross-Validation (40 min)")
+    lab2b_code = '''from sklearn.model_selection import GridSearchCV, cross_val_score, KFold
+from sklearn.ensemble import RandomForestClassifier
+import numpy as np
+
+# Outer CV for unbiased evaluation
+outer_cv = KFold(n_splits=5, shuffle=True, random_state=42)
+
+# Inner CV for hyperparameter tuning
+inner_cv = KFold(n_splits=3, shuffle=True, random_state=42)
+
+param_grid = {
+    'n_estimators': [50, 100, 200],
+    'max_depth': [5, 10, None]
+}
+
+outer_scores = []
+
+for fold, (train_idx, test_idx) in enumerate(outer_cv.split(X), 1):
+    X_train_fold, X_test_fold = X[train_idx], X[test_idx]
+    y_train_fold, y_test_fold = y[train_idx], y[test_idx]
+    
+    # Inner loop: hyperparameter tuning
+    grid = GridSearchCV(
+        RandomForestClassifier(random_state=42),
+        param_grid,
+        cv=inner_cv,
+        scoring='accuracy'
+    )
+    grid.fit(X_train_fold, y_train_fold)
+    
+    # Outer loop: evaluate with best params
+    test_score = grid.score(X_test_fold, y_test_fold)
+    outer_scores.append(test_score)
+    
+    print(f"Fold {fold}: {test_score:.3f} (best params: {grid.best_params_})")
+
+print(f"\nNested CV Score: {np.mean(outer_scores):.3f} ± {np.std(outer_scores):.3f}")
+print("✅ Unbiased estimate (no data leakage)")'''
+    st.code(lab2b_code, language='python')
+    
+    st.markdown("### Lab 3: Automated Model Selection (90 min)")
+    st.markdown("**Build a system that automatically selects the best model**")
+    
+    lab3_code = '''import mlflow
+import pandas as pd
+from sklearn.model_selection import cross_val_score, KFold
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+import numpy as np
+
+class AutoMLSelector:
+    def __init__(self, experiment_name="auto_ml"):
+        mlflow.set_experiment(experiment_name)
+        self.results = []
+    
+    def evaluate_model(self, model, model_name, X, y, cv=5):
+        """Evaluate a single model with cross-validation"""
+        with mlflow.start_run(run_name=model_name):
+            kf = KFold(n_splits=cv, shuffle=True, random_state=42)
+            scores = cross_val_score(model, X, y, cv=kf, scoring='accuracy')
+            
+            mean_score = scores.mean()
+            std_score = scores.std()
+            
+            # Log to MLflow
+            mlflow.log_param("model_type", model_name)
+            mlflow.log_metric("mean_cv_accuracy", mean_score)
+            mlflow.log_metric("std_cv_accuracy", std_score)
+            mlflow.log_metric("min_cv_accuracy", scores.min())
+            mlflow.log_metric("max_cv_accuracy", scores.max())
+            
+            # Store results
+            self.results.append({
+                'model': model_name,
+                'mean_accuracy': mean_score,
+                'std_accuracy': std_score,
+                'scores': scores
+            })
+            
+            print(f"{model_name}: {mean_score:.3f} ± {std_score:.3f}")
+            
+            return mean_score, std_score
+    
+    def run_model_zoo(self, X, y):
+        """Evaluate multiple models"""
+        models = {
+            'Logistic Regression': LogisticRegression(max_iter=1000, random_state=42),
+            'Random Forest': RandomForestClassifier(n_estimators=100, random_state=42),
+            'Gradient Boosting': GradientBoostingClassifier(n_estimators=100, random_state=42),
+            'AdaBoost': AdaBoostClassifier(n_estimators=100, random_state=42),
+            'SVM': SVC(kernel='rbf', random_state=42),
+            'Naive Bayes': GaussianNB()
+        }
+        
+        print("🚀 Running AutoML Model Selection...\n")
+        
+        for name, model in models.items():
+            self.evaluate_model(model, name, X, y)
+        
+        return self.get_best_model()
+    
+    def get_best_model(self):
+        """Get the best performing model"""
+        results_df = pd.DataFrame(self.results)
+        results_df = results_df.sort_values('mean_accuracy', ascending=False)
+        
+        best = results_df.iloc[0]
+        
+        print(f"\n🏆 Best Model: {best['model']}")
+        print(f"   Accuracy: {best['mean_accuracy']:.3f} ± {best['std_accuracy']:.3f}")
+        
+        return best
+    
+    def get_leaderboard(self):
+        """Get full leaderboard"""
+        results_df = pd.DataFrame(self.results)
+        results_df = results_df.sort_values('mean_accuracy', ascending=False)
+        results_df['rank'] = range(1, len(results_df) + 1)
+        return results_df[['rank', 'model', 'mean_accuracy', 'std_accuracy']]
+
+# Example usage
+from sklearn.datasets import make_classification
+
+X, y = make_classification(n_samples=1000, n_features=20, n_informative=15, random_state=42)
+
+selector = AutoMLSelector()
+best_model = selector.run_model_zoo(X, y)
+
+print("\n📊 Full Leaderboard:")
+print(selector.get_leaderboard().to_string(index=False))'''
+    st.code(lab3_code, language='python')
+    
+    st.markdown("#### Part B: Statistical Model Comparison (30 min)")
+    lab3b_code = '''from scipy.stats import ttest_rel, wilcoxon
+import numpy as np
+
+def compare_models_statistically(model1_scores, model2_scores, model1_name, model2_name):
+    """Compare two models using statistical tests"""
+    
+    # Paired t-test
+    t_stat, t_pval = ttest_rel(model1_scores, model2_scores)
+    
+    # Wilcoxon signed-rank test (non-parametric)
+    w_stat, w_pval = wilcoxon(model1_scores, model2_scores)
+    
+    print(f"\n📊 Statistical Comparison: {model1_name} vs {model2_name}")
+    print(f"\n{model1_name}: {model1_scores.mean():.3f} ± {model1_scores.std():.3f}")
+    print(f"{model2_name}: {model2_scores.mean():.3f} ± {model2_scores.std():.3f}")
+    
+    print(f"\nPaired t-test:")
+    print(f"  t-statistic: {t_stat:.3f}")
+    print(f"  p-value: {t_pval:.4f}")
+    
+    print(f"\nWilcoxon test:")
+    print(f"  statistic: {w_stat:.3f}")
+    print(f"  p-value: {w_pval:.4f}")
+    
+    # Interpretation
+    alpha = 0.05
+    if t_pval < alpha:
+        diff = model1_scores.mean() - model2_scores.mean()
+        winner = model1_name if diff > 0 else model2_name
+        print(f"\n✅ Statistically significant difference (p < {alpha})")
+        print(f"   Winner: {winner}")
+    else:
+        print(f"\n❌ No significant difference (p >= {alpha})")
+        print(f"   Both models perform similarly")
+
+# Example
+rf_scores = selector.results[1]['scores']  # Random Forest
+gb_scores = selector.results[2]['scores']  # Gradient Boosting
+
+compare_models_statistically(rf_scores, gb_scores, 'Random Forest', 'Gradient Boosting')'''
+    st.code(lab3b_code, language='python')
+    
+    st.markdown("### Lab 4: Experiment Reproducibility (60 min)")
+    lab4_code = '''import mlflow
+import hashlib
+import json
+from datetime import datetime
+import numpy as np
+
+class ReproducibleExperiment:
+    def __init__(self, experiment_name):
+        self.experiment_name = experiment_name
+        mlflow.set_experiment(experiment_name)
+        self.config = {}
+    
+    def set_seeds(self, seed=42):
+        """Set all random seeds for reproducibility"""
+        np.random.seed(seed)
+        import random
+        random.seed(seed)
+        
+        try:
+            import torch
+            torch.manual_seed(seed)
+            torch.cuda.manual_seed_all(seed)
+        except ImportError:
+            pass
+        
+        self.config['seed'] = seed
+        print(f"✅ Set random seed: {seed}")
+    
+    def log_environment(self):
+        """Log complete environment information"""
+        import sys
+        import platform
+        import sklearn
+        
+        env_info = {
+            'python_version': sys.version,
+            'platform': platform.platform(),
+            'sklearn_version': sklearn.__version__,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        self.config['environment'] = env_info
+        return env_info
+    
+    def compute_data_hash(self, X, y):
+        """Compute hash of data for verification"""
+        data_str = f"{X.tobytes()}{y.tobytes()}"
+        data_hash = hashlib.md5(data_str.encode()).hexdigest()
+        self.config['data_hash'] = data_hash
+        return data_hash
+    
+    def run_experiment(self, model, X_train, y_train, X_test, y_test, params):
+        """Run fully reproducible experiment"""
+        with mlflow.start_run(run_name=f"reproducible_{datetime.now().strftime('%Y%m%d_%H%M%S')}"):
+            # Log all configuration
+            mlflow.log_params(params)
+            mlflow.log_param('seed', self.config.get('seed', 'not_set'))
+            mlflow.log_param('data_hash', self.config.get('data_hash', 'not_computed'))
+            
+            # Log environment
+            env_info = self.log_environment()
+            for key, value in env_info.items():
+                mlflow.log_param(f'env_{key}', str(value)[:250])  # MLflow param limit
+            
+            # Train
+            model.fit(X_train, y_train)
+            
+            # Evaluate
+            train_score = model.score(X_train, y_train)
+            test_score = model.score(X_test, y_test)
+            
+            mlflow.log_metric('train_accuracy', train_score)
+            mlflow.log_metric('test_accuracy', test_score)
+            
+            # Save model
+            mlflow.sklearn.log_model(model, 'model')
+            
+            # Save complete config
+            config_path = 'experiment_config.json'
+            with open(config_path, 'w') as f:
+                json.dump(self.config, f, indent=2)
+            mlflow.log_artifact(config_path)
+            
+            print(f"\n✅ Experiment logged with full reproducibility")
+            print(f"   Train: {train_score:.3f}")
+            print(f"   Test: {test_score:.3f}")
+            print(f"   Data hash: {self.config.get('data_hash', 'N/A')[:8]}...")
+            
+            return {
+                'train_score': train_score,
+                'test_score': test_score,
+                'run_id': mlflow.active_run().info.run_id
+            }
+
+# Example
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+# Create reproducible experiment
+exp = ReproducibleExperiment('reproducibility_demo')
+
+# Set seeds
+exp.set_seeds(42)
+
+# Generate data
+X, y = make_classification(n_samples=1000, n_features=20, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Compute data hash
+data_hash = exp.compute_data_hash(X, y)
+print(f"\nData hash: {data_hash}")
+
+# Run experiment
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+params = {'n_estimators': 100, 'random_state': 42}
+
+results = exp.run_experiment(model, X_train, y_train, X_test, y_test, params)
+
+print(f"\n✅ Run ID: {results['run_id']}")
+print("Anyone can reproduce this exact result using the logged configuration!")'''
+    st.code(lab4_code, language='python')
+    
+    st.markdown("### Lab 5: Model Lineage Tracking (75 min)")
+    lab5_code = '''import mlflow
+import json
+from datetime import datetime
+import hashlib
+
+class ModelLineageTracker:
+    def __init__(self):
+        self.lineage = {}
+    
+    def track_data_lineage(self, data_source, data_version, transformations):
+        """Track data lineage"""
+        data_hash = hashlib.md5(str(data_source).encode()).hexdigest()
+        
+        return {
+            'data_source': data_source,
+            'data_version': data_version,
+            'data_hash': data_hash,
+            'transformations': transformations,
+            'timestamp': datetime.now().isoformat()
+        }
+    
+    def track_model_lineage(self, model_name, model_version, parent_models=None):
+        """Track model lineage and dependencies"""
+        lineage_id = f"{model_name}_v{model_version}"
+        
+        self.lineage[lineage_id] = {
+            'model_name': model_name,
+            'version': model_version,
+            'parent_models': parent_models or [],
+            'created_at': datetime.now().isoformat(),
+            'children': []
+        }
+        
+        # Update parent models
+        if parent_models:
+            for parent_id in parent_models:
+                if parent_id in self.lineage:
+                    self.lineage[parent_id]['children'].append(lineage_id)
+        
+        return lineage_id
+    
+    def log_full_lineage(self, model, model_name, model_version, 
+                        data_lineage, hyperparams, metrics):
+        """Log complete model lineage to MLflow"""
+        with mlflow.start_run(run_name=f"{model_name}_v{model_version}"):
+            # Log model
+            mlflow.sklearn.log_model(model, "model")
+            
+            # Log hyperparameters
+            mlflow.log_params(hyperparams)
+            
+            # Log metrics
+            for metric_name, value in metrics.items():
+                mlflow.log_metric(metric_name, value)
+            
+            # Log data lineage
+            mlflow.log_dict(data_lineage, "data_lineage.json")
+            
+            # Log model lineage
+            model_lineage_id = self.track_model_lineage(model_name, model_version)
+            mlflow.log_param("lineage_id", model_lineage_id)
+            
+            # Save complete lineage graph
+            mlflow.log_dict(self.lineage, "model_lineage_graph.json")
+            
+            run_id = mlflow.active_run().info.run_id
+            
+            print(f"✅ Logged complete lineage for {model_name} v{model_version}")
+            print(f"   Run ID: {run_id}")
+            print(f"   Lineage ID: {model_lineage_id}")
+            
+            return run_id
+    
+    def visualize_lineage(self, model_id):
+        """Visualize model lineage graph"""
+        if model_id not in self.lineage:
+            print(f"❌ Model {model_id} not found")
+            return
+        
+        def print_tree(node_id, indent=0):
+            if node_id not in self.lineage:
+                return
+            
+            node = self.lineage[node_id]
+            print("  " * indent + f"├─ {node['model_name']} v{node['version']}")
+            
+            for child_id in node['children']:
+                print_tree(child_id, indent + 1)
+        
+        print("\n🌳 Model Lineage Tree:")
+        print_tree(model_id)
+
+# Example
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+mlflow.set_experiment("lineage_tracking_demo")
+
+# Generate data
+X, y = make_classification(n_samples=1000, n_features=20, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Track lineage
+tracker = ModelLineageTracker()
+
+# Track data lineage
+data_lineage = tracker.track_data_lineage(
+    data_source="synthetic_classification_dataset",
+    data_version="v1.0",
+    transformations=[
+        "train_test_split(test_size=0.2)",
+        "StandardScaler()"
+    ]
+)
+
+# Train and log model v1
+model_v1 = RandomForestClassifier(n_estimators=50, random_state=42)
+model_v1.fit(X_train, y_train)
+
+run_id_v1 = tracker.log_full_lineage(
+    model=model_v1,
+    model_name="churn_predictor",
+    model_version="1.0",
+    data_lineage=data_lineage,
+    hyperparams={'n_estimators': 50, 'random_state': 42},
+    metrics={'accuracy': model_v1.score(X_test, y_test)}
+)
+
+# Train improved model v2 (child of v1)
+model_v2 = RandomForestClassifier(n_estimators=100, random_state=42)
+model_v2.fit(X_train, y_train)
+
+run_id_v2 = tracker.log_full_lineage(
+    model=model_v2,
+    model_name="churn_predictor",
+    model_version="2.0",
+    data_lineage=data_lineage,
+    hyperparams={'n_estimators': 100, 'random_state': 42},
+    metrics={'accuracy': model_v2.score(X_test, y_test)}
+)
+
+# Visualize lineage
+tracker.visualize_lineage("churn_predictor_v1.0")
+
+print("\n✅ Complete lineage tracked and logged to MLflow!")'''
+    st.code(lab5_code, language='python')
+    
+    st.success("✅ Unit 2 Labs Complete: Experiment tracking and model selection mastered!")
 
 
 def _render_unit3_labs():
@@ -349,7 +1246,2424 @@ best_model.fit(X_train, y_train)
 print(f"Test score: {best_model.score(X_test, y_test):.3f}")'''
     st.code(lab2_code, language='python')
     
-    st.success("✅ Unit 3 Labs Complete!")
+    st.markdown("#### Part B: Pruning and Early Stopping (30 min)")
+    lab2b_code = '''import optuna
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+
+def objective_with_pruning(trial):
+    n_estimators = trial.suggest_int('n_estimators', 50, 300)
+    max_depth = trial.suggest_int('max_depth', 3, 20)
+    
+    model = RandomForestClassifier(
+        n_estimators=n_estimators,
+        max_depth=max_depth,
+        random_state=42
+    )
+    
+    # Incremental evaluation for pruning
+    scores = []
+    for fold in range(3):
+        score = cross_val_score(model, X_train, y_train, cv=3, scoring='accuracy')[fold]
+        scores.append(score)
+        
+        # Report intermediate value
+        trial.report(score, fold)
+        
+        # Prune if not promising
+        if trial.should_prune():
+            raise optuna.TrialPruned()
+    
+    return sum(scores) / len(scores)
+
+# Run with pruning
+study = optuna.create_study(
+    direction='maximize',
+    pruner=optuna.pruners.MedianPruner(n_startup_trials=5)
+)
+
+study.optimize(objective_with_pruning, n_trials=50, timeout=300)
+
+print(f"\nBest trial:")
+print(f"  Value: {study.best_value:.3f}")
+print(f"  Params: {study.best_params}")
+print(f"\nPruned trials: {len([t for t in study.trials if t.state == optuna.trial.TrialState.PRUNED])}")
+print(f"Completed trials: {len([t for t in study.trials if t.state == optuna.trial.TrialState.COMPLETE])}")'''
+    st.code(lab2b_code, language='python')
+    
+    st.markdown("#### Part C: Multi-Objective Optimization (30 min)")
+    lab2c_code = '''import optuna
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+import time
+
+def multi_objective(trial):
+    n_estimators = trial.suggest_int('n_estimators', 50, 300)
+    max_depth = trial.suggest_int('max_depth', 3, 20)
+    
+    model = RandomForestClassifier(
+        n_estimators=n_estimators,
+        max_depth=max_depth,
+        random_state=42
+    )
+    
+    # Objective 1: Maximize accuracy
+    start = time.time()
+    accuracy = cross_val_score(model, X_train, y_train, cv=3, scoring='accuracy').mean()
+    training_time = time.time() - start
+    
+    # Objective 2: Minimize training time
+    return accuracy, training_time
+
+# Multi-objective study
+study = optuna.create_study(
+    directions=['maximize', 'minimize']  # Max accuracy, min time
+)
+
+study.optimize(multi_objective, n_trials=30)
+
+print("\n🎯 Pareto Front (best trade-offs):")
+for trial in study.best_trials:
+    print(f"  Accuracy: {trial.values[0]:.3f}, Time: {trial.values[1]:.2f}s")
+    print(f"    Params: {trial.params}")
+    print()'''
+    st.code(lab2c_code, language='python')
+    
+    st.markdown("### Lab 3: Random Search vs Grid Search (60 min)")
+    lab3_code = '''from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+from scipy.stats import randint, uniform
+import time
+import numpy as np
+
+# Define search spaces
+param_grid = {
+    'n_estimators': [50, 100, 150, 200],
+    'max_depth': [5, 10, 15, 20, None],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 4]
+}
+
+param_distributions = {
+    'n_estimators': randint(50, 200),
+    'max_depth': randint(5, 20),
+    'min_samples_split': randint(2, 10),
+    'min_samples_leaf': randint(1, 4)
+}
+
+# Grid Search
+print("🔍 Running Grid Search...")
+start = time.time()
+grid = GridSearchCV(
+    RandomForestClassifier(random_state=42),
+    param_grid,
+    cv=3,
+    n_jobs=-1
+)
+grid.fit(X_train, y_train)
+grid_time = time.time() - start
+
+print(f"  Time: {grid_time:.1f}s")
+print(f"  Best score: {grid.best_score_:.3f}")
+print(f"  Combinations tried: {len(grid.cv_results_['params'])}")
+
+# Random Search
+print("\n🎲 Running Random Search...")
+start = time.time()
+random = RandomizedSearchCV(
+    RandomForestClassifier(random_state=42),
+    param_distributions,
+    n_iter=50,  # Try 50 random combinations
+    cv=3,
+    random_state=42,
+    n_jobs=-1
+)
+random.fit(X_train, y_train)
+random_time = time.time() - start
+
+print(f"  Time: {random_time:.1f}s")
+print(f"  Best score: {random.best_score_:.3f}")
+print(f"  Combinations tried: 50")
+
+# Comparison
+print("\n🏆 Comparison:")
+print(f"  Grid Search: {grid.best_score_:.3f} in {grid_time:.1f}s")
+print(f"  Random Search: {random.best_score_:.3f} in {random_time:.1f}s")
+print(f"  Speedup: {grid_time/random_time:.1f}x faster")
+
+if random.best_score_ >= grid.best_score_ * 0.99:  # Within 1%
+    print("\n✅ Random Search found comparable solution much faster!")'''
+    st.code(lab3_code, language='python')
+    
+    st.markdown("### Lab 4: Hyperband Optimization (45 min)")
+    lab4_code = '''import optuna
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+import numpy as np
+
+def objective_with_budget(trial):
+    # Suggest hyperparameters
+    n_estimators = trial.suggest_int('n_estimators', 10, 200)
+    max_depth = trial.suggest_int('max_depth', 3, 20)
+    
+    # Use pruning for early stopping
+    model = RandomForestClassifier(
+        n_estimators=n_estimators,
+        max_depth=max_depth,
+        random_state=42
+    )
+    
+    # Incremental evaluation
+    scores = []
+    for i in range(3):  # 3-fold CV
+        score = cross_val_score(model, X_train, y_train, cv=3)[i]
+        scores.append(score)
+        
+        # Report intermediate value
+        trial.report(score, i)
+        
+        # Prune unpromising trials
+        if trial.should_prune():
+            raise optuna.TrialPruned()
+    
+    return np.mean(scores)
+
+# Run Hyperband-style optimization
+study = optuna.create_study(
+    direction='maximize',
+    pruner=optuna.pruners.HyperbandPruner(
+        min_resource=1,
+        max_resource=10,
+        reduction_factor=3
+    )
+)
+
+print("🚀 Running Hyperband Optimization...\n")
+study.optimize(objective_with_budget, n_trials=100, timeout=300)
+
+print(f"\nBest trial:")
+print(f"  Value: {study.best_value:.3f}")
+print(f"  Params: {study.best_params}")
+
+print(f"\nOptimization stats:")
+print(f"  Total trials: {len(study.trials)}")
+print(f"  Pruned: {len([t for t in study.trials if t.state == optuna.trial.TrialState.PRUNED])}")
+print(f"  Completed: {len([t for t in study.trials if t.state == optuna.trial.TrialState.COMPLETE])}")
+print(f"  Speedup from pruning: {len(study.trials) / len([t for t in study.trials if t.state == optuna.trial.TrialState.COMPLETE]):.1f}x")'''
+    st.code(lab4_code, language='python')
+    
+    st.markdown("### Lab 5: Bayesian Optimization (60 min)")
+    lab5_code = '''from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process.kernels import Matern
+import numpy as np
+
+class BayesianOptimizer:
+    def __init__(self, bounds, n_init=5):
+        self.bounds = bounds  # [(min, max), ...]
+        self.n_init = n_init
+        self.X_observed = []
+        self.y_observed = []
+        self.gp = GaussianProcessRegressor(
+            kernel=Matern(nu=2.5),
+            alpha=1e-6,
+            normalize_y=True,
+            n_restarts_optimizer=5
+        )
+    
+    def suggest_next(self):
+        """Suggest next point to evaluate using acquisition function"""
+        if len(self.X_observed) < self.n_init:
+            # Random exploration
+            return [np.random.uniform(low, high) for low, high in self.bounds]
+        
+        # Fit GP
+        self.gp.fit(self.X_observed, self.y_observed)
+        
+        # Expected Improvement acquisition
+        best_y = max(self.y_observed)
+        
+        # Sample candidates
+        n_candidates = 1000
+        candidates = np.array([
+            [np.random.uniform(low, high) for low, high in self.bounds]
+            for _ in range(n_candidates)
+        ])
+        
+        # Predict
+        mu, sigma = self.gp.predict(candidates, return_std=True)
+        
+        # Expected Improvement
+        with np.errstate(divide='ignore'):
+            Z = (mu - best_y) / sigma
+            ei = (mu - best_y) * stats.norm.cdf(Z) + sigma * stats.norm.pdf(Z)
+            ei[sigma == 0.0] = 0.0
+        
+        # Return best candidate
+        best_idx = np.argmax(ei)
+        return candidates[best_idx].tolist()
+    
+    def observe(self, x, y):
+        """Record observation"""
+        self.X_observed.append(x)
+        self.y_observed.append(y)
+    
+    def get_best(self):
+        """Get best observed point"""
+        best_idx = np.argmax(self.y_observed)
+        return self.X_observed[best_idx], self.y_observed[best_idx]
+
+# Example: Optimize hyperparameters
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+from sklearn.datasets import make_classification
+from scipy import stats
+
+X, y = make_classification(n_samples=1000, n_features=20, random_state=42)
+
+def objective(params):
+    """Objective function to maximize"""
+    n_estimators = int(params[0])
+    max_depth = int(params[1])
+    
+    model = RandomForestClassifier(
+        n_estimators=n_estimators,
+        max_depth=max_depth,
+        random_state=42
+    )
+    
+    score = cross_val_score(model, X, y, cv=3, scoring='accuracy').mean()
+    return score
+
+# Run Bayesian Optimization
+optimizer = BayesianOptimizer(
+    bounds=[(50, 200), (5, 20)],  # n_estimators, max_depth
+    n_init=5
+)
+
+print("🧪 Running Bayesian Optimization...\n")
+
+for i in range(20):
+    # Get next point to try
+    params = optimizer.suggest_next()
+    
+    # Evaluate
+    score = objective(params)
+    
+    # Record
+    optimizer.observe(params, score)
+    
+    print(f"Trial {i+1}: n_est={int(params[0])}, depth={int(params[1])} -> {score:.3f}")
+
+# Get best
+best_params, best_score = optimizer.get_best()
+print(f"\n🏆 Best: n_est={int(best_params[0])}, depth={int(best_params[1])} -> {best_score:.3f}")'''
+    st.code(lab5_code, language='python')
+    
+    st.markdown("### Lab 6: Genetic Algorithm Optimization (75 min)")
+    lab6_code = '''import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+from sklearn.datasets import make_classification
+
+class GeneticOptimizer:
+    def __init__(self, param_bounds, population_size=20, generations=10):
+        self.param_bounds = param_bounds
+        self.population_size = population_size
+        self.generations = generations
+        self.best_individual = None
+        self.best_score = -np.inf
+    
+    def create_individual(self):
+        """Create random parameter set"""
+        return [np.random.uniform(low, high) for low, high in self.param_bounds]
+    
+    def create_population(self):
+        """Create initial population"""
+        return [self.create_individual() for _ in range(self.population_size)]
+    
+    def evaluate(self, individual, X, y):
+        """Evaluate fitness of individual"""
+        n_estimators = int(individual[0])
+        max_depth = int(individual[1])
+        min_samples_split = int(individual[2])
+        
+        model = RandomForestClassifier(
+            n_estimators=n_estimators,
+            max_depth=max_depth,
+            min_samples_split=min_samples_split,
+            random_state=42
+        )
+        
+        score = cross_val_score(model, X, y, cv=3, scoring='accuracy').mean()
+        return score
+    
+    def select_parents(self, population, scores):
+        """Tournament selection"""
+        tournament_size = 3
+        selected = []
+        
+        for _ in range(2):  # Select 2 parents
+            tournament_idx = np.random.choice(len(population), tournament_size)
+            tournament_scores = [scores[i] for i in tournament_idx]
+            winner_idx = tournament_idx[np.argmax(tournament_scores)]
+            selected.append(population[winner_idx])
+        
+        return selected
+    
+    def crossover(self, parent1, parent2):
+        """Single-point crossover"""
+        crossover_point = np.random.randint(1, len(parent1))
+        child = parent1[:crossover_point] + parent2[crossover_point:]
+        return child
+    
+    def mutate(self, individual, mutation_rate=0.1):
+        """Mutate individual"""
+        mutated = individual.copy()
+        for i in range(len(mutated)):
+            if np.random.random() < mutation_rate:
+                mutated[i] = np.random.uniform(*self.param_bounds[i])
+        return mutated
+    
+    def optimize(self, X, y):
+        """Run genetic algorithm"""
+        population = self.create_population()
+        
+        for gen in range(self.generations):
+            # Evaluate
+            scores = [self.evaluate(ind, X, y) for ind in population]
+            
+            # Track best
+            gen_best_idx = np.argmax(scores)
+            if scores[gen_best_idx] > self.best_score:
+                self.best_score = scores[gen_best_idx]
+                self.best_individual = population[gen_best_idx]
+            
+            print(f"Gen {gen+1}: Best={self.best_score:.3f}, Avg={np.mean(scores):.3f}")
+            
+            # Create new population
+            new_population = []
+            
+            # Elitism: keep best individual
+            new_population.append(self.best_individual)
+            
+            # Generate rest through selection, crossover, mutation
+            while len(new_population) < self.population_size:
+                parents = self.select_parents(population, scores)
+                child = self.crossover(parents[0], parents[1])
+                child = self.mutate(child)
+                new_population.append(child)
+            
+            population = new_population
+        
+        return self.best_individual, self.best_score
+
+# Example
+X, y = make_classification(n_samples=1000, n_features=20, random_state=42)
+
+optimizer = GeneticOptimizer(
+    param_bounds=[(50, 200), (5, 20), (2, 10)],  # n_estimators, max_depth, min_samples_split
+    population_size=15,
+    generations=8
+)
+
+print("🧬 Running Genetic Algorithm...\n")
+best_params, best_score = optimizer.optimize(X, y)
+
+print(f"\n🏆 Best Parameters:")
+print(f"  n_estimators: {int(best_params[0])}")
+print(f"  max_depth: {int(best_params[1])}")
+print(f"  min_samples_split: {int(best_params[2])}")
+print(f"  Score: {best_score:.3f}")'''
+    st.code(lab6_code, language='python')
+    
+    st.markdown("### Lab 7: AutoML Pipeline (60 min)")
+    lab7_code = '''from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+import numpy as np
+
+class SimpleAutoML:
+    def __init__(self, time_budget_minutes=5):
+        self.time_budget = time_budget_minutes * 60
+        self.models = self._get_model_space()
+        self.best_pipeline = None
+        self.best_score = -np.inf
+        self.leaderboard = []
+    
+    def _get_model_space(self):
+        """Define model search space"""
+        return {
+            'LogisticRegression': [
+                {'C': 0.1}, {'C': 1.0}, {'C': 10.0}
+            ],
+            'RandomForest': [
+                {'n_estimators': 50, 'max_depth': 5},
+                {'n_estimators': 100, 'max_depth': 10},
+                {'n_estimators': 200, 'max_depth': None}
+            ],
+            'GradientBoosting': [
+                {'n_estimators': 50, 'learning_rate': 0.1},
+                {'n_estimators': 100, 'learning_rate': 0.05},
+                {'n_estimators': 200, 'learning_rate': 0.01}
+            ]
+        }
+    
+    def fit(self, X, y):
+        """Run AutoML search"""
+        import time
+        start_time = time.time()
+        
+        print("🤖 Running AutoML...\n")
+        
+        for model_name, configs in self.models.items():
+            for config in configs:
+                if time.time() - start_time > self.time_budget:
+                    print("\n⏰ Time budget exceeded")
+                    break
+                
+                # Create pipeline
+                if model_name == 'LogisticRegression':
+                    model = LogisticRegression(**config, random_state=42, max_iter=1000)
+                elif model_name == 'RandomForest':
+                    model = RandomForestClassifier(**config, random_state=42)
+                elif model_name == 'GradientBoosting':
+                    model = GradientBoostingClassifier(**config, random_state=42)
+                
+                pipeline = Pipeline([
+                    ('scaler', StandardScaler()),
+                    ('model', model)
+                ])
+                
+                # Evaluate
+                try:
+                    scores = cross_val_score(pipeline, X, y, cv=3, scoring='accuracy')
+                    mean_score = scores.mean()
+                    std_score = scores.std()
+                    
+                    # Track
+                    self.leaderboard.append({
+                        'model': model_name,
+                        'config': config,
+                        'score': mean_score,
+                        'std': std_score
+                    })
+                    
+                    # Update best
+                    if mean_score > self.best_score:
+                        self.best_score = mean_score
+                        self.best_pipeline = pipeline
+                        print(f"⭐ New best: {model_name} - {mean_score:.3f}")
+                    else:
+                        print(f"   {model_name} - {mean_score:.3f}")
+                
+                except Exception as e:
+                    print(f"❌ {model_name} failed: {str(e)[:50]}")
+        
+        # Fit best pipeline
+        self.best_pipeline.fit(X, y)
+        
+        return self
+    
+    def predict(self, X):
+        return self.best_pipeline.predict(X)
+    
+    def get_leaderboard(self):
+        import pandas as pd
+        df = pd.DataFrame(self.leaderboard)
+        return df.sort_values('score', ascending=False)
+
+# Example
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+X, y = make_classification(n_samples=1000, n_features=20, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Run AutoML
+automl = SimpleAutoML(time_budget_minutes=2)
+automl.fit(X_train, y_train)
+
+# Results
+print(f"\n🏆 Best Model Score: {automl.best_score:.3f}")
+print(f"Test Score: {automl.best_pipeline.score(X_test, y_test):.3f}")
+
+print("\n📊 Leaderboard:")
+print(automl.get_leaderboard().head(10).to_string(index=False))'''
+    st.code(lab7_code, language='python')
+    
+    st.success("✅ Unit 3 Labs Complete: Advanced hyperparameter optimization mastered!")
+
+
+def _render_unit4_labs():
+    """Labs for Unit 4: Time-Series Forecasting"""
+    st.markdown("---")
+    st.markdown("## 🧪 HANDS-ON LABS: Unit 4")
+    
+    st.markdown("### Lab 1: ARIMA Forecasting (60 min)")
+    lab1_code = '''import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+import matplotlib.pyplot as plt
+
+# Generate sample time series
+np.random.seed(42)
+dates = pd.date_range('2022-01-01', periods=365, freq='D')
+trend = np.linspace(100, 150, 365)
+seasonality = 20 * np.sin(2 * np.pi * np.arange(365) / 7)
+noise = np.random.normal(0, 5, 365)
+data = trend + seasonality + noise
+
+ts = pd.Series(data, index=dates)
+
+# Split train/test
+train = ts[:'2022-10-31']
+test = ts['2022-11-01':]
+
+# Fit ARIMA
+model = ARIMA(train, order=(7, 1, 7))
+model_fit = model.fit()
+
+# Forecast
+forecast = model_fit.forecast(steps=len(test))
+
+# Evaluate
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+mae = mean_absolute_error(test, forecast)
+rmse = np.sqrt(mean_squared_error(test, forecast))
+
+print(f"MAE: {mae:.2f}")
+print(f"RMSE: {rmse:.2f}")
+
+# Plot
+plt.figure(figsize=(12, 6))
+plt.plot(train.index, train, label='Train')
+plt.plot(test.index, test, label='Actual', color='green')
+plt.plot(test.index, forecast, label='Forecast', color='red', linestyle='--')
+plt.legend()
+plt.title('ARIMA Forecast')
+plt.show()'''
+    st.code(lab1_code, language='python')
+    
+    st.markdown("### Lab 2: Prophet for Seasonal Data (60 min)")
+    lab2_code = '''from prophet import Prophet
+import pandas as pd
+import numpy as np
+
+# Prepare data for Prophet
+df = pd.DataFrame({
+    'ds': dates,
+    'y': data
+})
+
+train_df = df[df['ds'] <= '2022-10-31']
+test_df = df[df['ds'] > '2022-10-31']
+
+# Fit Prophet
+model = Prophet(
+    yearly_seasonality=True,
+    weekly_seasonality=True,
+    daily_seasonality=False
+)
+model.fit(train_df)
+
+# Make forecast
+future = model.make_future_dataframe(periods=len(test_df))
+forecast = model.predict(future)
+
+# Extract test predictions
+test_forecast = forecast[forecast['ds'] > '2022-10-31']['yhat']
+
+# Evaluate
+mae = mean_absolute_error(test_df['y'], test_forecast)
+rmse = np.sqrt(mean_squared_error(test_df['y'], test_forecast))
+
+print(f"Prophet MAE: {mae:.2f}")
+print(f"Prophet RMSE: {rmse:.2f}")
+
+# Plot components
+model.plot_components(forecast)
+plt.show()'''
+    st.code(lab2_code, language='python')
+    
+    st.markdown("### Lab 3: XGBoost Time-Series (60 min)")
+    lab3_code = '''import pandas as pd
+import numpy as np
+from xgboost import XGBRegressor
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+# Create lag features
+def create_features(series, n_lags=7):
+    df = pd.DataFrame({'value': series.values})
+    for i in range(1, n_lags + 1):
+        df[f'lag_{i}'] = df['value'].shift(i)
+    df['rolling_mean_7'] = df['value'].shift(1).rolling(7).mean()
+    df['rolling_std_7'] = df['value'].shift(1).rolling(7).std()
+    return df.dropna()
+
+df_features = create_features(ts)
+
+# Split
+train_size = int(len(df_features) * 0.8)
+X_train = df_features.iloc[:train_size].drop('value', axis=1)
+y_train = df_features.iloc[:train_size]['value']
+X_test = df_features.iloc[train_size:].drop('value', axis=1)
+y_test = df_features.iloc[train_size:]['value']
+
+# Train
+model = XGBRegressor(n_estimators=100, max_depth=5, learning_rate=0.1, random_state=42)
+model.fit(X_train, y_train)
+
+# Predict
+preds = model.predict(X_test)
+
+# Evaluate
+mae = mean_absolute_error(y_test, preds)
+rmse = np.sqrt(mean_squared_error(y_test, preds))
+
+print(f"XGBoost MAE: {mae:.2f}")
+print(f"XGBoost RMSE: {rmse:.2f}")
+
+# Feature importance
+importance = pd.DataFrame({
+    'feature': X_train.columns,
+    'importance': model.feature_importances_
+}).sort_values('importance', ascending=False)
+print("\nTop Features:")
+print(importance.head())'''
+    st.code(lab3_code, language='python')
+    
+    st.markdown("### Lab 4: Forecast Evaluation (45 min)")
+    lab4_code = '''import numpy as np
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+def evaluate_forecast(actual, predicted, model_name):
+    mae = mean_absolute_error(actual, predicted)
+    rmse = np.sqrt(mean_squared_error(actual, predicted))
+    mape = np.mean(np.abs((actual - predicted) / actual)) * 100
+    
+    # Bias
+    bias = np.mean(predicted - actual)
+    
+    print(f"\n{model_name} Metrics:")
+    print(f"  MAE: {mae:.2f}")
+    print(f"  RMSE: {rmse:.2f}")
+    print(f"  MAPE: {mape:.1f}%")
+    print(f"  Bias: {bias:.2f}")
+    
+    if abs(bias) < mae * 0.1:
+        print("  ✅ Unbiased")
+    else:
+        print(f"  ⚠️ {'Over' if bias > 0 else 'Under'}-predicting")
+    
+    return {'mae': mae, 'rmse': rmse, 'mape': mape, 'bias': bias}
+
+# Compare models
+results = []
+for name, preds in [('ARIMA', arima_pred), ('Prophet', prophet_pred), ('XGBoost', xgb_pred)]:
+    metrics = evaluate_forecast(actual, preds, name)
+    metrics['model'] = name
+    results.append(metrics)
+
+import pandas as pd
+df = pd.DataFrame(results).sort_values('mae')
+print(f"\n🏆 Best Model: {df.iloc[0]['model']}")'''
+    st.code(lab4_code, language='python')
+    
+    st.markdown("### Lab 5: Seasonal Decomposition & Analysis (60 min)")
+    lab5_code = '''import pandas as pd
+import numpy as np
+from statsmodels.tsa.seasonal import seasonal_decompose
+import matplotlib.pyplot as plt
+
+# Generate time series with trend, seasonality, and noise
+np.random.seed(42)
+dates = pd.date_range('2020-01-01', periods=365*3, freq='D')
+trend = np.linspace(100, 200, len(dates))
+seasonality = 30 * np.sin(2 * np.pi * np.arange(len(dates)) / 365)  # Yearly
+weekly = 10 * np.sin(2 * np.pi * np.arange(len(dates)) / 7)  # Weekly
+noise = np.random.normal(0, 5, len(dates))
+
+ts = pd.Series(trend + seasonality + weekly + noise, index=dates)
+
+# Decompose
+decomposition = seasonal_decompose(ts, model='additive', period=365)
+
+# Extract components
+trend_component = decomposition.trend
+seasonal_component = decomposition.seasonal
+residual_component = decomposition.resid
+
+# Analyze
+print("📊 Time Series Decomposition Analysis:")
+print(f"\nTrend:")
+print(f"  Start: {trend_component.dropna().iloc[0]:.2f}")
+print(f"  End: {trend_component.dropna().iloc[-1]:.2f}")
+print(f"  Change: {trend_component.dropna().iloc[-1] - trend_component.dropna().iloc[0]:.2f}")
+
+print(f"\nSeasonality:")
+print(f"  Amplitude: {seasonal_component.max() - seasonal_component.min():.2f}")
+print(f"  Peak month: {seasonal_component.groupby(seasonal_component.index.month).mean().idxmax()}")
+
+print(f"\nResiduals:")
+print(f"  Mean: {residual_component.mean():.2f}")
+print(f"  Std: {residual_component.std():.2f}")
+
+# Plot
+fig, axes = plt.subplots(4, 1, figsize=(12, 10))
+ts.plot(ax=axes[0], title='Original')
+trend_component.plot(ax=axes[1], title='Trend')
+seasonal_component.plot(ax=axes[2], title='Seasonality')
+residual_component.plot(ax=axes[3], title='Residuals')
+plt.tight_layout()
+plt.show()
+
+print("\n✅ Decomposition helps identify patterns for better forecasting!")'''
+    st.code(lab5_code, language='python')
+    
+    st.markdown("### Lab 6: Walk-Forward Validation (45 min)")
+    lab6_code = '''import pandas as pd
+import numpy as np
+from sklearn.metrics import mean_absolute_error
+
+def walk_forward_validation(data, model_func, train_size=100, step=10):
+    """Walk-forward validation for time series"""
+    errors = []
+    predictions = []
+    actuals = []
+    
+    for i in range(train_size, len(data) - step, step):
+        # Split
+        train = data[:i]
+        test = data[i:i+step]
+        
+        # Train and predict
+        model = model_func(train)
+        pred = model.predict(len(test))
+        
+        # Store results
+        predictions.extend(pred)
+        actuals.extend(test.values)
+        
+        # Calculate error for this window
+        mae = mean_absolute_error(test, pred)
+        errors.append(mae)
+        
+        print(f"Window {len(errors)}: Train size={len(train)}, Test size={len(test)}, MAE={mae:.2f}")
+    
+    overall_mae = mean_absolute_error(actuals, predictions)
+    print(f"\n🎯 Overall MAE: {overall_mae:.2f}")
+    print(f"Average window MAE: {np.mean(errors):.2f} ± {np.std(errors):.2f}")
+    
+    return predictions, actuals, errors
+
+# Example model function
+def simple_model(train_data):
+    class SimpleModel:
+        def __init__(self, data):
+            self.mean = data.mean()
+        
+        def predict(self, steps):
+            return [self.mean] * steps
+    
+    return SimpleModel(train_data)
+
+# Run validation
+preds, acts, errs = walk_forward_validation(ts, simple_model, train_size=365, step=30)
+
+print("\n✅ Walk-forward validation provides realistic performance estimates!")'''
+    st.code(lab6_code, language='python')
+    
+    st.markdown("### Lab 7: Anomaly Detection (60 min)")
+    lab7_code = '''import pandas as pd
+import numpy as np
+from scipy import stats
+
+class TimeSeriesAnomalyDetector:
+    def __init__(self, window_size=30, threshold=3):
+        self.window_size = window_size
+        self.threshold = threshold
+    
+    def detect_statistical(self, series):
+        """Detect anomalies using statistical methods"""
+        anomalies = []
+        
+        for i in range(self.window_size, len(series)):
+            window = series[i-self.window_size:i]
+            
+            mean = window.mean()
+            std = window.std()
+            
+            # Z-score
+            z_score = abs((series.iloc[i] - mean) / std) if std > 0 else 0
+            
+            if z_score > self.threshold:
+                anomalies.append({
+                    'index': i,
+                    'value': series.iloc[i],
+                    'z_score': z_score,
+                    'expected_range': (mean - self.threshold*std, mean + self.threshold*std)
+                })
+        
+        return anomalies
+    
+    def detect_isolation_forest(self, series):
+        """Detect anomalies using Isolation Forest"""
+        from sklearn.ensemble import IsolationForest
+        
+        # Prepare features
+        X = series.values.reshape(-1, 1)
+        
+        # Fit model
+        iso_forest = IsolationForest(
+            contamination=0.1,
+            random_state=42
+        )
+        predictions = iso_forest.fit_predict(X)
+        
+        # Get anomalies
+        anomaly_indices = np.where(predictions == -1)[0]
+        
+        anomalies = []
+        for idx in anomaly_indices:
+            anomalies.append({
+                'index': idx,
+                'value': series.iloc[idx],
+                'method': 'isolation_forest'
+            })
+        
+        return anomalies
+    
+    def detect_all(self, series):
+        """Run all detection methods"""
+        print("🔍 Running Anomaly Detection...\n")
+        
+        # Statistical
+        stat_anomalies = self.detect_statistical(series)
+        print(f"Statistical method: {len(stat_anomalies)} anomalies")
+        
+        # Isolation Forest
+        iso_anomalies = self.detect_isolation_forest(series)
+        print(f"Isolation Forest: {len(iso_anomalies)} anomalies")
+        
+        # Combine (intersection for high confidence)
+        stat_indices = {a['index'] for a in stat_anomalies}
+        iso_indices = {a['index'] for a in iso_anomalies}
+        
+        high_confidence = stat_indices & iso_indices
+        
+        print(f"\n✅ High confidence anomalies: {len(high_confidence)}")
+        
+        return {
+            'statistical': stat_anomalies,
+            'isolation_forest': iso_anomalies,
+            'high_confidence': list(high_confidence)
+        }
+
+# Example
+np.random.seed(42)
+dates = pd.date_range('2023-01-01', periods=365, freq='D')
+
+# Normal pattern
+trend = np.linspace(100, 150, 365)
+seasonality = 20 * np.sin(2 * np.pi * np.arange(365) / 7)
+noise = np.random.normal(0, 3, 365)
+
+ts = pd.Series(trend + seasonality + noise, index=dates)
+
+# Inject anomalies
+ts.iloc[50] = 200  # Spike
+ts.iloc[100] = 50  # Drop
+ts.iloc[200] = 180  # Spike
+
+# Detect
+detector = TimeSeriesAnomalyDetector(window_size=30, threshold=3)
+results = detector.detect_all(ts)
+
+print("\n⚠️ Detected Anomalies:")
+for idx in results['high_confidence']:
+    print(f"  Date: {ts.index[idx].date()}, Value: {ts.iloc[idx]:.2f}")
+
+# Visualize
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(14, 6))
+plt.plot(ts.index, ts, label='Time Series', alpha=0.7)
+
+for idx in results['high_confidence']:
+    plt.scatter(ts.index[idx], ts.iloc[idx], color='red', s=100, zorder=5, label='Anomaly' if idx == results['high_confidence'][0] else '')
+
+plt.legend()
+plt.title('Time Series with Detected Anomalies')
+plt.xlabel('Date')
+plt.ylabel('Value')
+plt.grid(True, alpha=0.3)
+plt.show()'''
+    st.code(lab7_code, language='python')
+    
+    st.markdown("### Lab 8: Multi-Step Forecasting (75 min)")
+    lab8_code = '''import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
+
+class MultiStepForecaster:
+    def __init__(self, model, horizon=7):
+        self.model = model
+        self.horizon = horizon
+    
+    def create_sequences(self, data, n_lags=14):
+        """Create sequences for multi-step forecasting"""
+        X, y = [], []
+        
+        for i in range(len(data) - n_lags - self.horizon + 1):
+            # Features: past n_lags values
+            X.append(data[i:i+n_lags])
+            # Target: next horizon values
+            y.append(data[i+n_lags:i+n_lags+self.horizon])
+        
+        return np.array(X), np.array(y)
+    
+    def fit(self, train_data, n_lags=14):
+        """Train multi-output model"""
+        X_train, y_train = self.create_sequences(train_data, n_lags)
+        self.model.fit(X_train, y_train)
+        return self
+    
+    def predict(self, last_values):
+        """Predict next horizon steps"""
+        return self.model.predict([last_values])[0]
+    
+    def recursive_forecast(self, initial_values, n_steps):
+        """Recursive multi-step forecasting"""
+        forecasts = []
+        current = list(initial_values)
+        
+        for _ in range(n_steps // self.horizon):
+            # Predict next horizon
+            pred = self.predict(current[-len(initial_values):])
+            forecasts.extend(pred)
+            
+            # Update current with predictions
+            current.extend(pred)
+        
+        return np.array(forecasts[:n_steps])
+
+# Example
+np.random.seed(42)
+dates = pd.date_range('2023-01-01', periods=365, freq='D')
+trend = np.linspace(100, 150, 365)
+seasonality = 20 * np.sin(2 * np.pi * np.arange(365) / 7)
+noise = np.random.normal(0, 3, 365)
+ts = trend + seasonality + noise
+
+# Split
+train_size = 300
+train = ts[:train_size]
+test = ts[train_size:]
+
+# Train multi-step forecaster
+forecaster = MultiStepForecaster(
+    model=RandomForestRegressor(n_estimators=100, random_state=42),
+    horizon=7  # Forecast 7 days ahead
+)
+
+forecaster.fit(train, n_lags=14)
+
+# Forecast
+initial = train[-14:]
+forecast = forecaster.recursive_forecast(initial, len(test))
+
+# Evaluate
+mae = mean_absolute_error(test, forecast)
+print(f"\n🎯 Multi-Step Forecast MAE: {mae:.2f}")
+
+# Compare with naive
+naive_forecast = np.full(len(test), train[-1])
+naive_mae = mean_absolute_error(test, naive_forecast)
+
+print(f"Naive MAE: {naive_mae:.2f}")
+print(f"Improvement: {(naive_mae - mae) / naive_mae * 100:.1f}%")
+
+# Plot
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(14, 6))
+plt.plot(range(len(train)), train, label='Train', alpha=0.7)
+plt.plot(range(len(train), len(train) + len(test)), test, label='Actual', color='green')
+plt.plot(range(len(train), len(train) + len(test)), forecast, label='Forecast', color='red', linestyle='--')
+plt.axvline(len(train), color='black', linestyle=':', alpha=0.5)
+plt.legend()
+plt.title('Multi-Step Forecasting')
+plt.show()'''
+    st.code(lab8_code, language='python')
+    
+    st.markdown("### Lab 9: Production Time-Series Pipeline (60 min)")
+    lab9_code = '''import pandas as pd
+import numpy as np
+import joblib
+from datetime import datetime
+
+class ProductionTimeSeriesForecaster:
+    def __init__(self, model_path=None):
+        self.model = None
+        self.scaler = None
+        self.feature_config = {}
+        if model_path:
+            self.load(model_path)
+    
+    def create_features(self, ts_data, n_lags=7):
+        """Create features for production"""
+        features = {}
+        
+        # Lag features
+        for i in range(1, n_lags + 1):
+            features[f'lag_{i}'] = ts_data[-i] if len(ts_data) >= i else 0
+        
+        # Rolling statistics
+        if len(ts_data) >= 7:
+            features['rolling_mean_7'] = np.mean(ts_data[-7:])
+            features['rolling_std_7'] = np.std(ts_data[-7:])
+        else:
+            features['rolling_mean_7'] = np.mean(ts_data)
+            features['rolling_std_7'] = 0
+        
+        # Time features
+        now = datetime.now()
+        features['day_of_week'] = now.weekday()
+        features['day_of_month'] = now.day
+        features['month'] = now.month
+        
+        return features
+    
+    def train(self, historical_data, target, n_lags=7):
+        """Train the forecaster"""
+        from sklearn.ensemble import RandomForestRegressor
+        from sklearn.preprocessing import StandardScaler
+        
+        # Create training data
+        X_train = []
+        y_train = []
+        
+        for i in range(n_lags, len(historical_data)):
+            features = self.create_features(historical_data[:i], n_lags)
+            X_train.append(list(features.values()))
+            y_train.append(target[i])
+        
+        X_train = np.array(X_train)
+        y_train = np.array(y_train)
+        
+        # Scale features
+        self.scaler = StandardScaler()
+        X_train_scaled = self.scaler.fit_transform(X_train)
+        
+        # Train model
+        self.model = RandomForestRegressor(n_estimators=100, random_state=42)
+        self.model.fit(X_train_scaled, y_train)
+        
+        self.feature_config = {'n_lags': n_lags}
+        
+        print("✅ Model trained successfully")
+    
+    def predict(self, recent_data):
+        """Make a prediction"""
+        if self.model is None:
+            raise ValueError("Model not trained or loaded")
+        
+        # Create features
+        features = self.create_features(
+            recent_data, 
+            self.feature_config['n_lags']
+        )
+        
+        # Convert to array
+        X = np.array([list(features.values())])
+        
+        # Scale
+        X_scaled = self.scaler.transform(X)
+        
+        # Predict
+        prediction = self.model.predict(X_scaled)[0]
+        
+        return prediction
+    
+    def save(self, path):
+        """Save model to disk"""
+        joblib.dump({
+            'model': self.model,
+            'scaler': self.scaler,
+            'feature_config': self.feature_config
+        }, path)
+        print(f"✅ Model saved to {path}")
+    
+    def load(self, path):
+        """Load model from disk"""
+        data = joblib.load(path)
+        self.model = data['model']
+        self.scaler = data['scaler']
+        self.feature_config = data['feature_config']
+        print(f"✅ Model loaded from {path}")
+
+# Example: Train and deploy
+np.random.seed(42)
+historical = np.cumsum(np.random.randn(365)) + 100
+
+# Train
+forecaster = ProductionTimeSeriesForecaster()
+forecaster.train(historical, historical, n_lags=7)
+
+# Save
+forecaster.save('forecaster_model.pkl')
+
+# Load and predict (simulating production)
+production_forecaster = ProductionTimeSeriesForecaster('forecaster_model.pkl')
+recent_data = historical[-14:]
+prediction = production_forecaster.predict(recent_data)
+
+print(f"\n🔮 Next forecast: {prediction:.2f}")
+print("✅ Production pipeline ready!")'''
+    st.code(lab9_code, language='python')
+    
+    st.markdown("### 🎯 Summary: Time-Series Best Practices")
+    st.markdown("""**Key Takeaways:**
+- Always check for stationarity before modeling
+- Use multiple evaluation metrics (MAE, RMSE, MAPE)
+- Implement walk-forward validation for realistic estimates
+- Combine multiple models for better forecasts
+- Monitor for anomalies and distribution shifts
+- Document seasonal patterns and trends
+- Use appropriate lag features for ML models
+- Consider business context when selecting forecast horizon
+
+**Production Checklist:**
+✅ Baseline model established
+✅ Multiple models compared
+✅ Cross-validation implemented
+✅ Anomaly detection in place
+✅ Monitoring dashboard created
+✅ Documentation complete""")
+    
+    st.success("✅ Unit 4 Labs Complete: Time-series forecasting mastered!")
+
+
+def _render_unit5_labs():
+    """Labs for Unit 5: Packaging & Deployment"""
+    st.markdown("---")
+    st.markdown("## 🧪 HANDS-ON LABS: Unit 5")
+    
+    st.markdown("### Lab 1: Create requirements.txt (30 min)")
+    lab1_code = '''# Create virtual environment
+python -m venv ml_env
+
+# Activate (Windows)
+ml_env\\Scripts\\activate
+
+# Activate (Mac/Linux)
+source ml_env/bin/activate
+
+# Install packages
+pip install pandas scikit-learn matplotlib joblib
+
+# Generate requirements
+pip freeze > requirements.txt
+
+# Share with team
+cat requirements.txt'''
+    st.code(lab1_code, language='bash')
+    
+    st.markdown("### Lab 2: Package as Python Module (60 min)")
+    lab2_code = '''# setup.py
+from setuptools import setup, find_packages
+
+setup(
+    name="ml_predictor",
+    version="0.1.0",
+    packages=find_packages(),
+    install_requires=[
+        "pandas>=1.3.0",
+        "scikit-learn>=1.0.0",
+        "joblib>=1.0.0"
+    ],
+    author="Your Name",
+    description="ML prediction package"
+)
+
+# predictor.py
+import joblib
+import pandas as pd
+
+class Predictor:
+    def __init__(self, model_path):
+        self.model = joblib.load(model_path)
+    
+    def predict(self, features):
+        if isinstance(features, dict):
+            features = pd.DataFrame([features])
+        return self.model.predict(features)
+
+# Install package
+# pip install -e .'''
+    st.code(lab2_code, language='python')
+    
+    st.markdown("### Lab 3: Dockerize (45 min)")
+    lab3_code = '''# Dockerfile
+FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+CMD ["python", "app.py"]
+
+# Build and run
+docker build -t ml-app .
+docker run -p 8000:8000 ml-app'''
+    st.code(lab3_code, language='dockerfile')
+    
+    st.markdown("### Lab 4: CI/CD Pipeline (45 min)")
+    lab4_code = '''# .github/workflows/ml-pipeline.yml
+name: ML Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+      
+      - name: Run tests
+        run: pytest tests/
+      
+      - name: Train model
+        run: python src/train.py
+      
+      - name: Validate model
+        run: python src/validate.py
+  
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Build Docker image
+        run: docker build -t ml-app:${{ github.sha }} .
+      
+      - name: Push to registry
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker push ml-app:${{ github.sha }}'''
+    st.code(lab4_code, language='yaml')
+    
+    st.markdown("### Lab 5: Testing ML Models (60 min)")
+    lab5_code = '''import pytest
+import numpy as np
+import joblib
+from sklearn.ensemble import RandomForestClassifier
+
+class TestMLModel:
+    @pytest.fixture
+    def model(self):
+        """Load trained model"""
+        return joblib.load('model.pkl')
+    
+    @pytest.fixture
+    def sample_data(self):
+        """Create sample test data"""
+        return np.random.randn(10, 20)
+    
+    def test_model_loads(self, model):
+        """Test model can be loaded"""
+        assert model is not None
+        assert isinstance(model, RandomForestClassifier)
+    
+    def test_prediction_shape(self, model, sample_data):
+        """Test prediction output shape"""
+        predictions = model.predict(sample_data)
+        assert len(predictions) == len(sample_data)
+    
+    def test_prediction_range(self, model, sample_data):
+        """Test predictions are in valid range"""
+        predictions = model.predict(sample_data)
+        assert all(p in [0, 1] for p in predictions)
+    
+    def test_probability_sum(self, model, sample_data):
+        """Test probabilities sum to 1"""
+        probs = model.predict_proba(sample_data)
+        assert np.allclose(probs.sum(axis=1), 1.0)
+    
+    def test_feature_count(self, model, sample_data):
+        """Test model expects correct number of features"""
+        assert model.n_features_in_ == sample_data.shape[1]
+    
+    def test_deterministic(self, model, sample_data):
+        """Test predictions are deterministic"""
+        pred1 = model.predict(sample_data)
+        pred2 = model.predict(sample_data)
+        assert np.array_equal(pred1, pred2)
+
+# Run tests
+# pytest test_model.py -v'''
+    st.code(lab5_code, language='python')
+    
+    st.markdown("### Lab 6: Model Versioning & Rollback (60 min)")
+    lab6_code = '''import joblib
+import json
+from datetime import datetime
+import shutil
+import os
+
+class ModelRegistry:
+    def __init__(self, registry_path="model_registry"):
+        self.registry_path = registry_path
+        os.makedirs(registry_path, exist_ok=True)
+        self.metadata_file = os.path.join(registry_path, "registry.json")
+        self.load_registry()
+    
+    def load_registry(self):
+        if os.path.exists(self.metadata_file):
+            with open(self.metadata_file, 'r') as f:
+                self.registry = json.load(f)
+        else:
+            self.registry = {'models': [], 'current': None}
+    
+    def save_registry(self):
+        with open(self.metadata_file, 'w') as f:
+            json.dump(self.registry, f, indent=2)
+    
+    def register_model(self, model, version, metrics, description=""):
+        """Register a new model version"""
+        model_path = os.path.join(self.registry_path, f"model_v{version}.pkl")
+        joblib.dump(model, model_path)
+        
+        model_info = {
+            'version': version,
+            'path': model_path,
+            'metrics': metrics,
+            'description': description,
+            'registered_at': datetime.now().isoformat(),
+            'status': 'registered'
+        }
+        
+        self.registry['models'].append(model_info)
+        self.save_registry()
+        
+        print(f"✅ Registered model v{version}")
+        print(f"   Metrics: {metrics}")
+    
+    def promote_to_production(self, version):
+        """Promote a model version to production"""
+        model_info = next((m for m in self.registry['models'] if m['version'] == version), None)
+        
+        if not model_info:
+            print(f"❌ Model v{version} not found")
+            return
+        
+        # Backup current production model
+        if self.registry['current']:
+            old_version = self.registry['current']
+            print(f"📦 Backing up current production model (v{old_version})")
+        
+        # Promote new model
+        self.registry['current'] = version
+        model_info['status'] = 'production'
+        
+        # Copy to production path
+        prod_path = os.path.join(self.registry_path, "production_model.pkl")
+        shutil.copy(model_info['path'], prod_path)
+        
+        self.save_registry()
+        print(f"✅ Promoted v{version} to production")
+    
+    def rollback(self):
+        """Rollback to previous production model"""
+        if not self.registry['current']:
+            print("❌ No production model to rollback from")
+            return
+        
+        current_version = self.registry['current']
+        
+        # Find previous production model
+        prod_models = [m for m in self.registry['models'] if m['status'] == 'production']
+        if len(prod_models) < 2:
+            print("❌ No previous production model available")
+            return
+        
+        # Get second-to-last production model
+        previous = prod_models[-2]
+        
+        print(f"⚠️ Rolling back from v{current_version} to v{previous['version']}")
+        self.promote_to_production(previous['version'])
+    
+    def list_models(self):
+        """List all registered models"""
+        print("\n📊 Registered Models:")
+        for model in self.registry['models']:
+            status = "🟢 PROD" if model['version'] == self.registry['current'] else "⚪️"
+            print(f"  {status} v{model['version']}: {model['metrics']} - {model['description']}")
+
+# Example usage
+registry = ModelRegistry()
+
+# Register multiple versions
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
+
+X, y = make_classification(n_samples=1000, random_state=42)
+
+# Version 1
+model_v1 = RandomForestClassifier(n_estimators=50, random_state=42)
+model_v1.fit(X, y)
+registry.register_model(model_v1, "1.0.0", {"accuracy": 0.82}, "Initial model")
+
+# Version 2
+model_v2 = RandomForestClassifier(n_estimators=100, random_state=42)
+model_v2.fit(X, y)
+registry.register_model(model_v2, "2.0.0", {"accuracy": 0.85}, "Improved model")
+
+# Promote v2 to production
+registry.promote_to_production("2.0.0")
+
+# List all models
+registry.list_models()
+
+# Rollback if needed
+# registry.rollback()'''
+    st.code(lab6_code, language='python')
+    
+    st.markdown("### Lab 7: Blue-Green Deployment (45 min)")
+    lab7_code = '''class BlueGreenDeployment:
+    def __init__(self):
+        self.blue_model = None
+        self.green_model = None
+        self.active = 'blue'  # Which environment is serving traffic
+    
+    def deploy_to_green(self, new_model):
+        """Deploy new model to green environment"""
+        print("🟢 Deploying to GREEN environment...")
+        self.green_model = new_model
+        print("✅ GREEN deployment complete")
+    
+    def run_smoke_tests(self, environment='green'):
+        """Run smoke tests on specified environment"""
+        model = self.green_model if environment == 'green' else self.blue_model
+        
+        print(f"\n🧪 Running smoke tests on {environment.upper()}...")
+        
+        # Test 1: Model loads
+        assert model is not None, "Model not loaded"
+        print("✅ Model loads successfully")
+        
+        # Test 2: Predictions work
+        import numpy as np
+        test_data = np.random.randn(10, 20)
+        predictions = model.predict(test_data)
+        assert len(predictions) == 10, "Prediction count mismatch"
+        print("✅ Predictions working")
+        
+        # Test 3: Response time
+        import time
+        start = time.time()
+        _ = model.predict(test_data)
+        latency = (time.time() - start) * 1000
+        assert latency < 100, f"Latency too high: {latency:.0f}ms"
+        print(f"✅ Latency acceptable: {latency:.0f}ms")
+        
+        print(f"\n✅ All smoke tests passed for {environment.upper()}")
+        return True
+    
+    def switch_traffic(self):
+        """Switch traffic from blue to green"""
+        if self.active == 'blue':
+            print("\n🔄 Switching traffic: BLUE → GREEN")
+            self.active = 'green'
+            self.blue_model = self.green_model  # Update blue to match green
+        else:
+            print("\n🔄 Switching traffic: GREEN → BLUE")
+            self.active = 'blue'
+        
+        print(f"✅ Traffic now on {self.active.upper()}")
+    
+    def rollback(self):
+        """Instant rollback to previous version"""
+        print("\n⚠️ ROLLBACK initiated!")
+        self.switch_traffic()
+        print("✅ Rollback complete - serving previous version")
+
+# Example deployment
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
+
+X, y = make_classification(n_samples=1000, random_state=42)
+
+# Initial deployment (blue)
+deployment = BlueGreenDeployment()
+blue_model = RandomForestClassifier(n_estimators=50, random_state=42)
+blue_model.fit(X, y)
+deployment.blue_model = blue_model
+print("🔵 BLUE environment serving traffic")
+
+# Deploy new version to green
+green_model = RandomForestClassifier(n_estimators=100, random_state=42)
+green_model.fit(X, y)
+deployment.deploy_to_green(green_model)
+
+# Test green environment
+if deployment.run_smoke_tests('green'):
+    # Switch traffic
+    deployment.switch_traffic()
+    print("\n✅ Deployment successful!")
+else:
+    print("\n❌ Tests failed - keeping BLUE active")'''
+    st.code(lab7_code, language='python')
+    
+    st.markdown("### Lab 8: Kubernetes Deployment (90 min)")
+    lab8_code = '''# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-model-deployment
+  labels:
+    app: ml-model
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ml-model
+  template:
+    metadata:
+      labels:
+        app: ml-model
+    spec:
+      containers:
+      - name: ml-model
+        image: myregistry/ml-model:v1.0
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        env:
+        - name: MODEL_PATH
+          value: "/app/models/model.pkl"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-model-service
+spec:
+  selector:
+    app: ml-model
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+  type: LoadBalancer
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ml-model-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ml-model-deployment
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+# Deploy commands:
+# kubectl apply -f deployment.yaml
+# kubectl get pods
+# kubectl get services
+# kubectl logs -f deployment/ml-model-deployment
+# kubectl scale deployment ml-model-deployment --replicas=5
+# kubectl rollout status deployment/ml-model-deployment
+# kubectl rollout undo deployment/ml-model-deployment  # Rollback'''
+    st.code(lab8_code, language='yaml')
+    
+    st.markdown("### Lab 9: API Gateway & Load Balancing (60 min)")
+    lab9_code = '''from flask import Flask, request, jsonify
+import joblib
+import numpy as np
+import time
+from functools import wraps
+
+app = Flask(__name__)
+
+# Load model
+model = joblib.load('model.pkl')
+
+# Rate limiting
+request_counts = {}
+RATE_LIMIT = 100  # requests per minute
+
+def rate_limit(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        client_ip = request.remote_addr
+        current_minute = int(time.time() / 60)
+        key = f"{client_ip}_{current_minute}"
+        
+        request_counts[key] = request_counts.get(key, 0) + 1
+        
+        if request_counts[key] > RATE_LIMIT:
+            return jsonify({
+                'error': 'Rate limit exceeded',
+                'limit': RATE_LIMIT,
+                'retry_after': 60
+            }), 429
+        
+        return f(*args, **kwargs)
+    return decorated_function
+
+# Health check
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({'status': 'healthy', 'timestamp': time.time()})
+
+# Readiness check
+@app.route('/ready', methods=['GET'])
+def ready():
+    try:
+        # Check if model is loaded
+        if model is None:
+            return jsonify({'ready': False, 'reason': 'Model not loaded'}), 503
+        return jsonify({'ready': True})
+    except Exception as e:
+        return jsonify({'ready': False, 'reason': str(e)}), 503
+
+# Prediction endpoint with rate limiting
+@app.route('/predict', methods=['POST'])
+@rate_limit
+def predict():
+    try:
+        # Validate request
+        if not request.json:
+            return jsonify({'error': 'No JSON data provided'}), 400
+        
+        # Extract features
+        features = request.json.get('features')
+        if features is None:
+            return jsonify({'error': 'Missing features field'}), 400
+        
+        # Convert to numpy array
+        X = np.array(features).reshape(1, -1)
+        
+        # Predict
+        start_time = time.time()
+        prediction = model.predict(X)[0]
+        prediction_proba = model.predict_proba(X)[0].tolist()
+        latency = (time.time() - start_time) * 1000
+        
+        return jsonify({
+            'prediction': int(prediction),
+            'probabilities': prediction_proba,
+            'latency_ms': round(latency, 2),
+            'model_version': '1.0'
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Batch prediction
+@app.route('/predict/batch', methods=['POST'])
+@rate_limit
+def predict_batch():
+    try:
+        data = request.json.get('batch')
+        if not data:
+            return jsonify({'error': 'No batch data provided'}), 400
+        
+        X = np.array(data)
+        predictions = model.predict(X).tolist()
+        
+        return jsonify({
+            'predictions': predictions,
+            'count': len(predictions)
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Metrics endpoint
+@app.route('/metrics', methods=['GET'])
+def metrics():
+    return jsonify({
+        'total_requests': sum(request_counts.values()),
+        'active_clients': len(request_counts)
+    })
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000)
+
+# nginx.conf for load balancing
+# upstream ml_backend {
+#     least_conn;
+#     server ml-api-1:8000 weight=3;
+#     server ml-api-2:8000 weight=2;
+#     server ml-api-3:8000 weight=1;
+# }
+# 
+# server {
+#     listen 80;
+#     location / {
+#         proxy_pass http://ml_backend;
+#         proxy_set_header Host $host;
+#         proxy_set_header X-Real-IP $remote_addr;
+#     }
+# }'''
+    st.code(lab9_code, language='python')
+    
+    st.markdown("### 🎯 Deployment Best Practices")
+    st.markdown("""**Production Deployment Checklist:**
+✅ Requirements.txt with pinned versions
+✅ Comprehensive unit tests
+✅ Docker containerization
+✅ CI/CD pipeline configured
+✅ Model versioning system
+✅ Blue-green deployment strategy
+✅ Kubernetes orchestration
+✅ Health checks implemented
+✅ Auto-scaling configured
+✅ Rollback procedures documented""")
+    
+    st.success("✅ Unit 5 Labs Complete: ML deployment pipeline mastered!")
+
+
+def _render_unit6_labs():
+    """Labs for Unit 6: MLOps & Monitoring"""
+    st.markdown("---")
+    st.markdown("## 🧪 HANDS-ON LABS: Unit 6")
+    
+    st.markdown("### Lab 1: MLflow Tracking (60 min)")
+    lab1_code = '''import mlflow
+import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+
+X, y = make_classification(n_samples=1000, n_features=20, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+mlflow.set_experiment("my_experiment")
+
+with mlflow.start_run(run_name="rf_model"):
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+    
+    mlflow.log_param("n_estimators", 100)
+    mlflow.log_metric("accuracy", model.score(X_test, y_test))
+    mlflow.sklearn.log_model(model, "model")
+    
+print("Run: mlflow ui to view results")'''
+    st.code(lab1_code, language='python')
+    
+    st.markdown("### Lab 2: Data Drift Detection (60 min)")
+    lab2_code = '''from scipy.stats import ks_2samp
+import pandas as pd
+import numpy as np
+
+def detect_drift(train_data, prod_data, threshold=0.05):
+    drift_report = {}
+    for col in train_data.columns:
+        if train_data[col].dtype in ['float64', 'int64']:
+            stat, p_value = ks_2samp(train_data[col], prod_data[col])
+            drift_report[col] = {
+                'p_value': p_value,
+                'drift': p_value < threshold
+            }
+    return drift_report
+
+# Example
+train = pd.DataFrame(np.random.randn(1000, 5))
+prod = pd.DataFrame(np.random.randn(1000, 5) + 0.5)  # Shifted
+
+report = detect_drift(train, prod)
+for col, result in report.items():
+    status = "⚠️ DRIFT" if result['drift'] else "✅ OK"
+    print(f"{col}: {status}")'''
+    st.code(lab2_code, language='python')
+    
+    st.markdown("### Lab 3: Production Monitoring Dashboard (60 min)")
+    lab3_code = '''import streamlit as st
+import pandas as pd
+import plotly.express as px
+from datetime import datetime, timedelta
+import numpy as np
+
+st.title("📊 ML Model Monitoring Dashboard")
+
+# Simulate metrics
+np.random.seed(42)
+dates = pd.date_range(end=datetime.now(), periods=30, freq='D')
+metrics_df = pd.DataFrame({
+    'date': dates,
+    'accuracy': np.random.normal(0.85, 0.02, 30),
+    'latency_ms': np.random.normal(50, 10, 30),
+    'throughput': np.random.normal(1000, 100, 30),
+    'error_rate': np.random.normal(0.02, 0.01, 30)
+})
+
+# KPIs
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    current_acc = metrics_df['accuracy'].iloc[-1]
+    st.metric(
+        "Accuracy",
+        f"{current_acc:.1%}",
+        f"{(current_acc - 0.85)*100:.1f}%"
+    )
+
+with col2:
+    current_latency = metrics_df['latency_ms'].iloc[-1]
+    st.metric(
+        "Latency",
+        f"{current_latency:.0f}ms",
+        f"{current_latency - 50:.0f}ms"
+    )
+
+with col3:
+    current_throughput = metrics_df['throughput'].iloc[-1]
+    st.metric(
+        "Throughput",
+        f"{current_throughput:.0f}/s",
+        f"{current_throughput - 1000:.0f}"
+    )
+
+with col4:
+    current_error = metrics_df['error_rate'].iloc[-1]
+    st.metric(
+        "Error Rate",
+        f"{current_error:.1%}",
+        f"{(current_error - 0.02)*100:.1f}%",
+        delta_color="inverse"
+    )
+
+# Charts
+st.markdown("### Performance Trends")
+
+fig1 = px.line(metrics_df, x='date', y='accuracy', title='Model Accuracy Over Time')
+fig1.add_hline(y=0.80, line_dash="dash", line_color="red", annotation_text="Threshold")
+st.plotly_chart(fig1, use_container_width=True)
+
+fig2 = px.line(metrics_df, x='date', y='latency_ms', title='Response Latency')
+fig2.add_hline(y=100, line_dash="dash", line_color="red", annotation_text="SLA")
+st.plotly_chart(fig2, use_container_width=True)
+
+# Alerts
+st.markdown("### ⚠️ Active Alerts")
+if current_acc < 0.80:
+    st.error("🔴 CRITICAL: Accuracy below threshold")
+if current_latency > 100:
+    st.warning("🟡 WARNING: High latency detected")
+if current_error > 0.05:
+    st.error("🔴 CRITICAL: Error rate too high")
+
+if current_acc >= 0.80 and current_latency <= 100 and current_error <= 0.05:
+    st.success("✅ All systems operational")'''
+    st.code(lab3_code, language='python')
+    
+    st.markdown("### Lab 4: A/B Testing for Models (60 min)")
+    lab4_code = '''import numpy as np
+from scipy import stats
+import pandas as pd
+
+class ModelABTest:
+    def __init__(self, model_a, model_b, name_a="Model A", name_b="Model B"):
+        self.model_a = model_a
+        self.model_b = model_b
+        self.name_a = name_a
+        self.name_b = name_b
+        self.results_a = []
+        self.results_b = []
+    
+    def assign_traffic(self, user_id, split=0.5):
+        """Randomly assign user to model A or B"""
+        # Use hash for consistent assignment
+        hash_val = hash(str(user_id)) % 100
+        return 'A' if hash_val < split * 100 else 'B'
+    
+    def log_prediction(self, user_id, features, actual_outcome):
+        """Log prediction and actual outcome"""
+        variant = self.assign_traffic(user_id)
+        
+        if variant == 'A':
+            prediction = self.model_a.predict([features])[0]
+            self.results_a.append({
+                'user_id': user_id,
+                'prediction': prediction,
+                'actual': actual_outcome,
+                'correct': prediction == actual_outcome
+            })
+        else:
+            prediction = self.model_b.predict([features])[0]
+            self.results_b.append({
+                'user_id': user_id,
+                'prediction': prediction,
+                'actual': actual_outcome,
+                'correct': prediction == actual_outcome
+            })
+    
+    def analyze_results(self, min_samples=100):
+        """Analyze A/B test results"""
+        if len(self.results_a) < min_samples or len(self.results_b) < min_samples:
+            print(f"⚠️ Not enough samples yet (A: {len(self.results_a)}, B: {len(self.results_b)})")
+            return None
+        
+        df_a = pd.DataFrame(self.results_a)
+        df_b = pd.DataFrame(self.results_b)
+        
+        accuracy_a = df_a['correct'].mean()
+        accuracy_b = df_b['correct'].mean()
+        
+        # Statistical test
+        successes_a = df_a['correct'].sum()
+        successes_b = df_b['correct'].sum()
+        n_a = len(df_a)
+        n_b = len(df_b)
+        
+        # Two-proportion z-test
+        p_pooled = (successes_a + successes_b) / (n_a + n_b)
+        se = np.sqrt(p_pooled * (1 - p_pooled) * (1/n_a + 1/n_b))
+        z_score = (accuracy_a - accuracy_b) / se
+        p_value = 2 * (1 - stats.norm.cdf(abs(z_score)))
+        
+        print(f"\n📊 A/B Test Results:")
+        print(f"\n{self.name_a}:")
+        print(f"  Samples: {n_a}")
+        print(f"  Accuracy: {accuracy_a:.3f}")
+        
+        print(f"\n{self.name_b}:")
+        print(f"  Samples: {n_b}")
+        print(f"  Accuracy: {accuracy_b:.3f}")
+        
+        print(f"\nStatistical Test:")
+        print(f"  Difference: {abs(accuracy_a - accuracy_b):.3f}")
+        print(f"  Z-score: {z_score:.3f}")
+        print(f"  P-value: {p_value:.4f}")
+        
+        if p_value < 0.05:
+            winner = self.name_a if accuracy_a > accuracy_b else self.name_b
+            print(f"\n✅ Statistically significant! Winner: {winner}")
+        else:
+            print(f"\n❌ No significant difference (p >= 0.05)")
+        
+        return {
+            'accuracy_a': accuracy_a,
+            'accuracy_b': accuracy_b,
+            'p_value': p_value,
+            'significant': p_value < 0.05
+        }
+
+# Example
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
+
+X, y = make_classification(n_samples=1000, n_features=20, random_state=42)
+
+# Two models
+model_a = RandomForestClassifier(n_estimators=50, random_state=42)
+model_b = RandomForestClassifier(n_estimators=100, random_state=42)
+
+model_a.fit(X[:800], y[:800])
+model_b.fit(X[:800], y[:800])
+
+# Run A/B test
+ab_test = ModelABTest(model_a, model_b, "RF-50", "RF-100")
+
+# Simulate traffic
+for i in range(200):
+    user_id = f"user_{i}"
+    features = X[800 + i]
+    actual = y[800 + i]
+    ab_test.log_prediction(user_id, features, actual)
+
+# Analyze
+results = ab_test.analyze_results(min_samples=50)'''
+    st.code(lab4_code, language='python')
+    
+    st.markdown("### Lab 5: Automated Retraining Pipeline (75 min)")
+    lab5_code = '''import mlflow
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+import schedule
+import time
+
+class AutoRetrainingPipeline:
+    def __init__(self, model_name, performance_threshold=0.80):
+        self.model_name = model_name
+        self.performance_threshold = performance_threshold
+        self.current_model = None
+        self.current_performance = None
+    
+    def check_performance_degradation(self, recent_predictions, recent_actuals):
+        """Check if model performance has degraded"""
+        if len(recent_predictions) < 100:
+            return False, "Not enough data"
+        
+        current_accuracy = accuracy_score(recent_actuals, recent_predictions)
+        
+        if current_accuracy < self.performance_threshold:
+            return True, f"Performance degraded: {current_accuracy:.3f} < {self.performance_threshold}"
+        
+        return False, f"Performance OK: {current_accuracy:.3f}"
+    
+    def fetch_new_data(self):
+        """Fetch new training data (simulated)"""
+        # In production, this would fetch from your data warehouse
+        from sklearn.datasets import make_classification
+        X, y = make_classification(n_samples=1000, n_features=20, random_state=int(time.time()))
+        return X, y
+    
+    def train_new_model(self, X_train, y_train):
+        """Train a new model version"""
+        print(f"\n🔄 Training new model version...")
+        
+        with mlflow.start_run(run_name=f"{self.model_name}_retrain_{datetime.now().strftime('%Y%m%d_%H%M%S')}"):
+            # Train
+            model = RandomForestClassifier(n_estimators=100, random_state=42)
+            model.fit(X_train, y_train)
+            
+            # Evaluate
+            train_score = model.score(X_train, y_train)
+            
+            # Log
+            mlflow.log_param("retrain_timestamp", datetime.now().isoformat())
+            mlflow.log_metric("train_accuracy", train_score)
+            mlflow.sklearn.log_model(model, "model")
+            
+            print(f"✅ New model trained: {train_score:.3f} accuracy")
+            
+            return model, train_score
+    
+    def validate_new_model(self, new_model, X_val, y_val):
+        """Validate new model before deployment"""
+        new_score = new_model.score(X_val, y_val)
+        
+        if self.current_performance is None:
+            return True, "First model"
+        
+        if new_score > self.current_performance:
+            return True, f"Improvement: {new_score:.3f} > {self.current_performance:.3f}"
+        else:
+            return False, f"No improvement: {new_score:.3f} <= {self.current_performance:.3f}"
+    
+    def deploy_model(self, model, performance):
+        """Deploy new model to production"""
+        self.current_model = model
+        self.current_performance = performance
+        print(f"🚀 Model deployed with {performance:.3f} accuracy")
+    
+    def run_retraining_cycle(self):
+        """Execute one retraining cycle"""
+        print(f"\n{'='*60}")
+        print(f"Retraining Cycle: {datetime.now()}")
+        print(f"{'='*60}")
+        
+        # Fetch new data
+        X_train, y_train = self.fetch_new_data()
+        X_val, y_val = self.fetch_new_data()
+        
+        # Train new model
+        new_model, train_score = self.train_new_model(X_train, y_train)
+        
+        # Validate
+        should_deploy, reason = self.validate_new_model(new_model, X_val, y_val)
+        
+        if should_deploy:
+            print(f"✅ Validation passed: {reason}")
+            self.deploy_model(new_model, new_model.score(X_val, y_val))
+        else:
+            print(f"❌ Validation failed: {reason}")
+            print("Keeping current model")
+    
+    def start_scheduled_retraining(self, interval_hours=24):
+        """Start scheduled retraining"""
+        print(f"🔄 Starting automated retraining every {interval_hours} hours")
+        
+        # Schedule retraining
+        schedule.every(interval_hours).hours.do(self.run_retraining_cycle)
+        
+        # Run immediately
+        self.run_retraining_cycle()
+        
+        # Keep running
+        while True:
+            schedule.run_pending()
+            time.sleep(60)
+
+# Example usage
+mlflow.set_experiment("auto_retraining")
+
+pipeline = AutoRetrainingPipeline(
+    model_name="churn_predictor",
+    performance_threshold=0.80
+)
+
+# Run one cycle (in production, use start_scheduled_retraining)
+pipeline.run_retraining_cycle()
+
+print("\n✅ Automated retraining pipeline configured!")
+print("In production: pipeline.start_scheduled_retraining(interval_hours=24)")'''
+    st.code(lab5_code, language='python')
+    
+    st.markdown("### 🎯 MLOps Best Practices")
+    st.markdown("""**Production MLOps Checklist:**
+✅ Experiment tracking (MLflow)
+✅ Data drift monitoring
+✅ Model performance dashboards
+✅ A/B testing framework
+✅ Automated alerts
+✅ Incident response plan
+✅ Model retraining pipeline
+✅ Feature store
+✅ Model registry
+✅ Comprehensive logging""")
+    
+    st.success("✅ Unit 6 Labs Complete: Production monitoring mastered!")
+
+
+def _render_unit7_labs():
+    """Labs for Unit 7: Capstone Project"""
+    st.markdown("---")
+    st.markdown("## 🎯 Unit 7: Capstone Templates")
+    
+    st.markdown("### Template: Project Structure")
+    template = '''capstone_project/
+├── README.md
+├── requirements.txt
+├── data/
+│   ├── raw/
+│   └── processed/
+├── notebooks/
+│   ├── 01_eda.ipynb
+│   ├── 02_modeling.ipynb
+│   └── 03_evaluation.ipynb
+├── src/
+│   ├── train.py
+│   ├── predict.py
+│   └── evaluate.py
+├── models/
+└── results/'''
+    st.code(template, language='text')
+    
+    st.markdown("### Template: Training Script")
+    train_code = '''import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+import joblib
+
+def main():
+    # Load data
+    df = pd.read_csv("data/processed/clean_data.csv")
+    X = df.drop("target", axis=1)
+    y = df["target"]
+    
+    # Split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+    
+    # Train
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+    
+    # Save
+    joblib.dump(model, "models/model.pkl")
+    print(f"Test Accuracy: {model.score(X_test, y_test):.3f}")
+
+if __name__ == "__main__":
+    main()'''
+    st.code(train_code, language='python')
+    
+    st.markdown("## 🎯 Capstone Project Options")
+    st.markdown("**Choose one of these comprehensive projects to demonstrate your ML skills:**")
+    
+    st.markdown("### Option 1: Customer Churn Prediction System")
+    st.markdown("""**Objective:** Build an end-to-end churn prediction system with monitoring
+
+**Requirements:**
+- Data: Customer transactions, demographics, support tickets
+- Model: Classification (Random Forest, XGBoost, or Neural Network)
+- Features: RFM analysis, engagement metrics, support history
+- Deployment: REST API with Docker
+- Monitoring: Performance dashboard, drift detection
+- A/B Testing: Compare model versions
+
+**Deliverables:**
+1. EDA notebook with insights
+2. Feature engineering pipeline
+3. Model training with MLflow tracking
+4. Deployed API with health checks
+5. Monitoring dashboard
+6. Final report with business recommendations""")
+    
+    st.markdown("### Option 2: Demand Forecasting Pipeline")
+    st.markdown("""**Objective:** Create a production forecasting system for retail/supply chain
+
+**Requirements:**
+- Data: Historical sales, inventory, promotions, weather
+- Model: Time-series (ARIMA, Prophet, LSTM, or ensemble)
+- Features: Lag features, rolling statistics, seasonality
+- Deployment: Batch prediction pipeline
+- Monitoring: Forecast accuracy tracking
+- Automation: Scheduled retraining
+
+**Deliverables:**
+1. Time-series analysis notebook
+2. Multiple model comparison
+3. Production forecasting class
+4. Automated pipeline with scheduling
+5. Accuracy monitoring system
+6. Business impact analysis""")
+    
+    st.markdown("### Option 3: Recommendation Engine")
+    st.markdown("""**Objective:** Build a scalable recommendation system
+
+**Requirements:**
+- Data: User interactions, product catalog, ratings
+- Model: Collaborative filtering, content-based, or hybrid
+- Features: User embeddings, item similarity, interaction history
+- Deployment: Real-time API with caching
+- Monitoring: Click-through rate, conversion tracking
+- A/B Testing: Compare recommendation strategies
+
+**Deliverables:**
+1. User behavior analysis
+2. Multiple recommendation algorithms
+3. Hybrid recommendation system
+4. Scalable API with Redis caching
+5. A/B testing framework
+6. Performance metrics dashboard""")
+    
+    st.markdown("### Option 4: Fraud Detection System")
+    st.markdown("""**Objective:** Real-time fraud detection with explainability
+
+**Requirements:**
+- Data: Transaction history, user profiles, device info
+- Model: Anomaly detection + classification
+- Features: Transaction patterns, velocity checks, network analysis
+- Deployment: Low-latency API (<100ms)
+- Monitoring: False positive/negative rates
+- Explainability: SHAP values for decisions
+
+**Deliverables:**
+1. Fraud pattern analysis
+2. Anomaly detection + supervised model
+3. Real-time scoring API
+4. Explainability dashboard
+5. Alert system for high-risk transactions
+6. Model performance report""")
+    
+    st.markdown("### Option 5: NLP Sentiment Analysis Platform")
+    st.markdown("""**Objective:** Multi-class sentiment analysis with deployment
+
+**Requirements:**
+- Data: Customer reviews, social media, support tickets
+- Model: BERT, RoBERTa, or custom transformer
+- Features: Text embeddings, sentiment scores, topic modeling
+- Deployment: Batch + real-time API
+- Monitoring: Model drift on text data
+- Visualization: Sentiment trends dashboard
+
+**Deliverables:**
+1. Text preprocessing pipeline
+2. Fine-tuned transformer model
+3. Deployed API with batch processing
+4. Sentiment trends dashboard
+5. Topic modeling analysis
+6. Business insights report""")
+    
+    st.markdown("## 📝 Capstone Evaluation Rubric")
+    st.markdown("""**Your capstone will be evaluated on:**
+
+1. **Data Analysis (20%)**
+   - Thorough EDA with visualizations
+   - Data quality assessment
+   - Feature importance analysis
+
+2. **Model Development (25%)**
+   - Multiple models compared
+   - Proper train/validation/test split
+   - Hyperparameter optimization
+   - Cross-validation results
+
+3. **Production Deployment (25%)**
+   - Dockerized application
+   - REST API with documentation
+   - Error handling and logging
+   - Health checks implemented
+
+4. **MLOps & Monitoring (20%)**
+   - Experiment tracking (MLflow)
+   - Model versioning
+   - Performance monitoring
+   - Automated retraining or alerts
+
+5. **Documentation (10%)**
+   - Clear README with setup instructions
+   - Code comments and docstrings
+   - Architecture diagram
+   - Business impact summary
+
+**Bonus Points:**
+- A/B testing implementation
+- CI/CD pipeline
+- Kubernetes deployment
+- Advanced explainability (SHAP, LIME)""")
+    
+    st.success("✅ Choose your capstone project and build something amazing!")
 
 
 def _render_unit_learning_materials(unit_number: int):
@@ -3153,6 +6467,8 @@ By the end of this pathway you will be able to:
                 "Use notebook `U1_advanced_feature_pipelines.ipynb` in "
                 "`data_science_pathway3/notebooks` as a starting point for these labs."
             )
+            # Add executable code labs
+            _render_unit1_labs()
         elif selected_unit == 2:
             st.markdown(
                 """These labs emphasise **systematic experiment tracking** and
@@ -3180,6 +6496,8 @@ fair comparison of models.
                 "Use notebook `U2_experiment_tracking_model_selection.ipynb` in "
                 "`data_science_pathway3/notebooks` as a starting point for these labs."
             )
+            # Add executable code labs
+            _render_unit2_labs()
         elif selected_unit == 3:
             st.markdown(
                 """These labs focus on **advanced supervised models** and how to
@@ -3209,6 +6527,8 @@ evaluate them responsibly.
                 "Use notebook `U3_advanced_supervised_ensembles.ipynb` in "
                 "`data_science_pathway3/notebooks` as a starting point for these labs."
             )
+            # Add executable code labs
+            _render_unit3_labs()
         elif selected_unit == 4:
             st.markdown(
                 """These labs emphasise **practical forecasting** for operations
@@ -3236,6 +6556,8 @@ questions.
                 "Use notebook `U4_time_series_forecasting_ops.ipynb` in "
                 "`data_science_pathway3/notebooks` to run these forecasting labs."
             )
+            # Add executable code labs
+            _render_unit4_labs()
         elif selected_unit == 5:
             st.markdown(
                 """These labs focus on turning code and models into **reliable
@@ -3261,6 +6583,8 @@ artefacts** that others can run.
                 "Use notebook `U5_packaging_and_cicd.ipynb` in "
                 "`data_science_pathway3/notebooks` as a design space for these labs."
             )
+            # Add executable code labs
+            _render_unit5_labs()
         elif selected_unit == 6:
             st.markdown(
                 """These labs emphasise **monitoring and responsible AI**.
@@ -3283,6 +6607,8 @@ artefacts** that others can run.
                 "Use notebook `U6_monitoring_drift_responsible_ai.ipynb` in "
                 "`data_science_pathway3/notebooks` when working through these labs."
             )
+            # Add executable code labs
+            _render_unit6_labs()
         elif selected_unit == 7:
             st.markdown(
                 """Use these milestones to structure your Pathway 3 capstone.
@@ -3308,6 +6634,8 @@ artefacts** that others can run.
                 "Use notebook `U7_production_capstone_template.ipynb` in "
                 "`data_science_pathway3/notebooks` as the main workspace for your capstone."
             )
+            # Add executable code labs
+            _render_unit7_labs()
         else:
             st.markdown(
                 "Detailed lab descriptions for this unit will be added in a later "
