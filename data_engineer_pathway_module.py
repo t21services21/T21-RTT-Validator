@@ -481,90 +481,1302 @@ By the end of this pathway you will be able to:
         st.markdown(f"### Unit {selected_unit}: {UNITS[selected_unit]['name']}")
 
         if selected_unit == 1:
-            st.markdown(
-                """These labs focus on building your first data pipelines.
+            st.markdown("### 🔥 Unit 1: Data Engineering Fundamentals & Pipelines")
+            st.markdown("**COMPREHENSIVE HANDS-ON LABS - Production-Ready ETL Code!**")
+            
+            st.markdown("### LAB 1: Build Your First ETL Pipeline (120 min)")
+            st.markdown("**Objective:** Extract data from API, transform it, load to database")
+            lab1_code = '''import requests
+import pandas as pd
+import sqlite3
+from datetime import datetime
+import logging
 
-- **Lab 1 – Extract and load**
-  - Extract data from a CSV or API.
-  - Load it into a local database or file.
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
-- **Lab 2 – Add transformations**
-  - Add cleaning and filtering steps to your pipeline.
-  - Handle missing values and data types.
+class SimpleETLPipeline:
+    def __init__(self, db_path='data_warehouse.db'):
+        self.db_path = db_path
+        self.conn = None
+    
+    def extract_from_api(self, api_url):
+        """Extract data from REST API"""
+        logger.info(f"Extracting data from {api_url}")
+        
+        try:
+            response = requests.get(api_url, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+            
+            logger.info(f"Extracted {len(data)} records")
+            return pd.DataFrame(data)
+        
+        except Exception as e:
+            logger.error(f"Extraction failed: {e}")
+            raise
+    
+    def extract_from_csv(self, file_path):
+        """Extract data from CSV file"""
+        logger.info(f"Extracting data from {file_path}")
+        
+        try:
+            df = pd.read_csv(file_path)
+            logger.info(f"Extracted {len(df)} records from CSV")
+            return df
+        
+        except Exception as e:
+            logger.error(f"CSV extraction failed: {e}")
+            raise
+    
+    def transform(self, df):
+        """Transform and clean data"""
+        logger.info("Starting transformation")
+        
+        initial_count = len(df)
+        
+        # 1. Remove duplicates
+        df = df.drop_duplicates()
+        logger.info(f"Removed {initial_count - len(df)} duplicates")
+        
+        # 2. Handle missing values
+        df = df.dropna(subset=['id', 'name'])  # Critical fields
+        df['email'].fillna('unknown@company.com', inplace=True)
+        
+        # 3. Data type conversions
+        if 'date' in df.columns:
+            df['date'] = pd.to_datetime(df['date'], errors='coerce')
+        
+        if 'amount' in df.columns:
+            df['amount'] = pd.to_numeric(df['amount'], errors='coerce')
+        
+        # 4. Add metadata
+        df['etl_timestamp'] = datetime.now()
+        df['etl_batch_id'] = datetime.now().strftime('%Y%m%d_%H%M%S')
+        
+        logger.info(f"Transformation complete: {len(df)} records ready")
+        return df
+    
+    def load_to_database(self, df, table_name):
+        """Load data to SQLite database"""
+        logger.info(f"Loading {len(df)} records to {table_name}")
+        
+        try:
+            self.conn = sqlite3.connect(self.db_path)
+            
+            # Load data
+            df.to_sql(table_name, self.conn, if_exists='append', index=False)
+            
+            # Verify
+            cursor = self.conn.cursor()
+            cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+            count = cursor.fetchone()[0]
+            
+            logger.info(f"Load complete: {count} total records in {table_name}")
+            
+        except Exception as e:
+            logger.error(f"Load failed: {e}")
+            raise
+        
+        finally:
+            if self.conn:
+                self.conn.close()
+    
+    def run_pipeline(self, source_type, source, table_name):
+        """Run complete ETL pipeline"""
+        logger.info("="*60)
+        logger.info("STARTING ETL PIPELINE")
+        logger.info("="*60)
+        
+        try:
+            # Extract
+            if source_type == 'api':
+                df = self.extract_from_api(source)
+            elif source_type == 'csv':
+                df = self.extract_from_csv(source)
+            else:
+                raise ValueError(f"Unknown source type: {source_type}")
+            
+            # Transform
+            df_clean = self.transform(df)
+            
+            # Load
+            self.load_to_database(df_clean, table_name)
+            
+            logger.info("="*60)
+            logger.info("✅ ETL PIPELINE COMPLETED SUCCESSFULLY")
+            logger.info("="*60)
+            
+            return True
+        
+        except Exception as e:
+            logger.error(f"❌ ETL PIPELINE FAILED: {e}")
+            return False
 
-- **Mini project – End-to-end ETL script**
-  - Build a Python script that extracts, transforms and loads data.
-  - Add logging and error handling.
-"""
-            )
+# Example usage
+pipeline = SimpleETLPipeline()
+
+# Run pipeline from CSV
+success = pipeline.run_pipeline(
+    source_type='csv',
+    source='customers.csv',
+    table_name='customers'
+)
+
+if success:
+    print("✅ Pipeline executed successfully!")'''
+            st.code(lab1_code, language='python')
+            
+            st.markdown("### LAB 2: Advanced ETL with Error Handling & Retry Logic (90 min)")
+            st.markdown("**Objective:** Build production-grade ETL with comprehensive error handling")
+            lab2_code = '''import pandas as pd
+import sqlite3
+import time
+import logging
+from functools import wraps
+
+def retry_on_failure(max_retries=3, delay=5):
+    """Decorator for retry logic"""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if attempt < max_retries - 1:
+                        logging.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in {delay}s...")
+                        time.sleep(delay)
+                    else:
+                        logging.error(f"All {max_retries} attempts failed")
+                        raise
+        return wrapper
+    return decorator
+
+class ProductionETL:
+    def __init__(self, config):
+        self.config = config
+        self.stats = {
+            'records_extracted': 0,
+            'records_transformed': 0,
+            'records_loaded': 0,
+            'errors': []
+        }
+    
+    @retry_on_failure(max_retries=3, delay=5)
+    def extract(self, source):
+        """Extract with retry logic"""
+        logging.info(f"Extracting from {source}")
+        
+        df = pd.read_csv(source)
+        self.stats['records_extracted'] = len(df)
+        
+        # Validate extraction
+        if len(df) == 0:
+            raise ValueError("No data extracted")
+        
+        return df
+    
+    def transform_with_validation(self, df):
+        """Transform with data quality checks"""
+        logging.info("Starting transformation with validation")
+        
+        # Quality checks
+        quality_report = {
+            'total_records': len(df),
+            'duplicates': df.duplicated().sum(),
+            'missing_critical': df[['id', 'name']].isnull().sum().sum(),
+            'invalid_dates': 0,
+            'invalid_amounts': 0
+        }
+        
+        # Transform
+        df = df.drop_duplicates()
+        df = df.dropna(subset=['id', 'name'])
+        
+        # Validate dates
+        if 'date' in df.columns:
+            df['date'] = pd.to_datetime(df['date'], errors='coerce')
+            quality_report['invalid_dates'] = df['date'].isnull().sum()
+            df = df[df['date'].notnull()]
+        
+        # Validate amounts
+        if 'amount' in df.columns:
+            df['amount'] = pd.to_numeric(df['amount'], errors='coerce')
+            quality_report['invalid_amounts'] = df['amount'].isnull().sum()
+            df = df[df['amount'].notnull()]
+        
+        self.stats['records_transformed'] = len(df)
+        
+        # Log quality report
+        logging.info(f"Quality Report: {quality_report}")
+        
+        if len(df) < quality_report['total_records'] * 0.5:
+            raise ValueError(f"Too many records dropped: {quality_report['total_records']} -> {len(df)}")
+        
+        return df, quality_report
+    
+    @retry_on_failure(max_retries=3, delay=5)
+    def load(self, df, table_name):
+        """Load with transaction support"""
+        logging.info(f"Loading to {table_name}")
+        
+        conn = sqlite3.connect(self.config['db_path'])
+        
+        try:
+            # Begin transaction
+            conn.execute('BEGIN TRANSACTION')
+            
+            # Load data
+            df.to_sql(table_name, conn, if_exists='append', index=False)
+            
+            # Commit
+            conn.commit()
+            
+            self.stats['records_loaded'] = len(df)
+            logging.info(f"✅ Loaded {len(df)} records")
+            
+        except Exception as e:
+            conn.rollback()
+            logging.error(f"Load failed, transaction rolled back: {e}")
+            raise
+        
+        finally:
+            conn.close()
+    
+    def run(self, source, table_name):
+        """Run complete pipeline with error handling"""
+        start_time = time.time()
+        
+        try:
+            # Extract
+            df = self.extract(source)
+            
+            # Transform
+            df_clean, quality_report = self.transform_with_validation(df)
+            
+            # Load
+            self.load(df_clean, table_name)
+            
+            # Success
+            duration = time.time() - start_time
+            logging.info(f"✅ Pipeline completed in {duration:.2f}s")
+            logging.info(f"Stats: {self.stats}")
+            
+            return True, self.stats
+        
+        except Exception as e:
+            duration = time.time() - start_time
+            logging.error(f"❌ Pipeline failed after {duration:.2f}s: {e}")
+            return False, self.stats
+
+# Example
+config = {'db_path': 'warehouse.db'}
+etl = ProductionETL(config)
+
+success, stats = etl.run('customers.csv', 'customers')
+print(f"\nPipeline Status: {'SUCCESS' if success else 'FAILED'}")
+print(f"Statistics: {stats}")'''
+            st.code(lab2_code, language='python')
+            
+            st.success("✅ Unit 1 Labs Complete: Copy and run these production-ready ETL pipelines!")
         elif selected_unit == 2:
-            st.markdown(
-                """These labs emphasise data warehouse design.
+            st.markdown("### 🔥 Unit 2: Data Warehousing & Dimensional Modeling")
+            st.markdown("**COMPREHENSIVE HANDS-ON LABS - Production Data Warehouse Code!**")
+            
+            st.markdown("### LAB 1: Design & Build Star Schema (120 min)")
+            st.markdown("**Objective:** Design and implement a complete star schema for retail analytics")
+            lab2_1 = '''import sqlite3
+import pandas as pd
+from datetime import datetime
 
-- **Lab 1 – Design a star schema**
-  - Choose a business domain (e.g. retail, healthcare).
-  - Identify facts and dimensions.
-  - Sketch the schema on paper or in a tool.
+# Create star schema for retail analytics
+conn = sqlite3.connect('retail_warehouse.db')
+cursor = conn.cursor()
 
-- **Lab 2 – Implement the schema**
-  - Create tables in a database.
-  - Load sample data into fact and dimension tables.
+print("🏛️ BUILDING STAR SCHEMA FOR RETAIL ANALYTICS\n" + "="*60)
 
-- **Mini project – SCD Type 2 implementation**
-  - Implement a slowly changing dimension pipeline.
-  - Track historical changes to dimension records.
-"""
-            )
+# 1. DIMENSION TABLES
+
+print("\n1. Creating Dimension Tables...")
+
+# Dimension: Date
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS dim_date (
+    date_key INTEGER PRIMARY KEY,
+    full_date DATE NOT NULL,
+    day_of_week INTEGER,
+    day_name VARCHAR(10),
+    day_of_month INTEGER,
+    day_of_year INTEGER,
+    week_of_year INTEGER,
+    month INTEGER,
+    month_name VARCHAR(10),
+    quarter INTEGER,
+    year INTEGER,
+    is_weekend BOOLEAN,
+    is_holiday BOOLEAN
+)""")
+print("✅ dim_date created")
+
+# Dimension: Product
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS dim_product (
+    product_key INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id VARCHAR(50) UNIQUE NOT NULL,
+    product_name VARCHAR(200),
+    category VARCHAR(100),
+    subcategory VARCHAR(100),
+    brand VARCHAR(100),
+    unit_cost DECIMAL(10,2),
+    unit_price DECIMAL(10,2),
+    is_active BOOLEAN DEFAULT 1,
+    effective_date DATE,
+    expiry_date DATE
+)""")
+print("✅ dim_product created")
+
+# Dimension: Customer
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS dim_customer (
+    customer_key INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_id VARCHAR(50) UNIQUE NOT NULL,
+    customer_name VARCHAR(200),
+    email VARCHAR(200),
+    customer_segment VARCHAR(50),
+    country VARCHAR(100),
+    city VARCHAR(100),
+    signup_date DATE,
+    is_active BOOLEAN DEFAULT 1
+)""")
+print("✅ dim_customer created")
+
+# Dimension: Store
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS dim_store (
+    store_key INTEGER PRIMARY KEY AUTOINCREMENT,
+    store_id VARCHAR(50) UNIQUE NOT NULL,
+    store_name VARCHAR(200),
+    store_type VARCHAR(50),
+    region VARCHAR(100),
+    country VARCHAR(100),
+    manager_name VARCHAR(200),
+    opening_date DATE
+)""")
+print("✅ dim_store created")
+
+# 2. FACT TABLE
+
+print("\n2. Creating Fact Table...")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS fact_sales (
+    sale_key INTEGER PRIMARY KEY AUTOINCREMENT,
+    date_key INTEGER NOT NULL,
+    product_key INTEGER NOT NULL,
+    customer_key INTEGER NOT NULL,
+    store_key INTEGER NOT NULL,
+    
+    -- Measures (additive)
+    quantity INTEGER,
+    unit_price DECIMAL(10,2),
+    discount_amount DECIMAL(10,2),
+    tax_amount DECIMAL(10,2),
+    total_amount DECIMAL(10,2),
+    cost_amount DECIMAL(10,2),
+    profit_amount DECIMAL(10,2),
+    
+    -- Degenerate dimensions
+    order_id VARCHAR(50),
+    transaction_id VARCHAR(50),
+    
+    -- Metadata
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Foreign keys
+    FOREIGN KEY (date_key) REFERENCES dim_date(date_key),
+    FOREIGN KEY (product_key) REFERENCES dim_product(product_key),
+    FOREIGN KEY (customer_key) REFERENCES dim_customer(customer_key),
+    FOREIGN KEY (store_key) REFERENCES dim_store(store_key)
+)""")
+print("✅ fact_sales created")
+
+# 3. CREATE INDEXES
+
+print("\n3. Creating Indexes for Performance...")
+
+cursor.execute('CREATE INDEX IF NOT EXISTS idx_fact_date ON fact_sales(date_key)')
+cursor.execute('CREATE INDEX IF NOT EXISTS idx_fact_product ON fact_sales(product_key)')
+cursor.execute('CREATE INDEX IF NOT EXISTS idx_fact_customer ON fact_sales(customer_key)')
+cursor.execute('CREATE INDEX IF NOT EXISTS idx_fact_store ON fact_sales(store_key)')
+cursor.execute('CREATE INDEX IF NOT EXISTS idx_fact_order ON fact_sales(order_id)')
+
+print("✅ All indexes created")
+
+conn.commit()
+
+print("\n" + "="*60)
+print("✅ STAR SCHEMA CREATED SUCCESSFULLY")
+print("="*60)
+print("\nSchema Summary:")
+print("  Dimensions: 4 (Date, Product, Customer, Store)")
+print("  Facts: 1 (Sales)")
+print("  Indexes: 5 (optimized for queries)")
+
+conn.close()'''
+            st.code(lab2_1, language='python')
+            
+            st.markdown("### LAB 2: Slowly Changing Dimensions (SCD Type 2) (90 min)")
+            st.markdown("**Objective:** Implement SCD Type 2 to track historical changes")
+            lab2_2 = '''import sqlite3
+import pandas as pd
+from datetime import datetime, date
+
+class SCDType2Manager:
+    def __init__(self, db_path):
+        self.conn = sqlite3.connect(db_path)
+        self.cursor = self.conn.cursor()
+    
+    def create_scd_table(self):
+        """Create SCD Type 2 dimension table"""
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS dim_customer_scd (
+            customer_key INTEGER PRIMARY KEY AUTOINCREMENT,
+            customer_id VARCHAR(50) NOT NULL,
+            customer_name VARCHAR(200),
+            email VARCHAR(200),
+            customer_segment VARCHAR(50),
+            country VARCHAR(100),
+            
+            -- SCD Type 2 columns
+            effective_date DATE NOT NULL,
+            expiry_date DATE,
+            is_current BOOLEAN DEFAULT 1,
+            version INTEGER DEFAULT 1
+        )""")
+        self.conn.commit()
+        print("✅ SCD Type 2 table created")
+    
+    def insert_new_customer(self, customer_data):
+        """Insert new customer record"""
+        self.cursor.execute("""
+        INSERT INTO dim_customer_scd 
+        (customer_id, customer_name, email, customer_segment, country, effective_date, expiry_date, is_current, version)
+        VALUES (?, ?, ?, ?, ?, ?, NULL, 1, 1)
+        """, (
+            customer_data['customer_id'],
+            customer_data['name'],
+            customer_data['email'],
+            customer_data['segment'],
+            customer_data['country'],
+            date.today()
+        ))
+        self.conn.commit()
+        print(f"✅ New customer inserted: {customer_data['customer_id']}")
+    
+    def update_customer_scd(self, customer_id, new_data):
+        """Update customer with SCD Type 2 logic"""
+        print(f"\nUpdating customer: {customer_id}")
+        
+        # 1. Get current record
+        self.cursor.execute("""
+        SELECT customer_key, customer_name, email, customer_segment, country
+        FROM dim_customer_scd
+        WHERE customer_id = ? AND is_current = 1
+        """, (customer_id,))
+        
+        current = self.cursor.fetchone()
+        
+        if not current:
+            print(f"❌ Customer {customer_id} not found")
+            return
+        
+        # 2. Check if data actually changed
+        current_data = {
+            'name': current[1],
+            'email': current[2],
+            'segment': current[3],
+            'country': current[4]
+        }
+        
+        has_changes = any([
+            current_data['name'] != new_data.get('name', current_data['name']),
+            current_data['email'] != new_data.get('email', current_data['email']),
+            current_data['segment'] != new_data.get('segment', current_data['segment']),
+            current_data['country'] != new_data.get('country', current_data['country'])
+        ])
+        
+        if not has_changes:
+            print("ℹ️ No changes detected, skipping update")
+            return
+        
+        # 3. Expire current record
+        self.cursor.execute("""
+        UPDATE dim_customer_scd
+        SET expiry_date = ?, is_current = 0
+        WHERE customer_id = ? AND is_current = 1
+        """, (date.today(), customer_id))
+        
+        # 4. Get next version number
+        self.cursor.execute("""
+        SELECT MAX(version) FROM dim_customer_scd WHERE customer_id = ?
+        """, (customer_id,))
+        max_version = self.cursor.fetchone()[0] or 0
+        
+        # 5. Insert new version
+        self.cursor.execute("""
+        INSERT INTO dim_customer_scd
+        (customer_id, customer_name, email, customer_segment, country, effective_date, expiry_date, is_current, version)
+        VALUES (?, ?, ?, ?, ?, ?, NULL, 1, ?)
+        """, (
+            customer_id,
+            new_data.get('name', current_data['name']),
+            new_data.get('email', current_data['email']),
+            new_data.get('segment', current_data['segment']),
+            new_data.get('country', current_data['country']),
+            date.today(),
+            max_version + 1
+        ))
+        
+        self.conn.commit()
+        print(f"✅ Customer updated: Version {max_version + 1} created")
+    
+    def get_customer_history(self, customer_id):
+        """Get full history of customer changes"""
+        query = """
+        SELECT customer_key, customer_name, email, customer_segment, country,
+               effective_date, expiry_date, is_current, version
+        FROM dim_customer_scd
+        WHERE customer_id = ?
+        ORDER BY version
+        """
+        
+        df = pd.read_sql_query(query, self.conn, params=(customer_id,))
+        return df
+
+# Example usage
+scd = SCDType2Manager('retail_warehouse.db')
+scd.create_scd_table()
+
+# Insert new customer
+scd.insert_new_customer({
+    'customer_id': 'CUST001',
+    'name': 'John Smith',
+    'email': 'john@email.com',
+    'segment': 'Bronze',
+    'country': 'UK'
+})
+
+# Update customer (segment changed)
+scd.update_customer_scd('CUST001', {
+    'segment': 'Gold'  # Customer upgraded!
+})
+
+# View history
+history = scd.get_customer_history('CUST001')
+print("\nCustomer History:")
+print(history)
+print("\n✅ SCD Type 2 implementation complete!")'''
+            st.code(lab2_2, language='python')
+            
+            st.markdown("### LAB 3: Fact Table Loading & Aggregations (90 min)")
+            st.markdown("**Objective:** Load fact table and create aggregate tables for performance")
+            lab2_3 = '''import sqlite3
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+
+conn = sqlite3.connect('retail_warehouse.db')
+
+print("📊 FACT TABLE LOADING & AGGREGATIONS\n" + "="*60)
+
+# 1. Load sample fact data
+print("\n1. Loading Fact Data...")
+
+# Generate sample sales transactions
+np.random.seed(42)
+num_transactions = 10000
+
+sales_data = []
+for i in range(num_transactions):
+    sales_data.append({
+        'date_key': int((datetime.now() - timedelta(days=np.random.randint(0, 365))).strftime('%Y%m%d')),
+        'product_key': np.random.randint(1, 101),
+        'customer_key': np.random.randint(1, 1001),
+        'store_key': np.random.randint(1, 11),
+        'quantity': np.random.randint(1, 10),
+        'unit_price': round(np.random.uniform(10, 500), 2),
+        'discount_amount': round(np.random.uniform(0, 50), 2),
+        'tax_amount': 0,
+        'order_id': f'ORD{i:06d}',
+        'transaction_id': f'TXN{i:06d}'
+    })
+
+df_sales = pd.DataFrame(sales_data)
+
+# Calculate derived measures
+df_sales['tax_amount'] = (df_sales['unit_price'] * df_sales['quantity'] * 0.2).round(2)
+df_sales['total_amount'] = (df_sales['unit_price'] * df_sales['quantity'] - df_sales['discount_amount'] + df_sales['tax_amount']).round(2)
+df_sales['cost_amount'] = (df_sales['unit_price'] * df_sales['quantity'] * 0.6).round(2)
+df_sales['profit_amount'] = (df_sales['total_amount'] - df_sales['cost_amount']).round(2)
+
+# Load to fact table
+df_sales.to_sql('fact_sales', conn, if_exists='append', index=False)
+print(f"✅ Loaded {len(df_sales):,} transactions to fact_sales")
+
+# 2. Create aggregate tables for performance
+print("\n2. Creating Aggregate Tables...")
+
+# Daily aggregates
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS agg_daily_sales AS
+SELECT 
+    date_key,
+    COUNT(*) as num_transactions,
+    SUM(quantity) as total_quantity,
+    SUM(total_amount) as total_revenue,
+    SUM(profit_amount) as total_profit,
+    AVG(total_amount) as avg_transaction_value
+FROM fact_sales
+GROUP BY date_key
+""")
+print("✅ agg_daily_sales created")
+
+# Product aggregates
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS agg_product_sales AS
+SELECT 
+    product_key,
+    COUNT(*) as num_sales,
+    SUM(quantity) as total_quantity_sold,
+    SUM(total_amount) as total_revenue,
+    SUM(profit_amount) as total_profit,
+    AVG(total_amount) as avg_sale_value
+FROM fact_sales
+GROUP BY product_key
+""")
+print("✅ agg_product_sales created")
+
+# Customer aggregates
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS agg_customer_sales AS
+SELECT 
+    customer_key,
+    COUNT(*) as num_purchases,
+    SUM(total_amount) as lifetime_value,
+    AVG(total_amount) as avg_purchase_value,
+    MIN(date_key) as first_purchase_date,
+    MAX(date_key) as last_purchase_date
+FROM fact_sales
+GROUP BY customer_key
+""")
+print("✅ agg_customer_sales created")
+
+conn.commit()
+
+# 3. Query performance comparison
+print("\n3. Query Performance Test...")
+
+import time
+
+# Query fact table directly
+start = time.time()
+cursor.execute('SELECT SUM(total_amount) FROM fact_sales WHERE date_key >= 20240101')
+result1 = cursor.fetchone()[0]
+time1 = (time.time() - start) * 1000
+
+# Query aggregate table
+start = time.time()
+cursor.execute('SELECT SUM(total_revenue) FROM agg_daily_sales WHERE date_key >= 20240101')
+result2 = cursor.fetchone()[0]
+time2 = (time.time() - start) * 1000
+
+print(f"\nFact table query: {time1:.2f}ms")
+print(f"Aggregate table query: {time2:.2f}ms")
+print(f"Speedup: {time1/time2:.1f}x faster")
+
+print("\n✅ Star schema and aggregates ready for analytics!")'''
+            st.code(lab2_3, language='python')
+            
+            st.success("✅ Unit 2 Labs Complete: Production data warehouse patterns mastered!")
         elif selected_unit == 3:
-            st.markdown(
-                """These labs focus on batch processing at scale.
+            st.markdown("### 🔥 Unit 3: Batch Processing at Scale with Apache Spark")
+            st.markdown("**COMPREHENSIVE HANDS-ON LABS - Production PySpark Code!**")
+            
+            st.markdown("### LAB 1: PySpark Fundamentals (120 min)")
+            st.markdown("**Objective:** Master Spark DataFrames for large-scale data processing")
+            lab3_1 = '''from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, sum, avg, count, when, lit
+from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType
 
-- **Lab 1 – Spark basics**
-  - Load a dataset into a Spark DataFrame.
-  - Perform filters, joins and aggregations.
+# Initialize Spark
+spark = SparkSession.builder \\
+    .appName("DataEngineeringLab") \\
+    .config("spark.driver.memory", "4g") \\
+    .getOrCreate()
 
-- **Lab 2 – Optimise a Spark job**
-  - Identify and fix performance issues (shuffles, skew).
-  - Use partitioning and caching effectively.
+print("⚡ PYSPARK FUNDAMENTALS\n" + "="*60)
 
-- **Mini project – Batch pipeline with Spark**
-  - Build a multi-stage batch pipeline.
-  - Read from source, transform, write to target.
-"""
-            )
+# 1. Load data
+print("\n1. Loading Data...")
+
+# Define schema for better performance
+schema = StructType([
+    StructField("order_id", StringType(), False),
+    StructField("customer_id", StringType(), False),
+    StructField("product_id", StringType(), False),
+    StructField("quantity", IntegerType(), True),
+    StructField("unit_price", DoubleType(), True),
+    StructField("order_date", StringType(), True)
+])
+
+df = spark.read.csv('sales_data.csv', header=True, schema=schema)
+
+print(f"✅ Loaded {df.count():,} records")
+df.printSchema()
+df.show(5)
+
+# 2. Basic transformations
+print("\n2. Transformations...")
+
+# Add calculated columns
+df_transformed = df.withColumn(
+    "total_amount",
+    col("quantity") * col("unit_price")
+).withColumn(
+    "discount",
+    when(col("quantity") > 10, col("total_amount") * 0.1).otherwise(0)
+).withColumn(
+    "final_amount",
+    col("total_amount") - col("discount")
+)
+
+df_transformed.show(5)
+
+# 3. Filtering
+print("\n3. Filtering...")
+
+high_value_orders = df_transformed.filter(col("final_amount") > 1000)
+print(f"High-value orders: {high_value_orders.count():,}")
+
+# 4. Aggregations
+print("\n4. Aggregations...")
+
+# Group by customer
+customer_summary = df_transformed.groupBy("customer_id").agg(
+    count("order_id").alias("num_orders"),
+    sum("final_amount").alias("total_spent"),
+    avg("final_amount").alias("avg_order_value")
+).orderBy(col("total_spent").desc())
+
+print("\nTop 10 customers:")
+customer_summary.show(10)
+
+# 5. Joins
+print("\n5. Joins...")
+
+# Load product data
+products = spark.read.csv('products.csv', header=True, inferSchema=True)
+
+# Join sales with products
+sales_with_products = df_transformed.join(
+    products,
+    df_transformed.product_id == products.product_id,
+    "left"
+)
+
+print("\nSales with product details:")
+sales_with_products.select("order_id", "product_name", "category", "final_amount").show(5)
+
+# 6. Write results
+print("\n6. Writing Results...")
+
+customer_summary.write.mode("overwrite").parquet("output/customer_summary")
+print("✅ Results written to Parquet")
+
+spark.stop()'''
+            st.code(lab3_1, language='python')
+            
+            st.markdown("### LAB 2: Spark Performance Optimization (90 min)")
+            st.markdown("**Objective:** Optimize Spark jobs for production performance")
+            lab3_2 = '''from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, broadcast
+import time
+
+spark = SparkSession.builder \\
+    .appName("SparkOptimization") \\
+    .config("spark.sql.adaptive.enabled", "true") \\
+    .config("spark.sql.adaptive.coalescePartitions.enabled", "true") \\
+    .getOrCreate()
+
+print("⚡ SPARK PERFORMANCE OPTIMIZATION\n" + "="*60)
+
+# Load large dataset
+df_large = spark.read.parquet("large_sales_data.parquet")
+df_small = spark.read.csv("product_catalog.csv", header=True, inferSchema=True)
+
+print(f"\nLarge dataset: {df_large.count():,} records")
+print(f"Small dataset: {df_small.count():,} records")
+
+# OPTIMIZATION 1: Broadcast Join
+print("\n1. BROADCAST JOIN OPTIMIZATION:")
+
+# Bad: Regular join (causes shuffle)
+start = time.time()
+result_regular = df_large.join(df_small, "product_id")
+count_regular = result_regular.count()
+time_regular = time.time() - start
+
+print(f"Regular join: {time_regular:.2f}s")
+
+# Good: Broadcast join (no shuffle for small table)
+start = time.time()
+result_broadcast = df_large.join(broadcast(df_small), "product_id")
+count_broadcast = result_broadcast.count()
+time_broadcast = time.time() - start
+
+print(f"Broadcast join: {time_broadcast:.2f}s")
+print(f"Speedup: {time_regular/time_broadcast:.1f}x faster")
+
+# OPTIMIZATION 2: Partitioning
+print("\n2. PARTITIONING OPTIMIZATION:")
+
+# Repartition for better parallelism
+df_partitioned = df_large.repartition(200, "customer_id")
+
+print(f"Original partitions: {df_large.rdd.getNumPartitions()}")
+print(f"After repartition: {df_partitioned.rdd.getNumPartitions()}")
+
+# OPTIMIZATION 3: Caching
+print("\n3. CACHING OPTIMIZATION:")
+
+# Cache frequently accessed data
+df_cached = df_large.filter(col("order_date") >= "2024-01-01").cache()
+
+# First access (loads into memory)
+start = time.time()
+count1 = df_cached.count()
+time1 = time.time() - start
+
+# Second access (from cache)
+start = time.time()
+count2 = df_cached.count()
+time2 = time.time() - start
+
+print(f"First access: {time1:.2f}s")
+print(f"Cached access: {time2:.2f}s")
+print(f"Speedup: {time1/time2:.1f}x faster")
+
+# OPTIMIZATION 4: Avoid Shuffles
+print("\n4. SHUFFLE OPTIMIZATION:")
+
+# Bad: Multiple shuffles
+result_bad = df_large \\
+    .groupBy("customer_id").count() \\
+    .filter(col("count") > 5) \\
+    .orderBy(col("count").desc())
+
+# Good: Minimize shuffles
+result_good = df_large \\
+    .groupBy("customer_id").count() \\
+    .filter(col("count") > 5) \\
+    .coalesce(1) \\
+    .orderBy(col("count").desc())
+
+print("✅ Optimizations applied!")
+
+# OPTIMIZATION 5: Predicate Pushdown
+print("\n5. PREDICATE PUSHDOWN:")
+
+# Good: Filter early (pushed down to data source)
+df_filtered = spark.read.parquet("sales.parquet") \\
+    .filter(col("year") == 2024) \\
+    .filter(col("country") == "UK")
+
+print("Physical plan shows filter pushed to scan")
+df_filtered.explain()
+
+print("\n✅ Spark optimization complete!")
+
+spark.stop()'''
+            st.code(lab3_2, language='python')
+            
+            st.success("✅ Unit 3 Labs Complete: Production Spark pipelines mastered!")
         elif selected_unit == 4:
-            st.markdown(
-                """These labs emphasise stream processing.
+            st.markdown("### 🔥 Unit 4: Stream Processing & Real-time Data")
+            st.markdown("**COMPREHENSIVE HANDS-ON LABS - Production Kafka & Streaming Code!**")
+            
+            st.markdown("### LAB 1: Kafka Producer & Consumer (120 min)")
+            st.markdown("**Objective:** Build real-time data streaming with Kafka")
+            lab4_1 = '''from kafka import KafkaProducer, KafkaConsumer
+import json
+import time
+from datetime import datetime
+import random
 
-- **Lab 1 – Consume from a stream**
-  - Set up a simple Kafka topic or cloud streaming service.
-  - Write a consumer that reads and prints events.
+print("📡 KAFKA STREAMING PIPELINE\n" + "="*60)
 
-- **Lab 2 – Windowed aggregations**
-  - Compute aggregates over time windows (e.g. events per minute).
+# 1. PRODUCER - Send events to Kafka
+print("\n1. Setting up Kafka Producer...")
 
-- **Mini project – Real-time alerting pipeline**
-  - Build a pipeline that detects anomalies or thresholds.
-  - Send alerts or write to a database.
-"""
-            )
+producer = KafkaProducer(
+    bootstrap_servers=['localhost:9092'],
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+)
+
+def generate_event():
+    """Generate sample e-commerce event"""
+    return {
+        'event_id': f"evt_{int(time.time()*1000)}",
+        'event_type': random.choice(['page_view', 'add_to_cart', 'purchase', 'search']),
+        'user_id': f"user_{random.randint(1, 1000)}",
+        'product_id': f"prod_{random.randint(1, 100)}",
+        'timestamp': datetime.now().isoformat(),
+        'value': round(random.uniform(10, 500), 2)
+    }
+
+# Send 100 events
+print("\nSending events to Kafka topic 'user_events'...")
+
+for i in range(100):
+    event = generate_event()
+    producer.send('user_events', value=event)
+    
+    if (i + 1) % 20 == 0:
+        print(f"Sent {i + 1} events...")
+    
+    time.sleep(0.1)  # Simulate real-time flow
+
+producer.flush()
+print("✅ 100 events sent to Kafka")
+
+# 2. CONSUMER - Read events from Kafka
+print("\n2. Setting up Kafka Consumer...")
+
+consumer = KafkaConsumer(
+    'user_events',
+    bootstrap_servers=['localhost:9092'],
+    auto_offset_reset='earliest',
+    enable_auto_commit=True,
+    group_id='analytics_group',
+    value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+)
+
+print("\nConsuming events...")
+
+event_count = 0
+event_types = {}
+
+for message in consumer:
+    event = message.value
+    event_count += 1
+    
+    # Track event types
+    event_type = event['event_type']
+    event_types[event_type] = event_types.get(event_type, 0) + 1
+    
+    # Print sample events
+    if event_count <= 5:
+        print(f"Event {event_count}: {event['event_type']} by {event['user_id']}")
+    
+    # Stop after 100 events
+    if event_count >= 100:
+        break
+
+print(f"\n✅ Consumed {event_count} events")
+print(f"\nEvent type distribution:")
+for event_type, count in sorted(event_types.items(), key=lambda x: x[1], reverse=True):
+    print(f"  {event_type}: {count}")
+
+consumer.close()'''
+            st.code(lab4_1, language='python')
+            
+            st.markdown("### LAB 2: Real-time Aggregations & Windowing (90 min)")
+            st.markdown("**Objective:** Compute real-time metrics with time windows")
+            lab4_2 = '''from kafka import KafkaConsumer
+import json
+from datetime import datetime, timedelta
+from collections import defaultdict
+import time
+
+print("🕰️ REAL-TIME WINDOWED AGGREGATIONS\n" + "="*60)
+
+class StreamingAggregator:
+    def __init__(self, window_size_seconds=60):
+        self.window_size = window_size_seconds
+        self.windows = defaultdict(lambda: {
+            'count': 0,
+            'total_value': 0,
+            'events': []
+        })
+    
+    def get_window_key(self, timestamp):
+        """Get window key for timestamp"""
+        dt = datetime.fromisoformat(timestamp)
+        window_start = dt.replace(second=0, microsecond=0)
+        return window_start.isoformat()
+    
+    def add_event(self, event):
+        """Add event to appropriate window"""
+        window_key = self.get_window_key(event['timestamp'])
+        
+        self.windows[window_key]['count'] += 1
+        self.windows[window_key]['total_value'] += event.get('value', 0)
+        self.windows[window_key]['events'].append(event)
+    
+    def get_window_stats(self, window_key):
+        """Get statistics for a window"""
+        window = self.windows[window_key]
+        
+        return {
+            'window': window_key,
+            'event_count': window['count'],
+            'total_value': round(window['total_value'], 2),
+            'avg_value': round(window['total_value'] / window['count'], 2) if window['count'] > 0 else 0
+        }
+    
+    def detect_anomaly(self, window_key, threshold=100):
+        """Detect anomalies in window"""
+        stats = self.get_window_stats(window_key)
+        
+        if stats['event_count'] > threshold:
+            return True, f"High traffic: {stats['event_count']} events"
+        
+        if stats['total_value'] > threshold * 50:
+            return True, f"High value: ${stats['total_value']}"
+        
+        return False, "Normal"
+
+# Setup consumer
+consumer = KafkaConsumer(
+    'user_events',
+    bootstrap_servers=['localhost:9092'],
+    auto_offset_reset='latest',
+    value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+)
+
+aggregator = StreamingAggregator(window_size_seconds=60)
+
+print("\nProcessing real-time events with 1-minute windows...\n")
+
+event_count = 0
+
+for message in consumer:
+    event = message.value
+    event_count += 1
+    
+    # Add to window
+    aggregator.add_event(event)
+    
+    # Get current window
+    window_key = aggregator.get_window_key(event['timestamp'])
+    stats = aggregator.get_window_stats(window_key)
+    
+    # Check for anomalies
+    is_anomaly, reason = aggregator.detect_anomaly(window_key)
+    
+    # Print every 10 events
+    if event_count % 10 == 0:
+        print(f"Window {window_key}: {stats['event_count']} events, ${stats['total_value']:.2f} total")
+        
+        if is_anomaly:
+            print(f"  ⚠️ ALERT: {reason}")
+    
+    # Stop after 100 events
+    if event_count >= 100:
+        break
+
+print(f"\n✅ Processed {event_count} events across {len(aggregator.windows)} windows")
+
+# Print all window summaries
+print("\nWindow Summaries:")
+for window_key in sorted(aggregator.windows.keys()):
+    stats = aggregator.get_window_stats(window_key)
+    print(f"  {window_key}: {stats['event_count']} events, ${stats['total_value']:.2f}")
+
+consumer.close()'''
+            st.code(lab4_2, language='python')
+            
+            st.success("✅ Unit 4 Labs Complete: Real-time streaming pipelines mastered!")
         elif selected_unit == 5:
-            st.markdown(
-                """These labs bring cloud platforms into practice.
+            st.markdown("### 🔥 Unit 5: Cloud Data Platforms")
+            st.markdown("**COMPREHENSIVE HANDS-ON LABS - AWS, GCP, Azure Code!**")
+            
+            st.markdown("### LAB 1: AWS Data Pipeline (120 min)")
+            st.markdown("**Objective:** Build end-to-end data pipeline on AWS")
+            lab5_1 = '''import boto3
+import pandas as pd
+from io import StringIO
 
-- **Lab 1 – Cloud storage and compute**
-  - Upload data to cloud storage (S3, Blob, GCS).
-  - Run a simple job using cloud compute.
+print("☁️ AWS DATA PIPELINE\n" + "="*60)
 
-- **Lab 2 – Infrastructure as code**
-  - Define a simple cloud resource (bucket, database) using Terraform
-    or CloudFormation.
+# 1. S3 Operations
+print("\n1. S3 Data Upload...")
 
-- **Mini project – Cloud-native pipeline**
-  - Build a pipeline using managed cloud services.
-  - Document the architecture and cost considerations.
-"""
-            )
+s3_client = boto3.client('s3')
+bucket_name = 'my-data-lake'
+
+# Upload CSV to S3
+df = pd.read_csv('local_data.csv')
+csv_buffer = StringIO()
+df.to_csv(csv_buffer, index=False)
+
+s3_client.put_object(
+    Bucket=bucket_name,
+    Key='raw/sales_data.csv',
+    Body=csv_buffer.getvalue()
+)
+
+print("✅ Data uploaded to S3")
+
+# 2. AWS Glue ETL Job (PySpark)
+glue_job = '''
+import sys
+from awsglue.transforms import *
+from awsglue.utils import getResolvedOptions
+from pyspark.context import SparkContext
+from awsglue.context import GlueContext
+from awsglue.job import Job
+
+args = getResolvedOptions(sys.argv, ['JOB_NAME'])
+sc = SparkContext()
+glueContext = GlueContext(sc)
+spark = glueContext.spark_session
+job = Job(glueContext)
+job.init(args['JOB_NAME'], args)
+
+# Read from S3
+df = spark.read.csv("s3://my-data-lake/raw/sales_data.csv", header=True)
+
+# Transform
+df_clean = df.dropna().drop_duplicates()
+
+# Write to processed zone
+df_clean.write.mode("overwrite").parquet("s3://my-data-lake/processed/sales/")
+
+job.commit()
+'''
+
+print("\n2. AWS Glue Job Code:")
+print(glue_job)
+
+# 3. Lambda Function for Trigger
+lambda_code = '''
+import json
+import boto3
+
+def lambda_handler(event, context):
+    glue = boto3.client('glue')
+    
+    # Trigger Glue job when new file arrives
+    response = glue.start_job_run(
+        JobName='sales-etl-job',
+        Arguments={
+            '--input_path': event['Records'][0]['s3']['object']['key']
+        }
+    )
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps(f"Job started: {response['JobRunId']}")
+    }
+'''
+
+print("\n3. Lambda Trigger Function:")
+print(lambda_code)
+
+print("\n✅ AWS pipeline complete!")'''
+            st.code(lab5_1, language='python')
+            
+            st.markdown("### LAB 2: Infrastructure as Code with Terraform (90 min)")
+            st.markdown("**Objective:** Define cloud infrastructure as code")
+            lab5_2 = '''# main.tf - Terraform configuration for data pipeline
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+# S3 Bucket for Data Lake
+resource "aws_s3_bucket" "data_lake" {
+  bucket = "my-company-data-lake"
+  
+  tags = {
+    Environment = "Production"
+    Purpose     = "Data Lake"
+  }
+}
+
+# S3 Bucket Versioning
+resource "aws_s3_bucket_versioning" "data_lake_versioning" {
+  bucket = aws_s3_bucket.data_lake.id
+  
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# Glue Database
+resource "aws_glue_catalog_database" "analytics" {
+  name = "analytics_db"
+}
+
+# Glue Crawler
+resource "aws_glue_crawler" "sales_crawler" {
+  name          = "sales-data-crawler"
+  role          = aws_iam_role.glue_role.arn
+  database_name = aws_glue_catalog_database.analytics.name
+  
+  s3_target {
+    path = "s3://${aws_s3_bucket.data_lake.bucket}/processed/sales/"
+  }
+}
+
+# IAM Role for Glue
+resource "aws_iam_role" "glue_role" {
+  name = "glue-etl-role"
+  
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "glue.amazonaws.com"
+      }
+    }]
+  })
+}
+
+# Redshift Cluster
+resource "aws_redshift_cluster" "analytics_warehouse" {
+  cluster_identifier = "analytics-warehouse"
+  database_name      = "analytics"
+  master_username    = "admin"
+  master_password    = var.db_password
+  node_type          = "dc2.large"
+  cluster_type       = "single-node"
+  
+  skip_final_snapshot = true
+}
+
+# Deploy commands:
+# terraform init
+# terraform plan
+# terraform apply
+# terraform destroy  # Cleanup'''
+            st.code(lab5_2, language='terraform')
+            
+            st.success("✅ Unit 5 Labs Complete: Cloud data engineering mastered!")
         elif selected_unit == 6:
             st.markdown(
                 """These labs focus on quality, orchestration and monitoring.
