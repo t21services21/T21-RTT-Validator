@@ -10234,175 +10234,315 @@ status (ATTENDED/DNA/CANCELLED), appointment_type (NEW/FOLLOW_UP)
             )
         elif selected_unit == 5:
             st.markdown("### 🎯 Unit 5 Labs: Python for Analysts")
-            st.markdown("""
-**LAB 1 - Excel Report Recreation in Python (90 min)**
+            st.markdown("**🔥 COMPREHENSIVE HANDS-ON LABS - Copy, Paste & Execute!**")
+            
+            st.markdown("### LAB 1: Data Cleaning & Transformation with Pandas (90 min)")
+            st.markdown("**Objective:** Master data cleaning techniques for real-world messy data")
+            lab5_1 = '''import pandas as pd
+import numpy as np
 
-**Objective:** Translate Excel analysis to reproducible Python code
+# Load messy customer data
+df = pd.read_csv('messy_customers.csv')
 
-**Scenario:** You have monthly sales Excel file with manual calculations
-
-**Task:**
-1. Load CSV data with Pandas
-2. Recreate these Excel calculations:
-   - Total revenue by product category
-   - Month-over-month growth %
-   - Top 10 customers by spend
-   - Average order value
-3. Export results to new Excel file
-4. Verify numbers match original
-
-**Starter Code:**
-```python
-import pandas as pd
-
-# Load data
-df = pd.read_csv('sales_data.csv')
-
-# Check data
+print("Original Data:")
 print(df.head())
-print(df.info())
+print(f"Shape: {df.shape}")
+print(f"\nMissing values:\n{df.isnull().sum()}")
 
-# Your analysis here...
-```
+# 1. Handle missing values
+df['email'].fillna('no_email@company.com', inplace=True)
+df['phone'].fillna('Unknown', inplace=True)
+df.dropna(subset=['customer_id', 'name'], inplace=True)
 
-**Key Skills:**
-- ✅ pd.read_csv() and pd.read_excel()
-- ✅ df.groupby() for aggregations
-- ✅ df.sort_values() for ranking
-- ✅ Calculating % changes
-- ✅ df.to_excel() for output
+# 2. Remove duplicates
+print(f"\nDuplicates: {df.duplicated().sum()}")
+df.drop_duplicates(subset=['customer_id'], keep='first', inplace=True)
 
-**Deliverable:** Jupyter notebook (.ipynb) OR Python script (.py) with comments
+# 3. Clean text data
+df['name'] = df['name'].str.strip().str.title()
+df['email'] = df['email'].str.lower().str.strip()
+df['country'] = df['country'].str.upper()
 
-**Assessment:**
-- Numbers exactly match Excel version
-- Code is readable with comments
-- Uses Pandas efficiently (no loops where groupby works)
+# 4. Fix data types
+df['signup_date'] = pd.to_datetime(df['signup_date'], errors='coerce')
+df['total_spent'] = pd.to_numeric(df['total_spent'], errors='coerce')
 
----
+# 5. Handle outliers
+Q1 = df['total_spent'].quantile(0.25)
+Q3 = df['total_spent'].quantile(0.75)
+IQR = Q3 - Q1
+df = df[(df['total_spent'] >= Q1 - 1.5*IQR) & (df['total_spent'] <= Q3 + 1.5*IQR)]
 
-**LAB 2 - Data Visualization with Python (75 min)**
+# 6. Create new features
+df['signup_year'] = df['signup_date'].dt.year
+df['signup_month'] = df['signup_date'].dt.month
+df['customer_segment'] = pd.cut(df['total_spent'], 
+                                 bins=[0, 100, 500, 1000, float('inf')],
+                                 labels=['Bronze', 'Silver', 'Gold', 'Platinum'])
 
-**Objective:** Create publication-quality charts
+print("\nCleaned Data:")
+print(df.head())
+print(f"Final shape: {df.shape}")
+print(f"\nData types:\n{df.dtypes}")
 
-**Task:** Using same sales data, create:
-
-**Chart 1: Revenue Trend (Line)**
-```python
+# Save cleaned data
+df.to_csv('cleaned_customers.csv', index=False)
+print("\n✅ Data cleaning complete!")'''
+            st.code(lab5_1, language='python')
+            
+            st.markdown("### LAB 2: Exploratory Data Analysis (EDA) with Pandas (120 min)")
+            st.markdown("**Objective:** Perform comprehensive EDA on sales data")
+            lab5_2 = '''import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-sns.set_style("whitegrid")
+# Load sales data
+sales = pd.read_csv('sales_data.csv')
+sales['date'] = pd.to_datetime(sales['date'])
 
-# Monthly revenue trend
-monthly = df.groupby('month')['revenue'].sum()
-monthly.plot(kind='line', figsize=(10,6))
-plt.title('Monthly Revenue Trend', fontsize=16)
-plt.ylabel('Revenue (£)')
-plt.xlabel('Month')
+print("📊 EXPLORATORY DATA ANALYSIS\n" + "="*50)
+
+# 1. Basic Statistics
+print("\n1. BASIC STATISTICS:")
+print(sales.describe())
+print(f"\nTotal Revenue: ${sales['revenue'].sum():,.2f}")
+print(f"Average Order Value: ${sales['revenue'].mean():.2f}")
+print(f"Total Orders: {len(sales):,}")
+
+# 2. Missing Data Analysis
+print("\n2. MISSING DATA:")
+missing = sales.isnull().sum()
+print(missing[missing > 0])
+
+# 3. Category Analysis
+print("\n3. SALES BY CATEGORY:")
+category_sales = sales.groupby('category').agg({
+    'revenue': ['sum', 'mean', 'count'],
+    'profit': 'sum'
+}).round(2)
+print(category_sales.sort_values(('revenue', 'sum'), ascending=False))
+
+# 4. Time-based Analysis
+print("\n4. MONTHLY TRENDS:")
+sales['year_month'] = sales['date'].dt.to_period('M')
+monthly = sales.groupby('year_month').agg({
+    'revenue': 'sum',
+    'order_id': 'count'
+}).rename(columns={'order_id': 'num_orders'})
+print(monthly.tail(12))
+
+# 5. Customer Segmentation
+print("\n5. CUSTOMER SEGMENTS:")
+customer_value = sales.groupby('customer_id')['revenue'].sum()
+segments = pd.cut(customer_value, 
+                  bins=[0, 100, 500, 1000, float('inf')],
+                  labels=['Low', 'Medium', 'High', 'VIP'])
+print(segments.value_counts())
+
+# 6. Product Performance
+print("\n6. TOP 10 PRODUCTS:")
+top_products = sales.groupby('product_name').agg({
+    'revenue': 'sum',
+    'quantity': 'sum'
+}).sort_values('revenue', ascending=False).head(10)
+print(top_products)
+
+# 7. Correlation Analysis
+print("\n7. CORRELATIONS:")
+numeric_cols = sales.select_dtypes(include=[np.number]).columns
+corr_matrix = sales[numeric_cols].corr()
+print(corr_matrix['revenue'].sort_values(ascending=False))
+
+# 8. Outlier Detection
+print("\n8. OUTLIERS IN REVENUE:")
+Q1 = sales['revenue'].quantile(0.25)
+Q3 = sales['revenue'].quantile(0.75)
+IQR = Q3 - Q1
+outliers = sales[(sales['revenue'] < Q1 - 1.5*IQR) | (sales['revenue'] > Q3 + 1.5*IQR)]
+print(f"Number of outliers: {len(outliers)} ({len(outliers)/len(sales)*100:.1f}%)")
+
+print("\n✅ EDA Complete!")'''
+            st.code(lab5_2, language='python')
+            
+            st.markdown("### LAB 3: Data Visualization with Matplotlib & Seaborn (90 min)")
+            st.markdown("**Objective:** Create professional visualizations for business insights")
+            lab5_3 = '''import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+# Set style
+sns.set_style('whitegrid')
+plt.rcParams['figure.figsize'] = (12, 6)
+
+# Load data
+sales = pd.read_csv('sales_data.csv')
+sales['date'] = pd.to_datetime(sales['date'])
+
+# 1. Revenue Trend Over Time
+plt.figure(figsize=(14, 6))
+monthly_revenue = sales.groupby(sales['date'].dt.to_period('M'))['revenue'].sum()
+monthly_revenue.plot(kind='line', marker='o', linewidth=2, markersize=8)
+plt.title('Monthly Revenue Trend', fontsize=16, fontweight='bold')
+plt.xlabel('Month', fontsize=12)
+plt.ylabel('Revenue ($)', fontsize=12)
+plt.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig('revenue_trend.png', dpi=300)
+plt.savefig('revenue_trend.png', dpi=300, bbox_inches='tight')
 plt.show()
-```
 
-**Chart 2: Top 10 Products (Bar)**
-```python
-top10 = df.groupby('product')['revenue'].sum().nlargest(10)
-top10.plot(kind='barh', figsize=(10,6), color='steelblue')
-plt.title('Top 10 Products by Revenue')
-plt.xlabel('Revenue (£)')
+# 2. Category Performance - Bar Chart
+plt.figure(figsize=(10, 6))
+category_revenue = sales.groupby('category')['revenue'].sum().sort_values(ascending=False)
+ax = category_revenue.plot(kind='barh', color='steelblue')
+plt.title('Revenue by Category', fontsize=16, fontweight='bold')
+plt.xlabel('Revenue ($)', fontsize=12)
+plt.ylabel('Category', fontsize=12)
+for i, v in enumerate(category_revenue):
+    ax.text(v, i, f' ${v:,.0f}', va='center', fontsize=10)
 plt.tight_layout()
-plt.savefig('top_products.png', dpi=300)
+plt.savefig('category_revenue.png', dpi=300, bbox_inches='tight')
 plt.show()
-```
 
-**Chart 3: Category Breakdown (Pie/Donut)**
-```python
-category_rev = df.groupby('category')['revenue'].sum()
-plt.figure(figsize=(8,8))
-plt.pie(category_rev, labels=category_rev.index, autopct='%1.1f%%')
-plt.title('Revenue by Category')
-plt.savefig('category_breakdown.png', dpi=300)
+# 3. Distribution - Histogram
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 2, 1)
+plt.hist(sales['revenue'], bins=50, color='skyblue', edgecolor='black', alpha=0.7)
+plt.title('Revenue Distribution', fontsize=14, fontweight='bold')
+plt.xlabel('Revenue ($)', fontsize=11)
+plt.ylabel('Frequency', fontsize=11)
+plt.axvline(sales['revenue'].mean(), color='red', linestyle='--', label=f'Mean: ${sales["revenue"].mean():.2f}')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.boxplot(sales['revenue'], vert=True)
+plt.title('Revenue Boxplot', fontsize=14, fontweight='bold')
+plt.ylabel('Revenue ($)', fontsize=11)
+plt.tight_layout()
+plt.savefig('revenue_distribution.png', dpi=300, bbox_inches='tight')
 plt.show()
-```
 
-**Chart 4: Distribution (Histogram)**
-```python
-sns.histplot(df['order_value'], bins=30, kde=True)
-plt.title('Order Value Distribution')
-plt.xlabel('Order Value (£)')
-plt.ylabel('Frequency')
-plt.savefig('order_distribution.png', dpi=300)
+# 4. Correlation Heatmap
+plt.figure(figsize=(10, 8))
+numeric_cols = sales.select_dtypes(include=[np.number]).columns
+corr_matrix = sales[numeric_cols].corr()
+sns.heatmap(corr_matrix, annot=True, fmt='.2f', cmap='coolwarm', 
+            center=0, square=True, linewidths=1)
+plt.title('Correlation Matrix', fontsize=16, fontweight='bold')
+plt.tight_layout()
+plt.savefig('correlation_heatmap.png', dpi=300, bbox_inches='tight')
 plt.show()
-```
 
-**Deliverable:** 4 PNG files + Python script that generates them
+# 5. Scatter Plot with Regression
+plt.figure(figsize=(10, 6))
+sns.regplot(data=sales, x='quantity', y='revenue', scatter_kws={'alpha':0.5})
+plt.title('Quantity vs Revenue', fontsize=16, fontweight='bold')
+plt.xlabel('Quantity Sold', fontsize=12)
+plt.ylabel('Revenue ($)', fontsize=12)
+plt.tight_layout()
+plt.savefig('quantity_revenue_scatter.png', dpi=300, bbox_inches='tight')
+plt.show()
 
-**Assessment:**
-- ✅ Charts are publication-quality (high DPI, clear labels)
-- ✅ Appropriate chart type for each question
-- ✅ Professional styling (not default ugly colors)
-- ✅ Titles and axis labels present
+print("✅ All visualizations saved!")'''
+            st.code(lab5_3, language='python')
+            
+            st.markdown("### LAB 4: Advanced Data Analysis - Real Business Case (120 min)")
+            st.markdown("**Objective:** Complete end-to-end analysis for business decision-making")
+            lab5_4 = '''import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime, timedelta
 
----
+print("💼 BUSINESS CASE: E-COMMERCE PERFORMANCE ANALYSIS\n" + "="*60)
 
-**MINI PROJECT - Automated Report Audit (2-3 hours)**
+# Load multiple datasets
+customers = pd.read_csv('customers.csv')
+orders = pd.read_csv('orders.csv')
+products = pd.read_csv('products.csv')
 
-**Objective:** Use Python to validate existing Excel reports
+# Convert dates
+orders['order_date'] = pd.to_datetime(orders['order_date'])
+customers['signup_date'] = pd.to_datetime(customers['signup_date'])
 
-**Scenario:** Your team produces monthly sales report in Excel. QA it with Python.
+# ANALYSIS 1: Customer Lifetime Value (CLV)
+print("\n1. CUSTOMER LIFETIME VALUE ANALYSIS:")
+clv = orders.groupby('customer_id').agg({
+    'order_id': 'count',
+    'total_amount': 'sum',
+    'order_date': ['min', 'max']
+}).round(2)
+clv.columns = ['num_orders', 'total_spent', 'first_order', 'last_order']
+clv['avg_order_value'] = (clv['total_spent'] / clv['num_orders']).round(2)
+clv['customer_lifetime_days'] = (clv['last_order'] - clv['first_order']).dt.days
 
-**Task:**
-1. Load both source data (CSV) and finished report (Excel)
-2. Recalculate all metrics independently
-3. Compare Python results vs Excel results
-4. Document discrepancies
-5. Investigate root causes
+print(f"Average CLV: ${clv['total_spent'].mean():.2f}")
+print(f"Top 10% customers contribute: ${clv['total_spent'].quantile(0.9):.2f}+")
 
-**Audit Checklist:**
-```python
-# Load both files
-source_data = pd.read_csv('raw_sales.csv')
-excel_report = pd.read_excel('monthly_report.xlsx', sheet_name='Summary')
+# ANALYSIS 2: Cohort Analysis
+print("\n2. COHORT RETENTION ANALYSIS:")
+orders['order_month'] = orders['order_date'].dt.to_period('M')
+customers['cohort_month'] = customers['signup_date'].dt.to_period('M')
 
-# Recalculate metrics
-python_total_revenue = source_data['revenue'].sum()
-excel_total_revenue = excel_report.loc[0, 'Total Revenue']
+order_cohort = orders.merge(customers[['customer_id', 'cohort_month']], on='customer_id')
+order_cohort['cohort_age'] = (order_cohort['order_month'] - order_cohort['cohort_month']).apply(lambda x: x.n)
 
-# Compare
-if python_total_revenue == excel_total_revenue:
-    print("✅ Total Revenue matches")
-else:
-    diff = python_total_revenue - excel_total_revenue
-    print(f"❌ Total Revenue mismatch: £{diff:,.2f} difference")
-    
-# Repeat for all KPIs...
-```
+cohort_data = order_cohort.groupby(['cohort_month', 'cohort_age'])['customer_id'].nunique().reset_index()
+cohort_pivot = cohort_data.pivot(index='cohort_month', columns='cohort_age', values='customer_id')
+retention = cohort_pivot.divide(cohort_pivot[0], axis=0) * 100
 
-**Common Discrepancies to Check:**
-- Sum of revenue
-- Count of transactions
-- Average order value
-- Number of unique customers
-- Month-over-month growth %
-- Top 10 rankings
+print("Retention rates (%):\n", retention.head())
 
-**Deliverable:** Audit report documenting:
-1. What was checked
-2. What matched
-3. What didn't match (with evidence)
-4. Root cause analysis
-5. Recommendations to prevent future errors
+# ANALYSIS 3: Product Performance
+print("\n3. PRODUCT PERFORMANCE:")
+product_sales = orders.merge(products, on='product_id')
+product_metrics = product_sales.groupby('product_name').agg({
+    'order_id': 'count',
+    'total_amount': 'sum',
+    'quantity': 'sum'
+}).sort_values('total_amount', ascending=False)
 
-**Assessment:**
-- ✅ Comprehensive checks (5+ metrics validated)
-- ✅ Clear documentation of findings
-- ✅ Root cause identified (not just "numbers wrong")
-- ✅ Actionable recommendations
+print("Top 5 products by revenue:")
+print(product_metrics.head())
 
-**Portfolio Value:** Shows you can QA work and catch errors - valuable skill!
-"""
-            )
+# ANALYSIS 4: Churn Prediction
+print("\n4. CHURN RISK ANALYSIS:")
+last_order = orders.groupby('customer_id')['order_date'].max().reset_index()
+last_order.columns = ['customer_id', 'last_order_date']
+days_since_order = (datetime.now() - last_order['last_order_date']).dt.days
+
+churn_risk = pd.DataFrame({
+    'customer_id': last_order['customer_id'],
+    'days_since_order': days_since_order,
+    'churn_risk': pd.cut(days_since_order, 
+                         bins=[0, 30, 60, 90, float('inf')],
+                         labels=['Low', 'Medium', 'High', 'Critical'])
+})
+
+print("Churn risk distribution:")
+print(churn_risk['churn_risk'].value_counts())
+
+# ANALYSIS 5: Revenue Forecast
+print("\n5. SIMPLE REVENUE FORECAST:")
+monthly_revenue = orders.groupby(orders['order_date'].dt.to_period('M'))['total_amount'].sum()
+moving_avg = monthly_revenue.rolling(window=3).mean()
+
+print(f"Last 3 months average: ${moving_avg.iloc[-1]:.2f}")
+print(f"Projected next month: ${moving_avg.iloc[-1] * 1.05:.2f} (5% growth)")
+
+# RECOMMENDATIONS
+print("\n" + "="*60)
+print("💡 BUSINESS RECOMMENDATIONS:")
+print("="*60)
+print(f"1. Focus on top 20% customers (CLV > ${clv['total_spent'].quantile(0.8):.2f})")
+print(f"2. Re-engage {len(churn_risk[churn_risk['churn_risk']=='Critical'])} high-risk customers")
+print(f"3. Promote top 5 products more aggressively")
+print(f"4. Improve Month 1 retention (currently {retention[1].mean():.1f}%)")
+print("\n✅ Analysis complete! Ready for executive presentation.")'''
+            st.code(lab5_4, language='python')
+            
+            st.success("✅ Unit 5 Labs Complete: Copy any code block above and run it immediately!")
         elif selected_unit == 6:
             st.markdown("### 🎯 Unit 6 Labs: Metrics, KPIs & A/B Testing")
             st.markdown("**Comprehensive hands-on labs with executable Python code**")
