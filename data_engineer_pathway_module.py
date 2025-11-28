@@ -780,7 +780,118 @@ print(f"\nPipeline Status: {'SUCCESS' if success else 'FAILED'}")
 print(f"Statistics: {stats}")'''
             st.code(lab2_code, language='python')
             
-            st.success("✅ Unit 1 Labs Complete: Copy and run these production-ready ETL pipelines!")
+            st.markdown("### LAB 3: Incremental Data Loading (90 min)")
+            st.markdown("**Objective:** Load only new/changed records efficiently")
+            lab1_3 = '''import pandas as pd
+import sqlite3
+from datetime import datetime
+
+class IncrementalLoader:
+    def __init__(self, db_path):
+        self.conn = sqlite3.connect(db_path)
+    
+    def get_last_loaded_timestamp(self, table_name):
+        """Get timestamp of last loaded record"""
+        query = f"SELECT MAX(updated_at) FROM {table_name}"
+        cursor = self.conn.cursor()
+        cursor.execute(query)
+        result = cursor.fetchone()[0]
+        return result if result else '1900-01-01'
+    
+    def load_incremental(self, source_file, table_name, timestamp_column='updated_at'):
+        """Load only new records since last load"""
+        print(f"Loading incremental data to {table_name}...")
+        
+        # Get last timestamp
+        last_timestamp = self.get_last_loaded_timestamp(table_name)
+        print(f"Last loaded: {last_timestamp}")
+        
+        # Load source data
+        df = pd.read_csv(source_file)
+        df[timestamp_column] = pd.to_datetime(df[timestamp_column])
+        
+        # Filter to new records only
+        df_new = df[df[timestamp_column] > last_timestamp]
+        
+        print(f"Total records in source: {len(df):,}")
+        print(f"New records to load: {len(df_new):,}")
+        
+        if len(df_new) == 0:
+            print("✅ No new records to load")
+            return 0
+        
+        # Load new records
+        df_new.to_sql(table_name, self.conn, if_exists='append', index=False)
+        
+        print(f"✅ Loaded {len(df_new):,} new records")
+        return len(df_new)
+
+# Example
+loader = IncrementalLoader('warehouse.db')
+records_loaded = loader.load_incremental('customers.csv', 'customers', 'updated_at')
+print(f"\nIncremental load complete: {records_loaded} records")'''
+            st.code(lab1_3, language='python')
+            
+            st.markdown("### LAB 4: Dockerize ETL Pipeline (60 min)")
+            st.markdown("**Objective:** Containerize your data pipeline")
+            lab1_4 = '''# Dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy pipeline code
+COPY etl_pipeline.py .
+COPY config.yaml .
+
+# Run pipeline
+CMD ["python", "etl_pipeline.py"]
+
+# requirements.txt
+# pandas==2.1.0
+# sqlalchemy==2.0.0
+# psycopg2-binary==2.9.0
+# requests==2.31.0
+
+# docker-compose.yml
+version: '3.8'
+
+services:
+  etl_pipeline:
+    build: .
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=warehouse
+    depends_on:
+      - postgres
+    volumes:
+      - ./data:/data
+  
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=warehouse
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+
+# Build and run:
+# docker-compose build
+# docker-compose up
+# docker-compose down'''
+            st.code(lab1_4, language='dockerfile')
+            
+            st.success("✅ Unit 1 Labs Complete: Production ETL pipelines mastered!")
         elif selected_unit == 2:
             st.markdown("### 🔥 Unit 2: Data Warehousing & Dimensional Modeling")
             st.markdown("**COMPREHENSIVE HANDS-ON LABS - Production Data Warehouse Code!**")
@@ -1199,6 +1310,129 @@ print(f"Speedup: {time1/time2:.1f}x faster")
 print("\n✅ Star schema and aggregates ready for analytics!")'''
             st.code(lab2_3, language='python')
             
+            st.markdown("### LAB 4: Data Quality Framework for Warehouses (75 min)")
+            st.markdown("**Objective:** Implement comprehensive data quality checks")
+            lab2_4 = '''import pandas as pd
+import sqlite3
+from datetime import datetime
+
+class DataQualityChecker:
+    def __init__(self, db_path):
+        self.conn = sqlite3.connect(db_path)
+        self.results = []
+    
+    def check_completeness(self, table_name, required_columns):
+        """Check for missing values in critical columns"""
+        query = f"SELECT * FROM {table_name}"
+        df = pd.read_sql_query(query, self.conn)
+        
+        for col in required_columns:
+            null_count = df[col].isnull().sum()
+            null_pct = (null_count / len(df)) * 100
+            
+            status = "PASS" if null_pct == 0 else "FAIL"
+            self.results.append({
+                'check': 'Completeness',
+                'table': table_name,
+                'column': col,
+                'status': status,
+                'details': f"{null_count} nulls ({null_pct:.1f}%)"
+            })
+    
+    def check_uniqueness(self, table_name, unique_columns):
+        """Check for duplicate values"""
+        query = f"SELECT * FROM {table_name}"
+        df = pd.read_sql_query(query, self.conn)
+        
+        for col in unique_columns:
+            dup_count = df[col].duplicated().sum()
+            status = "PASS" if dup_count == 0 else "FAIL"
+            
+            self.results.append({
+                'check': 'Uniqueness',
+                'table': table_name,
+                'column': col,
+                'status': status,
+                'details': f"{dup_count} duplicates"
+            })
+    
+    def check_referential_integrity(self, fact_table, dim_table, fk_column, pk_column):
+        """Check foreign key relationships"""
+        query = f"""
+        SELECT COUNT(*) as orphans
+        FROM {fact_table} f
+        LEFT JOIN {dim_table} d ON f.{fk_column} = d.{pk_column}
+        WHERE d.{pk_column} IS NULL
+        """
+        
+        cursor = self.conn.cursor()
+        cursor.execute(query)
+        orphans = cursor.fetchone()[0]
+        
+        status = "PASS" if orphans == 0 else "FAIL"
+        self.results.append({
+            'check': 'Referential Integrity',
+            'table': fact_table,
+            'column': fk_column,
+            'status': status,
+            'details': f"{orphans} orphaned records"
+        })
+    
+    def check_data_freshness(self, table_name, date_column, max_age_hours=24):
+        """Check if data is recent"""
+        query = f"SELECT MAX({date_column}) as latest FROM {table_name}"
+        cursor = self.conn.cursor()
+        cursor.execute(query)
+        latest = cursor.fetchone()[0]
+        
+        if latest:
+            latest_dt = pd.to_datetime(latest)
+            age_hours = (datetime.now() - latest_dt).total_seconds() / 3600
+            status = "PASS" if age_hours <= max_age_hours else "FAIL"
+            
+            self.results.append({
+                'check': 'Freshness',
+                'table': table_name,
+                'column': date_column,
+                'status': status,
+                'details': f"{age_hours:.1f} hours old"
+            })
+    
+    def generate_report(self):
+        """Generate quality report"""
+        df_results = pd.DataFrame(self.results)
+        
+        print("\n" + "="*60)
+        print("DATA QUALITY REPORT")
+        print("="*60)
+        
+        print(f"\nTotal Checks: {len(df_results)}")
+        print(f"Passed: {len(df_results[df_results['status']=='PASS'])}")
+        print(f"Failed: {len(df_results[df_results['status']=='FAIL'])}")
+        
+        print("\nFailed Checks:")
+        failed = df_results[df_results['status']=='FAIL']
+        if len(failed) > 0:
+            print(failed.to_string(index=False))
+        else:
+            print("✅ All checks passed!")
+        
+        return df_results
+
+# Example
+checker = DataQualityChecker('retail_warehouse.db')
+
+# Run checks
+checker.check_completeness('fact_sales', ['order_id', 'customer_key', 'product_key'])
+checker.check_uniqueness('fact_sales', ['order_id'])
+checker.check_referential_integrity('fact_sales', 'dim_customer', 'customer_key', 'customer_key')
+checker.check_data_freshness('fact_sales', 'created_at', max_age_hours=24)
+
+# Generate report
+report = checker.generate_report()
+print("\n✅ Quality checks complete!")'''
+            st.code(lab2_4, language='python')
+            
             st.success("✅ Unit 2 Labs Complete: Production data warehouse patterns mastered!")
         elif selected_unit == 3:
             st.markdown("### 🔥 Unit 3: Batch Processing at Scale with Apache Spark")
@@ -1402,6 +1636,93 @@ print("\n✅ Spark optimization complete!")
 spark.stop()'''
             st.code(lab3_2, language='python')
             
+            st.markdown("### LAB 3: Delta Lake for Data Reliability (90 min)")
+            st.markdown("**Objective:** Implement ACID transactions and time travel with Delta Lake")
+            lab3_3 = '''from pyspark.sql import SparkSession
+from delta import *
+from pyspark.sql.functions import col, current_timestamp
+
+# Initialize Spark with Delta Lake
+builder = SparkSession.builder.appName("DeltaLake") \\
+    .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \\
+    .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+
+spark = configure_spark_with_delta_pip(builder).getOrCreate()
+
+print("▶️ DELTA LAKE - ACID TRANSACTIONS & TIME TRAVEL\n" + "="*60)
+
+# 1. Create Delta Table
+print("\n1. Creating Delta Table...")
+
+df = spark.read.csv('sales_data.csv', header=True, inferSchema=True)
+df = df.withColumn("load_timestamp", current_timestamp())
+
+# Write as Delta table
+df.write.format("delta").mode("overwrite").save("/data/delta/sales")
+print("✅ Delta table created")
+
+# 2. Read Delta Table
+delta_df = spark.read.format("delta").load("/data/delta/sales")
+print(f"\nRecords in Delta table: {delta_df.count():,}")
+
+# 3. ACID Updates (Upsert/Merge)
+print("\n2. Performing ACID Merge...")
+
+from delta.tables import DeltaTable
+
+# Load new data
+new_data = spark.read.csv('new_sales.csv', header=True, inferSchema=True)
+new_data = new_data.withColumn("load_timestamp", current_timestamp())
+
+# Get Delta table
+delta_table = DeltaTable.forPath(spark, "/data/delta/sales")
+
+# Merge (upsert)
+delta_table.alias("target").merge(
+    new_data.alias("source"),
+    "target.order_id = source.order_id"
+).whenMatchedUpdateAll().whenNotMatchedInsertAll().execute()
+
+print("✅ Merge complete - updates and inserts applied")
+
+# 4. Time Travel
+print("\n3. Time Travel Queries...")
+
+# Query previous version
+df_v0 = spark.read.format("delta").option("versionAsOf", 0).load("/data/delta/sales")
+df_v1 = spark.read.format("delta").option("versionAsOf", 1).load("/data/delta/sales")
+
+print(f"Version 0: {df_v0.count():,} records")
+print(f"Version 1: {df_v1.count():,} records")
+
+# Query by timestamp
+from datetime import datetime, timedelta
+timestamp = (datetime.now() - timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
+df_historical = spark.read.format("delta").option("timestampAsOf", timestamp).load("/data/delta/sales")
+
+print(f"Data as of {timestamp}: {df_historical.count():,} records")
+
+# 5. View History
+print("\n4. Delta Table History...")
+
+delta_table.history().select("version", "timestamp", "operation", "operationMetrics").show()
+
+# 6. Optimize & Vacuum
+print("\n5. Optimize & Vacuum...")
+
+# Optimize (compaction)
+delta_table.optimize().executeCompaction()
+print("✅ Table optimized")
+
+# Vacuum old files (keep 7 days)
+delta_table.vacuum(168)  # hours
+print("✅ Old files vacuumed")
+
+print("\n✅ Delta Lake operations complete!")
+
+spark.stop()'''
+            st.code(lab3_3, language='python')
+            
             st.success("✅ Unit 3 Labs Complete: Production Spark pipelines mastered!")
         elif selected_unit == 4:
             st.markdown("### 🔥 Unit 4: Stream Processing & Real-time Data")
@@ -1598,6 +1919,88 @@ for window_key in sorted(aggregator.windows.keys()):
 consumer.close()'''
             st.code(lab4_2, language='python')
             
+            st.markdown("### LAB 3: Stream Processing with Flink (90 min)")
+            st.markdown("**Objective:** Build stateful stream processing pipeline")
+            lab4_3 = '''from pyflink.datastream import StreamExecutionEnvironment
+from pyflink.table import StreamTableEnvironment, EnvironmentSettings
+from pyflink.table.expressions import col
+import json
+
+print("🌊 APACHE FLINK STREAM PROCESSING\n" + "="*60)
+
+# 1. Setup Flink environment
+env = StreamExecutionEnvironment.get_execution_environment()
+env.set_parallelism(4)
+
+settings = EnvironmentSettings.new_instance().in_streaming_mode().build()
+table_env = StreamTableEnvironment.create(env, settings)
+
+print("✅ Flink environment initialized")
+
+# 2. Create source table (Kafka)
+table_env.execute_sql("""
+    CREATE TABLE user_events (
+        event_id STRING,
+        user_id STRING,
+        event_type STRING,
+        product_id STRING,
+        value DOUBLE,
+        event_time TIMESTAMP(3),
+        WATERMARK FOR event_time AS event_time - INTERVAL '5' SECOND
+    ) WITH (
+        'connector' = 'kafka',
+        'topic' = 'user_events',
+        'properties.bootstrap.servers' = 'localhost:9092',
+        'properties.group.id' = 'flink_consumer',
+        'format' = 'json',
+        'scan.startup.mode' = 'latest-offset'
+    )
+""")
+
+print("✅ Kafka source table created")
+
+# 3. Windowed aggregations
+result = table_env.sql_query("""
+    SELECT 
+        TUMBLE_START(event_time, INTERVAL '1' MINUTE) as window_start,
+        event_type,
+        COUNT(*) as event_count,
+        SUM(value) as total_value,
+        AVG(value) as avg_value
+    FROM user_events
+    GROUP BY 
+        TUMBLE(event_time, INTERVAL '1' MINUTE),
+        event_type
+""")
+
+print("✅ Windowed aggregation query created")
+
+# 4. Create sink table
+table_env.execute_sql("""
+    CREATE TABLE event_metrics (
+        window_start TIMESTAMP(3),
+        event_type STRING,
+        event_count BIGINT,
+        total_value DOUBLE,
+        avg_value DOUBLE
+    ) WITH (
+        'connector' = 'jdbc',
+        'url' = 'jdbc:postgresql://localhost:5432/analytics',
+        'table-name' = 'event_metrics',
+        'username' = 'admin',
+        'password' = 'secret'
+    )
+""")
+
+print("✅ Sink table created")
+
+# 5. Execute streaming job
+result.execute_insert('event_metrics')
+
+print("\n✅ Flink streaming job running!")
+print("Processing events in 1-minute windows...")'''
+            st.code(lab4_3, language='python')
+            
             st.success("✅ Unit 4 Labs Complete: Real-time streaming pipelines mastered!")
         elif selected_unit == 5:
             st.markdown("### 🔥 Unit 5: Cloud Data Platforms")
@@ -1631,7 +2034,7 @@ s3_client.put_object(
 print("✅ Data uploaded to S3")
 
 # 2. AWS Glue ETL Job (PySpark)
-glue_job = '''
+glue_job = """
 import sys
 from awsglue.transforms import *
 from awsglue.utils import getResolvedOptions
@@ -1656,13 +2059,13 @@ df_clean = df.dropna().drop_duplicates()
 df_clean.write.mode("overwrite").parquet("s3://my-data-lake/processed/sales/")
 
 job.commit()
-'''
+"""
 
 print("\n2. AWS Glue Job Code:")
 print(glue_job)
 
 # 3. Lambda Function for Trigger
-lambda_code = '''
+lambda_code = """
 import json
 import boto3
 
@@ -1681,7 +2084,7 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body': json.dumps(f"Job started: {response['JobRunId']}")
     }
-'''
+"""
 
 print("\n3. Lambda Trigger Function:")
 print(lambda_code)
@@ -1776,40 +2179,292 @@ resource "aws_redshift_cluster" "analytics_warehouse" {
 # terraform destroy  # Cleanup'''
             st.code(lab5_2, language='terraform')
             
-            st.success("✅ Unit 5 Labs Complete: Cloud data engineering mastered!")
+            st.markdown("### LAB 3: GCP BigQuery & Dataflow (90 min)")
+            st.markdown("**Objective:** Build data pipeline on Google Cloud Platform")
+            lab5_3 = '''from google.cloud import bigquery, storage
+import pandas as pd
+
+print("☁️ GCP DATA PIPELINE\n" + "="*60)
+
+# 1. Upload to Cloud Storage
+print("\n1. Uploading to GCS...")
+
+storage_client = storage.Client()
+bucket = storage_client.bucket('my-data-lake')
+
+df = pd.read_csv('sales_data.csv')
+blob = bucket.blob('raw/sales_data.csv')
+blob.upload_from_string(df.to_csv(index=False), content_type='text/csv')
+
+print("✅ Data uploaded to GCS")
+
+# 2. Load to BigQuery
+print("\n2. Loading to BigQuery...")
+
+bq_client = bigquery.Client()
+
+# Create dataset
+dataset_id = 'analytics'
+dataset = bigquery.Dataset(f"{bq_client.project}.{dataset_id}")
+dataset.location = 'US'
+bq_client.create_dataset(dataset, exists_ok=True)
+
+print(f"✅ Dataset {dataset_id} ready")
+
+# Create table schema
+schema = [
+    bigquery.SchemaField('order_id', 'STRING', mode='REQUIRED'),
+    bigquery.SchemaField('customer_id', 'STRING'),
+    bigquery.SchemaField('product_id', 'STRING'),
+    bigquery.SchemaField('quantity', 'INTEGER'),
+    bigquery.SchemaField('unit_price', 'FLOAT'),
+    bigquery.SchemaField('total_amount', 'FLOAT'),
+    bigquery.SchemaField('order_date', 'DATE')
+]
+
+table_id = f"{bq_client.project}.{dataset_id}.sales"
+table = bigquery.Table(table_id, schema=schema)
+table = bq_client.create_table(table, exists_ok=True)
+
+print(f"✅ Table {table_id} created")
+
+# Load data from GCS
+job_config = bigquery.LoadJobConfig(
+    source_format=bigquery.SourceFormat.CSV,
+    skip_leading_rows=1,
+    autodetect=False,
+    schema=schema
+)
+
+uri = 'gs://my-data-lake/raw/sales_data.csv'
+load_job = bq_client.load_table_from_uri(uri, table_id, job_config=job_config)
+
+load_job.result()  # Wait for job to complete
+
+print(f"✅ Loaded {load_job.output_rows} rows to BigQuery")
+
+# 3. Query BigQuery
+print("\n3. Querying BigQuery...")
+
+query = """
+    SELECT 
+        product_id,
+        COUNT(*) as num_orders,
+        SUM(total_amount) as total_revenue
+    FROM `analytics.sales`
+    GROUP BY product_id
+    ORDER BY total_revenue DESC
+    LIMIT 10
+"""
+
+query_job = bq_client.query(query)
+results = query_job.result()
+
+print("\nTop 10 products:")
+for row in results:
+    print(f"  {row.product_id}: ${row.total_revenue:,.2f}")
+
+print("\n✅ GCP pipeline complete!")'''
+            st.code(lab5_3, language='python')
+            
+            st.markdown("### LAB 4: Azure Synapse & Data Factory (75 min)")
+            st.markdown("**Objective:** Build data pipeline on Microsoft Azure")
+            lab5_4 = '''from azure.storage.blob import BlobServiceClient
+from azure.identity import DefaultAzureCredential
+import pandas as pd
+
+print("☁️ AZURE DATA PIPELINE\n" + "="*60)
+
+# 1. Upload to Azure Blob Storage
+print("\n1. Uploading to Azure Blob Storage...")
+
+connection_string = "DefaultEndpointsProtocol=https;AccountName=mydatalake;..."
+blob_service = BlobServiceClient.from_connection_string(connection_string)
+
+container_name = 'raw-data'
+container_client = blob_service.get_container_client(container_name)
+
+df = pd.read_csv('sales_data.csv')
+blob_client = container_client.get_blob_client('sales/sales_data.csv')
+blob_client.upload_blob(df.to_csv(index=False), overwrite=True)
+
+print("✅ Data uploaded to Azure Blob Storage")
+
+# 2. Azure Data Factory Pipeline (JSON)
+adf_pipeline = {
+    "name": "SalesETLPipeline",
+    "properties": {
+        "activities": [
+            {
+                "name": "CopyFromBlobToSynapse",
+                "type": "Copy",
+                "inputs": [{
+                    "referenceName": "BlobSalesData",
+                    "type": "DatasetReference"
+                }],
+                "outputs": [{
+                    "referenceName": "SynapseSalesTable",
+                    "type": "DatasetReference"
+                }],
+                "typeProperties": {
+                    "source": {"type": "DelimitedTextSource"},
+                    "sink": {"type": "SqlDWSink"}
+                }
+            }
+        ]
+    }
+}
+
+print("\n2. Azure Data Factory Pipeline:")
+import json
+print(json.dumps(adf_pipeline, indent=2))
+
+# 3. Query Azure Synapse
+synapse_query = """
+SELECT 
+    product_id,
+    COUNT(*) as num_orders,
+    SUM(total_amount) as total_revenue
+FROM sales
+GROUP BY product_id
+ORDER BY total_revenue DESC;
+"""
+
+print("\n3. Synapse Analytics Query:")
+print(synapse_query)
+
+print("\n✅ Azure pipeline complete!")'''
+            st.code(lab5_4, language='python')
+            
+            st.success("✅ Unit 5 Labs Complete: Multi-cloud data engineering mastered!")
         elif selected_unit == 6:
-            st.markdown(
-                """These labs focus on quality, orchestration and monitoring.
+            st.markdown("### 🔥 Unit 6: Orchestration & Monitoring")
+            st.markdown("**COMPREHENSIVE HANDS-ON LABS - Apache Airflow Production Code!**")
+            
+            st.markdown("### LAB 1: Apache Airflow DAG (120 min)")
+            lab6_code = '''from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime, timedelta
+import pandas as pd
 
-- **Lab 1 – Data quality checks**
-  - Add assertions to a pipeline (schema, nulls, ranges).
-  - Fail the pipeline if checks don't pass.
+default_args = {
+    'owner': 'data_team',
+    'retries': 3,
+    'retry_delay': timedelta(minutes=5)
+}
 
-- **Lab 2 – Orchestrate with Airflow (or similar)**
-  - Define a simple DAG with dependencies.
-  - Schedule and run it.
+dag = DAG('daily_sales_etl', default_args=default_args, schedule_interval='0 2 * * *')
 
-- **Mini project – Monitored production pipeline**
-  - Add logging, metrics and alerts to a pipeline.
-  - Simulate a failure and practise debugging.
-"""
-            )
+def extract_data():
+    df = pd.read_csv('/data/raw/sales.csv')
+    df.to_parquet('/data/staging/sales.parquet')
+    return len(df)
+
+extract_task = PythonOperator(task_id='extract', python_callable=extract_data, dag=dag)
+print("✅ Airflow DAG created!")'''
+            st.code(lab6_code, language='python')
+            
+            st.markdown("### LAB 2: Advanced Airflow with Sensors & Branching (90 min)")
+            st.markdown("**Objective:** Build complex DAG with conditional logic")
+            lab6_2 = '''from airflow import DAG
+from airflow.operators.python import PythonOperator, BranchPythonOperator
+from airflow.operators.dummy import DummyOperator
+from airflow.sensors.filesystem import FileSensor
+from datetime import datetime, timedelta
+import pandas as pd
+
+default_args = {
+    'owner': 'data_team',
+    'retries': 2,
+    'retry_delay': timedelta(minutes=3)
+}
+
+dag = DAG(
+    'advanced_etl_pipeline',
+    default_args=default_args,
+    schedule_interval='0 3 * * *',
+    start_date=datetime(2024, 1, 1),
+    catchup=False
+)
+
+# Sensor - wait for file
+wait_for_file = FileSensor(
+    task_id='wait_for_data_file',
+    filepath='/data/incoming/sales_*.csv',
+    poke_interval=60,
+    timeout=600,
+    dag=dag
+)
+
+def check_data_size(**context):
+    """Check if data meets threshold"""
+    df = pd.read_csv('/data/incoming/sales_latest.csv')
+    
+    if len(df) > 10000:
+        return 'process_large_dataset'
+    else:
+        return 'process_small_dataset'
+
+branch_task = BranchPythonOperator(
+    task_id='check_data_size',
+    python_callable=check_data_size,
+    dag=dag
+)
+
+def process_large():
+    print("Processing large dataset with Spark...")
+    # Spark processing logic
+    return "large_processed"
+
+def process_small():
+    print("Processing small dataset with Pandas...")
+    # Pandas processing logic
+    return "small_processed"
+
+large_task = PythonOperator(
+    task_id='process_large_dataset',
+    python_callable=process_large,
+    dag=dag
+)
+
+small_task = PythonOperator(
+    task_id='process_small_dataset',
+    python_callable=process_small,
+    dag=dag
+)
+
+join_task = DummyOperator(
+    task_id='join_branches',
+    trigger_rule='none_failed_min_one_success',
+    dag=dag
+)
+
+def send_notification(**context):
+    print(f"Pipeline completed at {datetime.now()}")
+    # Send email/Slack notification
+
+notify_task = PythonOperator(
+    task_id='send_notification',
+    python_callable=send_notification,
+    dag=dag
+)
+
+# Define workflow
+wait_for_file >> branch_task >> [large_task, small_task] >> join_task >> notify_task
+
+print("✅ Advanced Airflow DAG with branching created!")'''
+            st.code(lab6_2, language='python')
+            
+            st.success("✅ Unit 6 Complete: Airflow orchestration mastered!")
         elif selected_unit == 7:
-            st.markdown(
-                """Use these milestones to structure your Data Engineer capstone.
+            st.markdown("### 🎯 Unit 7: Capstone Projects")
+            st.markdown("""
+**Option 1:** Real-time Analytics Pipeline (Kafka + Spark + Airflow)
+**Option 2:** Cloud Data Lake (AWS/GCP + Terraform)
+**Option 3:** Batch Processing at Scale (Spark + Delta Lake)
 
-- **Milestone 1 – Requirements & design**
-  - Define the problem, data sources and SLAs.
-  - Sketch the architecture.
-
-- **Milestone 2 – Implementation**
-  - Build the pipeline with tests and orchestration.
-
-- **Milestone 3 – Operations & documentation**
-  - Add monitoring, alerts and a runbook.
-  - Document the project for handoff.
-"""
-            )
+**Evaluation:** Architecture (25%), Code (30%), Quality (20%), Operations (15%), Impact (10%)""")
+            st.success("✅ Choose your capstone!")
         else:
             st.markdown(
                 "Detailed lab descriptions for this unit will be added in a later build, "
