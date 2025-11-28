@@ -1723,6 +1723,211 @@ print("\n✅ Delta Lake operations complete!")
 spark.stop()'''
             st.code(lab3_3, language='python')
             
+            st.markdown("### LAB 4: Spark SQL & Data Lakehouse (75 min)")
+            st.markdown("**Objective:** Build data lakehouse with Spark SQL")
+            lab3_4 = '''from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, year, month, sum, avg, count
+
+spark = SparkSession.builder.appName("DataLakehouse").getOrCreate()
+
+print("🏛️ DATA LAKEHOUSE WITH SPARK SQL\n" + "="*60)
+
+# 1. Create database
+print("\n1. Creating Database...")
+
+spark.sql("CREATE DATABASE IF NOT EXISTS analytics")
+spark.sql("USE analytics")
+
+print("✅ Database created")
+
+# 2. Create tables from Parquet
+print("\n2. Creating Tables...")
+
+df_sales = spark.read.parquet('/data/sales.parquet')
+df_sales.createOrReplaceTempView('sales_temp')
+
+spark.sql("""
+    CREATE TABLE IF NOT EXISTS sales
+    USING DELTA
+    AS SELECT * FROM sales_temp
+""")
+
+print("✅ Sales table created")
+
+# 3. Complex SQL queries
+print("\n3. Running Analytics Queries...")
+
+# Query 1: Monthly revenue
+monthly_revenue = spark.sql("""
+    SELECT 
+        year(order_date) as year,
+        month(order_date) as month,
+        COUNT(*) as num_orders,
+        SUM(total_amount) as total_revenue,
+        AVG(total_amount) as avg_order_value
+    FROM sales
+    GROUP BY year(order_date), month(order_date)
+    ORDER BY year DESC, month DESC
+""")
+
+print("\nMonthly Revenue:")
+monthly_revenue.show()
+
+# Query 2: Customer segmentation
+customer_segments = spark.sql("""
+    WITH customer_metrics AS (
+        SELECT 
+            customer_id,
+            COUNT(*) as num_orders,
+            SUM(total_amount) as lifetime_value
+        FROM sales
+        GROUP BY customer_id
+    )
+    SELECT 
+        CASE 
+            WHEN lifetime_value > 10000 THEN 'VIP'
+            WHEN lifetime_value > 5000 THEN 'Gold'
+            WHEN lifetime_value > 1000 THEN 'Silver'
+            ELSE 'Bronze'
+        END as segment,
+        COUNT(*) as num_customers,
+        AVG(lifetime_value) as avg_clv
+    FROM customer_metrics
+    GROUP BY segment
+    ORDER BY avg_clv DESC
+""")
+
+print("\nCustomer Segments:")
+customer_segments.show()
+
+# 4. Create materialized views
+print("\n4. Creating Materialized Views...")
+
+spark.sql("""
+    CREATE OR REPLACE TABLE daily_summary
+    USING DELTA
+    AS
+    SELECT 
+        order_date,
+        COUNT(*) as num_orders,
+        SUM(total_amount) as total_revenue,
+        AVG(total_amount) as avg_order_value
+    FROM sales
+    GROUP BY order_date
+""")
+
+print("✅ Materialized view created")
+
+# 5. Query optimization
+print("\n5. Query Optimization...")
+
+# Analyze table for statistics
+spark.sql("ANALYZE TABLE sales COMPUTE STATISTICS")
+
+# Show query plan
+monthly_revenue.explain(extended=True)
+
+print("\n✅ Data lakehouse ready!")
+
+spark.stop()'''
+            st.code(lab3_4, language='python')
+            
+            st.markdown("### LAB 5: Advanced Partitioning & Performance Tuning (75 min)")
+            st.markdown("**Objective:** Master data partitioning for optimal query performance")
+            lab3_5 = '''from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, year, month, day
+import time
+
+spark = SparkSession.builder \\
+    .appName("PartitioningStrategies") \\
+    .config("spark.sql.adaptive.enabled", "true") \\
+    .getOrCreate()
+
+print("⚡ PARTITIONING & PERFORMANCE TUNING\n" + "="*60)
+
+# 1. Load data
+df = spark.read.parquet('/data/large_sales.parquet')
+
+print(f"\nTotal records: {df.count():,}")
+print(f"Current partitions: {df.rdd.getNumPartitions()}")
+
+# 2. Partition by date (common pattern)
+print("\n1. DATE-BASED PARTITIONING:")
+
+df_with_parts = df \\
+    .withColumn('year', year(col('order_date'))) \\
+    .withColumn('month', month(col('order_date'))) \\
+    .withColumn('day', day(col('order_date')))
+
+# Write with partitioning
+df_with_parts.write \\
+    .partitionBy('year', 'month') \\
+    .mode('overwrite') \\
+    .parquet('/data/partitioned/sales')
+
+print("✅ Data partitioned by year/month")
+
+# 3. Query performance comparison
+print("\n2. QUERY PERFORMANCE TEST:")
+
+# Non-partitioned query
+start = time.time()
+df_non_part = spark.read.parquet('/data/large_sales.parquet')
+result1 = df_non_part.filter(col('order_date') >= '2024-01-01').count()
+time_non_part = time.time() - start
+
+print(f"Non-partitioned query: {time_non_part:.2f}s")
+
+# Partitioned query (partition pruning)
+start = time.time()
+df_part = spark.read.parquet('/data/partitioned/sales')
+result2 = df_part.filter((col('year') == 2024) & (col('month') >= 1)).count()
+time_part = time.time() - start
+
+print(f"Partitioned query: {time_part:.2f}s")
+print(f"Speedup: {time_non_part/time_part:.1f}x faster")
+
+# 4. Bucketing for joins
+print("\n3. BUCKETING STRATEGY:")
+
+df.write \\
+    .bucketBy(100, 'customer_id') \\
+    .sortBy('order_date') \\
+    .mode('overwrite') \\
+    .saveAsTable('sales_bucketed')
+
+print("✅ Data bucketed by customer_id (100 buckets)")
+
+# 5. Repartition strategies
+print("\n4. REPARTITION STRATEGIES:")
+
+# By column (for joins)
+df_repart_col = df.repartition(200, 'customer_id')
+print(f"Repartitioned by customer_id: {df_repart_col.rdd.getNumPartitions()} partitions")
+
+# By number (for parallelism)
+df_repart_num = df.repartition(500)
+print(f"Repartitioned to 500 partitions for max parallelism")
+
+# Coalesce (reduce partitions)
+df_coalesce = df.coalesce(10)
+print(f"Coalesced to 10 partitions for final output")
+
+# 6. Best practices summary
+print("\n5. PARTITIONING BEST PRACTICES:")
+print("="*60)
+print("✅ Partition by frequently filtered columns (date, region)")
+print("✅ Aim for 128MB-1GB per partition")
+print("✅ Use bucketing for large dimension tables")
+print("✅ Repartition before expensive operations (joins, aggregations)")
+print("✅ Coalesce before writing small outputs")
+print("✅ Enable adaptive query execution")
+
+print("\n✅ Partitioning strategies mastered!")
+
+spark.stop()'''
+            st.code(lab3_5, language='python')
+            
             st.success("✅ Unit 3 Labs Complete: Production Spark pipelines mastered!")
         elif selected_unit == 4:
             st.markdown("### 🔥 Unit 4: Stream Processing & Real-time Data")
@@ -2000,6 +2205,113 @@ result.execute_insert('event_metrics')
 print("\n✅ Flink streaming job running!")
 print("Processing events in 1-minute windows...")'''
             st.code(lab4_3, language='python')
+            
+            st.markdown("### LAB 4: Stream Joins & Enrichment (90 min)")
+            st.markdown("**Objective:** Join multiple streams for real-time enrichment")
+            lab4_4 = '''from kafka import KafkaProducer, KafkaConsumer
+import json
+from datetime import datetime
+from collections import defaultdict
+
+print("🔀 STREAM JOINS & ENRICHMENT\n" + "="*60)
+
+class StreamJoiner:
+    def __init__(self):
+        self.user_cache = {}  # Cache user data
+        self.product_cache = {}  # Cache product data
+        self.enriched_events = []
+    
+    def load_reference_data(self):
+        """Load reference data for enrichment"""
+        # Simulate loading user data
+        self.user_cache = {
+            'user_1': {'name': 'John Doe', 'segment': 'Premium', 'country': 'US'},
+            'user_2': {'name': 'Jane Smith', 'segment': 'Standard', 'country': 'UK'}
+        }
+        
+        # Simulate loading product data
+        self.product_cache = {
+            'prod_1': {'name': 'Laptop', 'category': 'Electronics', 'price': 999.99},
+            'prod_2': {'name': 'Mouse', 'category': 'Accessories', 'price': 29.99}
+        }
+        
+        print("✅ Reference data loaded")
+    
+    def enrich_event(self, event):
+        """Enrich event with user and product data"""
+        user_id = event.get('user_id')
+        product_id = event.get('product_id')
+        
+        # Join with user data
+        user_data = self.user_cache.get(user_id, {})
+        
+        # Join with product data
+        product_data = self.product_cache.get(product_id, {})
+        
+        # Create enriched event
+        enriched = {
+            **event,
+            'user_name': user_data.get('name', 'Unknown'),
+            'user_segment': user_data.get('segment', 'Unknown'),
+            'user_country': user_data.get('country', 'Unknown'),
+            'product_name': product_data.get('name', 'Unknown'),
+            'product_category': product_data.get('category', 'Unknown'),
+            'product_price': product_data.get('price', 0),
+            'enrichment_timestamp': datetime.now().isoformat()
+        }
+        
+        return enriched
+    
+    def process_stream(self, consumer, producer, output_topic):
+        """Process and enrich stream"""
+        print("\nProcessing and enriching events...\n")
+        
+        event_count = 0
+        
+        for message in consumer:
+            event = message.value
+            event_count += 1
+            
+            # Enrich event
+            enriched_event = self.enrich_event(event)
+            
+            # Send to output topic
+            producer.send(output_topic, value=enriched_event)
+            
+            # Print sample
+            if event_count <= 3:
+                print(f"Event {event_count}:")
+                print(f"  Original: {event['event_type']} by {event['user_id']}")
+                print(f"  Enriched: {enriched_event['user_name']} ({enriched_event['user_segment']})")
+                print(f"            {enriched_event['product_name']} - ${enriched_event['product_price']}")
+                print()
+            
+            if event_count >= 50:
+                break
+        
+        print(f"\n✅ Enriched {event_count} events")
+
+# Setup
+joiner = StreamJoiner()
+joiner.load_reference_data()
+
+# Kafka setup
+producer = KafkaProducer(
+    bootstrap_servers=['localhost:9092'],
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+)
+
+consumer = KafkaConsumer(
+    'raw_events',
+    bootstrap_servers=['localhost:9092'],
+    value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+)
+
+# Process stream
+joiner.process_stream(consumer, producer, 'enriched_events')
+
+print("\n✅ Stream enrichment pipeline complete!")'''
+            st.code(lab4_4, language='python')
             
             st.success("✅ Unit 4 Labs Complete: Real-time streaming pipelines mastered!")
         elif selected_unit == 5:
@@ -2455,16 +2767,409 @@ wait_for_file >> branch_task >> [large_task, small_task] >> join_task >> notify_
 print("✅ Advanced Airflow DAG with branching created!")'''
             st.code(lab6_2, language='python')
             
+            st.markdown("### LAB 3: Data Quality Monitoring with Airflow (90 min)")
+            st.markdown("**Objective:** Implement automated data quality checks in pipelines")
+            lab6_3 = '''from airflow import DAG
+from airflow.operators.python import PythonOperator
+from airflow.utils.email import send_email
+from datetime import datetime, timedelta
+import pandas as pd
+import great_expectations as ge
+
+default_args = {
+    'owner': 'data_quality_team',
+    'email': ['quality@company.com'],
+    'email_on_failure': True,
+    'retries': 1
+}
+
+dag = DAG(
+    'data_quality_pipeline',
+    default_args=default_args,
+    schedule_interval='0 4 * * *',
+    start_date=datetime(2024, 1, 1)
+)
+
+def validate_schema(**context):
+    """Validate data schema"""
+    df = pd.read_parquet('/data/processed/sales.parquet')
+    
+    required_columns = ['order_id', 'customer_id', 'product_id', 'total_amount', 'order_date']
+    missing_cols = [col for col in required_columns if col not in df.columns]
+    
+    if missing_cols:
+        raise ValueError(f"Missing columns: {missing_cols}")
+    
+    print("✅ Schema validation passed")
+
+def validate_completeness(**context):
+    """Check for missing values"""
+    df = pd.read_parquet('/data/processed/sales.parquet')
+    
+    critical_columns = ['order_id', 'customer_id', 'total_amount']
+    
+    for col in critical_columns:
+        null_count = df[col].isnull().sum()
+        null_pct = (null_count / len(df)) * 100
+        
+        if null_pct > 0:
+            raise ValueError(f"{col} has {null_pct:.2f}% null values")
+    
+    print("✅ Completeness validation passed")
+
+def validate_uniqueness(**context):
+    """Check for duplicates"""
+    df = pd.read_parquet('/data/processed/sales.parquet')
+    
+    dup_count = df['order_id'].duplicated().sum()
+    
+    if dup_count > 0:
+        raise ValueError(f"Found {dup_count} duplicate order_ids")
+    
+    print("✅ Uniqueness validation passed")
+
+def validate_ranges(**context):
+    """Validate data ranges"""
+    df = pd.read_parquet('/data/processed/sales.parquet')
+    
+    # Check for negative amounts
+    if (df['total_amount'] < 0).any():
+        raise ValueError("Negative amounts found")
+    
+    # Check for future dates
+    df['order_date'] = pd.to_datetime(df['order_date'])
+    if (df['order_date'] > datetime.now()).any():
+        raise ValueError("Future dates found")
+    
+    print("✅ Range validation passed")
+
+def validate_with_great_expectations(**context):
+    """Advanced validation with Great Expectations"""
+    df = pd.read_parquet('/data/processed/sales.parquet')
+    ge_df = ge.from_pandas(df)
+    
+    # Define expectations
+    ge_df.expect_column_values_to_not_be_null('order_id')
+    ge_df.expect_column_values_to_be_unique('order_id')
+    ge_df.expect_column_values_to_be_between('total_amount', min_value=0, max_value=100000)
+    ge_df.expect_column_values_to_be_in_set('status', ['completed', 'pending', 'cancelled'])
+    
+    # Validate
+    results = ge_df.validate()
+    
+    if not results['success']:
+        failed = [r for r in results['results'] if not r['success']]
+        raise ValueError(f"Quality checks failed: {len(failed)} expectations")
+    
+    print("✅ Great Expectations validation passed")
+
+def send_quality_report(**context):
+    """Send quality report"""
+    report = f"""
+    Data Quality Report - {datetime.now().strftime('%Y-%m-%d')}
+    
+    All quality checks passed:
+    ✅ Schema validation
+    ✅ Completeness check
+    ✅ Uniqueness check
+    ✅ Range validation
+    ✅ Great Expectations suite
+    
+    Pipeline is healthy and ready for consumption.
+    """
+    
+    print(report)
+    # send_email(to=['team@company.com'], subject='Quality Report', html_content=report)
+
+# Define tasks
+schema_task = PythonOperator(task_id='validate_schema', python_callable=validate_schema, dag=dag)
+completeness_task = PythonOperator(task_id='validate_completeness', python_callable=validate_completeness, dag=dag)
+uniqueness_task = PythonOperator(task_id='validate_uniqueness', python_callable=validate_uniqueness, dag=dag)
+ranges_task = PythonOperator(task_id='validate_ranges', python_callable=validate_ranges, dag=dag)
+ge_task = PythonOperator(task_id='validate_great_expectations', python_callable=validate_with_great_expectations, dag=dag)
+report_task = PythonOperator(task_id='send_quality_report', python_callable=send_quality_report, dag=dag)
+
+# Workflow
+[schema_task, completeness_task, uniqueness_task, ranges_task, ge_task] >> report_task
+
+print("✅ Data quality monitoring DAG created!")'''
+            st.code(lab6_3, language='python')
+            
             st.success("✅ Unit 6 Complete: Airflow orchestration mastered!")
         elif selected_unit == 7:
-            st.markdown("### 🎯 Unit 7: Capstone Projects")
+            st.markdown("### 🎯 Unit 7: Data Engineering Capstone Projects")
+            st.markdown("**Choose one comprehensive project to demonstrate your data engineering expertise**")
+            
+            st.markdown("## 📊 Capstone Project Options")
+            
+            st.markdown("### Option 1: Real-time E-Commerce Analytics Platform")
             st.markdown("""
-**Option 1:** Real-time Analytics Pipeline (Kafka + Spark + Airflow)
-**Option 2:** Cloud Data Lake (AWS/GCP + Terraform)
-**Option 3:** Batch Processing at Scale (Spark + Delta Lake)
+**Objective:** Build end-to-end real-time analytics system
 
-**Evaluation:** Architecture (25%), Code (30%), Quality (20%), Operations (15%), Impact (10%)""")
-            st.success("✅ Choose your capstone!")
+**Architecture:**
+- Kafka for event streaming
+- Spark Streaming for processing
+- PostgreSQL for analytics storage
+- Airflow for orchestration
+- Grafana for monitoring
+
+**Deliverables:**
+1. **Event Producer:**
+   - Kafka producer for user events
+   - Schema registry integration
+   - Event validation
+
+2. **Stream Processing:**
+   - Spark Streaming job
+   - Real-time aggregations
+   - Windowed metrics
+   - State management
+
+3. **Data Warehouse:**
+   - Star schema design
+   - Fact and dimension tables
+   - Incremental loading
+
+4. **Orchestration:**
+   - Airflow DAGs
+   - Dependency management
+   - Error handling
+
+5. **Monitoring:**
+   - Grafana dashboards
+   - Alerting rules
+   - Performance metrics
+
+6. **Documentation:**
+   - Architecture diagram
+   - Setup instructions
+   - Operational runbook
+
+**Skills Demonstrated:** Kafka, Spark, SQL, Airflow, monitoring""")
+            
+            st.markdown("### Option 2: Cloud Data Lake & Warehouse (AWS/GCP/Azure)")
+            st.markdown("""
+**Objective:** Build scalable cloud-native data platform
+
+**Architecture:**
+- S3/GCS/Blob (data lake)
+- Glue/Dataflow/Data Factory (ETL)
+- Redshift/BigQuery/Synapse (warehouse)
+- Terraform (infrastructure)
+- CloudWatch/Stackdriver (monitoring)
+
+**Deliverables:**
+1. **Data Lake:**
+   - Multi-zone architecture (raw/processed/curated)
+   - Partitioning strategy
+   - Data catalog
+
+2. **ETL Pipelines:**
+   - Batch processing jobs
+   - Incremental loading
+   - Data quality checks
+
+3. **Data Warehouse:**
+   - Dimensional model
+   - Aggregate tables
+   - Query optimization
+
+4. **Infrastructure as Code:**
+   - Terraform modules
+   - Environment configs
+   - CI/CD pipeline
+
+5. **Cost Optimization:**
+   - Resource sizing
+   - Storage lifecycle policies
+   - Query optimization
+
+6. **Documentation:**
+   - Cloud architecture
+   - Cost analysis
+   - Security best practices
+
+**Skills Demonstrated:** Cloud platforms, IaC, cost optimization, security""")
+            
+            st.markdown("### Option 3: Batch Processing Pipeline at Scale")
+            st.markdown("""
+**Objective:** Process billions of records efficiently
+
+**Architecture:**
+- Apache Spark (PySpark)
+- Delta Lake (ACID transactions)
+- Airflow (orchestration)
+- Great Expectations (quality)
+- Prometheus (monitoring)
+
+**Deliverables:**
+1. **Spark Jobs:**
+   - Multi-stage transformations
+   - Performance optimized
+   - Broadcast joins
+   - Partitioning strategy
+
+2. **Delta Lake:**
+   - ACID transactions
+   - Time travel
+   - Schema evolution
+   - Optimize & vacuum
+
+3. **Data Quality:**
+   - Great Expectations suite
+   - Validation checkpoints
+   - Quality reports
+
+4. **Orchestration:**
+   - Airflow DAGs
+   - Dynamic task generation
+   - SLA monitoring
+
+5. **Performance:**
+   - Benchmark results
+   - Optimization report
+   - Scalability analysis
+
+6. **Documentation:**
+   - Performance tuning guide
+   - Troubleshooting playbook
+
+**Skills Demonstrated:** Spark optimization, Delta Lake, data quality, scale""")
+            
+            st.markdown("### Option 4: CDC & Change Data Capture Pipeline")
+            st.markdown("""
+**Objective:** Build real-time CDC pipeline for database replication
+
+**Architecture:**
+- Debezium (CDC)
+- Kafka (event streaming)
+- Kafka Connect (connectors)
+- PostgreSQL (source & target)
+- Airflow (orchestration)
+
+**Deliverables:**
+1. **CDC Setup:**
+   - Debezium connector config
+   - Schema registry
+   - Topic management
+
+2. **Stream Processing:**
+   - Change event processing
+   - Transformation logic
+   - Deduplication
+
+3. **Target Loading:**
+   - Sink connectors
+   - Upsert logic
+   - Conflict resolution
+
+4. **Monitoring:**
+   - Lag monitoring
+   - Error tracking
+   - Data freshness
+
+5. **Testing:**
+   - End-to-end tests
+   - Failure scenarios
+   - Recovery procedures
+
+6. **Documentation:**
+   - CDC architecture
+   - Troubleshooting guide
+
+**Skills Demonstrated:** CDC, Debezium, Kafka Connect, real-time replication""")
+            
+            st.markdown("### Option 5: Data Quality & Observability Platform")
+            st.markdown("""
+**Objective:** Build comprehensive data quality monitoring system
+
+**Architecture:**
+- Great Expectations (quality)
+- Airflow (orchestration)
+- PostgreSQL (metadata)
+- Grafana (dashboards)
+- PagerDuty (alerting)
+
+**Deliverables:**
+1. **Quality Framework:**
+   - Expectation suites
+   - Validation checkpoints
+   - Custom expectations
+
+2. **Monitoring:**
+   - Quality dashboards
+   - Trend analysis
+   - Anomaly detection
+
+3. **Alerting:**
+   - Alert rules
+   - Escalation policies
+   - Incident tracking
+
+4. **Lineage:**
+   - Data lineage tracking
+   - Impact analysis
+   - Dependency mapping
+
+5. **Reporting:**
+   - Quality scorecards
+   - SLA tracking
+   - Executive summaries
+
+6. **Documentation:**
+   - Quality standards
+   - Runbook
+
+**Skills Demonstrated:** Data quality, observability, monitoring, alerting""")
+            
+            st.markdown("## 📝 Capstone Evaluation Rubric")
+            st.markdown("""
+**Your capstone will be evaluated on:**
+
+### 1. Architecture & Design (25%)
+- ✅ Well-designed data model
+- ✅ Scalable architecture
+- ✅ Clear data flow diagram
+- ✅ Technology choices justified
+
+### 2. Implementation Quality (30%)
+- ✅ Production-quality code
+- ✅ Error handling & logging
+- ✅ Performance optimized
+- ✅ Security best practices
+
+### 3. Data Quality (20%)
+- ✅ Validation framework
+- ✅ Quality monitoring
+- ✅ Data lineage tracking
+- ✅ Testing coverage
+
+### 4. Operations (15%)
+- ✅ Orchestration (Airflow)
+- ✅ Monitoring & alerting
+- ✅ Documentation complete
+- ✅ Runbook for incidents
+
+### 5. Business Impact (10%)
+- ✅ Solves real problem
+- ✅ Measurable value
+- ✅ Cost-effective solution
+- ✅ Scalability demonstrated
+
+**Grading Scale:**
+- 90-100%: Exceptional - Production-ready
+- 80-89%: Strong - Minor improvements
+- 70-79%: Good - Meets requirements
+- Below 70%: Needs revision
+
+**Bonus Points:**
+- Infrastructure as Code (Terraform)
+- CI/CD pipeline
+- Kubernetes deployment
+- Multi-cloud implementation
+- Advanced monitoring (Prometheus, Grafana)""")
+            
+            st.success("✅ Choose your capstone project and build a world-class data platform!")
         else:
             st.markdown(
                 "Detailed lab descriptions for this unit will be added in a later build, "
