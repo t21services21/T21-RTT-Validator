@@ -116,212 +116,2409 @@ def _render_unit_learning_materials(unit_number: int):
     )
 
     if unit_number == 1:
-        st.markdown("#### 📘 What does a data engineer do?")
+        st.markdown("#### 📘 What Does a Data Engineer Do? The Complete Role")
         st.markdown(
-            """Data engineers build and maintain the infrastructure and pipelines
-that make data accessible, reliable and ready for analysis and ML.
+            """Data engineers are the **architects and builders of data infrastructure**. 
+While data analysts and scientists consume data, data engineers make that consumption 
+possible by building the pipelines, warehouses, and systems that deliver clean, 
+reliable, and performant data at scale.
 
-- Design and implement data pipelines (ETL/ELT).
-- Ensure data quality, reliability and performance.
-- Work with data warehouses, lakes and streaming systems.
+**Your Core Responsibilities:**
 
-You will see how data engineers enable analysts, scientists and business
-users to work with data at scale.
+1. **Build Data Pipelines (ETL/ELT)**
+   - Extract data from multiple sources (databases, APIs, files, streams)
+   - Transform data (clean, enrich, aggregate, join)
+   - Load data into target systems (warehouses, lakes, databases)
+   - Schedule and orchestrate pipeline execution
+
+2. **Maintain Data Infrastructure**
+   - Design and implement data warehouses
+   - Build and optimize data lakes
+   - Manage streaming platforms (Kafka, Kinesis)
+   - Configure cloud data services (AWS, GCP, Azure)
+
+3. **Ensure Data Quality & Reliability**
+   - Implement data validation and quality checks
+   - Monitor pipeline health and performance
+   - Handle errors and implement retry logic
+   - Maintain data lineage and documentation
+
+4. **Optimize for Performance & Cost**
+   - Tune queries and transformations
+   - Optimize storage formats (Parquet, ORC)
+   - Implement caching and partitioning strategies
+   - Monitor and reduce cloud costs
+
+**Real-World Example:**
+
+Imagine you're a Data Engineer at an e-commerce company. Your stakeholders need:
+- Analysts want daily sales reports
+- Data scientists need clean data for ML models
+- Executives want real-time dashboards
+
+**Your Job:**
+- Build ETL pipeline to extract sales data from 5 different databases
+- Clean and standardize the data
+- Load into a data warehouse (star schema)
+- Create real-time stream for live dashboard
+- Orchestrate with Airflow (runs at 2 AM daily)
+- Monitor pipeline health and alert on failures
+- Optimize queries to run in <5 minutes
+- Keep costs under budget
+
+**The Data Engineering Workflow:**
+
+1. **Requirements Gathering** (10% of time)
+   - Understand data needs
+   - Define SLAs (latency, freshness, quality)
+   - Identify data sources
+
+2. **Design** (15% of time)
+   - Architecture diagrams
+   - Data models (schemas)
+   - Technology selection
+   - Cost estimation
+
+3. **Implementation** (40% of time)
+   - Write pipeline code
+   - Build transformations
+   - Set up infrastructure
+   - Write tests
+
+4. **Testing & Validation** (15% of time)
+   - Unit tests
+   - Integration tests
+   - Data quality validation
+   - Performance testing
+
+5. **Deployment & Monitoring** (10% of time)
+   - Deploy to production
+   - Set up monitoring
+   - Configure alerts
+   - Document runbooks
+
+6. **Maintenance & Optimization** (10% of time)
+   - Fix bugs
+   - Optimize performance
+   - Add new features
+   - Reduce costs
 """
         )
 
-        st.markdown("#### 🔄 ETL vs ELT")
+        st.markdown("#### 🔄 ETL vs ELT: When to Use Each Pattern")
         st.markdown(
-            """You will learn:
+            """Understanding the difference between ETL and ELT is fundamental to data engineering.
 
-- **ETL** (Extract, Transform, Load): transform data before loading into
-  the warehouse.
-- **ELT** (Extract, Load, Transform): load raw data first, transform
-  inside the warehouse.
-- When to use each pattern and trade-offs.
+**ETL (Extract, Transform, Load) - Traditional Pattern:**
+
+**Process:**
+1. Extract data from source systems
+2. Transform data BEFORE loading (clean, join, aggregate)
+3. Load transformed data into warehouse
+
+**When to Use:**
+- ✅ Source systems are slow or expensive to query
+- ✅ Need to mask sensitive data before loading
+- ✅ Target warehouse has limited compute power
+- ✅ Transformations are complex and reusable
+- ✅ Working with legacy systems
+
+**Example:**
+```python
+# ETL Pattern
+df = extract_from_api()  # Get raw data
+df = clean_data(df)      # Transform BEFORE loading
+df = join_with_ref(df)
+df = aggregate(df)
+load_to_warehouse(df)    # Load clean data
+```
+
+**ELT (Extract, Load, Transform) - Modern Pattern:**
+
+**Process:**
+1. Extract data from source systems
+2. Load RAW data into warehouse/lake
+3. Transform data INSIDE the warehouse (using SQL/Spark)
+
+**When to Use:**
+- ✅ Modern cloud warehouses (Snowflake, BigQuery, Redshift)
+- ✅ Need to keep raw data for auditing
+- ✅ Warehouse has powerful compute (can handle transformations)
+- ✅ Multiple teams need different views of same data
+- ✅ Want flexibility to re-transform historical data
+
+**Example:**
+```python
+# ELT Pattern
+df = extract_from_api()  # Get raw data
+load_to_lake(df)         # Load RAW immediately
+
+# Transform INSIDE warehouse using SQL
+warehouse.execute(''''
+    CREATE TABLE clean_sales AS
+    SELECT * FROM raw_sales
+    WHERE amount > 0
+    AND date >= '2024-01-01'
+'''')
+```
+
+**Comparison:**
+
+| Aspect | ETL | ELT |
+|--------|-----|-----|
+| **Transform Location** | External tool | Inside warehouse |
+| **Raw Data** | Not stored | Stored in lake |
+| **Flexibility** | Lower | Higher |
+| **Warehouse Load** | Lower | Higher |
+| **Best For** | Legacy systems | Modern cloud |
+| **Tools** | Python, Spark | SQL, dbt |
+
+**Modern Trend:** Most companies are moving to ELT because:
+- Cloud warehouses are powerful and cheap
+- Keeping raw data provides audit trail
+- SQL transformations are easier to maintain
+- Tools like dbt make ELT elegant
 """
         )
 
-        st.markdown("#### 🛠️ Building your first pipeline")
+        st.markdown("#### 🛠️ Building Your First Pipeline: Step-by-Step")
         st.markdown(
-            """You will build a simple pipeline that:
+            """Let's build a complete ETL pipeline from scratch.
 
-- Extracts data from a source (CSV, API, database).
-- Applies basic transformations (cleaning, filtering).
-- Loads results into a target system.
+**Scenario:** Extract daily sales from a CSV, clean it, load to PostgreSQL
+
+**Step 1: Extract**
+```python
+import pandas as pd
+
+def extract_sales_data(file_path):
+    '''Extract sales data from CSV'''
+    df = pd.read_csv(file_path)
+    print(f"Extracted {len(df)} records")
+    return df
+```
+
+**Step 2: Transform**
+```python
+def transform_sales_data(df):
+    '''Clean and transform sales data'''
+    # Remove duplicates
+    df = df.drop_duplicates(subset=['order_id'])
+    
+    # Handle missing values
+    df = df.dropna(subset=['order_id', 'customer_id'])
+    df['email'].fillna('unknown@company.com', inplace=True)
+    
+    # Data type conversions
+    df['order_date'] = pd.to_datetime(df['order_date'])
+    df['amount'] = pd.to_numeric(df['amount'])
+    
+    # Add derived columns
+    df['year'] = df['order_date'].dt.year
+    df['month'] = df['order_date'].dt.month
+    
+    print(f"Transformed to {len(df)} clean records")
+    return df
+```
+
+**Step 3: Load**
+```python
+from sqlalchemy import create_engine
+
+def load_to_warehouse(df, table_name):
+    '''Load data to PostgreSQL'''
+    engine = create_engine('postgresql://user:pass@localhost:5432/warehouse')
+    df.to_sql(table_name, engine, if_exists='append', index=False)
+    print(f"Loaded {len(df)} records to {table_name}")
+```
+
+**Step 4: Orchestrate**
+```python
+def run_pipeline():
+    '''Run complete ETL pipeline'''
+    try:
+        # Extract
+        df = extract_sales_data('sales.csv')
+        
+        # Transform
+        df_clean = transform_sales_data(df)
+        
+        # Load
+        load_to_warehouse(df_clean, 'sales')
+        
+        print("✅ Pipeline completed successfully")
+        return True
+    
+    except Exception as e:
+        print(f"❌ Pipeline failed: {e}")
+        return False
+```
+
+**Best Practices:**
+
+1. **Logging**
+   - Log every step
+   - Include timestamps
+   - Log record counts
+
+2. **Error Handling**
+   - Try/except blocks
+   - Retry logic for transient failures
+   - Alert on persistent failures
+
+3. **Idempotency**
+   - Pipeline should produce same result if run multiple times
+   - Use upsert instead of insert
+   - Check for existing data before loading
+
+4. **Testing**
+   - Unit tests for each function
+   - Integration tests for full pipeline
+   - Data quality tests
+
+5. **Monitoring**
+   - Track execution time
+   - Monitor data volumes
+   - Alert on anomalies
 """
         )
+        
+        st.markdown("#### 📊 Data Sources: Extracting from Everywhere")
+        st.markdown("""
+**Data engineers extract from diverse sources:**
+
+**1. Relational Databases (PostgreSQL, MySQL, SQL Server)**
+
+```python
+import psycopg2
+import pandas as pd
+
+# Connect to PostgreSQL
+conn = psycopg2.connect(
+    host="localhost",
+    database="production",
+    user="etl_user",
+    password="secret"
+)
+
+# Extract with SQL
+query = "SELECT * FROM orders WHERE order_date >= '2024-01-01'"
+df = pd.read_sql(query, conn)
+
+print(f"Extracted {len(df)} orders")
+conn.close()
+```
+
+**Best Practices:**
+- ✅ Use connection pooling
+- ✅ Query only needed columns
+- ✅ Filter at source (WHERE clause)
+- ✅ Use indexes for performance
+- ✅ Close connections properly
+
+**2. REST APIs**
+
+```python
+import requests
+import pandas as pd
+
+def extract_from_api(endpoint, api_key):
+    headers = {'Authorization': f'Bearer {api_key}'}
+    response = requests.get(endpoint, headers=headers)
+    response.raise_for_status()
+    
+    data = response.json()
+    return pd.DataFrame(data['results'])
+
+# Extract
+df = extract_from_api('https://api.company.com/sales', 'YOUR_KEY')
+print(f"Extracted {len(df)} records from API")
+```
+
+**Best Practices:**
+- ✅ Handle pagination
+- ✅ Implement rate limiting
+- ✅ Retry on failures
+- ✅ Cache responses when appropriate
+
+**3. Cloud Storage (S3, GCS, Azure Blob)**
+
+```python
+import boto3
+import pandas as pd
+from io import StringIO
+
+# Read from S3
+s3 = boto3.client('s3')
+obj = s3.get_object(Bucket='my-bucket', Key='data/sales.csv')
+df = pd.read_csv(StringIO(obj['Body'].read().decode('utf-8')))
+
+print(f"Extracted {len(df)} records from S3")
+```
+
+**4. Streaming Sources (Kafka)**
+
+```python
+from kafka import KafkaConsumer
+import json
+
+consumer = KafkaConsumer(
+    'events',
+    bootstrap_servers=['localhost:9092'],
+    value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+)
+
+for message in consumer:
+    event = message.value
+    process_event(event)
+```
+""")
+        
+        st.markdown("#### 🔧 Advanced Transformation Patterns")
+        st.markdown("""
+**Common transformation patterns you'll use daily:**
+
+**1. Data Cleaning**
+
+```python
+def clean_customer_data(df):
+    # Remove duplicates
+    df = df.drop_duplicates(subset=['customer_id'], keep='last')
+    
+    # Handle missing values
+    df['email'].fillna('unknown@company.com', inplace=True)
+    df['phone'].fillna('000-000-0000', inplace=True)
+    
+    # Standardize text
+    df['name'] = df['name'].str.strip().str.title()
+    df['email'] = df['email'].str.lower()
+    
+    # Fix data types
+    df['signup_date'] = pd.to_datetime(df['signup_date'], errors='coerce')
+    df['age'] = pd.to_numeric(df['age'], errors='coerce')
+    
+    # Remove outliers
+    Q1 = df['age'].quantile(0.25)
+    Q3 = df['age'].quantile(0.75)
+    IQR = Q3 - Q1
+    df = df[(df['age'] >= Q1 - 1.5*IQR) & (df['age'] <= Q3 + 1.5*IQR)]
+    
+    return df
+```
+
+**2. Data Enrichment**
+
+```python
+def enrich_orders(orders_df, customers_df, products_df):
+    # Join with customer data
+    enriched = orders_df.merge(
+        customers_df[['customer_id', 'segment', 'country']],
+        on='customer_id',
+        how='left'
+    )
+    
+    # Join with product data
+    enriched = enriched.merge(
+        products_df[['product_id', 'category', 'brand']],
+        on='product_id',
+        how='left'
+    )
+    
+    # Add derived columns
+    enriched['order_year'] = enriched['order_date'].dt.year
+    enriched['order_month'] = enriched['order_date'].dt.month
+    enriched['is_weekend'] = enriched['order_date'].dt.dayofweek >= 5
+    
+    return enriched
+```
+
+**3. Aggregations**
+
+```python
+def create_customer_features(orders_df):
+    customer_agg = orders_df.groupby('customer_id').agg({
+        'order_id': 'count',
+        'total_amount': ['sum', 'mean', 'max'],
+        'order_date': ['min', 'max']
+    })
+    
+    customer_agg.columns = ['num_orders', 'total_spent', 'avg_order', 
+                            'max_order', 'first_order', 'last_order']
+    
+    # Calculate recency
+    customer_agg['days_since_last_order'] = \
+        (datetime.now() - customer_agg['last_order']).dt.days
+    
+    return customer_agg
+```
+""")
+        
+        st.markdown("#### ⚙️ Error Handling & Retry Logic")
+        st.markdown("""
+**Production pipelines must handle failures gracefully:**
+
+**1. Retry with Exponential Backoff**
+
+```python
+import time
+from functools import wraps
+
+def retry_with_backoff(max_retries=3, base_delay=1):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if attempt == max_retries - 1:
+                        raise
+                    
+                    delay = base_delay * (2 ** attempt)
+                    print(f"Attempt {attempt + 1} failed: {e}")
+                    print(f"Retrying in {delay}s...")
+                    time.sleep(delay)
+        return wrapper
+    return decorator
+
+@retry_with_backoff(max_retries=3, base_delay=2)
+def extract_from_api(url):
+    response = requests.get(url, timeout=30)
+    response.raise_for_status()
+    return response.json()
+```
+
+**2. Circuit Breaker Pattern**
+
+```python
+class CircuitBreaker:
+    def __init__(self, failure_threshold=5, timeout=60):
+        self.failure_count = 0
+        self.failure_threshold = failure_threshold
+        self.timeout = timeout
+        self.last_failure_time = None
+        self.state = 'CLOSED'  # CLOSED, OPEN, HALF_OPEN
+    
+    def call(self, func, *args, **kwargs):
+        if self.state == 'OPEN':
+            if time.time() - self.last_failure_time > self.timeout:
+                self.state = 'HALF_OPEN'
+            else:
+                raise Exception("Circuit breaker is OPEN")
+        
+        try:
+            result = func(*args, **kwargs)
+            if self.state == 'HALF_OPEN':
+                self.state = 'CLOSED'
+                self.failure_count = 0
+            return result
+        
+        except Exception as e:
+            self.failure_count += 1
+            self.last_failure_time = time.time()
+            
+            if self.failure_count >= self.failure_threshold:
+                self.state = 'OPEN'
+            
+            raise e
+```
+
+**3. Dead Letter Queue**
+
+```python
+def process_with_dlq(record):
+    try:
+        # Process record
+        result = transform_record(record)
+        load_to_warehouse(result)
+    
+    except Exception as e:
+        # Send to dead letter queue for manual review
+        send_to_dlq(record, error=str(e))
+        log_error(f"Record failed: {record['id']}, Error: {e}")
+```
+""")
+        
+        st.markdown("#### 🧪 Testing ETL Pipelines")
+        st.markdown("""
+**Testing is critical for reliable pipelines:**
+
+**1. Unit Tests**
+
+```python
+import pytest
+import pandas as pd
+
+def test_transform_sales_data():
+    # Arrange
+    input_df = pd.DataFrame({
+        'order_id': ['A', 'B', 'A'],  # Has duplicate
+        'amount': [100, 200, 100]
+    })
+    
+    # Act
+    result = transform_sales_data(input_df)
+    
+    # Assert
+    assert len(result) == 2, "Should remove duplicates"
+    assert result['order_id'].is_unique, "order_id should be unique"
+```
+
+**2. Integration Tests**
+
+```python
+def test_full_pipeline():
+    # Setup test database
+    test_db = create_test_database()
+    
+    # Run pipeline
+    success = run_pipeline(
+        source='test_data.csv',
+        target=test_db
+    )
+    
+    # Verify
+    assert success, "Pipeline should succeed"
+    
+    result_count = test_db.execute("SELECT COUNT(*) FROM sales").fetchone()[0]
+    assert result_count > 0, "Should load data"
+    
+    # Cleanup
+    test_db.close()
+```
+
+**3. Data Quality Tests**
+
+```python
+def test_data_quality():
+    df = pd.read_sql("SELECT * FROM sales", conn)
+    
+    # No nulls in critical columns
+    assert df['order_id'].notnull().all()
+    
+    # No duplicates
+    assert df['order_id'].is_unique
+    
+    # Valid ranges
+    assert (df['amount'] >= 0).all()
+    assert (df['quantity'] > 0).all()
+    
+    # Data freshness
+    latest = df['order_date'].max()
+    assert (datetime.now() - latest).days < 2
+```
+""")
     elif unit_number == 2:
-        st.markdown("#### 📘 Why data warehousing?")
+        st.markdown("#### 📘 Data Warehousing & Dimensional Modeling: The Complete Guide")
         st.markdown(
-            """Data warehouses centralise data from multiple sources for
-analytics and reporting. This unit covers:
+            """Data warehouses are the **foundation of enterprise analytics**. They centralize 
+data from multiple sources, optimize it for querying, and provide a single source of truth 
+for business intelligence.
 
-- Dimensional modeling (facts and dimensions).
-- Star and snowflake schemas.
-- Slowly changing dimensions (SCD).
+**Why Data Warehouses Matter:**
+
+1. **Centralized Data**
+   - Combine data from CRM, ERP, web analytics, databases
+   - Single source of truth for the organization
+   - Consistent definitions and metrics
+
+2. **Optimized for Analytics**
+   - Denormalized for fast queries
+   - Pre-aggregated tables
+   - Indexed for common query patterns
+
+3. **Historical Data**
+   - Track changes over time
+   - Support trend analysis
+   - Enable year-over-year comparisons
+
+4. **Business Intelligence**
+   - Power BI, Tableau, Looker connect here
+   - Self-service analytics for business users
+   - Consistent reporting across teams
+
+**Data Warehouse vs Data Lake:**
+
+| Aspect | Data Warehouse | Data Lake |
+|--------|----------------|------------|
+| **Data Type** | Structured | All types |
+| **Schema** | Schema-on-write | Schema-on-read |
+| **Users** | Business analysts | Data scientists |
+| **Cost** | Higher | Lower |
+| **Query Speed** | Fast | Variable |
+| **Use Case** | BI & reporting | ML & exploration |
+
+**Modern Approach:** Use BOTH!
+- Data Lake for raw data storage
+- Data Warehouse for curated analytics
 """
         )
 
-        st.markdown("#### ⭐ Star schema design")
+        st.markdown("#### ⭐ Star Schema Design: The Foundation of Analytics")
         st.markdown(
-            """You will practise:
+            """The **star schema** is the most common data warehouse design pattern.
 
-- Identifying fact tables (transactions, events).
-- Designing dimension tables (customers, products, time).
-- Building a simple star schema for a business domain.
+**Components:**
+
+1. **Fact Table (Center of Star)**
+   - Contains measurable events/transactions
+   - Examples: sales, orders, clicks, appointments
+   - Columns: foreign keys to dimensions + numeric measures
+   - Large (millions to billions of rows)
+
+2. **Dimension Tables (Points of Star)**
+   - Descriptive attributes
+   - Examples: customers, products, dates, stores
+   - Columns: primary key + descriptive attributes
+   - Smaller (thousands to millions of rows)
+
+**Example: Retail Sales Star Schema**
+
+**Fact Table: fact_sales**
+```sql
+CREATE TABLE fact_sales (
+    sale_id BIGINT PRIMARY KEY,
+    date_key INT,              -- FK to dim_date
+    product_key INT,           -- FK to dim_product
+    customer_key INT,          -- FK to dim_customer
+    store_key INT,             -- FK to dim_store
+    
+    -- Measures (additive)
+    quantity INT,
+    unit_price DECIMAL(10,2),
+    total_amount DECIMAL(10,2),
+    cost_amount DECIMAL(10,2),
+    profit_amount DECIMAL(10,2)
+);
+```
+
+**Dimension: dim_product**
+```sql
+CREATE TABLE dim_product (
+    product_key INT PRIMARY KEY,
+    product_id VARCHAR(50),
+    product_name VARCHAR(200),
+    category VARCHAR(100),
+    brand VARCHAR(100),
+    unit_cost DECIMAL(10,2)
+);
+```
+
+**Benefits of Star Schema:**
+- ✅ Simple to understand
+- ✅ Fast query performance
+- ✅ Easy to add new dimensions
+- ✅ Works great with BI tools
+
+**Design Process:**
+1. Identify business process (e.g., sales)
+2. Define grain (one row per order line)
+3. Identify dimensions (who, what, where, when)
+4. Identify facts (numeric measures)
+5. Build tables and relationships
 """
         )
 
-        st.markdown("#### 🔄 Slowly changing dimensions")
+        st.markdown("#### 🔄 Slowly Changing Dimensions: Tracking History")
         st.markdown(
-            """You will understand:
+            """Dimension data changes over time. How do you handle it?
 
-- Type 1 (overwrite), Type 2 (add row), Type 3 (add column).
-- When to use each SCD type.
-- Implementing SCD Type 2 in a pipeline.
+**The Problem:**
+- Customer moves to new address
+- Product price changes
+- Employee gets promoted
+
+**Do you:** Overwrite? Keep history? Both?
+
+**SCD Type 1: Overwrite (No History)**
+
+**Approach:** Simply update the record
+
+```sql
+UPDATE dim_customer
+SET address = '123 New St', city = 'London'
+WHERE customer_id = 'CUST001';
+```
+
+**Pros:** Simple, saves space
+**Cons:** Lose history
+**Use When:** History doesn't matter (e.g., fixing typos)
+
+**SCD Type 2: Add New Row (Full History)**
+
+**Approach:** Keep old row, add new row with version/dates
+
+```sql
+-- Expire old record
+UPDATE dim_customer
+SET is_current = 0, end_date = '2024-11-28'
+WHERE customer_id = 'CUST001' AND is_current = 1;
+
+-- Insert new record
+INSERT INTO dim_customer (
+    customer_id, name, address, city,
+    start_date, end_date, is_current, version
+) VALUES (
+    'CUST001', 'John Smith', '123 New St', 'London',
+    '2024-11-28', NULL, 1, 2
+);
+```
+
+**Pros:** Complete history, can analyze trends
+**Cons:** More storage, more complex queries
+**Use When:** History matters (customer segments, pricing)
+
+**SCD Type 3: Add New Column (Limited History)**
+
+**Approach:** Add columns for previous values
+
+```sql
+ALTER TABLE dim_customer ADD COLUMN previous_address VARCHAR(200);
+
+UPDATE dim_customer
+SET previous_address = address,
+    address = '123 New St'
+WHERE customer_id = 'CUST001';
+```
+
+**Pros:** Simple, keeps one previous value
+**Cons:** Limited history (only 1-2 previous values)
+**Use When:** Need to compare current vs previous only
+
+**Comparison:**
+
+| Type | History | Storage | Complexity | Use Case |
+|------|---------|---------|------------|----------|
+| **Type 1** | None | Low | Simple | Corrections |
+| **Type 2** | Full | High | Complex | Trend analysis |
+| **Type 3** | Limited | Medium | Medium | Before/after |
+
+**Best Practice:** Use Type 2 for most business dimensions!
 """
         )
+        
+        st.markdown("#### 🏛️ Advanced Dimensional Modeling Patterns")
+        st.markdown("""
+**Beyond basic star schema:**
+
+**1. Snowflake Schema**
+
+Normalize dimensions into sub-dimensions:
+
+```sql
+-- Instead of flat dim_product:
+CREATE TABLE dim_product (
+    product_key INT PRIMARY KEY,
+    product_name VARCHAR(200),
+    category_key INT  -- FK to dim_category
+);
+
+CREATE TABLE dim_category (
+    category_key INT PRIMARY KEY,
+    category_name VARCHAR(100),
+    department_key INT  -- FK to dim_department
+);
+```
+
+**Pros:** Saves storage, enforces consistency  
+**Cons:** More joins, slower queries  
+**Use when:** Storage is critical concern
+
+**2. Junk Dimensions**
+
+Combine low-cardinality flags:
+
+```sql
+CREATE TABLE dim_order_flags (
+    flag_key INT PRIMARY KEY,
+    is_express BOOLEAN,
+    is_gift BOOLEAN,
+    is_international BOOLEAN,
+    requires_signature BOOLEAN
+);
+
+-- In fact table:
+fact_orders.flag_key -> dim_order_flags
+```
+
+**3. Role-Playing Dimensions**
+
+Same dimension used multiple times:
+
+```sql
+-- dim_date used 3 times in fact_orders:
+fact_orders.order_date_key -> dim_date
+fact_orders.ship_date_key -> dim_date
+fact_orders.delivery_date_key -> dim_date
+```
+
+**4. Degenerate Dimensions**
+
+Dimension attributes stored in fact table:
+
+```sql
+CREATE TABLE fact_sales (
+    sale_key INT,
+    date_key INT,
+    product_key INT,
+    
+    -- Degenerate dimensions (no separate dim table)
+    order_number VARCHAR(50),
+    invoice_number VARCHAR(50),
+    
+    -- Measures
+    quantity INT,
+    amount DECIMAL(10,2)
+);
+```
+""")
+        
+        st.markdown("#### 📊 Fact Table Design Patterns")
+        st.markdown("""
+**Different types of fact tables:**
+
+**1. Transaction Facts (Most Common)**
+
+One row per business event:
+
+```sql
+CREATE TABLE fact_sales (
+    sale_key BIGINT PRIMARY KEY,
+    date_key INT,
+    product_key INT,
+    customer_key INT,
+    
+    -- Additive measures (can sum across all dimensions)
+    quantity INT,
+    revenue DECIMAL(10,2),
+    cost DECIMAL(10,2),
+    profit DECIMAL(10,2)
+);
+```
+
+**2. Periodic Snapshot Facts**
+
+Regular snapshots (daily, monthly):
+
+```sql
+CREATE TABLE fact_inventory_snapshot (
+    snapshot_date_key INT,
+    product_key INT,
+    warehouse_key INT,
+    
+    -- Semi-additive (can't sum across time)
+    quantity_on_hand INT,
+    quantity_reserved INT,
+    reorder_point INT
+);
+```
+
+**3. Accumulating Snapshot Facts**
+
+Track process with multiple milestones:
+
+```sql
+CREATE TABLE fact_order_fulfillment (
+    order_key INT PRIMARY KEY,
+    
+    -- Multiple date keys for each milestone
+    order_date_key INT,
+    payment_date_key INT,
+    ship_date_key INT,
+    delivery_date_key INT,
+    
+    -- Measures
+    days_to_ship INT,
+    days_to_deliver INT
+);
+```
+
+**4. Factless Fact Tables**
+
+Track events with no measures:
+
+```sql
+CREATE TABLE fact_student_attendance (
+    date_key INT,
+    student_key INT,
+    class_key INT,
+    -- No measures, just the fact that student attended
+    PRIMARY KEY (date_key, student_key, class_key)
+);
+```
+""")
+        
+        st.markdown("#### ⚡ Warehouse Performance Optimization")
+        st.markdown("""
+**Make your warehouse FAST:**
+
+**1. Indexing Strategies**
+
+```sql
+-- Index foreign keys
+CREATE INDEX idx_fact_date ON fact_sales(date_key);
+CREATE INDEX idx_fact_product ON fact_sales(product_key);
+CREATE INDEX idx_fact_customer ON fact_sales(customer_key);
+
+-- Composite index for common queries
+CREATE INDEX idx_date_product ON fact_sales(date_key, product_key);
+```
+
+**2. Partitioning**
+
+```sql
+-- Partition fact table by date
+CREATE TABLE fact_sales (
+    sale_key BIGINT,
+    order_date DATE,
+    ...
+) PARTITION BY RANGE (order_date) (
+    PARTITION p2024_01 VALUES LESS THAN ('2024-02-01'),
+    PARTITION p2024_02 VALUES LESS THAN ('2024-03-01'),
+    ...
+);
+```
+
+**Benefits:**
+- Query only relevant partitions
+- Faster data loading
+- Easier data archival
+
+**3. Materialized Views**
+
+```sql
+-- Pre-aggregate for common queries
+CREATE MATERIALIZED VIEW mv_daily_sales AS
+SELECT 
+    d.full_date,
+    p.category,
+    SUM(f.quantity) as total_quantity,
+    SUM(f.revenue) as total_revenue
+FROM fact_sales f
+JOIN dim_date d ON f.date_key = d.date_key
+JOIN dim_product p ON f.product_key = p.product_key
+GROUP BY d.full_date, p.category;
+
+-- Refresh daily
+REFRESH MATERIALIZED VIEW mv_daily_sales;
+```
+
+**4. Query Optimization**
+
+```sql
+-- Bad: SELECT *
+SELECT * FROM fact_sales WHERE date_key = 20241128;
+
+-- Good: Select only needed columns
+SELECT product_key, SUM(revenue) as total_revenue
+FROM fact_sales
+WHERE date_key = 20241128
+GROUP BY product_key;
+
+-- Better: Use aggregate table
+SELECT product_key, total_revenue
+FROM agg_daily_product_sales
+WHERE date_key = 20241128;
+```
+""")
     elif unit_number == 3:
-        st.markdown("#### 📘 Why batch processing at scale?")
+        st.markdown("#### 📘 Batch Processing at Scale: Apache Spark Mastery")
         st.markdown(
-            """When datasets are too large for single-machine tools, you need
-distributed processing. This unit covers:
+            """When your data exceeds what a single machine can handle (100GB+), you need 
+**distributed computing**. Apache Spark is the industry standard for batch processing at scale.
 
-- Apache Spark fundamentals.
-- Batch job patterns and optimisations.
-- Partitioning and parallelism.
+**Why Spark?**
+
+- ✅ Process terabytes to petabytes of data
+- ✅ 100x faster than Hadoop MapReduce
+- ✅ Unified API for batch and streaming
+- ✅ Works with Python, Scala, Java, R
+- ✅ Integrates with all major cloud platforms
+
+**Spark Architecture:**
+
+1. **Driver Program**
+   - Your application code
+   - Coordinates execution
+   - Manages SparkContext
+
+2. **Cluster Manager**
+   - YARN, Mesos, Kubernetes, or Standalone
+   - Allocates resources
+   - Manages worker nodes
+
+3. **Executors**
+   - Run on worker nodes
+   - Execute tasks
+   - Store data in memory/disk
+
+**Key Concepts:**
+
+**RDD (Resilient Distributed Dataset):**
+- Low-level API
+- Immutable distributed collection
+- Fault-tolerant
+
+**DataFrame:**
+- High-level API (like pandas)
+- Optimized query execution
+- Schema enforcement
+- **Use this 95% of the time!**
+
+**Dataset:**
+- Type-safe DataFrames
+- Compile-time type checking
+- Scala/Java only
 """
         )
 
-        st.markdown("#### ⚡ Spark basics for data engineers")
+        st.markdown("#### ⚡ Spark Fundamentals: DataFrames & Transformations")
         st.markdown(
-            """You will learn:
+            """**Basic Spark Operations:**
 
-- DataFrames and transformations.
-- Reading and writing data at scale.
-- Common operations: filter, join, aggregate, window functions.
+```python
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, sum, avg
+
+# Initialize Spark
+spark = SparkSession.builder.appName("MyApp").getOrCreate()
+
+# Read data
+df = spark.read.parquet('s3://bucket/sales.parquet')
+
+# Transformations (lazy - not executed yet)
+df_filtered = df.filter(col('amount') > 100)
+df_grouped = df.groupBy('customer_id').agg(sum('amount'))
+
+# Action (triggers execution)
+result = df_grouped.collect()  # Returns data to driver
+df_grouped.write.parquet('output/')  # Writes to storage
+```
+
+**Lazy Evaluation:**
+- Transformations are NOT executed immediately
+- Spark builds an execution plan
+- Only runs when you call an action (collect, write, count)
+- Allows Spark to optimize the entire workflow
+
+**Common Transformations:**
+- `select()` - Choose columns
+- `filter()` / `where()` - Filter rows
+- `groupBy()` - Group for aggregation
+- `join()` - Join DataFrames
+- `withColumn()` - Add/modify column
+- `orderBy()` - Sort data
+
+**Common Actions:**
+- `count()` - Count rows
+- `collect()` - Return all data to driver
+- `show()` - Display sample
+- `write()` - Save to storage
 """
         )
 
-        st.markdown("#### 🗂️ Partitioning and performance")
+        st.markdown("#### 🗂️ Partitioning & Performance Optimization")
         st.markdown(
-            """You will understand:
+            """**Partitioning is KEY to Spark performance!**
 
-- How partitioning affects performance.
-- Choosing partition keys.
-- Avoiding common performance pitfalls (shuffles, skew).
+**What is Partitioning?**
+- Data is split into chunks (partitions)
+- Each partition processed independently
+- More partitions = more parallelism
+
+**Partition Size Guidelines:**
+- ✅ Target: 128MB - 1GB per partition
+- ❌ Too small (<10MB): Too much overhead
+- ❌ Too large (>2GB): Memory issues
+
+**Partitioning Strategies:**
+
+1. **File-based Partitioning:**
+```python
+# Write with partitioning
+df.write.partitionBy('year', 'month').parquet('output/')
+
+# Creates structure:
+# output/year=2024/month=01/part-00000.parquet
+# output/year=2024/month=02/part-00000.parquet
+```
+
+2. **Repartition for Parallelism:**
+```python
+# Increase partitions for more parallelism
+df_repartitioned = df.repartition(200)
+
+# Repartition by column (for joins)
+df_by_customer = df.repartition('customer_id')
+```
+
+3. **Coalesce to Reduce:**
+```python
+# Reduce partitions (no shuffle)
+df_small = df.coalesce(10)
+```
+
+**Performance Killers:**
+
+❌ **Shuffle:** Moving data between partitions
+- Caused by: joins, groupBy, repartition
+- Solution: Use broadcast joins for small tables
+
+❌ **Data Skew:** Uneven partition sizes
+- Caused by: Hot keys (one customer has 90% of orders)
+- Solution: Salt keys, custom partitioning
+
+❌ **Spill to Disk:** Not enough memory
+- Caused by: Too much data per partition
+- Solution: Increase partitions, add memory
+
+**Optimization Checklist:**
+- ✅ Use DataFrame API (not RDD)
+- ✅ Filter early (predicate pushdown)
+- ✅ Broadcast small tables (<200MB)
+- ✅ Cache frequently used DataFrames
+- ✅ Partition by commonly filtered columns
+- ✅ Use Parquet format (columnar, compressed)
+- ✅ Enable adaptive query execution
 """
         )
+        
+        st.markdown("#### 🔧 Advanced Spark Transformations")
+        st.markdown("""
+**Master these Spark operations:**
+
+**1. Window Functions**
+
+```python
+from pyspark.sql.window import Window
+from pyspark.sql.functions import row_number, rank, lag, lead
+
+# Rank products by revenue within each category
+window_spec = Window.partitionBy('category').orderBy(col('revenue').desc())
+
+df_ranked = df.withColumn('rank', row_number().over(window_spec))
+
+# Get previous month's sales
+window_time = Window.partitionBy('product_id').orderBy('month')
+df_with_prev = df.withColumn('prev_month_sales', lag('sales', 1).over(window_time))
+```
+
+**2. User-Defined Functions (UDFs)**
+
+```python
+from pyspark.sql.functions import udf
+from pyspark.sql.types import StringType
+
+# Define UDF
+@udf(returnType=StringType())
+def categorize_amount(amount):
+    if amount > 1000:
+        return 'High'
+    elif amount > 100:
+        return 'Medium'
+    else:
+        return 'Low'
+
+# Use UDF
+df_categorized = df.withColumn('amount_category', categorize_amount(col('amount')))
+```
+
+**Warning:** UDFs are slow! Use built-in functions when possible.
+
+**3. Complex Aggregations**
+
+```python
+from pyspark.sql.functions import collect_list, collect_set, percentile_approx
+
+result = df.groupBy('customer_id').agg(
+    count('order_id').alias('num_orders'),
+    sum('amount').alias('total_spent'),
+    avg('amount').alias('avg_order'),
+    percentile_approx('amount', 0.5).alias('median_order'),
+    collect_list('product_id').alias('products_purchased'),
+    collect_set('category').alias('unique_categories')
+)
+```
+""")
+        
+        st.markdown("#### 🔗 Spark Join Optimization")
+        st.markdown("""
+**Joins are expensive - optimize them!**
+
+**1. Broadcast Join (Small Table)**
+
+```python
+from pyspark.sql.functions import broadcast
+
+# Bad: Regular join (shuffle both tables)
+result = large_df.join(small_df, 'key')
+
+# Good: Broadcast join (no shuffle for small table)
+result = large_df.join(broadcast(small_df), 'key')
+```
+
+**When to use:** Small table < 200MB
+
+**2. Bucketed Join**
+
+```python
+# Pre-bucket tables by join key
+large_df.write.bucketBy(100, 'customer_id').saveAsTable('sales_bucketed')
+small_df.write.bucketBy(100, 'customer_id').saveAsTable('customers_bucketed')
+
+# Join bucketed tables (no shuffle!)
+sales = spark.table('sales_bucketed')
+customers = spark.table('customers_bucketed')
+result = sales.join(customers, 'customer_id')
+```
+
+**3. Handling Data Skew**
+
+```python
+# Problem: One customer has 90% of orders (hot key)
+# Solution: Salt the key
+
+from pyspark.sql.functions import rand, concat
+
+# Add salt to skewed table
+skewed_df = df.withColumn('salt', (rand() * 10).cast('int'))
+skewed_df = skewed_df.withColumn('salted_key', concat(col('customer_id'), col('salt')))
+
+# Replicate small table
+replicated_df = small_df.crossJoin(spark.range(10).withColumnRenamed('id', 'salt'))
+replicated_df = replicated_df.withColumn('salted_key', concat(col('customer_id'), col('salt')))
+
+# Join on salted key
+result = skewed_df.join(replicated_df, 'salted_key')
+```
+""")
+        
+        st.markdown("#### 💾 Delta Lake: ACID for Data Lakes")
+        st.markdown("""
+**Delta Lake adds reliability to data lakes:**
+
+**Key Features:**
+
+1. **ACID Transactions**
+   - Atomic writes (all or nothing)
+   - Isolation (concurrent reads/writes)
+   - Consistency (data integrity)
+   - Durability (committed data persists)
+
+2. **Time Travel**
+   - Query previous versions
+   - Rollback bad writes
+   - Audit changes
+
+3. **Schema Evolution**
+   - Add columns safely
+   - Enforce schema
+   - Merge schema on write
+
+**Example:**
+
+```python
+from delta.tables import DeltaTable
+
+# Write Delta table
+df.write.format('delta').mode('overwrite').save('/data/delta/sales')
+
+# Read Delta table
+df_delta = spark.read.format('delta').load('/data/delta/sales')
+
+# Time travel
+df_v1 = spark.read.format('delta').option('versionAsOf', 1).load('/data/delta/sales')
+df_yesterday = spark.read.format('delta').option('timestampAsOf', '2024-11-27').load('/data/delta/sales')
+
+# Upsert (merge)
+delta_table = DeltaTable.forPath(spark, '/data/delta/sales')
+
+delta_table.alias('target').merge(
+    new_data.alias('source'),
+    'target.order_id = source.order_id'
+).whenMatchedUpdateAll().whenNotMatchedInsertAll().execute()
+
+# Optimize & vacuum
+delta_table.optimize().executeCompaction()
+delta_table.vacuum(168)  # Remove files older than 7 days
+```
+""")
     elif unit_number == 4:
-        st.markdown("#### 📘 Why stream processing?")
+        st.markdown("#### 📘 Stream Processing & Real-time Data: Complete Guide")
         st.markdown(
-            """Real-time data needs different tools and patterns. This unit
-covers:
+            """**Real-time data processing** is critical for modern applications that need 
+immediate insights and actions.
 
-- Event-driven architectures.
-- Stream processing concepts (windows, watermarks, state).
-- Tools like Kafka, Flink, or cloud streaming services.
+**Why Stream Processing?**
+
+**Use Cases:**
+- ✅ Real-time fraud detection (banking)
+- ✅ Live dashboards (e-commerce)
+- ✅ IoT sensor monitoring (manufacturing)
+- ✅ Social media analytics (trending topics)
+- ✅ Recommendation engines (Netflix, Spotify)
+- ✅ Anomaly detection (security)
+
+**Batch vs Streaming:**
+
+| Aspect | Batch | Streaming |
+|--------|-------|----------|
+| **Latency** | Hours/days | Seconds/milliseconds |
+| **Data Volume** | Large chunks | Continuous flow |
+| **Processing** | Scheduled | Continuous |
+| **Complexity** | Lower | Higher |
+| **Tools** | Spark, Hadoop | Kafka, Flink |
+| **Use Case** | Reports, ML training | Alerts, live dashboards |
+
+**Key Concepts:**
+
+**1. Event Time vs Processing Time**
+- **Event Time:** When event actually occurred
+- **Processing Time:** When system processes it
+- **Gap:** Network delays, system downtime
+- **Solution:** Use event time + watermarks
+
+**2. Windowing**
+- **Tumbling:** Fixed, non-overlapping (every 5 minutes)
+- **Sliding:** Overlapping (last 5 minutes, updated every minute)
+- **Session:** Based on activity gaps
+
+**3. State Management**
+- Keep track of data across events
+- Examples: running totals, user sessions
+- Challenge: Fault tolerance
 """
         )
 
-        st.markdown("#### 🌊 Streaming fundamentals")
+        st.markdown("#### 🌊 Apache Kafka: The Streaming Platform")
         st.markdown(
-            """You will learn:
+            """**Kafka** is the industry standard for event streaming.
 
-- Difference between batch and streaming.
-- Event time vs processing time.
-- Windowing strategies (tumbling, sliding, session).
+**Architecture:**
+
+1. **Producers:** Send events to Kafka
+2. **Topics:** Categories of events
+3. **Partitions:** Parallel processing
+4. **Consumers:** Read events from Kafka
+5. **Brokers:** Kafka servers
+
+**Example:**
+```python
+from kafka import KafkaProducer, KafkaConsumer
+import json
+
+# Producer
+producer = KafkaProducer(
+    bootstrap_servers=['localhost:9092'],
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+)
+
+# Send event
+event = {'user_id': '123', 'action': 'purchase', 'amount': 99.99}
+producer.send('user_events', value=event)
+
+# Consumer
+consumer = KafkaConsumer(
+    'user_events',
+    bootstrap_servers=['localhost:9092'],
+    value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+)
+
+for message in consumer:
+    event = message.value
+    print(f"Received: {event}")
+```
+
+**Kafka Guarantees:**
+- At-least-once delivery (default)
+- Exactly-once semantics (with configuration)
+- Ordered within partition
+- Durable (replicated across brokers)
 """
         )
 
-        st.markdown("#### 🔗 Building a simple streaming pipeline")
+        st.markdown("#### 🔗 Building Streaming Pipelines")
         st.markdown(
-            """You will build a pipeline that:
+            """**Stream Processing Pattern:**
 
-- Consumes events from a stream (e.g. Kafka topic).
-- Applies transformations and aggregations.
-- Writes results to a sink (database, file, another stream).
+1. **Ingest:** Kafka receives events
+2. **Process:** Flink/Spark Streaming transforms
+3. **Store:** Write to database/data lake
+4. **Serve:** Power real-time dashboards
+
+**Windowing Example:**
+```python
+# Count events per minute
+windowed_counts = stream \\
+    .window(tumbling_window(minutes=1)) \\
+    .groupBy('event_type') \\
+    .count()
+```
+
+**Best Practices:**
+- ✅ Use event time (not processing time)
+- ✅ Handle late-arriving data
+- ✅ Implement exactly-once semantics
+- ✅ Monitor lag and throughput
+- ✅ Plan for backpressure
 """
         )
+        
+        st.markdown("#### 🔧 Kafka Deep Dive: Production Patterns")
+        st.markdown("""
+**Advanced Kafka concepts:**
+
+**1. Consumer Groups & Parallelism**
+
+```python
+# Multiple consumers in same group = parallel processing
+consumer1 = KafkaConsumer(
+    'events',
+    group_id='analytics_group',  # Same group
+    bootstrap_servers=['localhost:9092']
+)
+
+consumer2 = KafkaConsumer(
+    'events',
+    group_id='analytics_group',  # Same group
+    bootstrap_servers=['localhost:9092']
+)
+
+# Kafka automatically distributes partitions between consumers
+```
+
+**2. Exactly-Once Semantics**
+
+```python
+from kafka import KafkaProducer
+
+producer = KafkaProducer(
+    bootstrap_servers=['localhost:9092'],
+    enable_idempotence=True,  # Exactly-once
+    acks='all',  # Wait for all replicas
+    retries=3
+)
+```
+
+**3. Schema Registry**
+
+```python
+from confluent_kafka import avro
+from confluent_kafka.avro import AvroProducer
+
+value_schema = avro.loads('''{
+    "type": "record",
+    "name": "User",
+    "fields": [
+        {"name": "user_id", "type": "string"},
+        {"name": "action", "type": "string"},
+        {"name": "timestamp", "type": "long"}
+    ]
+}''')
+
+producer = AvroProducer({
+    'bootstrap.servers': 'localhost:9092',
+    'schema.registry.url': 'http://localhost:8081'
+}, default_value_schema=value_schema)
+```
+
+**4. Kafka Connect**
+
+No-code data integration:
+
+```json
+{
+  "name": "postgres-source",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "database.hostname": "localhost",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.dbname": "production",
+    "table.include.list": "public.orders",
+    "topic.prefix": "db"
+  }
+}
+```
+""")
+        
+        st.markdown("#### 🌊 Stream Processing with Flink")
+        st.markdown("""
+**Apache Flink for stateful stream processing:**
+
+**Windowing Example:**
+
+```python
+from pyflink.datastream import StreamExecutionEnvironment
+from pyflink.table import StreamTableEnvironment
+
+env = StreamExecutionEnvironment.get_execution_environment()
+table_env = StreamTableEnvironment.create(env)
+
+# Define source
+table_env.execute_sql(''''
+    CREATE TABLE user_events (
+        user_id STRING,
+        event_type STRING,
+        amount DOUBLE,
+        event_time TIMESTAMP(3),
+        WATERMARK FOR event_time AS event_time - INTERVAL '5' SECOND
+    ) WITH (
+        'connector' = 'kafka',
+        'topic' = 'events'
+    )
+'''')
+
+# Tumbling window aggregation
+result = table_env.sql_query(''''
+    SELECT 
+        TUMBLE_START(event_time, INTERVAL '1' MINUTE) as window_start,
+        event_type,
+        COUNT(*) as event_count,
+        SUM(amount) as total_amount
+    FROM user_events
+    GROUP BY 
+        TUMBLE(event_time, INTERVAL '1' MINUTE),
+        event_type
+'''')
+```
+
+**State Management:**
+
+```python
+# Maintain running totals per user
+class RunningTotalFunction(KeyedProcessFunction):
+    def __init__(self):
+        self.state = None
+    
+    def open(self, runtime_context):
+        # Initialize state
+        self.state = runtime_context.get_state(
+            ValueStateDescriptor('total', Types.DOUBLE())
+        )
+    
+    def process_element(self, value, ctx):
+        current_total = self.state.value() or 0.0
+        new_total = current_total + value['amount']
+        self.state.update(new_total)
+        
+        yield (value['user_id'], new_total)
+```
+""")
     elif unit_number == 5:
-        st.markdown("#### 📘 Cloud data platforms")
+        st.markdown("#### 📘 Cloud Data Platforms: AWS, GCP, Azure Mastery")
         st.markdown(
-            """Modern data engineering often happens in the cloud. This unit
-covers:
+            """**Cloud platforms** have revolutionized data engineering with managed services, 
+scalability, and pay-as-you-go pricing.
 
-- Cloud storage (S3, Azure Blob, GCS).
-- Cloud data warehouses (Redshift, BigQuery, Synapse).
-- Managed services for pipelines and orchestration.
+**Why Cloud for Data Engineering?**
+
+**Benefits:**
+- ✅ **Scalability:** Handle any data volume
+- ✅ **Managed Services:** Less infrastructure management
+- ✅ **Cost-Effective:** Pay only for what you use
+- ✅ **Global:** Deploy worldwide
+- ✅ **Integration:** Services work together seamlessly
+
+**Cloud Data Stack:**
+
+| Component | AWS | GCP | Azure |
+|-----------|-----|-----|-------|
+| **Storage** | S3 | Cloud Storage | Blob Storage |
+| **Warehouse** | Redshift | BigQuery | Synapse |
+| **ETL** | Glue | Dataflow | Data Factory |
+| **Streaming** | Kinesis | Pub/Sub | Event Hubs |
+| **Orchestration** | Step Functions | Cloud Composer | Data Factory |
+| **Compute** | EMR (Spark) | Dataproc | HDInsight |
+
+**AWS Data Engineering Stack:**
+
+```python
+# S3 for storage
+import boto3
+s3 = boto3.client('s3')
+s3.upload_file('data.csv', 'my-bucket', 'raw/data.csv')
+
+# Glue for ETL
+glue = boto3.client('glue')
+glue.start_job_run(JobName='my-etl-job')
+
+# Redshift for warehouse
+import psycopg2
+conn = psycopg2.connect(
+    host='cluster.redshift.amazonaws.com',
+    database='analytics',
+    user='admin'
+)
+```
+
+**Cost Optimization:**
+- ✅ Use spot instances for Spark
+- ✅ Compress data (Parquet, gzip)
+- ✅ Partition data for query pruning
+- ✅ Set lifecycle policies (delete old data)
+- ✅ Monitor and set budgets
 """
         )
 
-        st.markdown("#### ☁️ Infrastructure as code")
+        st.markdown("#### ☁️ Infrastructure as Code: Terraform")
         st.markdown(
-            """You will learn:
+            """**Infrastructure as Code (IaC)** treats infrastructure like software.
 
-- Defining infrastructure with code (Terraform, CloudFormation).
-- Version control for infrastructure.
-- Reproducible environments.
+**Why IaC?**
+- ✅ Version control for infrastructure
+- ✅ Reproducible environments
+- ✅ Automated deployments
+- ✅ Disaster recovery
+- ✅ Documentation as code
+
+**Terraform Example:**
+```hcl
+# Create S3 bucket
+resource "aws_s3_bucket" "data_lake" {
+  bucket = "my-data-lake"
+  
+  tags = {
+    Environment = "Production"
+    Team        = "Data Engineering"
+  }
+}
+
+# Create Glue database
+resource "aws_glue_catalog_database" "analytics" {
+  name = "analytics_db"
+}
+
+# Deploy:
+# terraform init
+# terraform plan
+# terraform apply
+```
+
+**Benefits:**
+- Changes are reviewed (pull requests)
+- Rollback is easy (git revert)
+- Environments are identical (dev/prod)
+- Team collaboration
 """
         )
 
-        st.markdown("#### 🔐 Security and access control")
+        st.markdown("#### 🔐 Security & Access Control")
         st.markdown(
-            """You will understand:
+            """**Security is critical** in data engineering.
 
-- IAM roles and policies.
-- Encryption at rest and in transit.
-- Best practices for credentials and secrets management.
+**Key Principles:**
+
+1. **Least Privilege**
+   - Grant minimum necessary permissions
+   - Use IAM roles (not root credentials)
+   - Rotate credentials regularly
+
+2. **Encryption**
+   - **At Rest:** Encrypt stored data (S3, databases)
+   - **In Transit:** Use HTTPS, TLS
+   - **Key Management:** AWS KMS, Azure Key Vault
+
+3. **Network Security**
+   - VPC/VNet isolation
+   - Private subnets for databases
+   - Security groups/firewalls
+
+4. **Secrets Management**
+   - Never hardcode credentials
+   - Use AWS Secrets Manager, HashiCorp Vault
+   - Environment variables for config
+
+**Example:**
+```python
+import boto3
+from botocore.exceptions import ClientError
+
+def get_secret(secret_name):
+    client = boto3.client('secretsmanager')
+    try:
+        response = client.get_secret_value(SecretId=secret_name)
+        return response['SecretString']
+    except ClientError as e:
+        raise e
+
+# Use secret
+db_password = get_secret('prod/db/password')
+```
 """
         )
+        
+        st.markdown("#### ☁️ AWS Data Engineering Stack")
+        st.markdown("""
+**Complete AWS data pipeline:**
+
+**1. S3 Data Lake Architecture**
+
+```
+s3://my-data-lake/
+├── raw/              # Landing zone
+│   ├── sales/
+│   └── customers/
+├── processed/       # Cleaned data
+│   ├── sales/
+│   └── customers/
+└── curated/         # Analytics-ready
+    ├── sales_summary/
+    └── customer_360/
+```
+
+**2. AWS Glue ETL Job**
+
+```python
+import sys
+from awsglue.transforms import *
+from awsglue.utils import getResolvedOptions
+from pyspark.context import SparkContext
+from awsglue.context import GlueContext
+from awsglue.job import Job
+
+args = getResolvedOptions(sys.argv, ['JOB_NAME'])
+sc = SparkContext()
+glueContext = GlueContext(sc)
+spark = glueContext.spark_session
+job = Job(glueContext)
+job.init(args['JOB_NAME'], args)
+
+# Read from S3
+df = spark.read.parquet('s3://my-bucket/raw/sales/')
+
+# Transform
+df_clean = df.filter(col('amount') > 0).dropDuplicates(['order_id'])
+
+# Write to processed zone
+df_clean.write.mode('overwrite').parquet('s3://my-bucket/processed/sales/')
+
+job.commit()
+```
+
+**3. Lambda for Event-Driven ETL**
+
+```python
+import boto3
+import json
+
+def lambda_handler(event, context):
+    # Triggered when file lands in S3
+    bucket = event['Records'][0]['s3']['bucket']['name']
+    key = event['Records'][0]['s3']['object']['key']
+    
+    # Start Glue job
+    glue = boto3.client('glue')
+    response = glue.start_job_run(
+        JobName='process-sales-data',
+        Arguments={'--input_path': f's3://{bucket}/{key}'}
+    )
+    
+    return {'statusCode': 200, 'body': json.dumps('Job started')}
+```
+""")
+        
+        st.markdown("#### 🔵 GCP Data Engineering Stack")
+        st.markdown("""
+**Complete GCP data pipeline:**
+
+**1. BigQuery Data Warehouse**
+
+```python
+from google.cloud import bigquery
+
+client = bigquery.Client()
+
+# Load data from GCS
+job_config = bigquery.LoadJobConfig(
+    source_format=bigquery.SourceFormat.CSV,
+    skip_leading_rows=1,
+    autodetect=True
+)
+
+uri = 'gs://my-bucket/sales.csv'
+table_id = 'my_project.analytics.sales'
+
+load_job = client.load_table_from_uri(uri, table_id, job_config=job_config)
+load_job.result()  # Wait for completion
+
+print(f'Loaded {load_job.output_rows} rows')
+```
+
+**2. Dataflow (Apache Beam)**
+
+```python
+import apache_beam as beam
+from apache_beam.options.pipeline_options import PipelineOptions
+
+options = PipelineOptions(
+    project='my-project',
+    runner='DataflowRunner',
+    region='us-central1',
+    temp_location='gs://my-bucket/temp'
+)
+
+with beam.Pipeline(options=options) as p:
+    (
+        p
+        | 'Read' >> beam.io.ReadFromText('gs://my-bucket/input.csv')
+        | 'Parse' >> beam.Map(parse_csv)
+        | 'Filter' >> beam.Filter(lambda x: x['amount'] > 0)
+        | 'Write' >> beam.io.WriteToBigQuery(
+            'my_project:analytics.sales',
+            write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND
+        )
+    )
+```
+
+**3. Cloud Composer (Managed Airflow)**
+
+```python
+from airflow import DAG
+from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
+
+dag = DAG('gcp_etl', schedule_interval='@daily')
+
+query_task = BigQueryInsertJobOperator(
+    task_id='run_query',
+    configuration={
+        'query': {
+            'query': 'SELECT * FROM `project.dataset.table`',
+            'useLegacySql': False
+        }
+    },
+    dag=dag
+)
+```
+""")
+        
+        st.markdown("#### 💰 Cloud Cost Optimization")
+        st.markdown("""
+**Reduce cloud costs without sacrificing performance:**
+
+**1. Storage Optimization**
+
+```python
+# Use Parquet (10x compression vs CSV)
+df.write.parquet('s3://bucket/data.parquet')  # Good
+df.write.csv('s3://bucket/data.csv')  # Bad (expensive)
+
+# Partition data for query pruning
+df.write.partitionBy('year', 'month').parquet('s3://bucket/sales/')
+
+# Lifecycle policies (delete old data)
+# In Terraform:
+resource "aws_s3_bucket_lifecycle_configuration" "data_lake" {
+  bucket = aws_s3_bucket.data_lake.id
+  
+  rule {
+    id = "delete_old_raw"
+    status = "Enabled"
+    
+    expiration {
+      days = 90  # Delete raw data after 90 days
+    }
+    
+    filter {
+      prefix = "raw/"
+    }
+  }
+}
+```
+
+**2. Compute Optimization**
+
+```python
+# Use Spot/Preemptible instances for Spark
+# AWS EMR:
+emr_config = {
+    'InstanceGroups': [
+        {
+            'InstanceRole': 'MASTER',
+            'InstanceType': 'm5.xlarge',
+            'InstanceCount': 1
+        },
+        {
+            'InstanceRole': 'CORE',
+            'InstanceType': 'm5.xlarge',
+            'InstanceCount': 2,
+            'Market': 'SPOT',  # 70% cheaper!
+            'BidPrice': '0.10'
+        }
+    ]
+}
+```
+
+**3. Query Optimization**
+
+```sql
+-- BigQuery: Use partitioned tables
+CREATE TABLE analytics.sales
+PARTITION BY DATE(order_date)
+AS SELECT * FROM raw.sales;
+
+-- Query only needed partitions
+SELECT * FROM analytics.sales
+WHERE order_date >= '2024-11-01'  -- Scans only Nov partition
+```
+
+**4. Monitoring Costs**
+
+```python
+import boto3
+
+# Get AWS cost
+ce = boto3.client('ce')
+response = ce.get_cost_and_usage(
+    TimePeriod={'Start': '2024-11-01', 'End': '2024-11-30'},
+    Granularity='DAILY',
+    Metrics=['UnblendedCost'],
+    GroupBy=[{'Type': 'SERVICE', 'Key': 'SERVICE'}]
+)
+
+for result in response['ResultsByTime']:
+    print(f"Date: {result['TimePeriod']['Start']}")
+    for group in result['Groups']:
+        service = group['Keys'][0]
+        cost = group['Metrics']['UnblendedCost']['Amount']
+        print(f"  {service}: ${float(cost):.2f}")
+```
+""")
     elif unit_number == 6:
-        st.markdown("#### 📘 Data quality and validation")
+        st.markdown("#### 📘 Data Quality, Orchestration & Monitoring")
         st.markdown(
-            """Pipelines must produce reliable data. This unit covers:
+            """**Production data pipelines** require quality checks, orchestration, and monitoring.
 
-- Data quality checks and assertions.
-- Schema validation and evolution.
-- Handling bad data gracefully.
+**Data Quality Framework:**
+
+**The 6 Dimensions of Data Quality:**
+
+1. **Completeness:** No missing critical values
+2. **Accuracy:** Data is correct
+3. **Consistency:** Same data across systems
+4. **Timeliness:** Data is fresh
+5. **Validity:** Follows business rules
+6. **Uniqueness:** No duplicates
+
+**Quality Checks Example:**
+```python
+def validate_sales_data(df):
+    # Completeness
+    assert df['order_id'].notnull().all(), "Missing order_ids"
+    
+    # Uniqueness
+    assert df['order_id'].is_unique, "Duplicate order_ids"
+    
+    # Validity
+    assert (df['amount'] >= 0).all(), "Negative amounts"
+    
+    # Timeliness
+    latest = df['order_date'].max()
+    assert (datetime.now() - latest).days < 2, "Data too old"
+    
+    return True
+```
+
+**Great Expectations:**
+- Industry-standard quality framework
+- Define expectations as code
+- Automatic documentation
+- Integration with Airflow
 """
         )
 
-        st.markdown("#### 🎼 Workflow orchestration")
+        st.markdown("#### 🎼 Apache Airflow: Workflow Orchestration")
         st.markdown(
-            """You will learn:
+            """**Airflow** orchestrates complex data workflows.
 
-- Orchestration tools (Airflow, Prefect, Dagster).
-- Defining DAGs (directed acyclic graphs).
-- Scheduling, retries and dependencies.
+**Why Airflow?**
+- ✅ Define workflows as Python code
+- ✅ Rich UI for monitoring
+- ✅ Automatic retries
+- ✅ Dependency management
+- ✅ Scheduling (cron-like)
+- ✅ Huge ecosystem of operators
+
+**DAG (Directed Acyclic Graph):**
+```python
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime, timedelta
+
+default_args = {
+    'owner': 'data_team',
+    'retries': 3,
+    'retry_delay': timedelta(minutes=5)
+}
+
+dag = DAG(
+    'daily_etl',
+    default_args=default_args,
+    schedule_interval='0 2 * * *',  # 2 AM daily
+    start_date=datetime(2024, 1, 1)
+)
+
+extract = PythonOperator(task_id='extract', python_callable=extract_data, dag=dag)
+transform = PythonOperator(task_id='transform', python_callable=transform_data, dag=dag)
+load = PythonOperator(task_id='load', python_callable=load_data, dag=dag)
+
+# Define dependencies
+extract >> transform >> load
+```
+
+**Best Practices:**
+- ✅ Idempotent tasks (can run multiple times)
+- ✅ Atomic operations (all or nothing)
+- ✅ Proper error handling
+- ✅ Meaningful task names
+- ✅ SLA monitoring
 """
         )
 
-        st.markdown("#### 📊 Monitoring and alerting")
+        st.markdown("#### 📊 Monitoring & Alerting")
         st.markdown(
-            """You will understand:
+            """**Monitor everything** to catch issues early.
 
-- Metrics to monitor (latency, throughput, errors).
-- Setting up alerts for pipeline failures.
-- Incident response and debugging strategies.
+**Key Metrics:**
+
+1. **Pipeline Health**
+   - Success/failure rate
+   - Execution time
+   - Data volume processed
+
+2. **Data Quality**
+   - Null rate
+   - Duplicate rate
+   - Schema changes
+
+3. **Performance**
+   - Query latency
+   - Throughput (records/sec)
+   - Resource utilization
+
+4. **Cost**
+   - Cloud spend by service
+   - Cost per GB processed
+   - Budget alerts
+
+**Alerting Strategy:**
+- ✅ Alert on failures (immediate)
+- ✅ Alert on SLA violations
+- ✅ Alert on anomalies (data volume spikes)
+- ✅ Weekly summary reports
+
+**Tools:**
+- Prometheus + Grafana
+- CloudWatch (AWS)
+- Stackdriver (GCP)
+- PagerDuty for on-call
 """
         )
+        
+        st.markdown("#### ✅ Great Expectations: Data Quality Framework")
+        st.markdown("""
+**Industry-standard data quality testing:**
+
+**Setup:**
+
+```python
+import great_expectations as ge
+from great_expectations.dataset import PandasDataset
+
+# Create expectation suite
+df = pd.read_csv('sales.csv')
+ge_df = ge.from_pandas(df)
+
+# Define expectations
+ge_df.expect_column_values_to_not_be_null('order_id')
+ge_df.expect_column_values_to_be_unique('order_id')
+ge_df.expect_column_values_to_be_between('amount', min_value=0, max_value=100000)
+ge_df.expect_column_values_to_be_in_set('status', ['pending', 'completed', 'cancelled'])
+ge_df.expect_column_values_to_match_regex('email', r'^[\w\.-]+@[\w\.-]+\.\w+$')
+
+# Validate
+results = ge_df.validate()
+
+if results['success']:
+    print("✅ All quality checks passed")
+else:
+    failed = [r for r in results['results'] if not r['success']]
+    print(f"❌ {len(failed)} checks failed")
+    for failure in failed:
+        print(f"  - {failure['expectation_config']['expectation_type']}")
+```
+
+**Integration with Airflow:**
+
+```python
+from airflow.operators.python import PythonOperator
+import great_expectations as ge
+
+def validate_data_quality(**context):
+    df = pd.read_parquet('/data/processed/sales.parquet')
+    ge_df = ge.from_pandas(df)
+    
+    # Run expectations
+    ge_df.expect_column_values_to_not_be_null('order_id')
+    ge_df.expect_column_values_to_be_unique('order_id')
+    
+    results = ge_df.validate()
+    
+    if not results['success']:
+        raise ValueError("Data quality checks failed")
+    
+    return True
+
+quality_task = PythonOperator(
+    task_id='validate_quality',
+    python_callable=validate_data_quality,
+    dag=dag
+)
+```
+""")
+        
+        st.markdown("#### 🎼 Advanced Airflow Patterns")
+        st.markdown("""
+**Production Airflow patterns:**
+
+**1. Dynamic DAG Generation**
+
+```python
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime
+
+# Generate DAGs for multiple data sources
+data_sources = ['sales', 'customers', 'products', 'orders']
+
+for source in data_sources:
+    dag_id = f'etl_{source}'
+    
+    dag = DAG(
+        dag_id,
+        schedule_interval='@daily',
+        start_date=datetime(2024, 1, 1)
+    )
+    
+    extract_task = PythonOperator(
+        task_id='extract',
+        python_callable=extract_data,
+        op_kwargs={'source': source},
+        dag=dag
+    )
+    
+    globals()[dag_id] = dag  # Register DAG
+```
+
+**2. Task Groups**
+
+```python
+from airflow.utils.task_group import TaskGroup
+
+with TaskGroup('data_quality_checks', dag=dag) as quality_group:
+    check_schema = PythonOperator(task_id='check_schema', ...)
+    check_nulls = PythonOperator(task_id='check_nulls', ...)
+    check_duplicates = PythonOperator(task_id='check_duplicates', ...)
+    
+    [check_schema, check_nulls, check_duplicates]
+
+# Use in workflow
+extract >> transform >> quality_group >> load
+```
+
+**3. XComs for Data Passing**
+
+```python
+def extract_data(**context):
+    df = pd.read_csv('data.csv')
+    record_count = len(df)
+    
+    # Push to XCom
+    context['task_instance'].xcom_push(key='record_count', value=record_count)
+    return record_count
+
+def validate_count(**context):
+    # Pull from XCom
+    record_count = context['task_instance'].xcom_pull(
+        task_ids='extract',
+        key='record_count'
+    )
+    
+    if record_count < 100:
+        raise ValueError(f"Too few records: {record_count}")
+```
+
+**4. SLA Monitoring**
+
+```python
+from datetime import timedelta
+
+default_args = {
+    'sla': timedelta(hours=2),  # Task must complete in 2 hours
+    'on_failure_callback': send_alert,
+    'on_sla_miss_callback': send_sla_alert
+}
+
+def send_sla_alert(dag, task_list, blocking_task_list, slas, blocking_tis):
+    message = f"SLA missed for tasks: {[t.task_id for t in task_list]}"
+    send_slack_alert(message)
+```
+""")
     elif unit_number == 7:
-        st.markdown("#### 📘 Capstone goals")
+        st.markdown("#### 📘 Data Engineering Capstone: Building Production Systems")
         st.markdown(
-            """The Data Engineer capstone demonstrates end-to-end ownership of a
-data pipeline project, from design to production-ready implementation.
+            """Your capstone demonstrates **end-to-end data engineering expertise** by building 
+a production-ready data pipeline system.
+
+**What Makes a Great Capstone:**
+
+1. **Solves Real Problem**
+   - Addresses actual business need
+   - Uses realistic data volumes
+   - Meets production requirements
+
+2. **Production Quality**
+   - Error handling and retries
+   - Logging and monitoring
+   - Data quality checks
+   - Documentation
+
+3. **Technical Depth**
+   - Multiple technologies integrated
+   - Scalable architecture
+   - Performance optimized
+   - Cost-effective
+
+4. **Business Value**
+   - Clear ROI or impact
+   - Measurable improvements
+   - Stakeholder alignment
+
+**Project Scope:**
+- 4-6 weeks of work
+- 2,000-5,000 lines of code
+- Multiple components (ETL, warehouse, orchestration)
+- Complete documentation
 """
         )
 
-        st.markdown("#### 🧱 Suggested capstone structure")
+        st.markdown("#### 🧱 Capstone Structure & Milestones")
         st.markdown(
-            """A typical structure:
+            """**Phase 1: Planning & Design (Week 1)**
 
-1. Problem & requirements (what data, who needs it, SLAs).
-2. Architecture design (sources, transformations, targets).
-3. Implementation (code, tests, orchestration).
-4. Data quality and monitoring.
-5. Documentation and runbook.
+**Deliverables:**
+- Problem statement document
+- Data source inventory
+- Architecture diagram
+- Technology selection justification
+- SLA definitions (latency, freshness, quality)
+- Cost estimate
+
+**Example:**
+```
+Problem: E-commerce company needs real-time sales analytics
+Sources: PostgreSQL (orders), MongoDB (products), Kafka (events)
+Target: Redshift warehouse + real-time dashboard
+SLA: Data fresh within 5 minutes, 99.9% uptime
+Cost: <$500/month
+```
+
+---
+
+**Phase 2: Implementation (Weeks 2-4)**
+
+**Deliverables:**
+- ETL pipeline code (Python/Spark)
+- Data warehouse schema (SQL DDL)
+- Orchestration DAGs (Airflow)
+- Data quality tests
+- Infrastructure as code (Terraform)
+- CI/CD pipeline
+
+**Code Structure:**
+```
+project/
+├── pipelines/
+│   ├── extract.py
+│   ├── transform.py
+│   └── load.py
+├── dags/
+│   └── daily_etl.py
+├── sql/
+│   ├── schema.sql
+│   └── queries.sql
+├── terraform/
+│   └── main.tf
+├── tests/
+│   └── test_pipeline.py
+└── README.md
+```
+
+---
+
+**Phase 3: Testing & Optimization (Week 5)**
+
+**Deliverables:**
+- Unit test suite (80%+ coverage)
+- Integration tests
+- Performance benchmarks
+- Load testing results
+- Optimization report
+
+**Metrics to Track:**
+- Pipeline execution time
+- Data volume processed
+- Error rate
+- Cost per GB
+- Query performance
+
+---
+
+**Phase 4: Documentation & Presentation (Week 6)**
+
+**Deliverables:**
+- Architecture documentation
+- API documentation
+- Operational runbook
+- Troubleshooting guide
+- Final presentation (15 min)
+
+**Runbook Should Include:**
+- How to deploy
+- How to monitor
+- Common errors and fixes
+- Rollback procedures
+- On-call escalation
+
+---
+
+**Evaluation Criteria:**
+
+1. **Architecture (25%)**
+   - Well-designed data model
+   - Scalable system
+   - Technology choices justified
+
+2. **Implementation (30%)**
+   - Clean, maintainable code
+   - Error handling
+   - Performance optimized
+   - Security best practices
+
+3. **Data Quality (20%)**
+   - Validation framework
+   - Quality monitoring
+   - Testing coverage
+
+4. **Operations (15%)**
+   - Orchestration
+   - Monitoring & alerting
+   - Documentation
+
+5. **Business Impact (10%)**
+   - Solves real problem
+   - Measurable value
+   - Cost-effective
 """
         )
 

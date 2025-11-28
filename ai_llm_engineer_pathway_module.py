@@ -183,7 +183,186 @@ By the end of this pathway you will be able to:
         )
         
         st.markdown(f"### Unit {selected_unit}: {UNITS[selected_unit]['name']}")
-        st.info("Learning materials will be added here.")
+        
+        if selected_unit == 1:
+            st.markdown("#### 📘 Large Language Models: The AI Revolution")
+            st.markdown("""
+**Large Language Models (LLMs)** like GPT-4, Claude, and Gemini have transformed AI.
+
+**What are LLMs?**
+- Neural networks trained on massive text data
+- Billions of parameters (GPT-4: ~1.7 trillion)
+- Can understand and generate human-like text
+- Trained on internet-scale data
+
+**Key Capabilities:**
+- ✅ Text generation
+- ✅ Question answering
+- ✅ Code generation
+- ✅ Translation
+- ✅ Summarization
+- ✅ Reasoning and analysis
+
+**Major LLMs:**
+
+| Model | Company | Strengths |
+|-------|---------|----------|
+| **GPT-4** | OpenAI | Best overall, coding |
+| **Claude 3** | Anthropic | Long context, safety |
+| **Gemini Pro** | Google | Multimodal, free tier |
+| **Llama 2** | Meta | Open source |
+
+**How LLMs Work:**
+1. Tokenization (text → numbers)
+2. Embedding (semantic representation)
+3. Transformer architecture (attention mechanism)
+4. Autoregressive generation (predict next token)
+
+**Key Concepts:**
+- **Tokens:** ~4 characters = 1 token
+- **Context Window:** Max input size (GPT-4: 128k tokens)
+- **Temperature:** Randomness (0 = deterministic, 1 = creative)
+- **Top-p:** Nucleus sampling
+""")
+        elif selected_unit == 2:
+            st.markdown("#### 📘 Prompt Engineering: The Art of Talking to AI")
+            st.markdown("""
+**Prompt engineering** is the skill of crafting inputs to get optimal LLM outputs.
+
+**Why It Matters:**
+- Same question, different phrasing = vastly different results
+- Good prompts save tokens (money!)
+- Critical for production applications
+
+**Core Techniques:**
+
+1. **Zero-shot:** No examples, just the task
+2. **Few-shot:** Provide examples
+3. **Chain-of-thought:** Ask for step-by-step reasoning
+4. **Role-based:** Assign persona to LLM
+5. **Structured output:** Request JSON/XML format
+
+**Prompt Patterns:**
+- Instruction + Context + Question
+- System message + User message
+- Examples + Task
+""")
+        elif selected_unit == 3:
+            st.markdown("#### 📘 RAG: Retrieval Augmented Generation")
+            st.markdown("""
+**RAG** combines LLMs with external knowledge retrieval.
+
+**Why RAG?**
+- LLMs have knowledge cutoff dates
+- Can't access private company data
+- Hallucinate when uncertain
+
+**RAG Solution:**
+1. Store documents in vector database
+2. Retrieve relevant docs for query
+3. Pass docs + query to LLM
+4. LLM answers using retrieved context
+
+**Components:**
+- Document loader
+- Text splitter
+- Embedding model
+- Vector database (Pinecone, Chroma)
+- Retriever
+- LLM
+""")
+        elif selected_unit == 4:
+            st.markdown("#### 📘 Fine-tuning: Customizing LLMs")
+            st.markdown("""
+**Fine-tuning** adapts pre-trained LLMs to your specific use case.
+
+**When to Fine-tune:**
+- ✅ Need consistent output format
+- ✅ Domain-specific language
+- ✅ Reduce prompt length
+- ✅ Improve accuracy on specific task
+
+**Methods:**
+- **Full fine-tuning:** Update all parameters (expensive)
+- **LoRA:** Update small adapters (efficient)
+- **Prompt tuning:** Learn soft prompts
+
+**Process:**
+1. Prepare training data (100-1000+ examples)
+2. Upload to platform (OpenAI, Hugging Face)
+3. Start training job
+4. Evaluate results
+5. Deploy fine-tuned model
+""")
+        elif selected_unit == 5:
+            st.markdown("#### 📘 LLM Agents: Autonomous AI Systems")
+            st.markdown("""
+**LLM Agents** can use tools and take actions autonomously.
+
+**What are Agents?**
+- LLMs that can call functions/APIs
+- Make decisions about which tools to use
+- Chain multiple actions together
+- Maintain conversation state
+
+**Agent Frameworks:**
+- LangChain
+- AutoGPT
+- BabyAGI
+- LlamaIndex
+
+**Use Cases:**
+- Customer service bots
+- Data analysis assistants
+- Code generation tools
+- Research assistants
+""")
+        elif selected_unit == 6:
+            st.markdown("#### 📘 Production Deployment & Scaling")
+            st.markdown("""
+**Deploying LLMs** to production requires careful planning.
+
+**Considerations:**
+- **Latency:** Response time requirements
+- **Cost:** Token usage at scale
+- **Reliability:** Uptime and error handling
+- **Security:** API key management
+- **Monitoring:** Track usage and quality
+
+**Deployment Options:**
+- API wrapper (FastAPI)
+- Serverless (AWS Lambda)
+- Containers (Docker + Kubernetes)
+- Managed platforms (Hugging Face Inference)
+
+**Optimization:**
+- Caching frequent queries
+- Rate limiting
+- Batch processing
+- Model quantization
+""")
+        elif selected_unit == 7:
+            st.markdown("#### 📘 Capstone: Build Production LLM Application")
+            st.markdown("""
+**Your capstone** demonstrates end-to-end LLM engineering skills.
+
+**Requirements:**
+- Solve real business problem
+- Production-quality code
+- Proper error handling
+- Monitoring and logging
+- Documentation
+- Cost optimization
+
+**Evaluation Criteria:**
+- Architecture design
+- Code quality
+- Performance
+- Innovation
+- Business value
+""")
+        else:
+            st.info(f"Learning materials for Unit {selected_unit} will be added soon.")
 
     # Labs
     with tabs[2]:
@@ -458,6 +637,183 @@ for i, (doc, cluster) in enumerate(zip(documents, clusters)):
 print("\n✅ Embeddings and semantic search complete!")'''
             st.code(lab1_3, language='python')
             
+            st.markdown("### LAB 4: Token Optimization & Cost Management (75 min)")
+            st.markdown("**Objective:** Optimize token usage and reduce LLM costs")
+            lab1_4 = '''import openai
+import tiktoken
+
+print("💰 TOKEN OPTIMIZATION & COST MANAGEMENT\n" + "="*60)
+
+# 1. Token counting
+print("\n1. Accurate Token Counting...")
+
+encoding = tiktoken.encoding_for_model("gpt-4")
+
+text = "This is a sample text for token counting in GPT-4."
+tokens = encoding.encode(text)
+
+print(f"Text: {text}")
+print(f"Tokens: {len(tokens)}")
+print(f"Token IDs: {tokens[:10]}...")  # First 10
+
+# 2. Cost calculation
+print("\n2. Cost Calculation...")
+
+def calculate_cost(input_text, output_text, model="gpt-4"):
+    """Calculate exact API cost"""
+    encoding = tiktoken.encoding_for_model(model)
+    
+    input_tokens = len(encoding.encode(input_text))
+    output_tokens = len(encoding.encode(output_text))
+    
+    # GPT-4 pricing
+    input_cost_per_1k = 0.03
+    output_cost_per_1k = 0.06
+    
+    input_cost = (input_tokens / 1000) * input_cost_per_1k
+    output_cost = (output_tokens / 1000) * output_cost_per_1k
+    total_cost = input_cost + output_cost
+    
+    return {
+        'input_tokens': input_tokens,
+        'output_tokens': output_tokens,
+        'total_tokens': input_tokens + output_tokens,
+        'cost': total_cost
+    }
+
+prompt = "Explain machine learning in 3 sentences."
+response_text = "Machine learning is a subset of AI..."
+
+cost_info = calculate_cost(prompt, response_text)
+print(f"\nInput tokens: {cost_info['input_tokens']}")
+print(f"Output tokens: {cost_info['output_tokens']}")
+print(f"Total cost: ${cost_info['cost']:.4f}")
+
+# 3. Optimization strategies
+print("\n3. Optimization Strategies...")
+
+# Strategy 1: Reduce prompt length
+verbose_prompt = """I would like you to please provide me with a comprehensive 
+explanation of what machine learning is, including all the key concepts and 
+important details that someone should know."""
+
+concise_prompt = "Explain machine learning in 3 sentences."
+
+verbose_tokens = len(encoding.encode(verbose_prompt))
+concise_tokens = len(encoding.encode(concise_prompt))
+
+print(f"\nVerbose prompt: {verbose_tokens} tokens")
+print(f"Concise prompt: {concise_tokens} tokens")
+print(f"Savings: {verbose_tokens - concise_tokens} tokens ({((verbose_tokens - concise_tokens) / verbose_tokens * 100):.1f}%)")
+
+# Strategy 2: Use cheaper models when possible
+models_cost = {
+    'gpt-4': {'input': 0.03, 'output': 0.06},
+    'gpt-3.5-turbo': {'input': 0.0015, 'output': 0.002},
+    'claude-instant': {'input': 0.0008, 'output': 0.0024}
+}
+
+print("\n4. Model Cost Comparison (1000 tokens):")
+for model, pricing in models_cost.items():
+    cost = (pricing['input'] + pricing['output'])
+    print(f"{model:20s}: ${cost:.4f}")
+
+# 5. Batch processing
+print("\n5. Batch Processing for Efficiency...")
+
+queries = ["Query 1", "Query 2", "Query 3"]
+
+# Bad: Individual calls
+individual_cost = len(queries) * 0.001  # Overhead per call
+
+# Good: Batch in single call
+batch_prompt = "Answer these questions:\n" + "\n".join([f"{i+1}. {q}" for i, q in enumerate(queries)])
+batch_cost = 0.001  # Single call overhead
+
+print(f"Individual calls cost: ${individual_cost:.4f}")
+print(f"Batch call cost: ${batch_cost:.4f}")
+print(f"Savings: ${individual_cost - batch_cost:.4f}")
+
+print("\n✅ Token optimization complete!")'''
+            st.code(lab1_4, language='python')
+            
+            st.markdown("### LAB 5: Build Conversational Chatbot (90 min)")
+            st.markdown("**Objective:** Create chatbot with conversation memory")
+            lab1_5 = '''import openai
+from datetime import datetime
+
+print("💬 CONVERSATIONAL CHATBOT\n" + "="*60)
+
+class Chatbot:
+    def __init__(self, system_prompt="You are a helpful assistant."):
+        self.system_prompt = system_prompt
+        self.conversation_history = []
+        self.conversation_history.append({
+            "role": "system",
+            "content": system_prompt
+        })
+    
+    def chat(self, user_message):
+        # Add user message to history
+        self.conversation_history.append({
+            "role": "user",
+            "content": user_message
+        })
+        
+        # Get response
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=self.conversation_history
+        )
+        
+        assistant_message = response.choices[0].message.content
+        
+        # Add assistant response to history
+        self.conversation_history.append({
+            "role": "assistant",
+            "content": assistant_message
+        })
+        
+        return assistant_message
+    
+    def get_conversation_summary(self):
+        return f"Total messages: {len(self.conversation_history) - 1}"  # Exclude system
+    
+    def clear_history(self):
+        self.conversation_history = [self.conversation_history[0]]  # Keep system prompt
+
+# 1. Create chatbot
+print("\n1. Creating Chatbot...")
+
+bot = Chatbot(system_prompt="You are a data engineering expert.")
+print("✅ Chatbot initialized")
+
+# 2. Multi-turn conversation
+print("\n2. Multi-turn Conversation...")
+
+conversation = [
+    "What is Apache Spark?",
+    "How does it compare to Hadoop?",
+    "Can you give me a code example?"
+]
+
+for i, message in enumerate(conversation):
+    print(f"\nUser: {message}")
+    response = bot.chat(message)
+    print(f"Bot: {response[:150]}...")
+
+print(f"\n{bot.get_conversation_summary()}")
+
+# 3. Conversation with context
+print("\n3. Testing Context Retention...")
+
+response = bot.chat("What was my first question?")
+print(f"\nUser: What was my first question?")
+print(f"Bot: {response}")
+
+print("\n✅ Chatbot with memory complete!")'''
+            st.code(lab1_5, language='python')
+            
             st.success("✅ Unit 1 Labs Complete: LLM fundamentals mastered!")
             
         elif selected_unit == 2:
@@ -716,6 +1072,102 @@ print(results['final'])
 
 print("\n✅ Prompt chaining workflow complete!")'''
             st.code(lab2_3, language='python')
+            
+            st.markdown("### LAB 4: ReAct & Self-Consistency Prompting (75 min)")
+            st.markdown("**Objective:** Advanced prompting for reasoning and reliability")
+            lab2_4 = '''import openai
+from collections import Counter
+
+print("🧠 REACT & SELF-CONSISTENCY PROMPTING\n" + "="*60)
+
+# 1. ReAct (Reasoning + Acting)
+print("\n1. ReAct Prompting...")
+
+react_prompt = """Solve this problem step by step using Thought, Action, Observation pattern:
+
+Problem: A store has 100 items. They sold 30% on Monday. On Tuesday, they sold 20% of what remained. How many items are left?
+
+Thought 1: I need to calculate items sold on Monday
+Action 1: Calculate 30% of 100
+Observation 1: 30 items sold on Monday, 70 remain
+
+Thought 2: Now calculate Tuesday's sales from remaining
+Action 2: Calculate 20% of 70
+Observation 2: 14 items sold on Tuesday
+
+Thought 3: Calculate final remaining
+Action 3: 70 - 14
+Observation 3: 56 items remain
+
+Answer: 56 items
+
+Now solve this using the same pattern:
+A company has 500 employees. 15% work remotely. Of the office workers, 25% are in management. How many office workers are NOT in management?"""
+
+response = openai.ChatCompletion.create(
+    model="gpt-4",
+    messages=[{"role": "user", "content": react_prompt}]
+)
+
+print(f"ReAct Response:\n{response.choices[0].message.content}")
+
+# 2. Self-Consistency (Multiple samples + voting)
+print("\n2. Self-Consistency Prompting...")
+
+question = "If you flip a coin 3 times, what's the probability of getting at least 2 heads?"
+
+# Generate multiple reasoning paths
+responses = []
+for i in range(5):
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": f"Solve step by step: {question}"}],
+        temperature=0.7  # Some randomness
+    )
+    answer = response.choices[0].message.content
+    responses.append(answer)
+    print(f"\nPath {i+1}: {answer[:100]}...")
+
+# Extract final answers (simplified)
+final_answers = []
+for resp in responses:
+    # Extract last line as answer
+    lines = resp.strip().split('\n')
+    final_answers.append(lines[-1])
+
+print("\n3. Voting on Answers...")
+vote_counts = Counter(final_answers)
+most_common = vote_counts.most_common(1)[0]
+
+print(f"\nMost consistent answer: {most_common[0]}")
+print(f"Votes: {most_common[1]}/5")
+
+# 3. Chain-of-Thought with Self-Consistency
+print("\n4. Combined: CoT + Self-Consistency...")
+
+cot_prompt = """Let's solve this step by step:
+
+Question: {question}
+
+Step 1:
+Step 2:
+Step 3:
+Final Answer:"""
+
+responses = []
+for i in range(3):
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": cot_prompt.format(question=question)}],
+        temperature=0.7
+    )
+    responses.append(response.choices[0].message.content)
+
+print(f"\nGenerated {len(responses)} reasoning paths")
+print("✅ Self-consistency improves reliability!")
+
+print("\n✅ Advanced prompting techniques mastered!")'''
+            st.code(lab2_4, language='python')
             
             st.success("✅ Unit 2 Labs Complete: Prompt engineering mastered!")
             
@@ -1003,6 +1455,332 @@ print(f"\nFiltered results: {len(filtered_results)}")
 print("\n✅ Pinecone vector database complete!")'''
             st.code(lab3_3, language='python')
             
+            st.markdown("### LAB 4: Production RAG with Caching (90 min)")
+            st.markdown("**Objective:** Build production-ready RAG with performance optimization")
+            lab3_4 = '''from langchain.vectorstores import Chroma
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import RetrievalQA
+from langchain.cache import RedisCache
+import redis
+import hashlib
+import time
+
+print("🚀 PRODUCTION RAG WITH CACHING\n" + "="*60)
+
+# 1. Setup caching
+print("\n1. Setting up Redis Cache...")
+
+redis_client = redis.Redis(host='localhost', port=6379)
+
+class RAGCache:
+    def __init__(self, redis_client):
+        self.redis = redis_client
+        self.ttl = 3600  # 1 hour
+    
+    def get_cache_key(self, query):
+        return hashlib.md5(query.encode()).hexdigest()
+    
+    def get(self, query):
+        key = self.get_cache_key(query)
+        cached = self.redis.get(key)
+        if cached:
+            return cached.decode('utf-8')
+        return None
+    
+    def set(self, query, response):
+        key = self.get_cache_key(query)
+        self.redis.setex(key, self.ttl, response)
+
+cache = RAGCache(redis_client)
+print("✅ Cache configured")
+
+# 2. Setup RAG
+print("\n2. Setting up RAG System...")
+
+embeddings = OpenAIEmbeddings()
+vectorstore = Chroma(
+    persist_directory="./chroma_db",
+    embedding_function=embeddings
+)
+
+llm = ChatOpenAI(model="gpt-4", temperature=0)
+
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    retriever=vectorstore.as_retriever(search_kwargs={"k": 3}),
+    return_source_documents=True
+)
+
+print("✅ RAG system ready")
+
+# 3. Query with caching
+print("\n3. Querying with Cache...")
+
+def query_with_cache(question):
+    # Check cache
+    cached_response = cache.get(question)
+    if cached_response:
+        print(f"  ✅ CACHE HIT")
+        return cached_response
+    
+    # Cache miss - query RAG
+    print(f"  ❌ CACHE MISS - querying RAG")
+    start = time.time()
+    result = qa_chain({"query": question})
+    latency = time.time() - start
+    
+    response = result['result']
+    
+    # Cache result
+    cache.set(question, response)
+    
+    print(f"  Latency: {latency:.2f}s")
+    return response
+
+# Test queries
+queries = [
+    "What is machine learning?",
+    "How does RAG work?",
+    "What is machine learning?"  # Duplicate - should hit cache
+]
+
+for i, q in enumerate(queries):
+    print(f"\nQuery {i+1}: {q}")
+    response = query_with_cache(q)
+    print(f"Response: {response[:80]}...")
+
+# 4. Performance metrics
+print("\n4. Performance Metrics...")
+
+cache_stats = {
+    'total_queries': 3,
+    'cache_hits': 1,
+    'cache_misses': 2,
+    'hit_rate': 1/3 * 100
+}
+
+print(f"\nCache Statistics:")
+print(f"  Total queries: {cache_stats['total_queries']}")
+print(f"  Cache hits: {cache_stats['cache_hits']}")
+print(f"  Cache misses: {cache_stats['cache_misses']}")
+print(f"  Hit rate: {cache_stats['hit_rate']:.1f}%")
+
+print("\n✅ Production RAG with caching complete!")'''
+            st.code(lab3_4, language='python')
+            
+            st.markdown("### LAB 5: Multi-Document RAG with Metadata (90 min)")
+            st.markdown("**Objective:** Build RAG system handling multiple document types")
+            lab3_5 = '''from langchain.document_loaders import PyPDFLoader, TextLoader, CSVLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import Chroma
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import RetrievalQA
+
+print("📚 MULTI-DOCUMENT RAG WITH METADATA\n" + "="*60)
+
+# 1. Load multiple document types
+print("\n1. Loading Multiple Document Types...")
+
+documents = []
+
+# Load PDFs
+pdf_loader = PyPDFLoader('company_policy.pdf')
+pdf_docs = pdf_loader.load()
+for doc in pdf_docs:
+    doc.metadata['source_type'] = 'policy'
+    doc.metadata['department'] = 'HR'
+documents.extend(pdf_docs)
+
+# Load text files
+text_loader = TextLoader('technical_docs.txt')
+text_docs = text_loader.load()
+for doc in text_docs:
+    doc.metadata['source_type'] = 'technical'
+    doc.metadata['department'] = 'Engineering'
+documents.extend(text_docs)
+
+# Load CSV
+csv_loader = CSVLoader('product_catalog.csv')
+csv_docs = csv_loader.load()
+for doc in csv_docs:
+    doc.metadata['source_type'] = 'catalog'
+    doc.metadata['department'] = 'Sales'
+documents.extend(csv_docs)
+
+print(f"✅ Loaded {len(documents)} documents from multiple sources")
+
+# 2. Split with metadata preservation
+print("\n2. Splitting Documents...")
+
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200
+)
+
+chunks = text_splitter.split_documents(documents)
+print(f"✅ Created {len(chunks)} chunks (metadata preserved)")
+
+# 3. Create vector store
+print("\n3. Creating Vector Store...")
+
+embeddings = OpenAIEmbeddings()
+vectorstore = Chroma.from_documents(
+    chunks,
+    embeddings,
+    persist_directory="./multi_doc_chroma"
+)
+
+print("✅ Vector store created")
+
+# 4. Query with metadata filtering
+print("\n4. Querying with Metadata Filters...")
+
+# Query only HR documents
+hr_results = vectorstore.similarity_search(
+    "What is the vacation policy?",
+    k=3,
+    filter={"department": "HR"}
+)
+
+print("\nHR Policy Results:")
+for i, doc in enumerate(hr_results):
+    print(f"{i+1}. {doc.page_content[:80]}...")
+    print(f"   Source: {doc.metadata['source_type']}, Dept: {doc.metadata['department']}")
+
+# Query only technical docs
+tech_results = vectorstore.similarity_search(
+    "How do I deploy the application?",
+    k=3,
+    filter={"department": "Engineering"}
+)
+
+print("\nTechnical Docs Results:")
+for i, doc in enumerate(tech_results):
+    print(f"{i+1}. {doc.page_content[:80]}...")
+
+# 5. Multi-query RAG
+print("\n5. Multi-Query RAG...")
+
+from langchain.retrievers import MultiQueryRetriever
+
+llm = ChatOpenAI(model="gpt-4", temperature=0)
+
+retriever = MultiQueryRetriever.from_llm(
+    retriever=vectorstore.as_retriever(),
+    llm=llm
+)
+
+# Generates multiple query variations automatically
+results = retriever.get_relevant_documents("product pricing")
+
+print(f"\nFound {len(results)} relevant documents")
+for doc in results[:3]:
+    print(f"  - {doc.page_content[:60]}...")
+
+print("\n✅ Multi-document RAG complete!")'''
+            st.code(lab3_5, language='python')
+            
+            st.markdown("### LAB 6: RAG Evaluation & Quality Metrics (75 min)")
+            st.markdown("**Objective:** Measure and improve RAG system performance")
+            lab3_6 = '''from langchain.vectorstores import Chroma
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import RetrievalQA
+import pandas as pd
+
+print("📊 RAG EVALUATION & QUALITY METRICS\n" + "="*60)
+
+# 1. Setup RAG system
+print("\n1. Setting up RAG System...")
+
+embeddings = OpenAIEmbeddings()
+vectorstore = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
+llm = ChatOpenAI(model="gpt-4", temperature=0)
+
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    retriever=vectorstore.as_retriever(search_kwargs={"k": 3}),
+    return_source_documents=True
+)
+
+print("✅ RAG system ready")
+
+# 2. Create evaluation dataset
+print("\n2. Creating Evaluation Dataset...")
+
+eval_questions = [
+    {"question": "What is machine learning?", "expected_answer": "ML is a subset of AI"},
+    {"question": "How does RAG work?", "expected_answer": "RAG retrieves relevant documents"},
+    {"question": "What are embeddings?", "expected_answer": "Embeddings are vector representations"}
+]
+
+print(f"✅ Created {len(eval_questions)} evaluation questions")
+
+# 3. Evaluate retrieval quality
+print("\n3. Evaluating Retrieval Quality...")
+
+retrieval_metrics = []
+
+for item in eval_questions:
+    question = item['question']
+    
+    # Get retrieved documents
+    docs = vectorstore.similarity_search_with_score(question, k=3)
+    
+    # Calculate metrics
+    top_score = docs[0][1] if docs else 0
+    avg_score = sum(score for _, score in docs) / len(docs) if docs else 0
+    
+    retrieval_metrics.append({
+        'question': question,
+        'num_docs': len(docs),
+        'top_score': top_score,
+        'avg_score': avg_score
+    })
+
+df_retrieval = pd.DataFrame(retrieval_metrics)
+print("\nRetrieval Metrics:")
+print(df_retrieval)
+
+# 4. Evaluate answer quality
+print("\n4. Evaluating Answer Quality...")
+
+answer_metrics = []
+
+for item in eval_questions:
+    result = qa_chain({"query": item['question']})
+    
+    answer_metrics.append({
+        'question': item['question'],
+        'answer': result['result'],
+        'num_sources': len(result['source_documents']),
+        'answer_length': len(result['result'])
+    })
+
+df_answers = pd.DataFrame(answer_metrics)
+print("\nAnswer Metrics:")
+print(df_answers[['question', 'num_sources', 'answer_length']])
+
+# 5. Calculate overall metrics
+print("\n5. Overall RAG Metrics...")
+
+metrics = {
+    'avg_retrieval_score': df_retrieval['top_score'].mean(),
+    'avg_sources_used': df_answers['num_sources'].mean(),
+    'avg_answer_length': df_answers['answer_length'].mean()
+}
+
+print("\n" + "="*60)
+print("RAG QUALITY METRICS:")
+print("="*60)
+for metric, value in metrics.items():
+    print(f"{metric}: {value:.2f}")
+
+print("\n✅ RAG evaluation complete!")'''
+            st.code(lab3_6, language='python')
+            
             st.success("✅ Unit 3 Labs Complete: RAG systems mastered!")
             
         elif selected_unit == 4:
@@ -1238,6 +2016,99 @@ print(f"P95: {np.percentile(latencies, 95):.3f}s")
 print("\n✅ LLM evaluation complete!")'''
             st.code(lab4_3, language='python')
             
+            st.markdown("### LAB 4: RLHF - Reinforcement Learning from Human Feedback (90 min)")
+            st.markdown("**Objective:** Implement human feedback loop for model improvement")
+            lab4_4 = '''import openai
+import pandas as pd
+from datetime import datetime
+
+print("👥 RLHF - HUMAN FEEDBACK INTEGRATION\n" + "="*60)
+
+# 1. Collect model responses
+print("\n1. Generating Model Responses...")
+
+prompts = [
+    "Explain quantum computing",
+    "Write a Python function to sort a list",
+    "What is the capital of France?"
+]
+
+responses = []
+for prompt in prompts:
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    
+    responses.append({
+        'prompt': prompt,
+        'response': response.choices[0].message.content,
+        'timestamp': datetime.now().isoformat()
+    })
+
+print(f"✅ Generated {len(responses)} responses")
+
+# 2. Collect human feedback
+print("\n2. Collecting Human Feedback...")
+
+feedback_data = []
+
+for item in responses:
+    print(f"\nPrompt: {item['prompt']}")
+    print(f"Response: {item['response'][:100]}...")
+    
+    # Simulate human rating (1-5)
+    rating = 4  # In production, get from human raters
+    feedback = "Good but could be more concise"
+    
+    feedback_data.append({
+        'prompt': item['prompt'],
+        'response': item['response'],
+        'rating': rating,
+        'feedback': feedback,
+        'timestamp': datetime.now().isoformat()
+    })
+
+print(f"\n✅ Collected {len(feedback_data)} feedback items")
+
+# 3. Prepare training data from feedback
+print("\n3. Preparing Training Data from Feedback...")
+
+training_examples = []
+
+for item in feedback_data:
+    if item['rating'] >= 4:  # Use high-quality responses
+        training_examples.append({
+            "messages": [
+                {"role": "user", "content": item['prompt']},
+                {"role": "assistant", "content": item['response']}
+            ]
+        })
+
+print(f"✅ Created {len(training_examples)} training examples")
+
+# 4. Save for fine-tuning
+import json
+
+with open('rlhf_training_data.jsonl', 'w') as f:
+    for example in training_examples:
+        f.write(json.dumps(example) + '\n')
+
+print("✅ Training data saved")
+
+# 5. Feedback analytics
+print("\n4. Feedback Analytics...")
+
+df_feedback = pd.DataFrame(feedback_data)
+
+avg_rating = df_feedback['rating'].mean()
+print(f"\nAverage rating: {avg_rating:.2f}/5")
+print(f"High quality responses (4+): {len(df_feedback[df_feedback['rating'] >= 4])}")
+print(f"Low quality responses (<3): {len(df_feedback[df_feedback['rating'] < 3])}")
+
+print("\n✅ RLHF pipeline complete!")'''
+            st.code(lab4_4, language='python')
+            
             st.success("✅ Unit 4 Labs Complete: Model fine-tuning mastered!")
             
         elif selected_unit == 5:
@@ -1381,6 +2252,95 @@ print(f"\nResult: {response}")
 print("\n✅ Multi-agent system complete!")'''
             st.code(lab5_2, language='python')
             
+            st.markdown("### LAB 3: LangGraph for Agent Workflows (90 min)")
+            st.markdown("**Objective:** Build complex agent workflows with state management")
+            lab5_3 = '''from langgraph.graph import StateGraph, END
+from langchain.chat_models import ChatOpenAI
+from typing import TypedDict, Annotated
+import operator
+
+print("🔀 LANGGRAPH AGENT WORKFLOWS\n" + "="*60)
+
+# 1. Define state
+class AgentState(TypedDict):
+    messages: Annotated[list, operator.add]
+    next_step: str
+    data: dict
+
+# 2. Define nodes (agent actions)
+def research_node(state):
+    print("\nResearch node executing...")
+    llm = ChatOpenAI(model="gpt-4")
+    
+    response = llm.invoke("Research AI trends")
+    
+    return {
+        "messages": [response.content],
+        "data": {"research_complete": True}
+    }
+
+def analyze_node(state):
+    print("\nAnalyze node executing...")
+    llm = ChatOpenAI(model="gpt-4")
+    
+    research_data = state["messages"][-1]
+    response = llm.invoke(f"Analyze this research: {research_data}")
+    
+    return {
+        "messages": [response.content],
+        "data": {"analysis_complete": True}
+    }
+
+def write_node(state):
+    print("\nWrite node executing...")
+    llm = ChatOpenAI(model="gpt-4")
+    
+    analysis = state["messages"][-1]
+    response = llm.invoke(f"Write summary of: {analysis}")
+    
+    return {
+        "messages": [response.content],
+        "next_step": "end"
+    }
+
+# 3. Build graph
+workflow = StateGraph(AgentState)
+
+# Add nodes
+workflow.add_node("research", research_node)
+workflow.add_node("analyze", analyze_node)
+workflow.add_node("write", write_node)
+
+# Define edges (workflow)
+workflow.set_entry_point("research")
+workflow.add_edge("research", "analyze")
+workflow.add_edge("analyze", "write")
+workflow.add_edge("write", END)
+
+# Compile
+app = workflow.compile()
+
+print("✅ Workflow graph compiled")
+
+# 4. Execute workflow
+print("\nExecuting workflow...")
+
+initial_state = {
+    "messages": [],
+    "next_step": "research",
+    "data": {}
+}
+
+result = app.invoke(initial_state)
+
+print("\n" + "="*60)
+print("WORKFLOW COMPLETE")
+print("="*60)
+print(f"\nFinal output: {result['messages'][-1][:200]}...")
+
+print("\n✅ LangGraph workflow complete!")'''
+            st.code(lab5_3, language='python')
+            
             st.success("✅ Unit 5 Labs Complete: LLM agents mastered!")
             
         elif selected_unit == 6:
@@ -1518,6 +2478,93 @@ print("  llm_cost_dollars{model='gpt-4'} 0.0234")
 
 print("\n✅ LLM monitoring complete!")'''
             st.code(lab6_2, language='python')
+            
+            st.markdown("### LAB 3: Docker & Kubernetes Deployment (75 min)")
+            st.markdown("**Objective:** Containerize and scale LLM applications")
+            lab6_3 = '''# Dockerfile for LLM API
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application
+COPY app.py .
+COPY .env .
+
+# Expose port
+EXPOSE 8000
+
+# Run application
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# requirements.txt
+# fastapi==0.104.1
+# uvicorn==0.24.0
+# openai==1.3.0
+# python-dotenv==1.0.0
+# redis==5.0.1
+
+# Build and run:
+# docker build -t llm-api .
+# docker run -p 8000:8000 --env-file .env llm-api
+
+# Kubernetes deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: llm-api
+  template:
+    metadata:
+      labels:
+        app: llm-api
+    spec:
+      containers:
+      - name: llm-api
+        image: myregistry/llm-api:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: llm-secrets
+              key: openai-api-key
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-api-service
+spec:
+  selector:
+    app: llm-api
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+  type: LoadBalancer
+
+# Deploy:
+# kubectl apply -f deployment.yaml
+# kubectl get pods
+# kubectl logs <pod-name>
+
+print("✅ LLM containerized and deployed to Kubernetes!")'''
+            st.code(lab6_3, language='dockerfile')
             
             st.success("✅ Unit 6 Labs Complete: LLM deployment mastered!")
             
