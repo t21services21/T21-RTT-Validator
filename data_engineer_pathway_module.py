@@ -4118,6 +4118,19 @@ print("✅ Aim for 128MB-1GB per partition")
 print("✅ Use bucketing for large dimension tables")
 print("✅ Repartition before expensive operations (joins, aggregations)")
 print("✅ Coalesce before writing small outputs")
+print("✅ Enable adaptive query execution")
+
+print("\n✅ Partitioning strategies mastered!")
+
+spark.stop()'''
+            st.code(lab3_5, language='python')
+            
+            st.success("✅ Unit 3 Labs Complete: Production Spark pipelines mastered!")
+        elif selected_unit == 4:
+            st.markdown("### 🔥 Unit 4: Stream Processing & Real-time Data")
+            st.markdown("**COMPREHENSIVE HANDS-ON LABS - Production Kafka & Streaming Code!**")
+            
+            st.markdown("### LAB 1: Kafka Producer & Consumer (120 min)")
             st.markdown("**Objective:** Build real-time data streaming with Kafka")
             lab4_1 = '''from kafka import KafkaProducer, KafkaConsumer
 import json
