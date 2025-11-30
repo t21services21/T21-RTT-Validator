@@ -1121,6 +1121,124 @@ FROM agg_daily_product_sales
 WHERE date_key = 20241128;
 ```
 """)
+        
+        st.markdown("#### 💼 Real-World Warehouse Design Examples")
+        st.markdown(
+            """**Learn from production warehouse designs:**
+
+**Example 1: Retail Sales Warehouse**
+
+**Business Requirements:**
+- Track sales across 500 stores
+- Analyze by product, customer, time, location
+- Support daily reporting and trend analysis
+
+**Schema Design:**
+
+```sql
+-- Fact Table
+CREATE TABLE fact_sales (
+    sale_key BIGINT PRIMARY KEY,
+    date_key INT,
+    product_key INT,
+    customer_key INT,
+    store_key INT,
+    quantity INT,
+    unit_price DECIMAL(10,2),
+    discount_amount DECIMAL(10,2),
+    tax_amount DECIMAL(10,2),
+    total_amount DECIMAL(10,2)
+);
+
+-- Dimensions
+CREATE TABLE dim_product (
+    product_key INT PRIMARY KEY,
+    sku VARCHAR(50),
+    product_name VARCHAR(200),
+    category VARCHAR(100),
+    brand VARCHAR(100)
+);
+
+CREATE TABLE dim_store (
+    store_key INT PRIMARY KEY,
+    store_id VARCHAR(50),
+    store_name VARCHAR(200),
+    city VARCHAR(100),
+    region VARCHAR(100),
+    country VARCHAR(50)
+);
+```
+
+**Example 2: Healthcare Analytics Warehouse**
+
+**Business Requirements:**
+- Track patient visits and treatments
+- Analyze outcomes and costs
+- Support quality metrics and compliance
+
+**Schema Design:**
+
+```sql
+CREATE TABLE fact_patient_visit (
+    visit_key BIGINT PRIMARY KEY,
+    patient_key INT,
+    provider_key INT,
+    facility_key INT,
+    visit_date_key INT,
+    diagnosis_code VARCHAR(20),
+    procedure_code VARCHAR(20),
+    visit_cost DECIMAL(10,2),
+    duration_minutes INT
+);
+```
+"""
+        )
+        
+        st.markdown("#### ✅ Data Warehouse Best Practices")
+        st.markdown(
+            """**Follow these practices for production warehouses:**
+
+**1. Naming Conventions**
+- Facts: `fact_` prefix (fact_sales, fact_orders)
+- Dimensions: `dim_` prefix (dim_customer, dim_product)
+- Aggregates: `agg_` prefix (agg_daily_sales)
+- Keys: `_key` suffix (customer_key, date_key)
+
+**2. Data Types**
+- Use INT for keys (faster joins)
+- Use DECIMAL for money (avoid floating point errors)
+- Use DATE/TIMESTAMP for dates (not strings)
+- Use VARCHAR with appropriate lengths
+
+**3. Indexing Strategy**
+```sql
+-- Always index foreign keys
+CREATE INDEX idx_fact_date ON fact_sales(date_key);
+CREATE INDEX idx_fact_product ON fact_sales(product_key);
+CREATE INDEX idx_fact_customer ON fact_sales(customer_key);
+```
+
+**4. Partitioning Strategy**
+```sql
+-- Partition large fact tables by date
+CREATE TABLE fact_sales (
+    ...
+) PARTITION BY RANGE (date_key);
+```
+
+**5. Documentation**
+- Document all tables and columns
+- Maintain data dictionary
+- Track data lineage
+- Document business rules
+
+**6. Testing**
+- Test referential integrity
+- Validate data quality
+- Test query performance
+- Monitor data volumes
+"""
+        )
     elif unit_number == 3:
         st.markdown("#### 📘 Batch Processing at Scale: Apache Spark Mastery")
         st.markdown(
@@ -1443,6 +1561,151 @@ delta_table.optimize().executeCompaction()
 delta_table.vacuum(168)  # Remove files older than 7 days
 ```
 """)
+        
+        st.markdown("#### 🔧 Spark Troubleshooting Guide")
+        st.markdown(
+            """**Common Spark issues and solutions:**
+
+**Problem 1: Out of Memory Errors**
+
+**Symptoms:**
+- `java.lang.OutOfMemoryError`
+- Executors crashing
+- Spill to disk warnings
+
+**Solutions:**
+```python
+# Increase executor memory
+spark = SparkSession.builder \\
+    .config("spark.executor.memory", "8g") \\
+    .config("spark.driver.memory", "4g") \\
+    .getOrCreate()
+
+# Increase partitions
+df_repartitioned = df.repartition(500)
+
+# Use iterative processing
+for partition in df.rdd.mapPartitions(process_partition):
+    save_to_db(partition)
+```
+
+**Problem 2: Slow Joins**
+
+**Symptoms:**
+- Join takes hours
+- Excessive shuffle
+
+**Solutions:**
+```python
+# Use broadcast for small tables
+result = large_df.join(broadcast(small_df), 'key')
+
+# Pre-partition both tables
+large_df.write.bucketBy(100, 'key').saveAsTable('large_bucketed')
+small_df.write.bucketBy(100, 'key').saveAsTable('small_bucketed')
+```
+
+**Problem 3: Data Skew**
+
+**Symptoms:**
+- One task takes 10x longer
+- Uneven partition sizes
+
+**Solutions:**
+```python
+# Salt the skewed key
+from pyspark.sql.functions import rand, concat
+
+skewed_df = df.withColumn('salt', (rand() * 10).cast('int'))
+skewed_df = skewed_df.withColumn('salted_key', 
+    concat(col('customer_id'), lit('_'), col('salt')))
+```
+
+**Problem 4: Task Not Serializable**
+
+**Symptoms:**
+- `org.apache.spark.SparkException: Task not serializable`
+
+**Solutions:**
+```python
+# Bad: Using class instance in lambda
+class Processor:
+    def process(self, x):
+        return x * 2
+
+processor = Processor()
+df.rdd.map(lambda x: processor.process(x))  # ERROR!
+
+# Good: Use function or broadcast
+def process_func(x):
+    return x * 2
+
+df.rdd.map(process_func)  # Works!
+```
+"""
+        )
+        
+        st.markdown("#### 🚀 Production Spark Deployment")
+        st.markdown(
+            """**Deploy Spark jobs to production:**
+
+**1. Cluster Modes**
+
+**Client Mode:**
+- Driver runs on client machine
+- Good for interactive work
+- Not for production
+
+**Cluster Mode:**
+- Driver runs on cluster
+- Good for production
+- Survives client disconnect
+
+```bash
+# Submit in cluster mode
+spark-submit \\
+  --master yarn \\
+  --deploy-mode cluster \\
+  --num-executors 10 \\
+  --executor-memory 8g \\
+  --executor-cores 4 \\
+  my_job.py
+```
+
+**2. Resource Allocation**
+
+```python
+# Configure resources
+spark = SparkSession.builder \\
+    .config("spark.executor.instances", "10") \\
+    .config("spark.executor.memory", "8g") \\
+    .config("spark.executor.cores", "4") \\
+    .config("spark.driver.memory", "4g") \\
+    .config("spark.sql.shuffle.partitions", "200") \\
+    .getOrCreate()
+```
+
+**3. Monitoring**
+
+```python
+# Enable metrics
+spark.conf.set("spark.metrics.conf.*.sink.console.class", 
+               "org.apache.spark.metrics.sink.ConsoleSink")
+
+# Log progress
+df.write.parquet('output/', mode='overwrite')
+print(f"Job completed: {spark.sparkContext.statusTracker().getJobIdsForGroup()}")
+```
+
+**4. Best Practices**
+- ✅ Use dynamic allocation
+- ✅ Enable adaptive query execution
+- ✅ Monitor Spark UI (port 4040)
+- ✅ Set appropriate shuffle partitions
+- ✅ Use Parquet format
+- ✅ Compress output
+"""
+        )
     elif unit_number == 4:
         st.markdown("#### 📘 Stream Processing & Real-time Data: Complete Guide")
         st.markdown(
@@ -1705,6 +1968,133 @@ class RunningTotalFunction(KeyedProcessFunction):
         yield (value['user_id'], new_total)
 ```
 """)
+        
+        st.markdown("#### 🎯 Real-Time Use Cases & Implementations")
+        st.markdown(
+            """**Production streaming applications:**
+
+**Use Case 1: Real-Time Fraud Detection**
+
+```python
+from kafka import KafkaConsumer
+import json
+
+class FraudDetector:
+    def __init__(self):
+        self.user_spending = {}  # Track spending per user
+    
+    def detect_fraud(self, transaction):
+        user_id = transaction['user_id']
+        amount = transaction['amount']
+        
+        # Rule 1: Amount > $10,000
+        if amount > 10000:
+            return True, "High amount"
+        
+        # Rule 2: 3+ transactions in 5 minutes
+        recent_count = self.user_spending.get(user_id, 0)
+        if recent_count >= 3:
+            return True, "Rapid transactions"
+        
+        # Update counter
+        self.user_spending[user_id] = recent_count + 1
+        
+        return False, "Normal"
+
+consumer = KafkaConsumer('transactions', ...)
+detector = FraudDetector()
+
+for message in consumer:
+    transaction = message.value
+    is_fraud, reason = detector.detect_fraud(transaction)
+    
+    if is_fraud:
+        alert_fraud_team(transaction, reason)
+        block_transaction(transaction)
+```
+
+**Use Case 2: Live Dashboard Metrics**
+
+```python
+import redis
+from kafka import KafkaConsumer
+
+redis_client = redis.Redis()
+consumer = KafkaConsumer('page_views', ...)
+
+for message in consumer:
+    event = message.value
+    
+    # Update real-time counters
+    redis_client.incr(f"page_views:{event['page']}")
+    redis_client.incr(f"user_sessions:{event['user_id']}")
+    
+    # Update dashboard (reads from Redis)
+```
+
+**Use Case 3: IoT Sensor Monitoring**
+
+```python
+class SensorMonitor:
+    def __init__(self):
+        self.thresholds = {'temperature': 80, 'pressure': 100}
+    
+    def check_sensor(self, reading):
+        sensor_type = reading['type']
+        value = reading['value']
+        
+        if value > self.thresholds.get(sensor_type, float('inf')):
+            send_alert(f"{sensor_type} exceeded: {value}")
+            trigger_shutdown(reading['device_id'])
+```
+"""
+        )
+        
+        st.markdown("#### ✅ Stream Processing Best Practices")
+        st.markdown(
+            """**Production streaming guidelines:**
+
+**1. Handle Late Data**
+```python
+# Use watermarks for late-arriving events
+window_spec = window(
+    col('event_time'),
+    '5 minutes',
+    watermark='10 minutes'  # Accept data up to 10 min late
+)
+```
+
+**2. Exactly-Once Processing**
+```python
+# Kafka configuration
+producer = KafkaProducer(
+    enable_idempotence=True,
+    acks='all',
+    max_in_flight_requests_per_connection=1
+)
+```
+
+**3. Backpressure Handling**
+```python
+# Limit processing rate
+consumer = KafkaConsumer(
+    max_poll_records=100,
+    max_poll_interval_ms=300000
+)
+```
+
+**4. State Management**
+- Use external state store (Redis, RocksDB)
+- Checkpoint state regularly
+- Plan for state recovery
+
+**5. Monitoring**
+- Track consumer lag
+- Monitor throughput (events/sec)
+- Alert on processing delays
+- Track error rates
+"""
+        )
     elif unit_number == 5:
         st.markdown("#### 📘 Cloud Data Platforms: AWS, GCP, Azure Mastery")
         st.markdown(
@@ -3630,10 +4020,10 @@ report = checker.generate_report()
 print("\n✅ Quality checks complete!")'''
             st.code(lab2_4, language='python')
             
-            st.success("✅ Unit 2 Labs Complete: Production data warehouse patterns mastered!")
+            st.success("✅ Unit 2 Labs Complete: Data warehousing mastered!")
         elif selected_unit == 3:
-            st.markdown("### 🔥 Unit 3: Batch Processing at Scale with Apache Spark")
-            st.markdown("**COMPREHENSIVE HANDS-ON LABS - Production PySpark Code!**")
+            st.markdown("### 🔥 Unit 3: Batch Processing with Apache Spark")
+            st.markdown("**COMPREHENSIVE HANDS-ON LABS - Production Spark Pipelines!**")
             
             st.markdown("### LAB 1: PySpark Fundamentals (120 min)")
             st.markdown("**Objective:** Master Spark DataFrames for large-scale data processing")
