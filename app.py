@@ -1653,6 +1653,7 @@ elif user_role == 'tester':
         "📊 Data Science Pathway 3 (Advanced ML & MLOps)",  # Advanced production ML pathway
         "📊 Data Analyst Pathway",            # Stand-alone analyst pathway
         "🔧 Data Engineer Pathway",           # Stand-alone engineer pathway
+        "🤖 AI/LLM Engineer Pathway",         # AI & Large Language Models pathway
         "📚 Level 3 Adult Care",              # TQUK Qualification
         "💻 IT User Skills",                  # TQUK Qualification
         "🤝 Customer Service",                # TQUK Qualification
@@ -1695,6 +1696,7 @@ elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
         "📊 Data Science Pathway 3 (Advanced ML & MLOps)",
         "📊 Data Analyst Pathway",
         "🔧 Data Engineer Pathway",
+        "🤖 AI/LLM Engineer Pathway",
         
         # TEACHING & ASSESSMENT
         "👨‍🏫 Teaching & Assessment",
@@ -7781,6 +7783,10 @@ elif tool == "📊 Data Analyst Pathway":
 elif tool == "🔧 Data Engineer Pathway":
     from data_engineer_pathway_module import render_data_engineer_pathway_module
     render_data_engineer_pathway_module()
+
+elif tool == "🤖 AI/LLM Engineer Pathway":
+    from ai_llm_engineer_pathway_module import render_ai_llm_engineer_pathway_module
+    render_ai_llm_engineer_pathway_module()
 
 elif tool == "📚 Level 3 Adult Care":
     from tquk_level3_adult_care_module import render_level3_adult_care_module
