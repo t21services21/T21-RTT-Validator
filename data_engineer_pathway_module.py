@@ -3563,6 +3563,251 @@ GROUP BY city_id;
 - Creates job opportunities
 """
         )
+        
+        st.markdown("#### 📚 Recommended Learning Resources & Books")
+        st.markdown(
+            """**Essential Books for Data Engineers:**
+
+**1. Fundamentals & Theory**
+- **Designing Data-Intensive Applications** by Martin Kleppmann
+  - The bible of data engineering
+  - Covers distributed systems, databases, data processing
+  - Must-read for senior+ engineers
+  - Level: Intermediate to Advanced
+  - 600 pages of pure gold
+
+- **Data Pipelines Pocket Reference** by James Densmore
+  - Practical guide to building pipelines
+  - Covers Airflow, Kafka, Spark
+  - Great for beginners
+  - Level: Beginner to Intermediate
+  - Quick reference format
+
+**2. Distributed Systems**
+- **Streaming Systems** by Tyler Akidau, Slava Chernyak, Reuven Lax
+  - Comprehensive guide to stream processing
+  - Covers windowing, watermarks, exactly-once semantics
+  - Written by Google engineers
+  - Level: Advanced
+  - Essential for real-time systems
+
+- **Database Internals** by Alex Petrov
+  - Deep dive into database architecture
+  - Covers B-trees, LSM trees, consensus protocols
+  - For engineers who want to understand storage engines
+  - Level: Advanced
+  - Very technical
+
+**3. Cloud Platforms**
+- **AWS Certified Data Analytics Study Guide**
+  - Comprehensive AWS data services overview
+  - Covers Glue, EMR, Kinesis, Redshift, Athena
+  - Good for certification prep
+  - Level: Intermediate
+
+- **Google Cloud Platform for Data Engineering**
+  - Covers BigQuery, Dataflow, Pub/Sub
+  - Hands-on examples
+  - GCP-focused
+  - Level: Intermediate
+
+**4. Data Modeling**
+- **The Data Warehouse Toolkit** by Ralph Kimball
+  - Classic book on dimensional modeling
+  - Star schema design patterns
+  - Business intelligence focus
+  - Level: Beginner to Intermediate
+  - Timeless principles
+
+- **Data Vault 2.0** by Dan Linstedt
+  - Modern approach to enterprise data warehousing
+  - Agile-friendly methodology
+  - Audit-focused
+  - Level: Advanced
+
+**5. Programming & Tools**
+- **Learning Spark (2nd Edition)** by Jules Damji et al.
+  - Official Spark book
+  - Covers Spark 3.0+
+  - Practical examples
+  - Level: Beginner to Intermediate
+
+- **Kafka: The Definitive Guide** by Neha Narkhede, Gwen Shapira, Todd Palino
+  - Comprehensive Kafka coverage
+  - Written by Confluent engineers
+  - Production best practices
+  - Level: Intermediate to Advanced
+
+---
+
+**Online Courses & Platforms:**
+
+**Beginner Level:**
+- DataCamp: Data Engineer Career Track ($300/year)
+- Coursera: Data Engineering on Google Cloud (Free audit)
+- Udemy: The Complete Data Engineering Bootcamp ($20-40)
+
+**Intermediate Level:**
+- A Cloud Guru: AWS/Azure/GCP Data Engineering Paths
+- Pluralsight: Data Engineering Path
+- LinkedIn Learning: Data Engineering Fundamentals
+
+**Advanced Level:**
+- Databricks Academy: Spark Certification Courses (Free)
+- Confluent: Apache Kafka Training ($1,500)
+- AWS Training: Data Analytics Specialty ($300)
+
+**Free Resources:**
+- Apache Spark Documentation (spark.apache.org)
+- AWS Whitepapers (Big Data, Analytics)
+- Google Cloud Architecture Center
+- Microsoft Azure Well-Architected Framework
+
+---
+
+**YouTube Channels & Podcasts:**
+
+**YouTube:**
+- Seattle Data Guy (Case studies, career advice)
+- Databricks (Spark tutorials, webinars)
+- AWS Online Tech Talks (Cloud data services)
+- Google Cloud Tech (BigQuery, Dataflow demos)
+
+**Podcasts:**
+- Data Engineering Podcast (Tobias Macey)
+- The Data Engineering Show (Eldad Farkash)
+- Software Engineering Daily (Occasional data topics)
+- DataFramed (DataCamp)
+
+---
+
+**Blogs & Newsletters:**
+
+**Must-Follow Blogs:**
+- Martin Kleppmann's Blog (distributed systems)
+- Databricks Engineering Blog (Spark, Delta Lake)
+- Netflix Tech Blog (data infrastructure at scale)
+- Uber Engineering Blog (real-time data processing)
+- Airbnb Engineering Blog (data quality, pipelines)
+
+**Newsletters:**
+- Data Engineering Weekly (Joe Reis & Matt Housley)
+- Data Elixir (Weekly data science & engineering news)
+- Data Machina (Weekly big data digest)
+
+---
+
+**Practice Platforms:**
+
+**Hands-On Labs:**
+- Qwiklabs (Google Cloud hands-on labs)
+- AWS Workshops (workshop.aws)
+- Azure Labs (Microsoft Learn)
+- DataCamp Projects (Guided projects)
+
+**Datasets for Practice:**
+- Kaggle Datasets (kaggle.com/datasets)
+- Google BigQuery Public Datasets
+- AWS Open Data Registry
+- data.gov (Government data)
+- NYC Open Data
+
+**Project Ideas:**
+1. Build a real-time Twitter analytics dashboard
+2. Create a data warehouse for e-commerce analytics
+3. Implement a CDC pipeline for database replication
+4. Build a recommendation engine data pipeline
+5. Design a data quality monitoring system
+
+---
+
+**Community & Events:**
+
+**Conferences (Worth Attending):**
+- Data Council ($1,500-2,000) - SF, NYC, Austin
+- Spark + AI Summit ($2,000-3,000) - San Francisco
+- AWS re:Invent ($1,500+) - Las Vegas
+- Google Cloud Next ($1,500+) - San Francisco
+- Kafka Summit ($1,000-1,500) - Virtual & In-person
+
+**Meetups:**
+- Local Data Engineering Meetups (meetup.com)
+- Cloud User Groups (AWS, GCP, Azure)
+- Apache Software Foundation Local Groups
+- Tech company open houses
+
+**ROI of Conferences:**
+- Networking: Meet hiring managers, peers
+- Learning: Latest tech trends, best practices
+- Inspiration: Real-world case studies
+- Job opportunities: Recruiters actively present
+- Cost: Often covered by employers
+
+---
+
+**Career Timeline (Typical Path):**
+
+**Year 0-1: Foundation Building**
+- Focus: SQL, Python, basic ETL
+- Goal: First data engineering job
+- Resources: DataCamp, Udemy courses
+- Projects: Build 2-3 portfolio projects
+- Salary: $70K-$90K
+
+**Year 1-3: Skill Development**
+- Focus: Spark, Airflow, Cloud platforms
+- Goal: Mid-level engineer role
+- Resources: Databricks Academy, AWS cert
+- Projects: Contribute to open source
+- Salary: $90K-$130K
+
+**Year 3-5: Specialization**
+- Focus: System design, architecture
+- Goal: Senior engineer or team lead
+- Resources: DDIA book, advanced courses
+- Projects: Lead technical initiatives
+- Salary: $130K-$180K
+
+**Year 5-10: Leadership**
+- Focus: Strategy, mentoring, innovation
+- Goal: Staff engineer or manager
+- Resources: Leadership books, exec coaching
+- Projects: Define company data strategy
+- Salary: $180K-$300K+
+
+---
+
+**Final Advice:**
+
+**For Beginners:**
+- Don't try to learn everything at once
+- Master SQL and Python first
+- Build real projects, not just tutorials
+- Contribute to open source when ready
+- Network early and often
+
+**For Career Switchers:**
+- Leverage your domain expertise (finance, healthcare, etc.)
+- Start with online courses to build foundation
+- Do a bootcamp if you need structure
+- Build portfolio projects in your domain
+- Your experience is valuable - use it!
+
+**For Advancing Engineers:**
+- Focus on impact, not just technology
+- Develop business acumen
+- Mentor junior engineers
+- Lead technical initiatives
+- Build your personal brand
+
+**Remember:**
+- Technology changes, fundamentals don't
+- Soft skills matter as much as technical skills
+- Continuous learning is essential
+- Build things, break things, learn
+- Community > Competition
+"""
+        )
     elif unit_number == 6:
         st.markdown("#### 📘 Data Quality, Orchestration & Monitoring")
         st.markdown(
