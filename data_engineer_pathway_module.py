@@ -1239,6 +1239,308 @@ CREATE TABLE fact_sales (
 - Monitor data volumes
 """
         )
+        
+        st.markdown("#### 🏗️ Advanced Data Warehouse Optimization Techniques")
+        st.markdown(
+            """**Performance Tuning for Large-Scale Warehouses:**
+
+**1. Materialized Views**
+
+Precompute expensive aggregations for faster queries.
+
+**When to Use:**
+- Queries run repeatedly with same aggregation logic
+- Source tables are large but change infrequently
+- Query latency is critical (dashboards, reports)
+
+**Example Use Case:**
+Daily sales summary dashboard querying 5-year transaction history (billions of rows).
+
+**Trade-offs:**
+- Pro: 100X+ query speedup
+- Con: Storage cost, refresh overhead, staleness
+
+**Refresh Strategies:**
+- Full Refresh: Rebuild entire view (simple but slow)
+- Incremental Refresh: Update only changed data (complex but fast)
+- On-Demand: Refresh when source data changes
+- Scheduled: Nightly/hourly batch refresh
+
+**2. Partition Pruning**
+
+Only scan relevant partitions based on query predicates.
+
+**Best Practices:**
+- Partition by date/time (most common filter)
+- Limit partitions to 1000-5000 per table
+- Use YYYY-MM-DD format for dates
+- Avoid over-partitioning (too many small files)
+
+**Example:**
+Query: SELECT * FROM sales WHERE date >= '2024-01-01'
+- Without partitioning: Scans 5 years of data (10 TB)
+- With daily partitions: Scans only 2024 data (2 TB)
+- Cost savings: 80% reduction in compute
+
+**3. Columnar Storage Optimization**
+
+Store data by column rather than row for analytical queries.
+
+**Formats:**
+- Parquet: Industry standard, great compression
+- ORC: Optimized for Hive, good for Hadoop
+- Arrow: In-memory columnar, fast processing
+
+**Compression:**
+- Snappy: Fast compression, moderate ratio (5:1)
+- Gzip: Slower but better compression (10:1)
+- Zstd: Best balance of speed and ratio (7:1)
+
+**Example:**
+1 TB CSV file → 150 GB Parquet with Snappy
+- 85% storage reduction
+- 10X faster queries (column pruning)
+- Lower cloud costs
+
+**4. Query Result Caching**
+
+Cache frequently accessed query results.
+
+**Implementation:**
+- Application-level: Redis, Memcached
+- Database-level: Snowflake result cache, BigQuery cache
+- CDN-level: CloudFront for API responses
+
+**Cache Invalidation Strategies:**
+- Time-based (TTL): Cache for 1 hour, 1 day, etc.
+- Event-based: Invalidate when source data updates
+- Manual: Explicit cache clear on deployments
+
+**5. Indexing Strategies**
+
+Create indexes on frequently filtered columns.
+
+**Index Types:**
+- B-Tree: General purpose, good for range queries
+- Hash: Fast equality lookups, no range support
+- Bitmap: Great for low-cardinality columns
+- Full-text: Search on text fields
+
+**Anti-patterns:**
+- Too many indexes (slows down writes)
+- Indexing high-cardinality columns in OLAP (often not worth it)
+- Not updating statistics after bulk loads
+
+---
+
+**Data Warehouse Architecture Patterns:**
+
+**Pattern 1: Hub-and-Spoke**
+
+Central warehouse with department-specific data marts.
+
+**Structure:**
+- Enterprise Data Warehouse (EDW): Single source of truth
+- Data Marts: Finance, Marketing, Sales, HR specific
+- ETL: Source → EDW → Data Marts
+
+**Pros:**
+- Clear ownership
+- Optimized for department needs
+- Reduced query contention
+
+**Cons:**
+- Data duplication
+- Sync complexity
+- Higher storage costs
+
+**Best for:** Large enterprises with distinct business units
+
+**Pattern 2: Data Vault 2.0**
+
+Highly normalized, audit-friendly warehouse design.
+
+**Components:**
+- Hubs: Business keys (Customer, Product)
+- Links: Relationships (Order-Customer, Order-Product)
+- Satellites: Descriptive attributes with history
+
+**Pros:**
+- Full data lineage
+- Audit trail built-in
+- Handles late-arriving data
+- Parallelizable loads
+
+**Cons:**
+- Complex to understand
+- Many joins for queries
+- Requires dimensional mart layer
+
+**Best for:** Regulated industries (finance, healthcare), audit requirements
+
+**Pattern 3: Kimball Dimensional Modeling**
+
+Star schema with fact tables and dimension tables.
+
+**Design:**
+- Fact Tables: Metrics, measurements (sales, clicks)
+- Dimension Tables: Context, attributes (product, customer, date)
+- Denormalized for query performance
+
+**Pros:**
+- Easy to understand
+- Fast queries
+- BI tool friendly
+
+**Cons:**
+- Data duplication
+- Complex slowly changing dimensions
+- Harder to add new sources
+
+**Best for:** BI/reporting, business user queries
+
+**Pattern 4: Lambda Architecture**
+
+Separate batch and speed layers for real-time + historical.
+
+**Layers:**
+- Batch Layer: Complete, accurate historical data (Hive, Redshift)
+- Speed Layer: Recent data with low latency (Druid, ClickHouse)
+- Serving Layer: Merge views from both layers
+
+**Pros:**
+- Real-time and batch support
+- Fault-tolerant
+- Scalable
+
+**Cons:**
+- Complex (two processing paths)
+- Potential inconsistency
+- Higher operational cost
+
+**Best for:** Real-time dashboards with historical context
+
+**Pattern 5: Kappa Architecture**
+
+Everything is a stream (simpler than Lambda).
+
+**Design:**
+- Single processing path using stream processing
+- Reprocess historical data by replaying streams
+- Store in stream-friendly storage (Kafka, Kinesis)
+
+**Pros:**
+- Simpler than Lambda
+- One codebase
+- Event-driven
+
+**Cons:**
+- Requires stream-first mindset
+- Reprocessing can be slow
+- Limited batch optimizations
+
+**Best for:** Event-driven systems, microservices
+
+---
+
+**Real-World Data Warehouse Scaling Examples:**
+
+**Example 1: E-Commerce Company (100M orders/year)**
+
+**Challenge:**
+- Holiday traffic spikes (10X normal load)
+- Customer 360 queries timeout (20+ seconds)
+- Analyst ad-hoc queries slow down production
+
+**Solution:**
+1. Partitioned fact_orders by order_date (daily partitions)
+2. Created dim_customer_summary materialized view
+3. Separated analyst workload to read replica
+4. Implemented query result caching (Redis, 1-hour TTL)
+5. Added bitmap indexes on status, category columns
+
+**Results:**
+- Query latency: 20s → 2s (90% improvement)
+- Black Friday handled without downtime
+- Analyst queries no longer impact production
+- Infrastructure cost: +15% (caching, replicas)
+
+**Example 2: SaaS Analytics Platform (1000 tenants)**
+
+**Challenge:**
+- Tenant isolation required (regulatory)
+- Some tenants have 1000X more data than others
+- Cross-tenant analytics for benchmarking
+
+**Solution:**
+1. Schema per tenant (PostgreSQL schemas)
+2. Dedicated clusters for top 10 tenants
+3. Shared cluster for long-tail tenants
+4. Aggregate tables for cross-tenant queries
+5. Query governor: 5-minute timeout, max 1GB scan
+
+**Results:**
+- Tenant isolation: 100% compliant
+- Large tenants: No noisy neighbor issues
+- Cross-tenant queries: <10 seconds
+- Cost allocation: Per-tenant tracking
+
+**Example 3: Financial Services Firm (Regulatory Compliance)**
+
+**Challenge:**
+- 7-year data retention required
+- Audit trail for every change
+- Sub-second query for fraud detection
+- Zero data loss tolerance
+
+**Solution:**
+1. Data Vault 2.0 architecture
+2. Time-travel queries (temporal tables)
+3. Write-Ahead Logging (WAL) for durability
+4. Hot tier (last 90 days): SSD, hourly refresh
+5. Warm tier (91 days-2 years): Standard storage
+6. Cold tier (2-7 years): Glacier, compliance archive
+
+**Results:**
+- Full audit history: Every change tracked
+- Fraud queries: <500ms (hot tier)
+- Compliance: Passed all audits
+- Storage cost: 60% reduction (tiering)
+
+---
+
+**Data Warehouse Governance:**
+
+**1. Data Quality Rules**
+- No NULLs in dimension business keys
+- Fact table foreign keys must exist in dimensions
+- Date dimensions must be complete (no gaps)
+- Numeric measures must be non-negative where applicable
+
+**2. Naming Conventions**
+- Tables: fact_xxx, dim_xxx, stg_xxx (staging), tmp_xxx (temporary)
+- Columns: snake_case, consistent suffixes (_id, _key, _date, _amount)
+- Views: vw_xxx or mv_xxx (materialized)
+
+**3. Access Control**
+- Principle of least privilege
+- Role-based access (Analyst, Engineer, Admin)
+- Column-level security for PII
+- Row-level security for multi-tenant
+
+**4. Change Management**
+- Version control all DDL (Git)
+- Code review for schema changes
+- Testing in dev/staging before production
+- Rollback plan for every migration
+
+**5. Cost Management**
+- Set query timeouts to prevent runaway queries
+- Limit scan size (e.g., max 1 TB per query)
+- Monitor top 10 most expensive queries
+- Chargeback to business units
+"""
+        )
     elif unit_number == 3:
         st.markdown("#### 📘 Batch Processing at Scale: Apache Spark Mastery")
         st.markdown(
@@ -1642,6 +1944,271 @@ def process_func(x):
 
 df.rdd.map(process_func)  # Works!
 ```
+"""
+        )
+        
+        st.markdown("#### 🎯 Spark Production Deployment Best Practices")
+        st.markdown(
+            """**Deploying Spark to Production:**
+
+**1. Cluster Sizing & Resource Allocation**
+
+**Executor Configuration:**
+- Executor Memory: 4-8 GB per executor (sweet spot)
+- Executor Cores: 4-5 cores per executor (avoid too many)
+- Number of Executors: (Total Cores / Executor Cores) - 1 for driver
+
+**Example Calculation for 100-node cluster:**
+- Each node: 16 cores, 64 GB RAM
+- Total: 1,600 cores, 6.4 TB RAM
+- Executor config: 5 cores, 20 GB RAM (4 executors per node)
+- Total executors: 400 (4 per node × 100 nodes)
+- Driver: 1 node reserved
+
+**Spark Config:**
+- spark.executor.instances: 400
+- spark.executor.cores: 5
+- spark.executor.memory: 20g
+- spark.executor.memoryOverhead: 4g
+- spark.driver.memory: 16g
+- spark.driver.cores: 8
+
+**2. Monitoring & Observability**
+
+**Key Metrics to Track:**
+- Job Duration: Track P50, P95, P99 latencies
+- Task Skew: Identify stragglers (tasks >2x median)
+- Shuffle Size: Monitor shuffle read/write volumes
+- GC Time: Keep GC overhead <10% of task time
+- Memory Utilization: Track executor memory usage
+- Data Skew: Partition size variance
+
+**Monitoring Stack:**
+- Spark UI: Built-in monitoring dashboard
+- Ganglia/Grafana: Cluster-level metrics
+- Prometheus: Time-series metrics collection
+- CloudWatch/Datadog: Cloud-native monitoring
+- Custom Metrics: Application-specific KPIs
+
+**Sample Alert Rules:**
+- Job failure rate >5% (critical)
+- Average job duration >2x baseline (warning)
+- Executor OOM errors >10/hour (critical)
+- Shuffle data >1 TB per job (warning)
+- GC time >10% of task time (warning)
+
+**3. Error Handling & Retry Logic**
+
+**Idempotent Jobs:**
+All production Spark jobs should be idempotent (safe to retry).
+
+**Techniques:**
+- Write to temp location, then atomic rename
+- Use unique job IDs for deduplication
+- Implement checkpointing for streaming jobs
+- Track watermarks for incremental processing
+
+**Retry Strategy:**
+- Transient failures: Retry 3x with exponential backoff
+- Data quality failures: Write to error queue, alert on-call
+- Resource exhaustion: Scale up, then retry
+- Code bugs: Fail fast, alert engineers
+
+**4. Performance Tuning Checklist**
+
+**Data Ingestion:**
+- Use optimal file formats (Parquet, ORC)
+- Partition data by commonly filtered columns
+- Compress data (Snappy for speed, Gzip for size)
+- Coalesce small files (aim for 128-256 MB per file)
+
+**Transformations:**
+- Cache intermediate results if reused
+- Broadcast small lookup tables (<10 GB)
+- Use narrow transformations when possible
+- Minimize shuffles (coalesce, repartition sparingly)
+
+**Joins:**
+- Broadcast hash join for small tables
+- Sort-merge join for large tables
+- Bucket both sides if possible
+- Filter before joining to reduce data volume
+
+**Writes:**
+- Repartition before writing to control file count
+- Use dynamic partitioning for partitioned tables
+- Enable speculation for slow tasks
+- Write to distributed file system (S3, HDFS, GCS)
+
+**5. Cost Optimization**
+
+**Spot Instances:**
+Use spot/preemptible instances for non-critical workloads.
+
+**Strategy:**
+- Core nodes: On-demand (stability)
+- Task nodes: Spot instances (cost savings)
+- Savings: 60-80% reduction on compute costs
+
+**Auto-scaling:**
+- Scale up during peak hours (8 AM - 6 PM)
+- Scale down during off-hours
+- Use EMR/Dataproc auto-scaling policies
+- Set min/max cluster size boundaries
+
+**Data Lifecycle:**
+- Hot data (last 30 days): Standard storage
+- Warm data (31-90 days): Infrequent access
+- Cold data (90+ days): Glacier/Archive
+- Purge after retention period (e.g., 7 years)
+
+**6. Security Best Practices**
+
+**Authentication & Authorization:**
+- Use Kerberos for authentication
+- Implement RBAC for data access
+- Encrypt data at rest (S3 SSE, HDFS encryption)
+- Encrypt data in transit (TLS/SSL)
+
+**Data Masking:**
+- PII columns: Hash or tokenize
+- Sensitive data: Column-level encryption
+- Audit logs: Track all data access
+
+**Network Security:**
+- Private subnets for clusters
+- Security groups: Restrict to minimal ports
+- VPN/PrivateLink for cloud connectivity
+- No public IPs on data nodes
+
+**7. Disaster Recovery**
+
+**Backup Strategy:**
+- Daily snapshots of critical data
+- Cross-region replication for DR
+- Retain backups for 30 days minimum
+- Test restore procedures quarterly
+
+**Recovery Time Objectives:**
+- Critical jobs: RTO <1 hour
+- Standard jobs: RTO <4 hours
+- Low-priority jobs: RTO <24 hours
+
+**Runbook:**
+- Document common failure scenarios
+- Step-by-step recovery procedures
+- Contact information for escalations
+- Post-mortem template for incidents
+
+---
+
+**Real-World Production Scenarios:**
+
+**Scenario 1: Black Friday Traffic Spike**
+
+**Challenge:**
+E-commerce analytics pipeline processing 10X normal data volume (1 TB → 10 TB).
+
+**Solution:**
+1. Pre-scale cluster 2 days before (50 → 200 nodes)
+2. Enable auto-scaling (max 500 nodes)
+3. Implement backpressure in streaming jobs
+4. Cache hot data (top products, users)
+5. Set up war room for monitoring
+
+**Results:**
+- Processed 10 TB in 6 hours (vs 60 hours without prep)
+- Zero downtime during peak traffic
+- Scaled down gracefully post-event
+- Cost: 3X normal, but revenue justified
+
+**Scenario 2: Data Quality Incident**
+
+**Challenge:**
+Upstream service sent malformed JSON, breaking downstream pipelines.
+
+**Problem:**
+- 50,000 records rejected
+- Data loss detected 6 hours later
+- Business reports showing incorrect metrics
+
+**Solution:**
+1. Immediate: Stop all downstream pipelines
+2. Root cause: Added schema validation to ingestion
+3. Recovery: Reprocess last 24 hours of data
+4. Prevention: Implement Great Expectations checks
+5. Alerting: Real-time data quality monitoring
+
+**Results:**
+- Recovered within 4 hours
+- Zero data loss (replayed from source)
+- Schema validation prevented future issues
+- SLA maintained (99.9% uptime)
+
+**Scenario 3: Cost Optimization Initiative**
+
+**Challenge:**
+Monthly Spark job costs reached $50K, need to reduce by 30%.
+
+**Analysis:**
+- 40% of jobs running on under-utilized clusters
+- Many small files (overhead from file opens)
+- Excessive data scanning (no partitioning)
+- Jobs running during peak hours (expensive)
+
+**Optimizations:**
+1. Consolidated small jobs into batch workflows
+2. Compacted small files (10M files → 100K files)
+3. Implemented table partitioning by date
+4. Shifted non-critical jobs to off-peak hours
+5. Used spot instances for 60% of cluster
+
+**Results:**
+- Cost reduced from $50K → $30K/month (40% savings)
+- Job performance improved (less overhead)
+- No business impact (same SLAs maintained)
+- ROI: $240K annual savings
+
+---
+
+**Production Deployment Checklist:**
+
+Before deploying to production:
+
+**Code Quality:**
+- [ ] Unit tests pass (>80% coverage)
+- [ ] Integration tests pass
+- [ ] Code review completed
+- [ ] No hardcoded credentials
+- [ ] Proper error handling
+
+**Performance:**
+- [ ] Load tested with production-scale data
+- [ ] Memory profiling completed
+- [ ] No memory leaks detected
+- [ ] Query plans reviewed
+- [ ] Partitioning strategy validated
+
+**Monitoring:**
+- [ ] Metrics instrumentation added
+- [ ] Alerts configured
+- [ ] Dashboards created
+- [ ] Runbook documented
+- [ ] On-call rotation scheduled
+
+**Security:**
+- [ ] Data encryption enabled
+- [ ] Access controls configured
+- [ ] Secrets in vault (not code)
+- [ ] Audit logging enabled
+- [ ] Compliance requirements met
+
+**Operations:**
+- [ ] Deployment automation tested
+- [ ] Rollback procedure documented
+- [ ] Capacity planning completed
+- [ ] DR plan validated
+- [ ] Stakeholders notified
 """
         )
         
@@ -2474,6 +3041,528 @@ for result in response['ResultsByTime']:
         print(f"  {service}: ${float(cost):.2f}")
 ```
 """)
+        
+        st.markdown("#### 🏗️ Cloud Data Architecture Patterns")
+        st.markdown(
+            """**Production-grade cloud architectures:**
+
+**Pattern 1: Lambda Architecture (AWS)**
+
+```
+Data Sources
+    |
+    +---> Kinesis Firehose --> S3 (Raw)
+    |                            |
+    |                            +---> Glue ETL --> S3 (Processed)
+    |                            |                   |
+    |                            |                   +---> Athena (Queries)
+    |
+    +---> Kinesis Streams --> Lambda --> DynamoDB (Real-time)
+```
+
+**Components:**
+- **Ingestion:** Kinesis Firehose, Kinesis Streams
+- **Storage:** S3 (data lake), DynamoDB (operational)
+- **Processing:** Glue (batch), Lambda (stream)
+- **Analytics:** Athena, QuickSight
+
+**Pattern 2: Modern Data Stack (GCP)**
+
+```
+Data Sources --> Pub/Sub --> Dataflow --> BigQuery --> Looker
+                                |
+                                +---> Cloud Storage
+```
+
+**Pattern 3: Medallion Architecture (Multi-Cloud)**
+
+```
+Sources --> Bronze (Raw) --> Silver (Cleaned) --> Gold (Aggregated)
+              S3/ADLS         Delta Lake           Star Schema
+```
+"""
+        )
+        
+        st.markdown("#### 💰 Advanced Cost Optimization")
+        st.markdown(
+            """**Reduce cloud costs significantly:**
+
+**1. Storage Cost Optimization**
+
+```python
+# AWS S3 Lifecycle Policy
+import boto3
+
+s3 = boto3.client('s3')
+
+lifecycle_policy = {
+    'Rules': [
+        {
+            'Id': 'archive-old-data',
+            'Status': 'Enabled',
+            'Transitions': [
+                {'Days': 30, 'StorageClass': 'STANDARD_IA'},
+                {'Days': 90, 'StorageClass': 'GLACIER'}
+            ]
+        }
+    ]
+}
+
+s3.put_bucket_lifecycle_configuration(
+    Bucket='my-data-lake',
+    LifecycleConfiguration=lifecycle_policy
+)
+
+print("Expected savings: 80% on archived data")
+```
+
+**2. Use Spot Instances**
+- 70-90% cheaper than on-demand
+- Perfect for fault-tolerant batch jobs
+- AWS Spot, GCP Preemptible, Azure Spot
+
+**3. Partition and Compress Data**
+```sql
+-- Bad: Full table scan - $50
+SELECT * FROM sales WHERE order_date = '2024-01-01';
+
+-- Good: Partition pruning - $0.50
+SELECT * FROM sales 
+WHERE year = 2024 AND month = 1 AND day = 1;
+```
+
+**Cost Checklist:**
+- ✅ Use appropriate storage tiers
+- ✅ Implement lifecycle policies
+- ✅ Partition large tables
+- ✅ Use columnar formats (Parquet)
+- ✅ Compress data
+- ✅ Use Spot instances
+- ✅ Set budget alerts
+"""
+        )
+        
+        st.markdown("#### 🏢 Real-World Cloud Architecture Case Studies")
+        st.markdown(
+            """**Case Study 1: Netflix - Streaming Analytics at Massive Scale**
+
+**Challenge:** Process 450+ billion events/day from 200M+ subscribers across 190 countries.
+
+**Architecture:**
+- **Ingestion:** Amazon Kinesis (500K events/second)
+- **Processing:** Apache Flink on EMR
+- **Storage:** S3 Data Lake (100+ PB)
+- **Analytics:** Redshift + Presto
+- **Real-time:** ElastiCache for user sessions
+
+**Key Decisions:**
+```
+1. Event Streaming: Kinesis over Kafka
+   - Reason: Fully managed, auto-scaling
+   - Cost: $0.015 per million events
+
+2. Storage: S3 + Parquet
+   - Partitioning: /year/month/day/hour/
+   - Compression: Snappy (5:1 ratio)
+   - Lifecycle: Standard → IA → Glacier
+
+3. Query Engine: Presto for ad-hoc
+   - 10,000+ queries/day
+   - Sub-second response times
+   - Federation across S3, MySQL, Cassandra
+```
+
+**Results:**
+- 99.99% uptime
+- <5 minute data freshness
+- $50M/year infrastructure cost
+- 10X improvement in query performance
+
+---
+
+**Case Study 2: Spotify - Recommendation Engine Pipeline**
+
+**Challenge:** Generate personalized playlists for 500M users using listening history.
+
+**Architecture:**
+```
+User Listening → Kafka → Spark Streaming → BigQuery → ML Models → Recommendations
+     ↓
+Cloud Storage (Event Lake)
+     ↓
+Dataflow (Batch Processing)
+     ↓
+BigQuery (Analytics Warehouse)
+```
+
+**Implementation:**
+```python
+# Real-time listening events
+from google.cloud import pubsub_v1
+
+publisher = pubsub_v1.PublisherClient()
+topic_path = publisher.topic_path('spotify-prod', 'listening-events')
+
+def publish_listening_event(user_id, track_id, timestamp):
+    data = json.dumps({
+        'user_id': user_id,
+        'track_id': track_id,
+        'timestamp': timestamp,
+        'platform': 'mobile',
+        'country': 'US'
+    })
+    
+    publisher.publish(topic_path, data.encode('utf-8'))
+
+# Dataflow processing (Apache Beam)
+import apache_beam as beam
+
+class ComputeListeningStats(beam.DoFn):
+    def process(self, element):
+        user_id, events = element
+        
+        total_time = sum(e['duration'] for e in events)
+        top_genres = Counter(e['genre'] for e in events).most_common(5)
+        
+        yield {
+            'user_id': user_id,
+            'total_listening_minutes': total_time / 60,
+            'top_genres': top_genres,
+            'unique_artists': len(set(e['artist'] for e in events))
+        }
+
+pipeline = (
+    beam.Pipeline()
+    | 'Read from PubSub' >> beam.io.ReadFromPubSub(subscription=sub)
+    | 'Window' >> beam.WindowInto(beam.window.FixedWindows(3600))  # 1 hour
+    | 'Group by User' >> beam.GroupByKey()
+    | 'Compute Stats' >> beam.ParDo(ComputeListeningStats())
+    | 'Write to BigQuery' >> beam.io.WriteToBigQuery('user_listening_stats')
+)
+```
+
+**Optimization Techniques:**
+1. **Caching:** Redis for hot user data (10M most active users)
+2. **Partitioning:** BigQuery tables by date for cost optimization
+3. **Batch vs Stream:** Batch for historical, stream for real-time
+4. **Cost Control:** $20M/year → $12M/year with optimizations
+
+---
+
+**Case Study 3: Uber - Trip Data Pipeline**
+
+**Challenge:** Process 15M+ trips/day across real-time and batch workflows.
+
+**Architecture:**
+```
+Mobile Apps → Kafka → Flink/Samza → Hadoop HDFS → Hive/Presto
+                 ↓
+           Redis (Caching)
+                 ↓
+        PostgreSQL (Transactional)
+```
+
+**Data Flow:**
+```sql
+-- Real-time aggregations (Flink SQL)
+CREATE TABLE trip_stats AS
+SELECT 
+    driver_id,
+    TUMBLE_START(event_time, INTERVAL '5' MINUTE) as window_start,
+    COUNT(*) as trip_count,
+    SUM(fare) as total_earnings,
+    AVG(rating) as avg_rating
+FROM trip_events
+GROUP BY driver_id, TUMBLE(event_time, INTERVAL '5' MINUTE);
+```
+
+**Batch Processing (Hive):**
+```sql
+-- Daily aggregations for analytics
+INSERT OVERWRITE TABLE daily_city_metrics
+PARTITION (date='2024-01-01')
+SELECT 
+    city_id,
+    COUNT(DISTINCT driver_id) as active_drivers,
+    COUNT(*) as total_trips,
+    SUM(distance_km) as total_distance,
+    AVG(wait_time_minutes) as avg_wait_time,
+    PERCENTILE(fare, 0.95) as p95_fare
+FROM trips
+WHERE date = '2024-01-01'
+GROUP BY city_id;
+```
+
+**Scaling Strategy:**
+- 3,000+ Kafka brokers
+- 100,000+ CPU cores (Hadoop cluster)
+- 100 PB of data storage
+- Multi-region active-active setup
+
+**Key Lessons:**
+1. Separate hot/cold data paths
+2. Use caching aggressively (Redis)
+3. Partition everything by geography
+4. Monitor at every layer
+"""
+        )
+        
+        st.markdown("#### 💼 Data Engineering Career Paths & Salary Guide")
+        st.markdown(
+            """**Career Progression in Data Engineering:**
+
+**Level 1: Junior Data Engineer (0-2 years)**
+- Salary Range: $70K - $95K USD
+- Focus: Learning pipelines, SQL, basic Spark
+- Responsibilities: Bug fixes, data quality checks, simple ETL jobs
+- Key Skills: Python, SQL, Git, basic cloud services
+- Common Tasks: Writing SQL queries, debugging failed jobs, data validation
+
+**Level 2: Mid-Level Data Engineer (2-4 years)**
+- Salary Range: $95K - $130K USD  
+- Focus: Building robust pipelines, system design
+- Responsibilities: Design ETL workflows, optimize queries, mentor juniors
+- Key Skills: Spark, Kafka, Airflow, cloud platforms (AWS/GCP/Azure)
+- Common Tasks: Architecting data pipelines, performance tuning, code reviews
+
+**Level 3: Senior Data Engineer (4-7 years)**
+- Salary Range: $130K - $180K USD
+- Focus: Architecture, scaling, best practices
+- Responsibilities: System architecture, technical leadership, cross-team collaboration
+- Key Skills: Distributed systems, data modeling, stream processing, infrastructure as code
+- Common Tasks: Designing data platforms, capacity planning, technical strategy
+
+**Level 4: Staff/Principal Data Engineer (7-10+ years)**
+- Salary Range: $180K - $250K+ USD
+- Focus: Company-wide data strategy, innovation
+- Responsibilities: Technical vision, influence across org, solve hardest problems
+- Key Skills: Deep expertise across stack, thought leadership, strategic thinking
+- Common Tasks: Define architectural standards, research new technologies, technical mentoring
+
+**Level 5: Engineering Manager / Director**
+- Salary Range: $200K - $350K+ USD
+- Focus: Team building, org planning, business alignment
+- Responsibilities: Build teams, roadmap planning, stakeholder management
+- Key Skills: Leadership, communication, strategic planning, technical judgment
+- Common Tasks: Hiring, performance reviews, resource allocation, cross-functional collaboration
+
+---
+
+**Geographic Salary Variations (Senior Data Engineer):**
+
+**North America:**
+- San Francisco Bay Area: $180K - $250K + equity
+- New York City: $160K - $220K + equity
+- Seattle: $150K - $200K + equity
+- Austin: $130K - $180K + equity
+- Toronto: $100K - $140K CAD + equity
+
+**Europe:**
+- London: £80K - £120K + equity
+- Amsterdam: €70K - €100K + equity
+- Berlin: €65K - €90K + equity
+- Paris: €60K - €85K + equity
+- Zurich: CHF 120K - 160K + equity
+
+**Asia-Pacific:**
+- Singapore: SGD 100K - 150K + equity
+- Sydney: AUD 120K - 160K + equity
+- Tokyo: ¥8M - ¥12M + equity
+- Bangalore: ₹20L - ₹40L + equity
+
+---
+
+**Industry Sectors & Opportunities:**
+
+**1. Technology/FAANG (Highest Comp)**
+- Companies: Google, Meta, Amazon, Apple, Microsoft, Netflix
+- Salary Premium: +30-50% above market
+- Scale: Billions of events/day
+- Technologies: Cutting-edge, proprietary systems
+- Culture: Innovation-focused, fast-paced
+
+**2. Finance & Fintech (High Comp + Stability)**
+- Companies: Goldman Sachs, JPMorgan, Stripe, PayPal, Square
+- Salary Premium: +20-40% above market
+- Scale: High-frequency trading, fraud detection, risk analytics
+- Technologies: Real-time processing, regulatory compliance
+- Culture: High-stakes, quality-focused
+
+**3. E-commerce & Marketplaces**
+- Companies: Amazon, eBay, Shopify, Instacart, DoorDash
+- Salary: Market average to +20%
+- Scale: Product catalogs, inventory, recommendations
+- Technologies: Event-driven, recommendation engines
+- Culture: Customer-focused, data-driven
+
+**4. Healthcare & Life Sciences**
+- Companies: United Health, Pfizer, 23andMe, Oscar Health
+- Salary: Market average
+- Scale: Patient data, clinical trials, genomics
+- Technologies: HIPAA compliance, data security
+- Culture: Impact-focused, regulatory-aware
+
+**5. Gaming & Entertainment**
+- Companies: Riot Games, Epic, Unity, Spotify, Disney
+- Salary: Slightly below market but fun work
+- Scale: Real-time player data, content recommendations
+- Technologies: Real-time analytics, A/B testing platforms
+- Culture: Creative, user-experience focused
+
+---
+
+**Remote Work Landscape:**
+
+**Fully Remote Friendly Companies:**
+- GitLab, Automattic, Zapier, InVision, Buffer
+- Typically offer: Location-based compensation or unified global pay
+- Advantage: Work from anywhere, flexible hours
+- Challenge: Async communication, self-motivation required
+
+**Hybrid Models:**
+- Most FAANG companies: 3 days in office
+- Consulting firms: Client site + home
+- Startups: Flexible, team-dependent
+
+**Compensation Adjustment:**
+- Moving from SF to remote: Often 10-25% salary reduction
+- Remote-first companies: Usually uniform pay regardless of location
+- Hybrid: Full on-site compensation
+
+---
+
+**Critical Soft Skills for Advancement:**
+
+**1. Communication**
+- Explain technical concepts to non-technical stakeholders
+- Write clear documentation
+- Present architectural decisions
+- Lead design reviews
+
+**2. Business Acumen**
+- Understand how data drives business value
+- Translate business requirements to technical solutions
+- Calculate ROI of data initiatives
+- Partner with product managers
+
+**3. Project Management**
+- Break down large projects into milestones
+- Estimate effort accurately
+- Manage dependencies
+- Deliver on commitments
+
+**4. Collaboration**
+- Work with data scientists, analysts, software engineers
+- Navigate organizational complexity
+- Build consensus on technical decisions
+- Mentor junior engineers
+
+**5. Problem-Solving**
+- Debug production issues under pressure
+- Design scalable systems from requirements
+- Make pragmatic trade-offs
+- Learn new technologies quickly
+
+---
+
+**Certifications Worth Getting:**
+
+**Cloud Platforms:**
+1. AWS Certified Data Analytics - Specialty ($300, widely recognized)
+2. Google Professional Data Engineer ($200, GCP-focused)
+3. Azure Data Engineer Associate ($165, Azure ecosystem)
+
+**Big Data:**
+1. Databricks Certified Data Engineer ($200, Spark expertise)
+2. Confluent Certified Developer for Apache Kafka ($150, streaming)
+3. Cloudera CCA Data Analyst ($295, Hadoop ecosystem - less relevant now)
+
+**ROI Analysis:**
+- Direct salary impact: Typically $5K-$15K
+- Credibility boost: Opens doors to interviews
+- Knowledge gain: Structured learning path
+- Worth it?: Yes for cloud certs, maybe for vendor-specific
+
+**Note:** Experience > Certifications. Build real projects over collecting certificates.
+
+---
+
+**Building Your Portfolio:**
+
+**Project Ideas to Showcase:**
+
+1. **Real-Time Stock Market Dashboard**
+   - Stream: Yahoo Finance API → Kafka → Spark Streaming
+   - Storage: TimescaleDB for time-series
+   - Viz: Grafana dashboard
+   - Demonstrates: Streaming, real-time processing, visualization
+
+2. **Multi-Source E-Commerce Data Warehouse**
+   - Sources: Postgres (transactional), MongoDB (product catalog), S3 (logs)
+   - Pipeline: Airflow orchestration
+   - Warehouse: Snowflake or BigQuery
+   - Demonstrates: ETL, dimensional modeling, orchestration
+
+3. **Distributed Log Processing System**
+   - Input: Application logs (GB/day)
+   - Processing: Parse, deduplicate, aggregate
+   - Storage: Elasticsearch for search
+   - Demonstrates: Batch processing, text processing, search
+
+4. **CDC Pipeline for Database Replication**
+   - Source: MySQL or Postgres
+   - CDC: Debezium or custom log parsing
+   - Target: S3 Data Lake + Redshift
+   - Demonstrates: Change data capture, data replication
+
+5. **ML Feature Store**
+   - Compute: Spark for feature engineering
+   - Storage: Redis (online) + S3 (offline)
+   - Serving: REST API for ML models
+   - Demonstrates: Real-time + batch, ML infrastructure
+
+**Portfolio Best Practices:**
+- Host code on GitHub with clear README
+- Include architecture diagrams (draw.io, Lucidchart)
+- Write blog posts explaining design decisions
+- Demo with screenshots/videos
+- Highlight: Scale handled, technologies used, trade-offs made
+
+---
+
+**Networking & Community:**
+
+**Conferences:**
+- Data Council (SF, NYC, Austin)
+- Strata Data Conference
+- AWS re:Invent
+- Google Cloud Next
+- Kafka Summit
+
+**Online Communities:**
+- Reddit: r/dataengineering (150K+ members)
+- Slack: Data Engineering community
+- Discord: Various data eng servers
+- LinkedIn: Follow thought leaders
+
+**Contributing to Open Source:**
+- Apache Spark, Kafka, Airflow
+- Even small contributions (docs, bug fixes) stand out
+- Shows: Initiative, collaboration skills, technical depth
+
+**Content Creation:**
+- Write blog posts on Medium, personal blog
+- Create YouTube tutorials
+- Speak at local meetups
+- Answer questions on StackOverflow
+
+**Impact:**
+- Builds personal brand
+- Demonstrates expertise
+- Expands professional network
+- Creates job opportunities
+"""
+        )
     elif unit_number == 6:
         st.markdown("#### 📘 Data Quality, Orchestration & Monitoring")
         st.markdown(
@@ -2754,6 +3843,210 @@ def send_sla_alert(dag, task_list, blocking_task_list, slas, blocking_tis):
     send_slack_alert(message)
 ```
 """)
+        
+        st.markdown("#### 🔍 Advanced Orchestration Patterns")
+        st.markdown(
+            """**Complex workflow patterns in production:**
+
+**1. Dynamic DAGs**
+
+```python
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime
+
+# Generate tasks dynamically
+def create_processing_dag():
+    dag = DAG('dynamic_processing', start_date=datetime(2024, 1, 1))
+    
+    # Read configuration
+    sources = ['api1', 'api2', 'api3', 'database1', 'database2']
+    
+    tasks = []
+    for source in sources:
+        task = PythonOperator(
+            task_id=f'extract_{source}',
+            python_callable=extract_data,
+            op_kwargs={'source': source},
+            dag=dag
+        )
+        tasks.append(task)
+    
+    # Set dependencies
+    for i in range(len(tasks)-1):
+        tasks[i] >> tasks[i+1]
+    
+    return dag
+
+dag = create_processing_dag()
+```
+
+**2. Sensor Pattern**
+
+```python
+from airflow.sensors.filesystem import FileSensor
+from airflow.sensors.external_task import ExternalTaskSensor
+
+# Wait for file to arrive
+file_sensor = FileSensor(
+    task_id='wait_for_file',
+    filepath='/data/incoming/*.csv',
+    poke_interval=60,  # Check every 60 seconds
+    timeout=3600  # Wait max 1 hour
+)
+
+# Wait for another DAG
+external_sensor = ExternalTaskSensor(
+    task_id='wait_for_upstream',
+    external_dag_id='upstream_pipeline',
+    external_task_id='final_task',
+    timeout=600
+)
+
+file_sensor >> process_data >> external_sensor
+```
+
+**3. Parallel Processing Pattern**
+
+```python
+from airflow.operators.python import PythonOperator
+from airflow.models import Variable
+
+def process_partition(partition_id):
+    # Process one partition
+    df = read_partition(partition_id)
+    df_clean = clean_data(df)
+    save_partition(df_clean, partition_id)
+
+# Create 10 parallel tasks
+num_partitions = 10
+parallel_tasks = []
+
+for i in range(num_partitions):
+    task = PythonOperator(
+        task_id=f'process_partition_{i}',
+        python_callable=process_partition,
+        op_kwargs={'partition_id': i}
+    )
+    parallel_tasks.append(task)
+
+# All run in parallel
+extract >> parallel_tasks >> combine_results
+```
+"""
+        )
+        
+        st.markdown("#### 📊 Production Monitoring Dashboard")
+        st.markdown(
+            """**Monitor pipeline health in real-time:**
+
+**Key Metrics to Track:**
+
+**1. Pipeline Success Rate**
+```python
+import prometheus_client as prom
+
+# Define metrics
+pipeline_success = prom.Counter(
+    'pipeline_success_total',
+    'Total successful pipeline runs',
+    ['pipeline_name']
+)
+
+pipeline_failures = prom.Counter(
+    'pipeline_failures_total',
+    'Total failed pipeline runs',
+    ['pipeline_name', 'error_type']
+)
+
+# Track execution
+def run_pipeline(pipeline_name):
+    try:
+        execute_pipeline()
+        pipeline_success.labels(pipeline_name=pipeline_name).inc()
+    except Exception as e:
+        pipeline_failures.labels(
+            pipeline_name=pipeline_name,
+            error_type=type(e).__name__
+        ).inc()
+        raise
+```
+
+**2. Data Volume Metrics**
+```python
+data_volume = prom.Gauge(
+    'data_volume_bytes',
+    'Volume of data processed',
+    ['pipeline', 'stage']
+)
+
+processing_time = prom.Histogram(
+    'processing_duration_seconds',
+    'Time to process data',
+    ['pipeline']
+)
+
+# Track metrics
+with processing_time.labels(pipeline='sales').time():
+    df = process_data()
+    volume = df.memory_usage(deep=True).sum()
+    data_volume.labels(pipeline='sales', stage='processed').set(volume)
+```
+
+**3. Data Quality Metrics**
+```python
+quality_score = prom.Gauge(
+    'data_quality_score',
+    'Data quality score (0-100)',
+    ['table', 'dimension']
+)
+
+# Calculate and track
+def check_quality(table_name):
+    completeness = check_completeness(table_name)
+    accuracy = check_accuracy(table_name)
+    timeliness = check_timeliness(table_name)
+    
+    quality_score.labels(table=table_name, dimension='completeness').set(completeness)
+    quality_score.labels(table=table_name, dimension='accuracy').set(accuracy)
+    quality_score.labels(table=table_name, dimension='timeliness').set(timeliness)
+```
+
+**4. Alert Configuration**
+```python
+# Prometheus alerting rules
+alerts = '''
+groups:
+- name: data_pipeline_alerts
+  interval: 1m
+  rules:
+  - alert: HighFailureRate
+    expr: rate(pipeline_failures_total[5m]) > 0.1
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Pipeline failure rate exceeded 10%"
+  
+  - alert: DataFreshness
+    expr: time() - data_freshness_timestamp > 7200
+    for: 10m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Data is more than 2 hours old"
+  
+  - alert: LowDataQuality
+    expr: data_quality_score < 80
+    for: 15m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Data quality below threshold"
+'''
+```
+"""
+        )
     elif unit_number == 7:
         st.markdown("#### 📘 Data Engineering Capstone: Building Production Systems")
         st.markdown(
@@ -2909,6 +4202,396 @@ project/
    - Solves real problem
    - Measurable value
    - Cost-effective
+"""
+        )
+        
+        st.markdown("#### 💡 Capstone Project Examples")
+        st.markdown(
+            """**1. Real-Time E-Commerce Analytics Platform**
+
+**Problem:** Retail company needs real-time insights into sales, inventory, and customer behavior.
+
+**Architecture:**
+```
+Data Sources → Kafka → Spark Streaming → Delta Lake → Power BI
+     ↓
+PostgreSQL (Orders)
+MongoDB (Products)  
+Redis (Sessions)
+API (Payments)
+```
+
+**Implementation Highlights:**
+```python
+# Stream processing with Spark
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import window, col, count, sum, avg
+
+spark = SparkSession.builder.appName("RealtimeAnalytics").getOrCreate()
+
+# Read from Kafka
+events_df = spark.readStream.format("kafka") \\
+    .option("kafka.bootstrap.servers", "localhost:9092") \\
+    .option("subscribe", "user_events") \\
+    .load()
+
+# Parse JSON and aggregate
+parsed = events_df.selectExpr("CAST(value AS STRING) as json") \\
+    .select(from_json(col("json"), schema).alias("data")) \\
+    .select("data.*")
+
+# Real-time metrics
+metrics = parsed.groupBy(
+    window(col("timestamp"), "5 minutes"),
+    col("product_id")
+).agg(
+    count("*").alias("event_count"),
+    sum("revenue").alias("total_revenue"),
+    avg("revenue").alias("avg_revenue")
+)
+
+# Write to Delta Lake
+metrics.writeStream \\
+    .format("delta") \\
+    .outputMode("append") \\
+    .option("checkpointLocation", "/checkpoints/metrics") \\
+    .start("/delta/real_time_metrics")
+```
+
+**Key Features:**
+- Sub-5-minute data freshness
+- Handles 10,000+ events/second
+- Automated quality checks
+- Real-time dashboards
+
+---
+
+**2. Multi-Source Data Warehouse for Healthcare**
+
+**Problem:** Hospital system needs unified analytics across patient records, billing, and operations.
+
+**Architecture:**
+```
+Sources → Airflow ETL → Data Vault 2.0 → Presentation Layer → Tableau
+    ↓                       ↓                    ↓
+HL7 Feed            Hubs/Links/Sats      Star Schemas
+EMR DB              (Snowflake)           (Marts)
+Billing API
+```
+
+**Data Vault Implementation:**
+```sql
+-- Hub: Patient
+CREATE TABLE hub_patient (
+    patient_hash_key BINARY(16) PRIMARY KEY,
+    patient_id VARCHAR(50) NOT NULL,
+    load_datetime TIMESTAMP,
+    record_source VARCHAR(50)
+);
+
+-- Satellite: Patient Details
+CREATE TABLE sat_patient_details (
+    patient_hash_key BINARY(16),
+    load_datetime TIMESTAMP,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    date_of_birth DATE,
+    hash_diff BINARY(16),
+    PRIMARY KEY (patient_hash_key, load_datetime)
+);
+
+-- Link: Patient-Encounter
+CREATE TABLE link_patient_encounter (
+    link_hash_key BINARY(16) PRIMARY KEY,
+    patient_hash_key BINARY(16),
+    encounter_hash_key BINARY(16),
+    load_datetime TIMESTAMP,
+    record_source VARCHAR(50)
+);
+```
+
+**ETL Pipeline:**
+```python
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime, timedelta
+
+def extract_hl7_messages():
+    # Connect to HL7 feed
+    messages = fetch_hl7_messages()
+    return parse_hl7(messages)
+
+def load_to_data_vault(data):
+    # Calculate hash keys
+    for record in data:
+        record['hash_key'] = calculate_hash(record['business_key'])
+        record['hash_diff'] = calculate_hash(record['attributes'])
+    
+    # Load hubs (if new)
+    load_hubs(data)
+    
+    # Load satellites (always, with versioning)
+    load_satellites(data)
+    
+    # Load links
+    load_links(data)
+
+dag = DAG('healthcare_etl', schedule_interval='@hourly')
+
+extract = PythonOperator(task_id='extract', python_callable=extract_hl7_messages)
+load = PythonOperator(task_id='load', python_callable=load_to_data_vault)
+
+extract >> load
+```
+
+**Compliance Features:**
+- HIPAA-compliant encryption
+- Audit trail for all data access
+- Data lineage tracking
+- PII masking in non-production
+
+---
+
+**3. Cloud Data Lake for IoT Telemetry**
+
+**Problem:** Manufacturing company needs to analyze sensor data from 10,000+ devices.
+
+**Architecture:**
+```
+IoT Devices → AWS IoT Core → Kinesis → Lambda → S3 (Parquet) → Athena/Glue
+                                ↓
+                           DynamoDB (Hot data)
+```
+
+**Implementation:**
+```python
+# Lambda function for processing
+import json
+import boto3
+from datetime import datetime
+
+s3 = boto3.client('s3')
+dynamodb = boto3.resource('dynamodb')
+
+def lambda_handler(event, context):
+    for record in event['Records']:
+        # Parse Kinesis record
+        payload = json.loads(record['kinesis']['data'])
+        
+        device_id = payload['device_id']
+        timestamp = payload['timestamp']
+        metrics = payload['metrics']
+        
+        # Store hot data in DynamoDB
+        table = dynamodb.Table('iot_hot_data')
+        table.put_item(Item={
+            'device_id': device_id,
+            'timestamp': timestamp,
+            'temperature': metrics['temperature'],
+            'pressure': metrics['pressure'],
+            'status': metrics['status']
+        })
+        
+        # Batch cold data to S3
+        s3_key = f"telemetry/year={timestamp[:4]}/month={timestamp[5:7]}/day={timestamp[8:10]}/{device_id}.parquet"
+        
+        # Convert to Parquet and upload
+        df = pandas.DataFrame([payload])
+        parquet_buffer = df.to_parquet()
+        s3.put_object(Bucket='iot-data-lake', Key=s3_key, Body=parquet_buffer)
+    
+    return {'statusCode': 200}
+```
+
+**Query with Athena:**
+```sql
+-- Create external table
+CREATE EXTERNAL TABLE iot_telemetry (
+    device_id STRING,
+    timestamp TIMESTAMP,
+    temperature DOUBLE,
+    pressure DOUBLE,
+    status STRING
+)
+PARTITIONED BY (year INT, month INT, day INT)
+STORED AS PARQUET
+LOCATION 's3://iot-data-lake/telemetry/';
+
+-- Analyze device performance
+SELECT 
+    device_id,
+    DATE_TRUNC('hour', timestamp) as hour,
+    AVG(temperature) as avg_temp,
+    MAX(pressure) as max_pressure,
+    COUNT(*) as reading_count
+FROM iot_telemetry
+WHERE year = 2024 AND month = 12
+GROUP BY device_id, DATE_TRUNC('hour', timestamp)
+HAVING avg_temp > 80  -- Alert threshold
+ORDER BY hour DESC;
+```
+
+**Cost Optimization:**
+- S3 lifecycle policies (Standard → IA → Glacier)
+- Partition pruning
+- Compression (Parquet with Snappy)
+- Reserved capacity for predictable workloads
+
+**Monitoring:**
+```python
+import boto3
+
+cloudwatch = boto3.client('cloudwatch')
+
+# Track metrics
+cloudwatch.put_metric_data(
+    Namespace='IoTPipeline',
+    MetricData=[
+        {
+            'MetricName': 'RecordsProcessed',
+            'Value': record_count,
+            'Unit': 'Count'
+        },
+        {
+            'MetricName': 'ProcessingLatency',
+            'Value': latency_ms,
+            'Unit': 'Milliseconds'
+        }
+    ]
+)
+```
+"""
+        )
+        
+        st.markdown("#### 🎯 Capstone Success Checklist")
+        st.markdown(
+            """**Technical Requirements:**
+
+✅ **Data Ingestion**
+- [ ] Connects to 2+ data sources
+- [ ] Handles incremental loads
+- [ ] Error handling and retries
+- [ ] Data validation on ingestion
+
+✅ **Data Processing**
+- [ ] Transformation logic is modular
+- [ ] Handles data quality issues
+- [ ] Performance optimized (< 1 hour for full load)
+- [ ] Idempotent operations
+
+✅ **Data Storage**
+- [ ] Appropriate data model (star, vault, etc.)
+- [ ] Partitioning strategy
+- [ ] Indexing for query performance
+- [ ] Data retention policies
+
+✅ **Orchestration**
+- [ ] Automated with Airflow/Prefect
+- [ ] Dependency management
+- [ ] SLA monitoring
+- [ ] Failure alerting
+
+✅ **Data Quality**
+- [ ] Automated quality checks
+- [ ] Data profiling
+- [ ] Anomaly detection
+- [ ] Quality metrics tracked
+
+✅ **Monitoring**
+- [ ] Pipeline metrics dashboard
+- [ ] Alert configuration
+- [ ] Log aggregation
+- [ ] Performance tracking
+
+✅ **Documentation**
+- [ ] Architecture diagram
+- [ ] Data dictionary
+- [ ] API documentation
+- [ ] Operational runbook
+- [ ] README with setup instructions
+
+✅ **Testing**
+- [ ] Unit tests (80%+ coverage)
+- [ ] Integration tests
+- [ ] Data quality tests
+- [ ] Load/performance tests
+
+✅ **Deployment**
+- [ ] Infrastructure as Code
+- [ ] CI/CD pipeline
+- [ ] Environment configuration
+- [ ] Rollback procedures
+
+✅ **Security & Compliance**
+- [ ] Secrets management
+- [ ] Access controls
+- [ ] Audit logging
+- [ ] Data encryption
+"""
+        )
+        
+        st.markdown("#### 📈 Presentation Guidelines")
+        st.markdown(
+            """**15-Minute Capstone Presentation Structure:**
+
+**Slide 1: Problem Statement (2 min)**
+- Business context and pain points
+- Current state vs. desired state
+- Success criteria and KPIs
+
+**Slide 2-3: Architecture (3 min)**
+- System architecture diagram
+- Technology stack justification
+- Data flow and processing steps
+- Scalability considerations
+
+**Slide 4-5: Implementation Highlights (4 min)**
+- Code walkthrough (key components)
+- Interesting technical challenges solved
+- Performance optimizations
+- Data quality framework
+
+**Slide 6: Demo (4 min)**
+- Live pipeline execution
+- Monitoring dashboard
+- Sample queries/analytics
+- Data quality reports
+
+**Slide 7: Results & Metrics (1 min)**
+- Performance benchmarks
+- Cost analysis
+- Data quality improvements
+- Business impact
+
+**Slide 8: Lessons Learned (1 min)**
+- What worked well
+- What would you do differently
+- Future enhancements
+
+**Demo Preparation:**
+```bash
+# Pre-load sample data
+python scripts/load_test_data.py
+
+# Start monitoring dashboard
+docker-compose up -d grafana
+
+# Trigger pipeline
+airflow dags trigger my_pipeline
+
+# Prepare sample queries
+psql -f demo_queries.sql
+```
+
+**Common Questions to Prepare For:**
+1. How does your solution handle data quality issues?
+2. What happens if a source system is down?
+3. How would you scale this to 10x the data volume?
+4. What's your disaster recovery strategy?
+5. How do you ensure data freshness SLAs?
+6. What security measures are in place?
+7. How would you optimize costs further?
+8. How do you handle schema changes?
 """
         )
 
@@ -5708,6 +7391,524 @@ print("✅ Data quality monitoring DAG created!")'''
    - Runbook
 
 **Skills Demonstrated:** Data quality, observability, monitoring, alerting""")
+            
+            st.markdown("## 💻 Complete Capstone Implementation Example")
+            st.markdown("**Full End-to-End E-Commerce Analytics Platform Code**")
+            
+            st.markdown("### 1. Kafka Event Producer")
+            capstone_producer = '''# kafka_producer.py
+import json
+import time
+import random
+from datetime import datetime
+from kafka import KafkaProducer
+from kafka.errors import KafkaError
+
+class EcommerceEventProducer:
+    def __init__(self, bootstrap_servers=['localhost:9092']):
+        self.producer = KafkaProducer(
+            bootstrap_servers=bootstrap_servers,
+            value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+            key_serializer=lambda k: k.encode('utf-8') if k else None,
+            acks='all',  # Wait for all replicas
+            retries=3,
+            compression_type='gzip'
+        )
+        
+    def generate_event(self):
+        """Generate realistic e-commerce event"""
+        event_types = ['page_view', 'add_to_cart', 'purchase', 'search', 'remove_from_cart']
+        
+        event = {
+            'event_id': f"evt_{int(time.time()*1000)}_{random.randint(1000,9999)}",
+            'event_type': random.choice(event_types),
+            'user_id': f"user_{random.randint(1, 10000)}",
+            'session_id': f"sess_{random.randint(1, 5000)}",
+            'product_id': f"prod_{random.randint(1, 500)}",
+            'category': random.choice(['Electronics', 'Clothing', 'Books', 'Home', 'Sports']),
+            'timestamp': datetime.now().isoformat(),
+            'device': random.choice(['mobile', 'desktop', 'tablet']),
+            'location': random.choice(['US', 'UK', 'CA', 'DE', 'FR'])
+        }
+        
+        # Add event-specific data
+        if event['event_type'] == 'purchase':
+            event['amount'] = round(random.uniform(10, 500), 2)
+            event['quantity'] = random.randint(1, 5)
+        elif event['event_type'] == 'search':
+            event['search_term'] = random.choice(['laptop', 'shoes', 'book', 'headphones'])
+            
+        return event
+    
+    def produce_events(self, num_events=1000, events_per_second=10):
+        """Produce events at specified rate"""
+        print(f"Starting event production: {num_events} events at {events_per_second}/sec")
+        
+        for i in range(num_events):
+            event = self.generate_event()
+            
+            # Use user_id as partition key for consistent ordering per user
+            self.producer.send(
+                'ecommerce_events',
+                key=event['user_id'],
+                value=event
+            )
+            
+            if (i + 1) % 100 == 0:
+                print(f"Produced {i + 1} events")
+            
+            time.sleep(1.0 / events_per_second)
+        
+        self.producer.flush()
+        print(f"✅ Completed: {num_events} events produced")
+        
+    def close(self):
+        self.producer.close()
+
+if __name__ == "__main__":
+    producer = EcommerceEventProducer()
+    try:
+        producer.produce_events(num_events=10000, events_per_second=100)
+    finally:
+        producer.close()'''
+            st.code(capstone_producer, language='python')
+            
+            st.markdown("### 2. Spark Streaming Consumer")
+            capstone_spark = '''# spark_streaming_job.py
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import (
+    from_json, col, window, count, sum as _sum, avg, max as _max,
+    current_timestamp, to_timestamp
+)
+from pyspark.sql.types import StructType, StructField, StringType, DoubleType, IntegerType
+
+# Define schema for incoming events
+event_schema = StructType([
+    StructField("event_id", StringType()),
+    StructField("event_type", StringType()),
+    StructField("user_id", StringType()),
+    StructField("session_id", StringType()),
+    StructField("product_id", StringType()),
+    StructField("category", StringType()),
+    StructField("timestamp", StringType()),
+    StructField("device", StringType()),
+    StructField("location", StringType()),
+    StructField("amount", DoubleType()),
+    StructField("quantity", IntegerType())
+])
+
+# Initialize Spark Session
+spark = SparkSession.builder \\
+    .appName("EcommerceRealTimeAnalytics") \\
+    .config("spark.sql.streaming.checkpointLocation", "/tmp/checkpoints") \\
+    .getOrCreate()
+
+spark.sparkContext.setLogLevel("WARN")
+
+# Read from Kafka
+df = spark.readStream \\
+    .format("kafka") \\
+    .option("kafka.bootstrap.servers", "localhost:9092") \\
+    .option("subscribe", "ecommerce_events") \\
+    .option("startingOffsets", "latest") \\
+    .load()
+
+# Parse JSON and extract event data
+events = df.selectExpr("CAST(value AS STRING) as json") \\
+    .select(from_json(col("json"), event_schema).alias("data")) \\
+    .select("data.*") \\
+    .withColumn("timestamp", to_timestamp(col("timestamp")))
+
+# Real-time metrics: Events per minute by type
+events_per_minute = events \\
+    .groupBy(
+        window(col("timestamp"), "1 minute"),
+        col("event_type")
+    ) \\
+    .agg(
+        count("*").alias("event_count"),
+        count(col("user_id").distinct()).alias("unique_users")
+    )
+
+# Sales metrics: Revenue per minute
+sales_metrics = events \\
+    .filter(col("event_type") == "purchase") \\
+    .groupBy(
+        window(col("timestamp"), "5 minutes"),
+        col("category")
+    ) \\
+    .agg(
+        _sum("amount").alias("total_revenue"),
+        avg("amount").alias("avg_order_value"),
+        count("*").alias("num_orders"),
+        _sum("quantity").alias("total_items")
+    )
+
+# Popular products: Most viewed in last 10 minutes
+popular_products = events \\
+    .filter(col("event_type") == "page_view") \\
+    .groupBy(
+        window(col("timestamp"), "10 minutes", "5 minutes"),
+        col("product_id"),
+        col("category")
+    ) \\
+    .agg(count("*").alias("view_count"))
+
+# Write to console (for demo) and to Delta Lake
+query1 = events_per_minute.writeStream \\
+    .outputMode("update") \\
+    .format("delta") \\
+    .option("path", "/data/delta/events_per_minute") \\
+    .start()
+
+query2 = sales_metrics.writeStream \\
+    .outputMode("update") \\
+    .format("delta") \\
+    .option("path", "/data/delta/sales_metrics") \\
+    .start()
+
+query3 = popular_products.writeStream \\
+    .outputMode("update") \\
+    .format("delta") \\
+    .option("path", "/data/delta/popular_products") \\
+    .start()
+
+# Keep running
+spark.streams.awaitAnyTermination()'''
+            st.code(capstone_spark, language='python')
+            
+            st.markdown("### 3. Airflow Orchestration DAG")
+            capstone_airflow = '''# airflow_dag.py
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
+from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
+from airflow.providers.postgres.operators.postgres import PostgresOperator
+from datetime import datetime, timedelta
+import great_expectations as ge
+
+default_args = {
+    'owner': 'data_engineering',
+    'depends_on_past': False,
+    'start_date': datetime(2024, 1, 1),
+    'email': ['alerts@company.com'],
+    'email_on_failure': True,
+    'email_on_retry': False,
+    'retries': 3,
+    'retry_delay': timedelta(minutes=5),
+}
+
+dag = DAG(
+    'ecommerce_analytics_pipeline',
+    default_args=default_args,
+    description='End-to-end e-commerce analytics',
+    schedule_interval='@hourly',
+    catchup=False,
+    max_active_runs=1
+)
+
+# 1. Data Quality Checks
+def run_data_quality_checks(**context):
+    """Run Great Expectations validation"""
+    context_ge = ge.data_context.DataContext()
+    
+    suite_name = "ecommerce_events_suite"
+    checkpoint_name = "hourly_checkpoint"
+    
+    checkpoint_result = context_ge.run_checkpoint(
+        checkpoint_name=checkpoint_name,
+        batch_request={
+            "datasource_name": "delta_datasource",
+            "data_asset_name": "events_per_minute",
+            "batch_spec_passthrough": {
+                "reader_method": "read_delta",
+                "reader_options": {"path": "/data/delta/events_per_minute"}
+            }
+        }
+    )
+    
+    if not checkpoint_result.success:
+        raise ValueError("Data quality checks failed!")
+    
+    print("✅ Data quality validation passed")
+
+quality_check = PythonOperator(
+    task_id='data_quality_check',
+    python_callable=run_data_quality_checks,
+    dag=dag
+)
+
+# 2. Aggregate to Hourly Metrics
+aggregate_metrics = SparkSubmitOperator(
+    task_id='aggregate_hourly_metrics',
+    application='/opt/spark/jobs/hourly_aggregation.py',
+    conn_id='spark_default',
+    total_executor_cores=4,
+    executor_memory='4G',
+    dag=dag
+)
+
+# 3. Load to PostgreSQL Warehouse
+load_warehouse = PostgresOperator(
+    task_id='load_to_warehouse',
+    postgres_conn_id='postgres_warehouse',
+    sql="""
+    INSERT INTO fact_hourly_metrics (
+        hour, event_type, event_count, unique_users, load_timestamp
+    )
+    SELECT 
+        DATE_TRUNC('hour', window.start) as hour,
+        event_type,
+        SUM(event_count) as event_count,
+        SUM(unique_users) as unique_users,
+        CURRENT_TIMESTAMP as load_timestamp
+    FROM delta.`/data/delta/events_per_minute`
+    WHERE window.start >= CURRENT_TIMESTAMP - INTERVAL '1 hour'
+    GROUP BY DATE_TRUNC('hour', window.start), event_type
+    ON CONFLICT (hour, event_type) 
+    DO UPDATE SET 
+        event_count = EXCLUDED.event_count,
+        unique_users = EXCLUDED.unique_users,
+        load_timestamp = EXCLUDED.load_timestamp;
+    """,
+    dag=dag
+)
+
+# 4. Update Materialized Views
+refresh_views = PostgresOperator(
+    task_id='refresh_materialized_views',
+    postgres_conn_id='postgres_warehouse',
+    sql="""
+    REFRESH MATERIALIZED VIEW CONCURRENTLY mv_daily_revenue;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY mv_product_performance;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY mv_user_segments;
+    """,
+    dag=dag
+)
+
+# 5. Send Success Notification
+def send_success_notification(**context):
+    import requests
+    
+    execution_date = context['execution_date']
+    message = f"✅ Pipeline completed successfully for {execution_date}"
+    
+    # Send to Slack
+    requests.post(
+        'https://hooks.slack.com/services/YOUR/WEBHOOK/URL',
+        json={'text': message}
+    )
+
+notify = PythonOperator(
+    task_id='send_notification',
+    python_callable=send_success_notification,
+    dag=dag
+)
+
+# Define task dependencies
+quality_check >> aggregate_metrics >> load_warehouse >> refresh_views >> notify'''
+            st.code(capstone_airflow, language='python')
+            
+            st.markdown("### 4. Monitoring & Alerting")
+            capstone_monitoring = '''# prometheus_metrics.py
+from prometheus_client import Counter, Histogram, Gauge, start_http_server
+import time
+
+# Define metrics
+events_processed = Counter(
+    'events_processed_total',
+    'Total events processed',
+    ['event_type', 'status']
+)
+
+processing_duration = Histogram(
+    'processing_duration_seconds',
+    'Time spent processing events',
+    ['stage']
+)
+
+pipeline_lag = Gauge(
+    'pipeline_lag_seconds',
+    'Lag between event time and processing time'
+)
+
+data_quality_score = Gauge(
+    'data_quality_score',
+    'Data quality score 0-100',
+    ['dimension']
+)
+
+# Start Prometheus metrics server
+start_http_server(8000)
+
+# Track metrics in your pipeline
+def process_batch(events):
+    with processing_duration.labels(stage='transform').time():
+        # Process events
+        for event in events:
+            try:
+                # Processing logic
+                events_processed.labels(
+                    event_type=event['event_type'],
+                    status='success'
+                ).inc()
+            except Exception as e:
+                events_processed.labels(
+                    event_type=event['event_type'],
+                    status='error'
+                ).inc()
+        
+        # Update lag metric
+        current_lag = time.time() - event['timestamp']
+        pipeline_lag.set(current_lag)
+
+# Grafana dashboard JSON (import to Grafana)
+grafana_dashboard = {
+    "dashboard": {
+        "title": "E-Commerce Analytics Pipeline",
+        "panels": [
+            {
+                "title": "Events Processed",
+                "targets": [{
+                    "expr": "rate(events_processed_total[5m])"
+                }]
+            },
+            {
+                "title": "Pipeline Lag",
+                "targets": [{
+                    "expr": "pipeline_lag_seconds"
+                }]
+            },
+            {
+                "title": "Processing Duration p95",
+                "targets": [{
+                    "expr": "histogram_quantile(0.95, processing_duration_seconds_bucket)"
+                }]
+            },
+            {
+                "title": "Data Quality Score",
+                "targets": [{
+                    "expr": "data_quality_score"
+                }]
+            }
+        ]
+    }
+}'''
+            st.code(capstone_monitoring, language='python')
+            
+            st.markdown("### 5. Infrastructure as Code (Terraform)")
+            capstone_terraform = '''# terraform/main.tf
+terraform {
+  required_version = ">= 1.0"
+  
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+  
+  backend "s3" {
+    bucket = "terraform-state-bucket"
+    key    = "ecommerce-analytics/terraform.tfstate"
+    region = "us-east-1"
+  }
+}
+
+provider "aws" {
+  region = var.aws_region
+}
+
+# VPC for data platform
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+  
+  name = "ecommerce-analytics-vpc"
+  cidr = "10.0.0.0/16"
+  
+  azs             = ["us-east-1a", "us-east-1b"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
+  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"]
+  
+  enable_nat_gateway = true
+  enable_vpn_gateway = false
+}
+
+# MSK (Kafka) Cluster
+resource "aws_msk_cluster" "kafka" {
+  cluster_name           = "ecommerce-events"
+  kafka_version          = "3.5.1"
+  number_of_broker_nodes = 3
+  
+  broker_node_group_info {
+    instance_type   = "kafka.m5.large"
+    client_subnets  = module.vpc.private_subnets
+    security_groups = [aws_security_group.kafka.id]
+    
+    storage_info {
+      ebs_storage_info {
+        volume_size = 100
+      }
+    }
+  }
+}
+
+# EMR Cluster for Spark
+resource "aws_emr_cluster" "spark" {
+  name          = "ecommerce-analytics-spark"
+  release_label = "emr-6.15.0"
+  applications  = ["Spark", "Hadoop"]
+  
+  ec2_attributes {
+    subnet_id                         = module.vpc.private_subnets[0]
+    emr_managed_master_security_group = aws_security_group.emr_master.id
+    emr_managed_slave_security_group  = aws_security_group.emr_slave.id
+    instance_profile                  = aws_iam_instance_profile.emr.arn
+  }
+  
+  master_instance_group {
+    instance_type = "m5.xlarge"
+  }
+  
+  core_instance_group {
+    instance_type  = "m5.xlarge"
+    instance_count = 3
+  }
+}
+
+# RDS PostgreSQL for Warehouse
+resource "aws_db_instance" "warehouse" {
+  identifier = "ecommerce-warehouse"
+  
+  engine            = "postgres"
+  engine_version    = "15.4"
+  instance_class    = "db.r5.xlarge"
+  allocated_storage = 100
+  
+  db_name  = "analytics"
+  username = var.db_username
+  password = var.db_password
+  
+  vpc_security_group_ids = [aws_security_group.rds.id]
+  db_subnet_group_name   = aws_db_subnet_group.warehouse.name
+  
+  backup_retention_period = 7
+  multi_az                = true
+}
+
+# S3 Bucket for Delta Lake
+resource "aws_s3_bucket" "delta_lake" {
+  bucket = "ecommerce-analytics-delta-lake"
+}
+
+resource "aws_s3_bucket_versioning" "delta_lake" {
+  bucket = aws_s3_bucket.delta_lake.id
+  
+  versioning_configuration {
+    status = "Enabled"
+  }
+}'''
+            st.code(capstone_terraform, language='terraform')
             
             st.markdown("## 📝 Capstone Evaluation Rubric")
             st.markdown("""
