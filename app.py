@@ -127,7 +127,12 @@ try:
     from cv_builder import (generate_cv_data, generate_professional_summary, format_cv_html,
                             get_ats_keywords, generate_linkedin_profile, get_t21_qualifications)
 except:
-    pass
+    def generate_cv_data(data): return {}
+    def generate_professional_summary(data): return ""
+    def format_cv_html(data): return ""
+    def get_ats_keywords(role): return []
+    def generate_linkedin_profile(data): return ""
+    def get_t21_qualifications(): return []
 
 # Import Virtual Assistant Career Pathway Module (NEW!)
 try:
@@ -137,14 +142,6 @@ except Exception as e:
     VA_PATHWAY_AVAILABLE = False
     def render_va_pathway():
         st.error(f"VA Pathway module not available: {e}")
-
-try:
-    def generate_cv_data(data): return {}
-    def generate_professional_summary(data): return ""
-    def format_cv_html(data): return ""
-    def get_ats_keywords(role): return []
-    def generate_linkedin_profile(data): return ""
-    def get_t21_qualifications(): return []
 
 try:
     from interactive_learning import (INTERACTIVE_QUIZZES, BADGES, check_answer as check_quiz_answer, 
