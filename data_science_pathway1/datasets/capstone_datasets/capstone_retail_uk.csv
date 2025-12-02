@@ -1,0 +1,4 @@
+order_id,store_id,date,product_category,revenue,units
+1,STORE_001,2024-01-01,Groceries,250.00,35
+2,STORE_002,2024-01-01,Electronics,799.00,6
+3,STORE_003,2024-01-02,Clothing,420.50,18

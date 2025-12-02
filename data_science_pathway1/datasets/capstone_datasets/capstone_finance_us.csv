@@ -1,0 +1,4 @@
+client_id,country,account_type,balance,defaulted
+101,US,Credit Card,1200.50,0
+102,US,Loan,8500.00,1
+103,US,Mortgage,220000.00,0

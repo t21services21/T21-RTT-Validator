@@ -1660,6 +1660,12 @@ elif user_role == 'tester':
         "🤖 AI & Automation",                 # AI tools, job automation, AI validators
         "📊 Reports & Analytics",             # Dashboards, analytics, reporting
         "🎓 Training & Certification",        # Certification exams, training modules
+        "📊 Data Science Foundations (Pathway 1)",  # Global data science pathway
+        "📊 Data Science Pathway 2 (Intermediate ML)",  # Next-step ML pathway
+        "📊 Data Science Pathway 3 (Advanced ML & MLOps)",  # Advanced production ML pathway
+        "📊 Data Analyst Pathway",            # Stand-alone analyst pathway
+        "🔧 Data Engineer Pathway",           # Stand-alone engineer pathway
+        "🤖 AI/LLM Engineer Pathway",         # AI & Large Language Models pathway
         "📚 Level 3 Adult Care",              # TQUK Qualification
         "💻 IT User Skills",                  # TQUK Qualification
         "🤝 Customer Service",                # TQUK Qualification
@@ -1698,6 +1704,12 @@ elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
         # RTT TRAINING & CERTIFICATION (PDLC-01-039)
         "🎓 Learning Portal",
         "🎓 Training & Certification",
+        "📊 Data Science Foundations (Pathway 1)",
+        "📊 Data Science Pathway 2 (Intermediate ML)",
+        "📊 Data Science Pathway 3 (Advanced ML & MLOps)",
+        "📊 Data Analyst Pathway",
+        "🔧 Data Engineer Pathway",
+        "🤖 AI/LLM Engineer Pathway",
         
         # TEACHING & ASSESSMENT
         "👨‍🏫 Teaching & Assessment",
@@ -7781,6 +7793,30 @@ elif tool == "📋 TQUK CDA Documents":
 # ============================================
 # TQUK QUALIFICATION MODULES
 # ============================================
+
+elif tool == "📊 Data Science Foundations (Pathway 1)":
+    from data_science_foundations_module import render_data_science_foundations_module
+    render_data_science_foundations_module()
+
+elif tool == "📊 Data Science Pathway 2 (Intermediate ML)":
+    from data_science_pathway2_module import render_data_science_pathway2_module
+    render_data_science_pathway2_module()
+
+elif tool == "📊 Data Science Pathway 3 (Advanced ML & MLOps)":
+    from data_science_pathway3_module import render_data_science_pathway3_module
+    render_data_science_pathway3_module()
+
+elif tool == "📊 Data Analyst Pathway":
+    from data_analyst_pathway_module import render_data_analyst_pathway_module
+    render_data_analyst_pathway_module()
+
+elif tool == "🔧 Data Engineer Pathway":
+    from data_engineer_pathway_module import render_data_engineer_pathway_module
+    render_data_engineer_pathway_module()
+
+elif tool == "🤖 AI/LLM Engineer Pathway":
+    from ai_llm_engineer_pathway_module import render_ai_llm_engineer_pathway_module
+    render_ai_llm_engineer_pathway_module()
 
 elif tool == "📚 Level 3 Adult Care":
     from tquk_level3_adult_care_module import render_level3_adult_care_module
