@@ -3470,7 +3470,6 @@ This prevents surprise cancellations and often leads to UPSELLS!
             st.markdown("""
 **Week 7-8: Become a specialist and charge premium rates (£40-£100/hour)!**
 
-<<<<<<< HEAD
 General VAs earn £15-£30/hour. **Specialists earn £40-£100/hour** doing the SAME hours. This unit transforms you from generalist to high-value specialist.
 
 ---
@@ -3950,19 +3949,6 @@ Client switching from Excel/spreadsheets to HubSpot.
 
 **Week 3: Create Samples**
 - Write 5 property descriptions (use public listings for inspiration)
-=======
-General VAs earn £15-£30/hour. Specialists earn £40-£100/hour doing the SAME hours. This unit shows you how to become a high-value specialist.
-
----
-
-### **High-Value VA Services Deep-Dive**
-
----
-
-## **1. BOOKKEEPING & FINANCE VA** (£35-£60/hour)
-
-**Why This Niche:**
-- Every business needs bookkeeping (huge demand!)
 - Recurring monthly work (stable income)
 - High value (saves clients £1000s in accountant fees)
 - Easy to learn basics (no degree required)
@@ -4365,26 +4351,18 @@ General VAs earn £15-£30/hour. Specialists earn £40-£100/hour doing the SAME
 
 **Week 3: Create Samples**
 - Write 5 property descriptions (use public listings)
->>>>>>> 464b82ed3705596c85703c5ee3a8544a6db853a8
 - Create 3 property flyers (Canva)
 - Design 1-week social media campaign for fictional property
 
 **Week 4: First Client**
-<<<<<<< HEAD
 - **Target:** Solo agents or small agencies (1-5 agents)
 - **Where:** LinkedIn search "estate agent [your city]"
 - **Pitch:** "I'll handle your leads & listings for £500/month"
-=======
-- Target: Solo agents or small agencies (1-5 agents)
-- LinkedIn search: "Real estate agent [your city]"
-- Pitch: "I'll handle your leads & listings for £500/month"
->>>>>>> 464b82ed3705596c85703c5ee3a8544a6db853a8
 
 ---
 
 ## **5. LEGAL VA / PARALEGAL SUPPORT** (£40-£75/hour)
 
-<<<<<<< HEAD
 **Why Legal VA:**
 - ✅ Solicitors bill £200-£500/hour (they desperately need support!)
 - ✅ High rates for VAs (£40-£75/hour)
@@ -4456,12 +4434,6 @@ Study that area specifically!
 - **Target:** Solo practitioners or small firms (1-10 attorneys)
 - **Pitch:** "I'll handle your admin so you can bill more hours"
 - **Start rate:** £30-£35/hour (build trust first)
-=======
-**Why This Niche:**
-- Lawyers bill £200-£500/hour (they NEED support!)
-- High rates for VAs (£40-£75/hour)
-- Professional environment
-- Intellectual challenge
 
 **Core Services:**
 
@@ -4520,13 +4492,11 @@ Study that area specifically!
 - Target: Solo practitioners or small firms (1-10 attorneys)
 - Pitch: "I'll handle your admin so you can bill more hours"
 - Start rate: £30-£35/hour (build trust first)
->>>>>>> 464b82ed3705596c85703c5ee3a8544a6db853a8
 
 ---
 
 ## **6. MEDICAL/HEALTHCARE VA** (£35-£55/hour)
 
-<<<<<<< HEAD
 **Why Healthcare VA:**
 - ✅ Doctors desperately need admin help
 - ✅ Healthcare always in demand
@@ -4582,17 +4552,6 @@ Study that area specifically!
 ---
 
 ## **CHOOSING YOUR NICHE (Decision Framework)**
-=======
-**Why This Niche:**
-- Doctors desperately need admin help
-- Healthcare always in demand
-- Can specialize further (dentistry, mental health, etc.)
-- HIPAA/GDPR compliance = premium rates
-
-**Core Services:**
-
-**Medical Billing:**
-- Submit insurance claims
 - Follow up on denied claims
 - Patient billing
 - Payment posting
@@ -4632,12 +4591,10 @@ Study that area specifically!
 ---
 
 ## **Choosing YOUR Niche (Decision Framework)**
->>>>>>> 464b82ed3705596c85703c5ee3a8544a6db853a8
 
 **Step 1: Skills Inventory**
 
 Rate yourself 1-10:
-<<<<<<< HEAD
 - **Numbers/Data:** ___/10 → Best for: Bookkeeping, CRM
 - **Technical:** ___/10 → Best for: E-commerce, CRM, Legal
 - **Creative:** ___/10 → Best for: E-commerce, Real Estate
@@ -4653,28 +4610,10 @@ Which excites you MOST? (Be honest!)
 - [ ] Supporting real estate agents (Real Estate)
 - [ ] Legal work (Legal VA)
 - [ ] Healthcare (Medical VA)
-=======
-- Numbers/Data: ___/10 → Bookkeeping, CRM
-- Technical: ___/10 → E-commerce, CRM
-- Creative: ___/10 → E-commerce, Social Media
-- Detail-oriented: ___/10 → Legal, Medical, Bookkeeping
-- People skills: ___/10 → Real Estate, Executive Support
-
-**Step 2: Interest Check**
-
-Which excites you most?
-- [ ] Helping businesses with finances
-- [ ] Managing customer relationships
-- [ ] Running online stores
-- [ ] Supporting real estate agents
-- [ ] Legal work
-- [ ] Healthcare
->>>>>>> 464b82ed3705596c85703c5ee3a8544a6db853a8
 
 **Step 3: Market Research**
 
 For each niche you're considering:
-<<<<<<< HEAD
 1. Search Upwork/PeoplePerHour for jobs in last 30 days
 2. Count number of postings
 3. Check average rates (read job descriptions)
@@ -4692,23 +4631,10 @@ For each niche you're considering:
 
 1. Join 3 Facebook groups in that niche
 2. Lurk for 1 week (read posts, don't comment yet)
-=======
-1. Search Upwork/PeoplePerHour for jobs
-2. Count number of postings in last 30 days
-3. Check average rates
-4. Read job descriptions (can you do this?)
-
-**Step 4: Test the Waters**
-
-Don't commit yet! Try this:
-1. Join 3 Facebook groups in that niche
-2. Lurk for 1 week
->>>>>>> 464b82ed3705596c85703c5ee3a8544a6db853a8
 3. What problems do they discuss?
 4. Could you solve those problems?
 5. Do you find it interesting or boring?
 
-<<<<<<< HEAD
 **Step 5: Commit for 90 Days**
 
 Pick ONE niche and commit for 90 days.
@@ -4762,62 +4688,11 @@ You can always pivot later, but focus is KEY to success.
 
 **Pricing (Immediate!):**
 - [ ] Increase rates by 30-50% (specialists = premium!)
-=======
-**Step 5: Choose & Commit**
-
-Pick ONE niche for 90 days.
-
-Don't switch! Give it a real shot.
-
-You can always change later, but focus is key.
-
----
-
-### **Positioning as a Specialist (Rebrand Yourself)**
-
-**Before (General VA):**
-- Website: "Virtual Assistant Services"
-- LinkedIn: "Virtual Assistant"
-- Pitch: "I can help with admin tasks"
-- Rate: £20-£25/hour
-
-**After (Specialist):**
-- Website: "Bookkeeping VA for UK Sole Traders"
-- LinkedIn: "QuickBooks Specialist | Bookkeeping VA"
-- Pitch: "I save sole traders 10 hours/month on bookkeeping"
-- Rate: £40-£50/hour
-
-**Specialist Positioning Checklist:**
-
-**Website:**
-- [ ] Update homepage headline with niche
-- [ ] Update services to focus on niche
-- [ ] Add niche-specific testimonials
-- [ ] Include niche industry logos/terminology
-- [ ] Blog about niche topics
-
-**LinkedIn:**
-- [ ] Update headline with niche + specialty
-- [ ] Update About section ("I help [niche] with [specific problem]")
-- [ ] Add relevant skills (QuickBooks, Shopify, etc.)
-- [ ] Share niche-specific content weekly
-- [ ] Connect with people in that industry
-
-**Portfolio:**
-- [ ] Replace general samples with niche samples
-- [ ] Create 5 niche-specific case studies
-- [ ] Add before/after for niche problems
-- [ ] Include industry terminology
-
-**Pricing:**
-- [ ] Increase rates by 30-50% (specialists command premium!)
->>>>>>> 464b82ed3705596c85703c5ee3a8544a6db853a8
 - [ ] Create niche-specific packages
 - [ ] Offer industry-standard payment terms
 
 ---
 
-<<<<<<< HEAD
 ## **INCOME COMPARISON:**
 
 **General VA:**
@@ -4839,11 +4714,6 @@ You can always change later, but focus is key.
 **You're now a HIGH-VALUE SPECIALIST ready to charge £40-£100/hour!** 🚀
 
 **Next Unit: Social Media & Content Management - Add another premium skill!**
-=======
-**You're now a HIGH-VALUE SPECIALIST! Premium rates unlocked (£40-£100/hour)!** 🚀
-
-**Next Unit: Social Media & Content Management - Add another £500-£2K/month!**
->>>>>>> 464b82ed3705596c85703c5ee3a8544a6db853a8
 """)
         
         # ==========================================
@@ -4854,7 +4724,6 @@ You can always change later, but focus is key.
             st.markdown("""
 **Week 9-10: Add £500-£2,000/month with social media management!**
 
-<<<<<<< HEAD
 Social media management is THE most in-demand VA service in 2024. Every business knows they need it, but 87% don't have time to do it themselves. **This is YOUR opportunity!**
 
 **Why Social Media VAs are in MASSIVE Demand:**
@@ -5479,14 +5348,6 @@ NEXT MONTH GOALS:
 **You're now a SOCIAL MEDIA EXPERT earning £400-£1,500/month per client!** 🚀
 
 **Next Unit: Project Management - Coordinate like Fortune 500 companies!**
-=======
-Social media management is THE most in-demand VA service in 2024. Every business knows they need it, but most don't have time to do it. This is your opportunity!
-
-**Why Social Media VAs are in HIGH Demand:**
-- 4.9 BILLION people on social media (62% of world!)
-- Businesses MUST be on social to survive
-- Time-consuming (2-4 hours/day per platform!)
-- Technical + creative skills required
 - Results = ROI (more followers = more customers = more revenue)
 
 ---
@@ -6078,7 +5939,6 @@ Questions or feedback? Let's chat!
 **You're now a SOCIAL MEDIA EXPERT! This skill alone can earn you £1,000-£3,000/month!** 🚀
 
 **Next Unit: Project Management - Coordinate teams and projects like a Fortune 500 VA!**
->>>>>>> 464b82ed3705596c85703c5ee3a8544a6db853a8
 """)
         
         # ==========================================
@@ -6398,7 +6258,6 @@ SECTIONS:
 DAILY STANDUP - 9:00 AM GMT
 Duration: 15 minutes (USE TIMER!)
 
-<<<<<<< HEAD
 Each team member answers 3 questions:
 1. What did you complete yesterday?
 2. What will you work on today?
@@ -6464,14 +6323,6 @@ Duration: 60 minutes
    - Open floor
    - Concerns?
    - Suggestions?
-=======
-**Next Week's Goals:**
-🎯 [Task 1]
-🎯 [Task 2]
-🎯 [Task 3]
-
-**Blockers/Issues:**
-⚠️ [Issue if any, or "None"]
 
 **Budget Status:** [X]% used
 **Timeline Status:** [On track/At risk/Behind]
@@ -6800,12 +6651,10 @@ CONTINGENCY:
   - Extend timeline by 1 week
   - Communicate to client within 24 hours
 OWNER: You (Project Manager)
->>>>>>> 464b82ed3705596c85703c5ee3a8544a6db853a8
 ```
 
 ---
 
-<<<<<<< HEAD
 ### **Communication Matrix** (CRITICAL!)
 
 **Define HOW to communicate for different scenarios:**
@@ -6935,15 +6784,6 @@ Questions? Email me or schedule a call.
 Best regards,
 [Your Name]
 Project Manager
-=======
-### **Stakeholder Management**
-
-**Who are Stakeholders?**
-- Client (primary)
-- End users
-- Client's boss
-- Your team members
-- Vendors/contractors
 
 **Managing Different Stakeholders:**
 
@@ -7012,12 +6852,10 @@ If yes, I can even draft something for you to edit!
 
 Thanks so much,
 [Your Name]
->>>>>>> 464b82ed3705596c85703c5ee3a8544a6db853a8
 ```
 
 ---
 
-<<<<<<< HEAD
 ## **RISK MANAGEMENT**
 
 **Common Project Risks & How to Handle:**
@@ -7169,57 +7007,6 @@ Best,
 **You're now a PROJECT MANAGEMENT PRO ready to earn £40-£60/hour!** 🚀
 
 **Next Unit: Client Acquisition - Get your first 3-5 clients in 30 days!**
-=======
-### **Project Management Pricing**
-
-**How to Charge:**
-
-**Option 1: Hourly** (£30-£50/hour)
-- Track all PM time (meetings, planning, monitoring)
-- Good for: Ongoing retainers
-
-**Option 2: Project Fee** (£500-£3,000)
-- Based on project complexity & timeline
-- Good for: One-off projects
-
-**Option 3: Percentage** (10-15% of project total)
-- If project budget is £10,000, you get £1,000-£1,500 for PM
-- Good for: Large projects
-
-**Sample PM Service Packages:**
-
-**Basic PM: £500-£800/project**
-- Projects up to 1 month
-- Up to 3 team members
-- Weekly status reports
-- Basic timeline & task management
-- Email/Slack communication
-
-**Standard PM: £1,000-£2,000/project**
-- Projects 1-3 months
-- Up to 5 team members
-- Daily monitoring
-- Weekly status reports
-- Bi-weekly client meetings
-- Risk management
-- Budget tracking
-
-**Premium PM: £2,500-£5,000/project**
-- Projects 3-6 months
-- Large teams
-- Daily standups
-- Detailed reporting
-- Weekly client meetings
-- Full stakeholder management
-- Risk & budget management
-- Post-project support
-
----
-
-**You're now a PROJECT MANAGEMENT PRO! You can coordinate teams like Fortune 500 companies!** 🚀
-
-**Next Unit: Client Acquisition - Get your first 5 clients in 14 days!**
->>>>>>> 464b82ed3705596c85703c5ee3a8544a6db853a8
 """)
         
         # ==========================================
