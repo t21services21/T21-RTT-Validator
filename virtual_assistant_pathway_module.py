@@ -7563,21 +7563,4071 @@ Case study showing:
             st.markdown("""
 ### **Unit 2 Labs: Administrative Excellence (6 Labs)**
 
-**Coming next... Each lab will be as detailed as Unit 1 labs!**
+Master the core administrative skills every VA needs!
 
-Labs include:
-- LAB 6: Email Inbox Cleanup (500+ emails)
-- LAB 7: Email Management System Setup
-- LAB 8: Calendar Optimization Project
-- LAB 9: Document Organization System
-- LAB 10: Data Entry Challenge (1000 records)
-- LAB 11: Meeting Coordination Simulation
+---
 
-*Full content coming in next update!*
+## **LAB 6: Email Inbox Cleanup Challenge (500+ Emails)**
+
+**Objective:** Transform a chaotic inbox into an organized system in under 4 hours.
+
+**Scenario:**
+Your fictional client "James Miller, Marketing Consultant" has 847 unread emails. He's overwhelmed and missing important messages.
+
+**Your Mission:**
+Clean up his inbox and implement a sustainable system.
+
+**Step 1: Set Up Gmail Account (10 min)**
+1. Create fictional client Gmail: jamesmiller.demo@gmail.com
+2. Use "forgot password" to generate 500+ emails:
+   - Sign up for 20 newsletters
+   - Create accounts on 15 websites
+   - Use temp email services to send yourself emails
+3. Let accumulate over 2-3 days (or use email simulator tools)
+
+**Step 2: Initial Audit (30 min)**
+
+Document:
+- Total unread emails: ___
+- Total emails (all time): ___
+- Oldest unread: ___
+- Categories identified (list 10-15):
+  - Client emails
+  - Newsletter/marketing
+  - Receipts/invoices
+  - Meeting invitations
+  - etc.
+
+**Step 3: The Zero Inbox Method (2 hours)**
+
+**Process EVERY email using 4-Decision Rule:**
+
+1. **DELETE** - Spam, old newsletters, irrelevant (50-60% of emails!)
+2. **ARCHIVE** - Need to keep but no action (FYI emails, receipts)
+3. **DELEGATE** - Forward to someone else
+4. **DO** - Takes <2 min? Do it now. Takes >2 min? Schedule it.
+
+**Batching Technique:**
+- Sort by sender
+- Select all emails from same sender
+- Bulk unsubscribe/delete newsletters
+- Process similar emails together
+
+**Step 4: Create Label System (45 min)**
+
+Create Gmail labels:
+```
+📥 ACTION REQUIRED (needs response/action)
+  ├─ 🔴 URGENT (today)
+  ├─ 🟡 THIS WEEK
+  └─ 🟢 THIS MONTH
+
+📁 CLIENTS
+  ├─ Client A
+  ├─ Client B
+  └─ Prospects
+
+📂 PROJECTS
+  ├─ Project 1
+  └─ Project 2
+
+📄 REFERENCE
+  ├─ Receipts
+  ├─ Invoices
+  └─ Contracts
+
+✅ PROCESSED (archive)
+```
+
+**Step 5: Set Up Filters (30 min)**
+
+Create automatic filters:
+- Newsletter from "XYZ" → Skip inbox, apply label "Newsletters"
+- Email from "client@abc.com" → Apply label "Clients/ABC", mark important
+- Subject contains "invoice" → Apply label "Reference/Invoices"
+
+**Step 6: Implement Rules (15 min)**
+
+**2-Touch Rule:**
+- Touch each email MAX twice
+- First touch: Categorize
+- Second touch: Action/Archive
+
+**Priority Inbox:**
+- Enable Gmail Priority Inbox
+- Important emails surface automatically
+
+**Step 7: Document System (30 min)**
+
+Create SOP (Standard Operating Procedure):
+```
+EMAIL MANAGEMENT SYSTEM
+
+DAILY (10 min morning, 10 min afternoon):
+1. Process inbox to zero
+2. Respond to URGENT emails
+3. Schedule ACTION REQUIRED emails
+
+WEEKLY (Friday, 30 min):
+1. Review THIS WEEK labels
+2. Unsubscribe from unwanted newsletters
+3. Archive processed emails
+
+MONTHLY (Last Friday, 1 hour):
+1. Delete old emails (>3 months)
+2. Review filter effectiveness
+3. Update labels if needed
+```
+
+**Deliverable:**
+- Screenshot: Inbox at ZERO (0 unread!)
+- Screenshot: Label system
+- Screenshot: 5 filters
+- PDF: Email Management SOP (1-2 pages)
+- Time log: How long each step took
+
+**Success Criteria:**
+- ✅ Inbox reduced to 0-10 emails
+- ✅ All emails categorized
+- ✅ Filters set up
+- ✅ SOP documented
+- ✅ Completed in <4 hours
+
+---
+
+## **LAB 7: Calendar Optimization Project**
+
+**Objective:** Optimize a busy executive's calendar using time-blocking and color-coding.
+
+**Scenario:**
+"Sarah Chen, CEO" has back-to-back meetings, no buffer time, and constantly runs late. Create a sustainable calendar system.
+
+**Step 1: Set Up Google Calendar (15 min)**
+1. Create Google Calendar for Sarah
+2. Add 20+ random events for current week:
+   - 8 client meetings (30-60 min each)
+   - 5 team meetings (30-45 min)
+   - 3 calls (15-30 min)
+   - 2 events (conferences, webinars)
+   - Random timing (back-to-back, no breaks)
+
+**Step 2: Audit Current Calendar (30 min)**
+
+Analyze:
+- Total meeting hours per week: ___
+- Average buffer between meetings: ___
+- Problems identified:
+  - [ ] Back-to-back meetings
+  - [ ] No lunch break
+  - [ ] Meetings during "focus time"
+  - [ ] No travel time between locations
+  - [ ] No prep time
+
+**Step 3: Time-Blocking Strategy (1 hour)**
+
+**Block Schedule Template:**
+```
+MONDAY - FRIDAY:
+
+7:00-8:00am: Morning Routine (BLOCKED - no meetings!)
+8:00-9:00am: Deep Work Block
+9:00-12:00pm: Meeting Block (max 3 meetings with 15-min buffers)
+12:00-1:00pm: LUNCH (BLOCKED)
+1:00-3:00pm: Deep Work Block
+3:00-5:00pm: Admin Time / Light meetings
+5:00pm+: Personal Time (BLOCKED)
+```
+
+**Implement:**
+1. Create recurring "BLOCKED" events
+2. Reschedule existing meetings into designated blocks
+3. Add 15-min buffer before/after each meeting
+4. Add 30-min prep time before important meetings
+
+**Step 4: Color-Coding System (30 min)**
+
+Create calendar colors:
+- 🔴 RED: URGENT meetings / client facing
+- 🟠 ORANGE: Team meetings
+- 🟡 YELLOW: 1-on-1s
+- 🟢 GREEN: Personal development / learning
+- 🔵 BLUE: Deep work blocks
+- 🟣 PURPLE: Admin tasks
+- ⚫ BLACK: BLOCKED time (no meetings!)
+
+Apply colors to all events.
+
+**Step 5: Meeting Templates (45 min)**
+
+Create templates for common meetings:
+
+**Client Discovery Call (60 min):**
+```
+📅 Client Discovery Call - [Client Name]
+
+📝 Prep (30 min before):
+- Review client website
+- Prepare questions
+- Set up notes doc
+
+🎯 Agenda:
+1. Introductions (5 min)
+2. Client needs discovery (20 min)
+3. Our services overview (15 min)
+4. Q&A (15 min)
+5. Next steps (5 min)
+
+✅ Follow-up:
+- Send proposal within 24 hours
+- Add to CRM
+- Schedule follow-up call
+```
+
+**Step 6: Create Scheduling Rules (30 min)**
+
+Document:
+```
+CALENDAR RULES:
+
+✅ DO:
+- Book meetings Tuesday-Thursday (best days)
+- 15-min buffer between all meetings
+- Block first hour of day (deep work)
+- Batch similar meetings together
+- Set default meeting duration to 25/50 min (not 30/60)
+
+❌ DON'T:
+- Book meetings before 9am or after 5pm
+- Accept meetings without agenda
+- Book meetings during lunch (12-1pm)
+- Double-book
+- Accept meetings on Mondays/Fridays (focus days)
+```
+
+**Deliverable:**
+- Screenshot: Before (messy calendar)
+- Screenshot: After (optimized with blocks & colors)
+- PDF: Meeting templates (3 templates)
+- PDF: Calendar management rules (1-2 pages)
+
+---
+
+## **LAB 8: Document Organization System**
+
+**Objective:** Organize 200+ files into a logical Google Drive structure.
+
+**Step 1: Create Messy Drive (30 min)**
+1. Create Google Drive folder: "ABC Company Files"
+2. Upload/create 200 random files:
+   - 50 PDFs (contracts, invoices, reports)
+   - 50 Google Docs (letters, memos, notes)
+   - 50 Spreadsheets (budgets, lists, data)
+   - 30 Images (logos, photos, screenshots)
+   - 20 Videos/presentations
+3. Name them poorly: "Document1", "Untitled", "Final_FINAL_v3"
+
+**Step 2: Folder Structure (1 hour)**
+
+Create hierarchy:
+```
+📁 ABC COMPANY
+├─ 📂 01_CLIENTS
+│  ├─ Client A
+│  ├─ Client B
+│  └─ Prospects
+├─ 📂 02_PROJECTS
+│  ├─ 2024
+│  │  ├─ Q1
+│  │  ├─ Q2
+│  │  ├─ Q3
+│  │  └─ Q4
+│  └─ Archive (2023)
+├─ 📂 03_FINANCE
+│  ├─ Invoices
+│  ├─ Receipts
+│  ├─ Budgets
+│  └─ Tax_Documents
+├─ 📂 04_MARKETING
+│  ├─ Brand_Assets
+│  ├─ Social_Media
+│  ├─ Email_Templates
+│  └─ Graphics
+├─ 📂 05_HR_ADMIN
+│  ├─ Contracts
+│  ├─ Policies
+│  └─ Employee_Files
+├─ 📂 06_OPERATIONS
+│  ├─ SOPs
+│  ├─ Templates
+│  └─ Checklists
+└─ 📂 07_ARCHIVE
+   └─ OLD_DELETE_AFTER_2025
+```
+
+**Step 3: Rename Files (1 hour)**
+
+Naming convention:
+```
+[YYYYMMDD]_[Category]_[Description]_[Version].ext
+
+Examples:
+- 20240115_Invoice_ClientA_Monthly.pdf
+- 20240215_Contract_NewHire_JohnSmith_v2.docx
+- 20240301_Report_Q1_Sales_FINAL.xlsx
+```
+
+Rename all 200 files following this convention.
+
+**Step 4: Apply Colors (15 min)**
+Right-click folders → Change color:
+- 🔴 RED: Urgent/Important
+- 🟠 ORANGE: Finance
+- 🟡 YELLOW: Projects
+- 🟢 GREEN: Completed
+- 🔵 BLUE: Reference/Archive
+
+**Step 5: Set Permissions (30 min)**
+- Owner: You
+- Editor: Client
+- Viewer: Team members
+- No sharing: Confidential files
+
+**Deliverable:**
+- Screenshot: Before (messy files)
+- Screenshot: After (organized structure)
+- PDF: File naming convention guide
+- PDF: Folder structure diagram
+
+---
+
+## **LAB 9: Data Entry Speed & Accuracy Challenge**
+
+**Objective:** Enter 100 records with 99%+ accuracy in under 2 hours.
+
+**Step 1: Create Mock Data (15 min)**
+Generate 100 fake contacts using https://www.mockaroo.com:
+- First Name
+- Last Name  
+- Email
+- Phone
+- Company
+- Job Title
+- Address
+- Notes
+
+Export as CSV.
+
+**Step 2: Set Up Google Sheets (15 min)**
+
+Create spreadsheet with columns:
+| First Name | Last Name | Email | Phone | Company | Job Title | City | Status |
+
+Add data validation:
+- Email: Must contain "@"
+- Phone: Format (XXX) XXX-XXXX
+- Status: Dropdown (Lead, Prospect, Client)
+
+**Step 3: Data Entry Challenge (90 min)**
+
+Rules:
+- Enter all 100 records
+- Use keyboard shortcuts (Tab, Enter, Ctrl+C/V)
+- No copy-paste from CSV (simulate typing from paper)
+- Time yourself
+
+**Target:**
+- Speed: 100 records in 90 min (54 seconds/record)
+- Accuracy: 99%+ (max 5 errors)
+
+**Step 4: Quality Check (15 min)**
+- Use formula to find duplicates
+- Check email format
+- Verify phone format
+- Spell check
+
+**Deliverable:**
+- Completed spreadsheet (100 records)
+- Time log
+- Accuracy report (errors found & fixed)
+
+---
+
+## **LAB 10: Meeting Coordination Simulation**
+
+**Objective:** Schedule a 6-person meeting considering availability, time zones, and preferences.
+
+**Scenario:**
+Schedule quarterly planning meeting for 6 people:
+1. Sarah (CEO) - London (GMT) - Free Tue/Thu 2-4pm
+2. John (CTO) - New York (GMT-5) - Free Mon/Wed 10am-12pm EST
+3. Lisa (CFO) - Sydney (GMT+11) - Free Wed 9-11am AEDT
+4. Mike (Sales) - London - Free Mon-Fri 10am-3pm
+5. Emma (Marketing) - Berlin (GMT+1) - Free Tue/Thu 3-5pm CET
+6. Tom (Operations) - Singapore (GMT+8) - Free Mon/Fri 2-4pm SGT
+
+**Step 1: Create Availability Matrix (45 min)**
+
+Use Excel/Sheets to create table showing:
+- Each person's availability
+- Converted to GMT
+- Overlapping times highlighted
+
+**Step 2: Find Optimal Time (30 min)**
+
+Criteria:
+- All 6 people available
+- During business hours (9am-6pm) for all
+- 90-minute duration
+- On a weekday
+
+**Step 3: Send Meeting Invite (30 min)**
+
+Draft email:
+```
+Subject: QUARTERLY PLANNING MEETING - Tue, March 15th
+
+Hi Everyone,
+
+I've scheduled our Quarterly Planning Meeting:
+
+📅 Date: Tuesday, March 15th, 2024
+⏰ Time: 2:00 PM GMT (see your local time below)
+⏱️ Duration: 90 minutes
+📍 Location: Zoom (link below)
+
+LOCAL TIMES:
+- London (Sarah, Mike): 2:00 PM GMT
+- New York (John): 9:00 AM EST
+- Berlin (Emma): 3:00 PM CET
+- Singapore (Tom): 10:00 PM SGT
+- Sydney (Lisa): 1:00 AM AEDT (next day)
+
+🎯 AGENDA:
+1. Q1 Review (20 min)
+2. Q2 Planning (40 min)
+3. Budget Discussion (20 min)
+4. Q&A (10 min)
+
+📝 PRE-WORK:
+Please review the Q1 report (attached) before the meeting.
+
+🔗 Zoom Link: [link]
+Meeting ID: XXX-XXX-XXXX
+Passcode: XXXX
+
+Please confirm your attendance by Friday.
+
+Thanks!
+[Your Name]
+```
+
+**Step 4: Handle Conflicts (15 min)**
+
+Simulate: Lisa can't make it (1am too late for Sydney).
+
+Draft alternative:
+- Record meeting for Lisa
+- OR Reschedule to find better time
+- OR Split into 2 meetings
+
+**Deliverable:**
+- Availability matrix (Excel/Sheets)
+- Meeting invite email
+- Conflict resolution plan
+
+---
+
+## **LAB 11: Admin Task Prioritization Exercise**
+
+**Objective:** Prioritize 20 tasks using Eisenhower Matrix.
+
+**Scenario:**
+Monday morning, you have 20 tasks from client:
+
+1. Respond to 15 client emails (varied urgency)
+2. Create presentation for Friday's pitch
+3. Book flight for client (leaves tomorrow!)
+4. Update social media (due today)
+5. Research competitors (due next week)
+6. Fix broken website link (client just noticed!)
+7. Create monthly report (due Friday)
+8. Schedule 3 meetings for next week
+9. Order office supplies
+10. Update CRM with new leads
+11. Proofread blog post (publishing tomorrow)
+12. Pay invoice (due today to avoid late fee)
+13. Create newsletter (scheduled for Wednesday)
+14. Organize files in Google Drive
+15. Update password manager
+16. Call vendor about billing issue
+17. Prepare agenda for tomorrow's meeting
+18. Back up important files
+19. Learn new project management tool
+20. Clean up email inbox
+
+**Step 1: Categorize Using Eisenhower Matrix (30 min)**
+
+```
+URGENT & IMPORTANT (Do First):
+- [ ] Task #
+- [ ] Task #
+- [ ] Task #
+
+IMPORTANT, NOT URGENT (Schedule):
+- [ ] Task #
+- [ ] Task #
+
+URGENT, NOT IMPORTANT (Delegate if possible):
+- [ ] Task #
+- [ ] Task #
+
+NOT URGENT, NOT IMPORTANT (Eliminate):
+- [ ] Task #
+```
+
+**Step 2: Create Today's Schedule (30 min)**
+
+Plan 8-hour workday:
+```
+9:00-9:30am: [Task]
+9:30-10:30am: [Task]
+10:30-11:00am: [Task]
+11:00-12:00pm: [Task]
+12:00-1:00pm: LUNCH
+1:00-2:30pm: [Task]
+2:30-3:30pm: [Task]
+3:30-4:30pm: [Task]
+4:30-5:00pm: End-of-day wrap-up
+```
+
+**Step 3: Document Rationale (30 min)**
+
+For each task, explain:
+- Why placed in that quadrant
+- When will complete it
+- If delegating, to whom
+
+**Deliverable:**
+- Eisenhower Matrix (all 20 tasks categorized)
+- Today's schedule
+- Rationale document (1 page)
+
+---
+
+**🎉 UNIT 2 LABS COMPLETE!**
+
+You now have REAL administrative skills:
+- ✅ Email management mastery
+- ✅ Calendar optimization
+- ✅ Document organization
+- ✅ Data entry speed & accuracy
+- ✅ Meeting coordination
+- ✅ Task prioritization
+
+**Ready for Unit 3 Labs: Client Communication!**
+""")
+        
+        elif lab_unit == "Unit 3 Labs: Client Communication (5 labs)":
+            st.markdown("""
+### **Unit 3 Labs: Client Communication (5 Labs)**
+
+Practice professional communication in realistic scenarios!
+
+---
+
+## **LAB 12: Client Onboarding Email Sequence**
+
+**Objective:** Create a professional 7-email onboarding sequence.
+
+**Scenario:**
+You've just signed a new client "Michael Thompson, Real Estate Agent". Create welcome sequence.
+
+**Email Sequence:**
+
+**Email 1: Welcome (Day 1, immediately after signup)**
+**Email 2: Access & Setup (Day 1, 2 hours later)**
+**Email 3: Kickoff Call Confirmation (Day 2)**
+**Email 4: First Weekly Update (Day 7)**
+**Email 5: One Month Check-in (Day 30)**
+**Email 6: Quarterly Business Review (Day 90)**
+**Email 7: Anniversary (Day 365)**
+
+Write all 7 emails professionally!
+
+**Deliverable:**
+- 7 polished emails (200-300 words each)
+- Subject lines for each
+- Timing schedule
+
+---
+
+## **LAB 13: Difficult Client Scenarios**
+
+**Objective:** Handle 5 challenging client situations with professionalism.
+
+**Scenarios:**
+
+**Scenario 1: Scope Creep**
+Client: "Can you also manage my personal calendar? It'll only take 10 minutes!"
+Your response: [Write it]
+
+**Scenario 2: Late Payment**
+Client is 2 weeks past invoice due date. First reminder.
+Your email: [Write it]
+
+**Scenario 3: Unhappy with Quality**
+Client: "This social media post doesn't match my brand at all."
+Your response: [Write it]
+
+**Scenario 4: Missed Deadline**
+You underestimated time needed, missed deadline by 2 days.
+Your apology email: [Write it]
+
+**Scenario 5: Client Goes Silent**
+No response to emails for 10 days. Mid-project.
+Your follow-up: [Write it]
+
+**Deliverable:**
+- 5 professional responses
+- Explanation of strategy for each
+
+---
+
+## **LAB 14: Weekly Status Report Creation**
+
+**Objective:** Create comprehensive weekly report.
+
+**Scenario:**
+Document your work for fictional client this week:
+- 25 emails processed
+- 5 social media posts
+- 3 meetings scheduled
+- 2 invoices sent
+- 1 presentation created
+- Research on 3 competitors
+- Updated CRM with 15 leads
+
+**Create report including:**
+- Time breakdown by task
+- Accomplishments with metrics
+- Next week's priorities
+- Blockers/concerns
+- ROI calculation
+
+**Deliverable:**
+- Professional weekly report (PDF, 2 pages)
+- Visual charts/graphs
+
+---
+
+## **LAB 15: Discovery Call Script & Practice**
+
+**Objective:** Create and practice discovery call for new prospect.
+
+**Create 30-minute script:**
+1. Intro & rapport (5 min)
+2. Discovery questions (15 min)
+3. Services overview (5 min)
+4. Pricing discussion (3 min)
+5. Next steps (2 min)
+
+**Include:**
+- Opening line
+- 15 discovery questions
+- Objection handling (3 common objections)
+- Closing
+
+**Practice:**
+- Record yourself on video (30 min)
+- Self-review
+- Identify 3 improvements
+
+**Deliverable:**
+- Complete call script (3-4 pages)
+- Self-evaluation notes
+
+---
+
+## **LAB 16: Client Testimonial Collection Campaign**
+
+**Objective:** Create system to collect testimonials.
+
+**Design:**
+1. Initial request email template
+2. Follow-up email (if no response)
+3. Testimonial questionnaire (5 questions)
+4. Thank you email
+5. Usage permission form
+
+**Create:**
+- 5 email templates
+- Questionnaire design
+- Testimonial display mockup (for website)
+
+**Deliverable:**
+- Complete testimonial collection kit (PDF, 10 pages)
+
+---
+
+**🎉 UNIT 3 LABS COMPLETE! You're now a communication expert!**
+""")
+        
+        elif lab_unit == "Unit 4 Labs: Advanced Services (6 labs)":
+            st.markdown("""
+### **Unit 4 Labs: Advanced Services (6 Labs)**
+
+Specialize and charge premium rates (£40-£100/hour)!
+
+---
+
+## **LAB 17: QuickBooks Bookkeeping Project**
+
+**Objective:** Set up and manage bookkeeping for fictional client in QuickBooks.
+
+**Scenario:** "Sarah's Marketing Agency" needs bookkeeping for Q1 2024.
+
+**Step 1: Set Up QuickBooks Account (30 min)**
+1. Sign up for QuickBooks Online free trial (30 days)
+2. Create company: "Sarah's Marketing Agency"
+3. Set up Chart of Accounts:
+   - Income (Service Revenue, Consulting, Retainers)
+   - Expenses (Salaries, Software, Marketing, Office, Travel)
+   - Assets (Bank Account, Accounts Receivable)
+   - Liabilities (Credit Card, Accounts Payable)
+
+**Step 2: Enter Transactions (2 hours)**
+
+**January Transactions:**
+- Income: 5 client invoices (£1,500, £2,000, £800, £3,500, £1,200)
+- Expenses: Salaries (£4,000), Software (£250), Rent (£800), Marketing (£500)
+- Bank deposits: 3 invoice payments received
+- Credit card: £1,200 in expenses
+
+**February Transactions:**
+- Income: 6 invoices
+- Expenses: Similar to January
+- Bank reconciliation
+
+**March Transactions:**
+- Income: 7 invoices
+- Expenses: Include tax payment (£800)
+- End-of-quarter adjustments
+
+**Step 3: Create Reports (1 hour)**
+
+Generate:
+- Profit & Loss Statement (Q1 2024)
+- Balance Sheet (as of March 31)
+- Cash Flow Statement (Q1)
+- Accounts Receivable Aging
+- Sales by Client
+
+**Step 4: Bank Reconciliation (45 min)**
+- Match all transactions
+- Identify discrepancies
+- Reconcile to £0.00 difference
+
+**Deliverable:**
+- QuickBooks company file (screenshots)
+- P&L report
+- Balance sheet
+- Bank reconciliation report
+- 1-page summary of findings
+
+**Success Criteria:**
+- All transactions entered correctly
+- Reports accurate
+- Bank reconciled
+- Professional presentation
+
+---
+
+## **LAB 18: HubSpot CRM Setup & Management**
+
+**Objective:** Build complete CRM system for sales team in HubSpot.
+
+**Scenario:** "Tech Solutions Ltd" (10-person sales team) needs CRM setup.
+
+**Step 1: HubSpot Account Setup (20 min)**
+1. Create free HubSpot account
+2. Company name: "Tech Solutions Ltd"
+3. Import 100 fake contacts (use Mockaroo.com)
+
+**Step 2: Deal Pipeline Setup (45 min)**
+
+Create pipeline stages:
+```
+1. Lead (0%)
+2. Qualified (25%)
+3. Demo Scheduled (40%)
+4. Proposal Sent (60%)
+5. Negotiation (80%)
+6. Closed Won (100%)
+7. Closed Lost (0%)
+```
+
+**Properties for each deal:**
+- Deal Name
+- Amount (£)
+- Close Date
+- Deal Owner
+- Lead Source
+- Industry
+
+**Step 3: Create 20 Deals (1 hour)**
+
+Distribute across pipeline:
+- 5 in Lead
+- 4 in Qualified
+- 3 in Demo Scheduled
+- 3 in Proposal Sent
+- 2 in Negotiation
+- 2 Closed Won (£45K total)
+- 1 Closed Lost
+
+**Step 4: Email Sequences (1 hour)**
+
+Create 3 email sequences:
+
+**Sequence 1: New Lead Follow-up (5 emails)**
+- Day 1: Welcome email
+- Day 3: Value proposition
+- Day 7: Case study
+- Day 14: Demo offer
+- Day 21: Final follow-up
+
+**Sequence 2: Demo No-Show (3 emails)**
+- Day 1: Sorry we missed you
+- Day 2: Reschedule offer
+- Day 5: Alternative options
+
+**Sequence 3: Proposal Follow-up (4 emails)**
+- Day 1: Proposal sent
+- Day 3: Check-in
+- Day 7: Questions?
+- Day 14: Final reminder
+
+**Step 5: Dashboard & Reports (45 min)**
+
+Create dashboard showing:
+- Total pipeline value
+- Win rate
+- Average deal size
+- Sales by owner
+- Deals by stage
+- Forecasted revenue
+
+**Deliverable:**
+- HubSpot screenshots (pipeline, deals, sequences, dashboard)
+- 100 contacts imported
+- 20 deals created
+- 3 email sequences
+- Sales report (PDF)
+
+---
+
+## **LAB 19: Shopify Store Management**
+
+**Objective:** Set up and manage e-commerce store for 30 days.
+
+**Scenario:** "Eco Home Goods" launching sustainable products online.
+
+**Step 1: Shopify Store Setup (1 hour)**
+1. Sign up for Shopify free trial (14 days)
+2. Choose theme (Dawn or similar)
+3. Customize: Logo, colors, fonts
+4. Set up pages: Home, Shop, About, Contact
+
+**Step 2: Product Upload (2 hours)**
+
+Create 20 products across 4 categories:
+- Kitchen (bamboo utensils, reusable wraps)
+- Bathroom (bamboo toothbrushes, soap bars)
+- Cleaning (eco-friendly cleaners)
+- Home (cotton bags, beeswax candles)
+
+**For each product:**
+- Title: "Bamboo Kitchen Utensil Set"
+- Price: £12.99-£45.99
+- Description: 150+ words (benefits, materials, sustainability)
+- Images: 3-5 photos (use free stock photos)
+- SEO: Title tag, meta description, keywords
+- Variants: Sizes, colors (where applicable)
+- Inventory: Set stock levels
+
+**Step 3: Collections (30 min)**
+- New Arrivals
+- Best Sellers
+- Sale Items
+- By Room (Kitchen, Bathroom, etc.)
+
+**Step 4: Shipping & Payments (30 min)**
+- Set up shipping zones (UK, EU, International)
+- Shipping rates (Free over £50, Standard £3.99, Express £7.99)
+- Set up payment gateway (Stripe/PayPal test mode)
+- Tax settings (UK VAT 20%)
+
+**Step 5: Marketing Setup (1 hour)**
+- Discount codes: WELCOME10, SAVE15, FREESHIP
+- Abandoned cart email sequence (3 emails)
+- Email sign-up form (10% off)
+- Social media links
+
+**Step 6: Orders Simulation (1 hour)**
+- Process 10 test orders
+- Mark as fulfilled
+- Generate packing slips
+- Send tracking emails
+
+**Deliverable:**
+- Live Shopify store URL
+- 20 products uploaded
+- 5 collections created
+- 10 test orders processed
+- Store performance report
+
+---
+
+## **LAB 20: Real Estate Listing Creation**
+
+**Objective:** Create 5 professional property listings for estate agent.
+
+**Scenario:** "London Properties Ltd" needs 5 listings written and designed.
+
+**Step 1: Research Properties (30 min)**
+Find 5 real UK properties on Rightmove or Zoopla (don't copy, use for inspiration).
+
+**Step 2: Write Descriptions (2 hours)**
+
+**For each property, write:**
+- Headline (compelling, 8-12 words)
+- Introduction paragraph (150 words)
+- Key features (8-10 bullet points)
+- Location description (100 words)
+- Room descriptions (100 words each for living room, kitchen, bedrooms)
+- Outdoor space description (if applicable)
+- Call to action
+
+**Example Structure:**
+```
+STUNNING 3-BEDROOM VICTORIAN TERRACE IN DESIRABLE WANDSWORTH
+
+This beautifully renovated Victorian terrace offers contemporary living in one of South London's most sought-after locations...
+
+KEY FEATURES:
+• 3 spacious double bedrooms
+• 2 modern bathrooms (1 en-suite)
+• Open-plan kitchen/dining room
+• Bright reception room with bay window
+• Private garden (50ft)
+• Original period features throughout
+• Recently renovated (2023)
+• Close to Wandsworth Common
+
+LOCATION:
+Nestled in a quiet tree-lined street just moments from Wandsworth Common...
+```
+
+**Step 3: Create Flyers (2 hours)**
+
+Use Canva to create 5 professional flyers:
+- Property photos (use free stock images)
+- Headline & price
+- Key features
+- Floor plan (simple diagram)
+- Agent contact info
+- QR code (link to listing)
+
+**Step 4: Social Media Posts (1 hour)**
+
+Create 5 Instagram posts (1 per property):
+- 1080x1080 px image
+- Property highlight
+- Engaging caption with hashtags
+- Call to action
+
+**Deliverable:**
+- 5 property descriptions (PDF)
+- 5 flyers (Canva designs)
+- 5 Instagram posts (JPEG)
+- Portfolio piece showing your range
+
+---
+
+## **LAB 21: Legal Document Preparation**
+
+**Objective:** Prepare legal documents for fictional law firm.
+
+**IMPORTANT:** You're providing administrative support, NOT legal advice!
+
+**Scenario:** "Smith & Associates Solicitors" needs document formatting.
+
+**Step 1: Client Engagement Letter (1 hour)**
+
+Draft professional letter from solicitor to new client:
+```
+[Law Firm Letterhead]
+
+[Date]
+
+[Client Name]
+[Client Address]
+
+Dear [Client Name],
+
+Re: Engagement Letter - [Matter Description]
+
+Thank you for instructing Smith & Associates Solicitors to act on your behalf...
+
+[Scope of Work section]
+[Fee Structure section]
+[Terms & Conditions section]
+[Contact Information section]
+
+Yours sincerely,
+[Solicitor Name]
+```
+
+**Step 2: Case Management Spreadsheet (1.5 hours)**
+
+Create Excel/Sheets tracker with:
+- Client Name
+- Matter Type (Conveyancing, Family, Commercial, etc.)
+- Start Date
+- Key Deadlines
+- Court Dates
+- Documents Needed
+- Documents Received
+- Status
+- Next Action
+- Notes
+
+**Populate with 20 fictional cases.**
+
+**Step 3: Court Document Formatting (1.5 hours)**
+
+Format 3 court documents:
+- Witness Statement (proper numbering, margins, formatting per CPR)
+- Particulars of Claim (legal formatting)
+- Skeleton Argument (headings, citations, structure)
+
+**Use proper legal formatting:**
+- Wide margins (35mm left, 20mm others)
+- Line numbering
+- Paragraph numbering
+- Page numbering
+- Proper headings
+- Citation format
+
+**Step 4: Legal Research Summary (1 hour)**
+
+Research fictional case:
+- Find 3 relevant case law precedents (use public legal databases)
+- Summarize each case (facts, decision, relevance)
+- Create 1-page summary memo
+
+**Deliverable:**
+- Engagement letter (Word document)
+- Case management spreadsheet (20 cases)
+- 3 formatted court documents
+- Legal research memo
+- Professional presentation
+
+---
+
+## **LAB 22: Medical Practice Scheduling**
+
+**Objective:** Manage appointment scheduling for busy GP practice.
+
+**Scenario:** "Riverside Medical Centre" (3 GPs, 40 appointments/day).
+
+**Step 1: Create Scheduling System (1 hour)**
+
+**Using Google Calendar or Excel:**
+
+**Template:**
+```
+Monday, January 15, 2024
+
+DR. SMITH (9:00 AM - 5:00 PM):
+9:00 - John Davies (New Patient Consultation) - 20 min
+9:20 - Sarah Johnson (Follow-up) - 10 min
+9:30 - [BUFFER]
+9:40 - Ahmed Khan (Review Results) - 15 min
+...continues...
+
+DR. JONES (9:00 AM - 12:00 PM, 2:00 PM - 5:00 PM):
+[Similar format]
+12:00 PM - 2:00 PM: LUNCH / ADMIN TIME
+
+DR. WILLIAMS (10:00 AM - 6:00 PM):
+[Similar format]
+```
+
+**Step 2: Schedule 100 Appointments (2 hours)**
+
+Create realistic schedule for 1 week:
+- Mix of: New patients (20 min), Follow-ups (10 min), Consultations (15 min)
+- Leave 10-min buffers every 3 appointments
+- Lunch breaks for all doctors
+- Emergency slots (2 per doctor per day)
+
+**Appointment Types:**
+- New Patient Registration (20 min)
+- General Consultation (15 min)
+- Follow-up (10 min)
+- Blood Pressure Check (10 min)
+- Medication Review (15 min)
+- Test Results Review (15 min)
+- Chronic Disease Review (20 min)
+
+**Step 3: Handle Conflicts (1 hour)**
+
+**Scenarios:**
+1. Dr. Smith calls in sick Monday - reschedule 12 appointments
+2. Emergency appointment needed - find slot within 2 hours
+3. Patient cancels - mark available, fill from waiting list
+4. Patient arrives late (15 min) - adjust remaining schedule
+5. Appointment runs over - adjust subsequent appointments
+
+**Document how you resolved each.**
+
+**Step 4: Patient Communication (1 hour)**
+
+**Draft 5 email templates:**
+1. Appointment confirmation
+2. Appointment reminder (24 hours before)
+3. Rescheduling notification
+4. Cancellation confirmation
+5. Waiting list notification
+
+**Step 5: Weekly Report (30 min)**
+
+**Create report showing:**
+- Total appointments scheduled: ___
+- Total patients seen: ___
+- Cancellations: ___
+- No-shows: ___
+- Average wait time: ___
+- Utilization rate per doctor: ___
+- Most common appointment types
+- Recommendations for improvement
+
+**Deliverable:**
+- 1-week schedule (100 appointments)
+- Conflict resolution documentation
+- 5 email templates
+- Weekly performance report
+- HIPAA/GDPR compliance notes
+
+---
+
+**🎉 UNIT 4 LABS COMPLETE!**
+
+You now have advanced skills worth £40-£100/hour!
+- ✅ Bookkeeping mastery
+- ✅ CRM expertise
+- ✅ E-commerce management
+- ✅ Real estate support
+- ✅ Legal admin
+- ✅ Medical scheduling
+
+**Ready for Unit 5: Social Media Labs!**
+""")
+        
+        elif lab_unit == "Unit 5 Labs: Social Media (5 labs)":
+            st.markdown("""
+### **Unit 5 Labs: Social Media Management (5 Labs)**
+
+Master social media to earn £400-£2,000/month per client!
+
+---
+
+## **LAB 23: Instagram 30-Day Content Calendar**
+
+**Objective:** Create complete 30-day Instagram strategy for fictional client.
+
+**Scenario:** "Green Life Wellness" (health & wellness coach) needs Instagram growth.
+
+**Step 1: Strategy Development (1 hour)**
+
+**Define:**
+- Target Audience: Women 25-45, health-conscious
+- Goals: Grow from 500 to 2,000 followers, 5% engagement rate
+- Content Pillars:
+  - Health Tips (40%)
+  - Motivation/Inspiration (30%)
+  - Behind-the-Scenes (15%)
+  - Client Results (10%)
+  - Promotions (5%)
+
+**Step 2: 30-Day Calendar (2 hours)**
+
+**Create spreadsheet:**
+| Date | Post Type | Content Pillar | Caption | Image | Hashtags | Story | Notes |
+
+**Mix:**
+- 15 Feed posts (3-4/week)
+- 30 Stories (daily)
+- 8 Reels (2/week)
+- 2 Carousels (infographics)
+
+**Step 3: Create 5 Sample Posts (3 hours)**
+
+**Using Canva, design:**
+
+**POST 1: Health Tip**
+- Image: 1080x1080 with tip overlay
+- Caption: "5 Morning Habits That Changed My Health 🌅..."
+- Hashtags: 30 researched tags
+
+**POST 2: Motivation Quote**
+- Image: Inspirational design
+- Caption: "Your body hears everything your mind says..."
+
+**POST 3: Behind-the-Scenes**
+- Image: Workspace/process
+- Caption: "What my Monday mornings look like as a wellness coach..."
+
+**POST 4: Client Testimonial**
+- Image: Before/After (stock)
+- Caption: "Sarah lost 20lbs in 3 months! Here's how..."
+
+**POST 5: Reel Script**
+- Topic: "3 Desk Stretches You Can Do Right Now"
+- Script with timestamps
+- Music suggestion
+- Text overlays
+
+**Step 4: Hashtag Research (1 hour)**
+
+**Create 5 hashtag sets (30 tags each):**
+- High Reach (100K-1M posts): 5 tags
+- Medium Reach (10K-100K): 15 tags
+- Niche Reach (<10K): 10 tags
+
+**Categories:**
+- Health & wellness
+- Fitness
+- Nutrition
+- Motivation
+- UK-specific
+
+**Step 5: Engagement Strategy (30 min)**
+
+**Daily tasks:**
+- 9:00 AM: Post feed content
+- 10:00 AM: Respond to comments (30 min)
+- 11:00 AM: Engage with 20 accounts in niche
+- 2:00 PM: Post Stories (2-3)
+- 5:00 PM: Engage with followers' content
+
+**Deliverable:**
+- 30-day content calendar (Excel/Sheets)
+- 5 designed posts (1080x1080)
+- 5 hashtag sets (30 tags each)
+- Engagement strategy doc
+- Analytics goals tracker
+
+---
+
+## **LAB 24: Facebook Community Management**
+
+**Objective:** Manage Facebook Page & Group for 30 days.
+
+**Scenario:** "Local Mums Network London" - 2,000 members, needs active moderation.
+
+**Step 1: Set Up Demo Page & Group (30 min)**
+1. Create Facebook Page: "Local Mums Network London"
+2. Create Facebook Group: "London Mums Support Group"
+3. Customize: Cover photo, description, rules
+
+**Step 2: Create Group Rules (45 min)**
+
+**Draft comprehensive rules:**
+```
+WELCOME TO LONDON MUMS! 🌟
+
+BEFORE POSTING, PLEASE READ:
+
+✅ BE KIND & RESPECTFUL
+✅ NO SPAM OR SELF-PROMOTION (without admin approval)
+✅ NO PERSONAL ATTACKS OR BULLYING
+✅ KEEP IT RELEVANT (parenting, family, local events)
+✅ PROTECT PRIVACY (no sharing personal info of others)
+✅ REPORT CONCERNS TO ADMINS
+
+❌ WHAT'S NOT ALLOWED:
+- MLM/pyramid schemes
+- Political debates
+- Buy/sell posts (use designated thread)
+- Misinformation about health/medical advice
+- Offensive language
+
+CONSEQUENCES:
+1st violation: Warning
+2nd violation: 7-day ban
+3rd violation: Permanent ban
+```
+
+**Step 3: 30-Day Posting Schedule (2 hours)**
+
+**Create calendar with:**
+
+**Mon-Fri Daily Posts:**
+- Monday: Motivation Monday
+- Tuesday: Tips Tuesday (parenting hacks)
+- Wednesday: Win Wednesday (share your wins!)
+- Thursday: Throwback Thursday
+- Friday: Fun Friday (memes, jokes)
+
+**Weekly Posts:**
+- Weekend events roundup
+- Member spotlight
+- Q&A thread
+- Buy/sell thread (designated)
+
+**Monthly Posts:**
+- New member welcome
+- Monthly meetup planning
+- Photo contest
+- Admin updates
+
+**Step 4: Moderation Scenarios (1.5 hours)**
+
+**Handle 10 scenarios:**
+
+**Scenario 1: Spam Post**
+"Hi ladies! I've started a business selling essential oils. DM me for 20% off!"
+- Your action: [Delete + send message]
+
+**Scenario 2: Member Dispute**
+Two members arguing in comments
+- Your action: [Lock comments + private message both]
+
+**Scenario 3: Misinformation**
+"Vaccines cause autism, don't vaccinate your kids!"
+- Your action: [Delete + ban + explain policy]
+
+**Scenario 4: Request to Promote Event**
+Local kids' theatre wants to post about show
+- Your action: [Approve with disclaimer]
+
+**Scenario 5: Complaint About Another Member**
+- Your action: [Investigate + mediate]
+
+**Step 5: Engagement Tactics (1 hour)**
+
+**Create 5 engaging post formats:**
+
+**Format 1: Fill in the Blank**
+"My child's favorite word right now is _____! Share yours below!"
+
+**Format 2: Poll**
+"What's your biggest parenting challenge? 
+A) Sleep
+B) Tantrums
+C) Picky eating  
+D) Screen time"
+
+**Format 3: Photo Challenge**
+"Share a photo that makes you smile from this week!"
+
+**Format 4: Question of the Day**
+"If you could give your pre-parent self one piece of advice, what would it be?"
+
+**Format 5: Local Recommendations**
+"Best soft play areas in London? GO! 👇"
+
+**Deliverable:**
+- Group rules document
+- 30-day content calendar
+- 10 moderation scenarios (solved)
+- 5 engagement post templates
+- Facebook Page screenshot
+- Weekly engagement report template
+
+---
+
+## **LAB 25: LinkedIn Profile & Content Optimization**
+
+**Objective:** Transform LinkedIn profile for professional VA + create 30 days of content.
+
+**Scenario:** Create optimized profile for "Emma Thompson, Virtual Assistant."
+
+**Step 1: Profile Optimization (2 hours)**
+
+**Headline (220 characters max):**
+❌ "Virtual Assistant"
+✅ "Virtual Assistant for Busy Coaches & Consultants | I'll Manage Your Admin So You Can Focus on Growth | Email, Calendar, Social Media"
+
+**About Section (2,600 characters):**
+```
+Are you drowning in admin tasks while your business suffers?
+
+I'm Emma Thompson, and I help coaches and consultants reclaim 15-20 hours per week by handling everything from email management to social media.
+
+YOUR PROBLEM:
+You started your business to help people, not spend hours on admin. But every day, you're buried in emails, calendar chaos, and social media you never get around to posting.
+
+MY SOLUTION:
+I take it ALL off your plate. Email management. Calendar coordination. Social Media scheduling. CRM updates. Travel booking. Whatever steals your time.
+
+WHAT MAKES ME DIFFERENT:
+✅ 5+ years supporting coaches & consultants specifically
+✅ T21 Certified Virtual Assistant Professional
+✅ Proactive (I solve problems before you know they exist)
+✅ UK-based (same timezone, no language barriers)
+✅ System builder (I create SOPs so nothing falls through cracks)
+
+CLIENT RESULTS:
+📈 Sarah (Life Coach): Saved 18 hours/week, grew client base 40%
+📈 James (Business Consultant): Reclaimed evenings/weekends, revenue up 55%
+📈 Lisa (Marketing Agency): Scaled from solo to 5-person team
+
+HOW WE WORK:
+1. Discovery Call (30 min, free) - understand your needs
+2. Onboarding Week - audit systems, create SOPs
+3. Ongoing Support - daily admin, weekly check-ins, monthly reports
+
+RATES:
+£30-£45/hour | Retainer packages available
+
+READY TO GET YOUR TIME BACK?
+📧 emma@example.com
+📅 Book free consultation: [calendly link]
+
+Let's chat!
+```
+
+**Experience Section:**
+- Add 3 previous roles with achievements
+- Use bullet points with metrics
+- Include keywords for search
+
+**Featured Section:**
+- Portfolio PDF
+- Client testimonials
+- Case studies
+
+**Skills Section:**
+- Add 20+ relevant skills
+- Request endorsements
+
+**Step 2: 30 LinkedIn Posts (3 hours)**
+
+**Create 30 posts across formats:**
+
+**POST 1: Personal Story**
+"I used to work 60-hour weeks.
+
+Then I learned to say no.
+
+Here's what changed..."
+
+**POST 2: Tips List**
+"5 email management hacks that save me 10 hours/week:
+
+1. [Hack]
+2. [Hack]..."
+
+**POST 3: Carousel (PDF)**
+"10 Tools Every VA Needs in 2024"
+(Design 10-slide carousel)
+
+**POST 4: Poll**
+"What's your biggest time drain?
+- Email
+- Meetings
+- Social media
+- Admin tasks"
+
+**POST 5: Client Win**
+"My client just landed a £50K contract.
+
+Not because of me.
+
+But because I freed up 20 hours of her week to focus on sales..."
+
+**Mix:**
+- 10 personal stories
+- 8 tips/advice
+- 5 client results
+- 4 industry insights
+- 3 carousels
+
+**Step 3: Engagement Strategy (1 hour)**
+
+**Daily routine:**
+- 8:00 AM: Comment on 10 posts (target audience)
+- 9:00 AM: Publish post
+- 12:00 PM: Respond to comments
+- 5:00 PM: Send 5 connection requests (personalized messages)
+
+**Weekly:**
+- Monday: Send 10 value-first DMs
+- Wednesday: Publish article (long-form)
+- Friday: Engage with top connections
+
+**Deliverable:**
+- Optimized LinkedIn profile (before/after screenshots)
+- 30 LinkedIn posts (written)
+- 3 carousels (designed in Canva)
+- Engagement strategy doc
+- Connection request templates (5 variations)
+
+---
+
+## **LAB 26: TikTok Content Creation Challenge**
+
+**Objective:** Create 10 TikTok videos for VA niche.
+
+**Scenario:** "VA Life with Emma" - grow account to 1,000 followers.
+
+**Step 1: Account Setup (30 min)**
+1. Create TikTok account
+2. Profile optimization:
+   - Bio: "VA showing you how to make £3K/month working from home | Tips & real talk | UK 🇬🇧"
+   - Link: to website/LinkedIn
+3. Study 10 successful VA TikToks
+
+**Step 2: 10 Video Scripts (3 hours)**
+
+**VIDEO 1: "Day in the Life"**
+```
+Hook (0-3 sec): "6AM: Day in my life as a £3K/month VA"
+- 6:00 AM: Morning routine
+- 8:00 AM: Check emails
+- 9:00 AM: Client meeting
+- 11:00 AM: Social media scheduling
+- 1:00 PM: Lunch break
+- 2:00 PM: Content creation
+- 5:00 PM: Done for the day!
+CTA: "Follow for VA tips!"
+
+Audio: Trending sound
+Text overlays: Each timestamp
+Length: 30 seconds
+```
+
+**VIDEO 2: "3 Things I Wish I Knew"**
+```
+Hook: "3 things I wish I knew before becoming a VA"
+1. You'll work more than you think (set boundaries!)
+2. Not all clients are good clients (red flags matter)
+3. You can charge £40/hour (don't undervalue!)
+CTA: "Save this!"
+```
+
+**VIDEO 3: "Tools I Use Daily"**
+```
+Hook: "Tools that help me manage 5 clients"
+- Gmail (show inbox zero)
+- Asana (show project board)
+- Canva (show design)
+- Toggl (show time tracking)
+CTA: "Which one do you use?"
+```
+
+**Continue for 10 videos:** Tips, BTS, client wins, mistakes, Q&A, trends
+
+**Step 3: Film 3 Videos (2 hours)**
+
+Using smartphone:
+- Good lighting (natural or ring light)
+- Clean background
+- Clear audio
+- Vertical format (9:16)
+
+**Step 4: Edit (1.5 hours)**
+
+Use CapCut (free):
+- Add text overlays
+- Trending audio
+- Transitions
+- Effects
+- Captions
+
+**Step 5: Posting Strategy (30 min)**
+
+**Best times:**
+- 7-9 AM (morning commute)
+- 12-2 PM (lunch break)
+- 7-10 PM (evening scroll)
+
+**Hashtag strategy:**
+- 3-5 per video
+- Mix: #VirtualAssistant #WorkFromHomeUK #VAlife #SideHustle2024
+
+**Deliverable:**
+- 10 TikTok scripts
+- 3 filmed & edited videos (uploaded to TikTok)
+- Posting schedule (when to post each)
+- Engagement plan (how to grow)
+- Analytics plan (what to track)
+
+---
+
+## **LAB 27: Pinterest for E-commerce**
+
+**Objective:** Set up Pinterest strategy for e-commerce client.
+
+**Scenario:** "Handmade Jewelry Co." needs Pinterest traffic to Shopify store.
+
+**Step 1: Pinterest Business Account (30 min)**
+1. Create Pinterest Business account
+2. Claim website (verify domain)
+3. Set up Rich Pins
+4. Profile optimization
+
+**Step 2: Board Creation (1 hour)**
+
+**Create 10 boards:**
+- Handmade Jewelry Ideas (500+ pins target)
+- Necklace Styles (400+ pins)
+- Bracelet Inspiration (400+ pins)
+- Earring Designs (400+ pins)
+- Ring Collections (300+ pins)
+- Gift Ideas for Her (400+ pins)
+- Jewelry Care Tips (200+ pins)
+- Wedding Jewelry (300+ pins)
+- Everyday Jewelry (300+ pins)
+- Jewelry Making (For DIY audience - 300+ pins)
+
+**Step 3: Pin Design (3 hours)**
+
+**Create 30 pins (3 per product):**
+
+**Pin Format (1000x1500 px):**
+- High-quality product photo
+- Text overlay: "Handmade Rose Gold Necklace"
+- Price: "£45"
+- Brand watermark
+- Call to action: "Shop Now"
+
+**Use Canva templates:**
+- Product showcase pins
+- Lifestyle pins (model wearing)
+- Flat lay pins (styled photos)
+
+**Step 4: Pin Descriptions (2 hours)**
+
+**Write SEO-optimized descriptions:**
+```
+Handmade Rose Gold Necklace | Minimalist Jewelry | UK
+
+Beautiful handmade rose gold necklace perfect for everyday wear. Delicate and elegant design made with high-quality materials.
+
+✨ Features:
+• 18K rose gold plated
+• Adjustable 16"-18" chain
+• Hypoallergenic
+• Gift-ready packaging
+• Free UK shipping over £30
+
+Perfect for: Birthdays, anniversaries, weddings, bridesmaids, or treating yourself!
+
+#HandmadeJewelry #RoseGoldNecklace #MinimalistJewelry #UKJewelry #GiftForHer
+
+Shop now: [URL]
+```
+
+**Step 5: Pinning Schedule (30 min)**
+
+**Daily pinning plan:**
+- Morning (9 AM): Pin 5 own products
+- Afternoon (2 PM): Repin 5 relevant pins
+- Evening (7 PM): Pin 5 more own products
+
+**Weekly: 105 pins (15/day × 7)**
+
+**Step 6: Analytics Setup (30 min)**
+
+Track:
+- Impressions
+- Saves
+- Clicks to website
+- Top pins
+- Audience demographics
+
+**Deliverable:**
+- Pinterest Business account (live)
+- 10 boards created
+- 30 pins designed
+- 30 pin descriptions written
+- 30-day pinning schedule
+- Analytics dashboard screenshot
+
+---
+
+**🎉 UNIT 5 LABS COMPLETE!**
+
+You're now a social media expert earning £400-£2K/month per client!
+""")
+        
+        elif lab_unit == "Unit 6 Labs: Project Management (5 labs)":
+            st.markdown("""
+### **Unit 6 Labs: Project Management (5 Labs)**
+
+Coordinate projects like Fortune 500 companies!
+
+---
+
+## **LAB 28: Complete Asana Project Setup**
+
+**Objective:** Build full project management system in Asana from scratch.
+
+**Scenario:** "Website Redesign for TechStart Ltd" - 6-week project, 5 team members, £10K budget.
+
+**Step 1: Project Charter (1 hour)**
+
+**Create in Google Docs:**
+```
+PROJECT CHARTER: TechStart Website Redesign
+
+CLIENT: TechStart Ltd
+PROJECT MANAGER: [Your Name]
+START DATE: [Date]
+END DATE: [6 weeks later]
+BUDGET: £10,000
+
+PROJECT OBJECTIVES:
+1. Redesign 10-page website
+2. Improve mobile responsiveness
+3. Integrate new CRM
+4. Increase page load speed by 50%
+5. Launch by [date]
+
+SUCCESS CRITERIA:
+- 100% mobile responsive
+- Load time <2 seconds
+- Client approval on all designs
+- Zero downtime during launch
+- Under budget
+
+TEAM:
+- Project Manager: You
+- Designer: Sarah
+- Developer: James
+- Content Writer: Emma
+- QA Tester: Mike
+
+ASSUMPTIONS:
+- Client provides content by Week 2
+- Domain/hosting access immediately
+- Designer availability full-time
+
+RISKS:
+- Client delays on approvals
+- Technical issues with CRM
+- Scope creep
+
+OUT OF SCOPE:
+- E-commerce functionality
+- Blog migration
+- SEO optimization
+```
+
+**Step 2: Asana Setup (2 hours)**
+
+**Create project in Asana with 6 sections:**
+
+**SECTION 1: Discovery (Week 1)**
+```
+☐ Kickoff meeting with client
+  Assignee: You | Due: Day 1 | Priority: High
+  Subtasks:
+  - Prepare agenda
+  - Send calendar invite
+  - Book Zoom room
+  
+☐ Competitor research
+  Assignee: Designer | Due: Day 3
+  
+☐ Gather brand assets
+  Assignee: Client | Due: Day 5
+  
+☐ Content audit
+  Assignee: Content Writer | Due: Day 5
+```
+
+**SECTION 2: Design (Week 2-3)**
+```
+☐ Wireframes (10 pages)
+  Assignee: Designer | Due: Week 2 Friday
+  Dependencies: Discovery complete
+  
+☐ Client feedback on wireframes
+  Assignee: Client | Due: Week 3 Monday
+  
+☐ High-fidelity mockups
+  Assignee: Designer | Due: Week 3 Friday
+  Dependencies: Wireframes approved
+```
+
+**SECTION 3: Development (Week 4-5)**
+**SECTION 4: Content (Week 2-4)**
+**SECTION 5: Testing (Week 5)**
+**SECTION 6: Launch (Week 6)**
+
+**Step 3: Timeline View (30 min)**
+- Set all dependencies
+- Identify critical path
+- Flag bottlenecks
+- Export Gantt chart
+
+**Step 4: Dashboard (45 min)**
+
+Create custom dashboard showing:
+- Tasks by assignee
+- Tasks by status
+- Upcoming deadlines
+- Blocked tasks
+- Budget tracker
+
+**Step 5: Automation (30 min)**
+
+**Set up 3 rules:**
+1. When task moved to "Done" → Notify PM
+2. When due date approaches → Send reminder 2 days before
+3. When task blocked → Auto-assign to PM
+
+**Deliverable:**
+- Project charter (PDF)
+- Complete Asana project (50+ tasks)
+- Timeline with dependencies
+- Dashboard screenshot
+- Automation rules
+
+---
+
+## **LAB 29: Team Coordination Simulation**
+
+**Objective:** Manage team for 2-week sprint with daily standups and weekly reviews.
+
+**Scenario:** You're managing 4-person team on marketing campaign.
+
+**Step 1: Set Up Communication (1 hour)**
+
+**Create Slack workspace:**
+- #general
+- #project-updates
+- #random
+- Direct messages
+
+**OR Google Chat spaces**
+
+**Communication Guidelines Doc:**
+```
+TEAM COMMUNICATION PROTOCOL
+
+URGENT (Response within 1 hour):
+- 📞 Phone call
+- 💬 Slack DM with @mention
+
+IMPORTANT (Same day):
+- Slack message
+- Email with HIGH priority
+
+NORMAL (Within 24 hours):
+- Email
+- Asana comment
+
+STANDUP FORMAT:
+Daily at 9:00 AM GMT (15 min max)
+1. What did you accomplish yesterday?
+2. What will you work on today?
+3. Any blockers?
+
+WEEKLY REVIEW:
+Fridays at 4:00 PM GMT (60 min)
+- Week's achievements
+- Challenges faced
+- Next week's priorities
+- Team feedback
+```
+
+**Step 2: 2-Week Sprint Plan (2 hours)**
+
+**Create in Excel/Sheets:**
+
+**Week 1 Schedule:**
+```
+MONDAY:
+9:00 AM - Daily Standup
+10:00 AM - Sarah: Social media graphics (4 hours)
+10:00 AM - James: Email campaign copy (3 hours)
+2:00 PM - Emma: Landing page design (4 hours)
+3:00 PM - You: Client check-in call (30 min)
+
+TUESDAY:
+[Similar format]
+
+WEDNESDAY:
+[Mid-week review - 30 min]
+
+THURSDAY-FRIDAY:
+[Continue]
+```
+
+**Step 3: Daily Standup Notes (10 days)**
+
+**Document 10 daily standups:**
+
+**Day 1 Standup:**
+```
+DATE: Monday, Jan 15
+
+SARAH (Designer):
+✅ Yesterday: Completed brand guidelines
+🎯 Today: Create 5 social media graphics
+🚫 Blockers: Need final logo from client
+
+JAMES (Copywriter):
+✅ Yesterday: Outlined email sequence
+🎯 Today: Write 3 emails
+🚫 Blockers: None
+
+EMMA (Developer):
+✅ Yesterday: Set up staging environment
+🎯 Today: Build landing page header
+🚫 Blockers: None
+
+YOU (PM):
+✅ Yesterday: Kickoff meeting with team
+🎯 Today: Chase client for logo, review Sarah's work
+🚫 Blockers: Waiting on client deliverables
+
+ACTION ITEMS:
+- You: Email client about logo (by 12pm)
+- Sarah: Proceed with placeholder logo
+- James: Send first draft by 3pm for review
+```
+
+**Continue for Days 2-10** with realistic scenarios:
+- Day 3: Team member sick
+- Day 5: Client requests changes
+- Day 7: Scope creep discussion
+- Day 9: Behind schedule, need to adjust
+
+**Step 4: Weekly Review (2 meetings)**
+
+**Week 1 Review Template:**
+```
+WEEK 1 REVIEW - Jan 19, 4:00 PM
+
+ACHIEVEMENTS:
+✅ 5 social media graphics completed
+✅ Email sequence drafted (3 emails)
+✅ Landing page 60% complete
+✅ Client approved all designs
+
+CHALLENGES:
+⚠️ Logo delayed by 2 days
+⚠️ James was sick Wednesday (lost 1 day)
+⚠️ Landing page more complex than estimated
+
+METRICS:
+- Tasks completed: 12/15 (80%)
+- Budget used: £2,000/£10,000 (20%)
+- Timeline: On track
+
+NEXT WEEK PRIORITIES:
+1. Complete landing page
+2. Write remaining 2 emails
+3. Set up email automation
+4. QA testing begins
+
+TEAM FEEDBACK:
+Sarah: "Need more lead time for complex graphics"
+James: "Email templates would speed up writing"
+Emma: "Client feedback turnaround is slow"
+
+ACTIONS:
+- You: Create template library
+- You: Set client SLA (48hr feedback)
+- Team: Buffer day added to timeline
+```
+
+**Deliverable:**
+- Communication protocol doc
+- 2-week sprint schedule (Excel)
+- 10 daily standup notes
+- 2 weekly review notes
+- Team feedback summary
+- Lessons learned (1 page)
+
+---
+
+## **LAB 30: Project Risk Management Plan**
+
+**Objective:** Identify and mitigate risks for high-stakes project.
+
+**Scenario:** "Product Launch Campaign" - £50K budget, 8-week timeline, executive visibility.
+
+**Step 1: Risk Identification (2 hours)**
+
+**Brainstorm 20 risks:**
+
+**Technical Risks:**
+1. Website crashes on launch day
+2. Payment gateway integration fails
+3. Email server issues
+4. Mobile app bugs
+
+**Resource Risks:**
+5. Key team member quits
+6. Designer overbooked
+7. Budget overrun
+8. Vendor delays
+
+**External Risks:**
+9. Competitor launches first
+10. Market conditions change
+11. Regulatory changes
+12. Pandemic/lockdown
+
+**Client Risks:**
+13. Stakeholder disagreements
+14. Approval delays
+15. Scope creep
+16. Budget cuts
+
+**Timeline Risks:**
+17. Underestimated complexity
+18. Dependencies delay
+19. Holiday slowdowns
+20. Last-minute changes
+
+**Step 2: Risk Assessment Matrix (1 hour)**
+
+**Create spreadsheet:**
+
+| Risk # | Description | Probability (1-5) | Impact (1-5) | Score | Priority |
+|--------|-------------|-------------------|--------------|-------|----------|
+| 1 | Website crashes | 3 | 5 | 15 | HIGH |
+| 2 | Payment gateway fails | 2 | 5 | 10 | MEDIUM |
+| ... | | | | | |
+
+**Risk Score = Probability × Impact**
+- 15-25: HIGH (Address immediately)
+- 8-14: MEDIUM (Monitor closely)
+- 1-7: LOW (Accept)
+
+**Step 3: Mitigation Strategies (2 hours)**
+
+**For each HIGH risk, create plan:**
+
+**RISK 1: Website Crashes on Launch Day**
+```
+PROBABILITY: 3/5 (Medium)
+IMPACT: 5/5 (Critical - would lose sales, damage reputation)
+SCORE: 15 (HIGH PRIORITY)
+
+PREVENTION (Before it happens):
+1. Load testing 2 weeks before launch (simulate 10X traffic)
+2. CDN setup (Cloudflare) for distributed load
+3. Backup server on standby
+4. Database optimization
+5. Monitoring alerts set up
+
+MITIGATION (If it happens):
+1. Activate backup server within 5 minutes
+2. Display "maintenance" page with ETA
+3. Redirect to social media announcement
+4. Process orders manually via email
+5. Email customers with update + discount code
+
+CONTINGENCY BUDGET: £2,000 (4% of total)
+OWNER: Technical Lead
+REVIEW: Weekly until launch
+
+SUCCESS CRITERIA:
+- Load test passed at 10X capacity
+- Backup server tested successfully
+- Recovery plan tested (disaster drill)
+```
+
+**Create full plans for top 10 risks.**
+
+**Step 4: Risk Register (1 hour)**
+
+**Create live tracking document:**
+
+```
+PROJECT RISK REGISTER
+Updated: Weekly
+Owner: Project Manager
+
+| Risk ID | Status | Last Review | Next Action | Notes |
+|---------|--------|-------------|-------------|-------|
+| R001 | OPEN | Jan 15 | Load test scheduled Jan 20 | CDN set up complete |
+| R002 | CLOSED | Jan 10 | Testing passed | Risk eliminated |
+| R003 | MONITORING | Jan 14 | Weekly check-in | Probability decreased to 1/5 |
+```
+
+**Step 5: Risk Response Plan (1 hour)**
+
+**Create decision tree:**
+
+```
+IF Website Crashes:
+↓
+Is backup server ready?
+├─ YES → Activate backup (5 min)
+└─ NO → Contact hosting emergency (15 min)
+    ↓
+    Did it work?
+    ├─ YES → Monitor closely
+    └─ NO → Escalate to CTO
+        ↓
+        Activate disaster recovery protocol
+```
+
+**Deliverable:**
+- Risk identification list (20 risks)
+- Risk assessment matrix (spreadsheet)
+- Mitigation plans (top 10 risks, detailed)
+- Risk register (tracking doc)
+- Risk response flowchart
+
+---
+
+## **LAB 31: Project Budget Tracking**
+
+**Objective:** Track project budget with actual vs. planned spending.
+
+**Scenario:** "Annual Conference Planning" - £25K budget, 3-month timeline.
+
+**Step 1: Budget Template (1 hour)**
+
+**Create Excel/Sheets:**
+
+```
+ANNUAL CONFERENCE BUDGET TRACKER
+
+TOTAL BUDGET: £25,000
+CONTINGENCY: £2,500 (10%)
+WORKING BUDGET: £22,500
+
+BUDGET BREAKDOWN:
+
+CATEGORY 1: VENUE & CATERING (40% = £10,000)
+| Item | Planned | Actual | Variance | Status |
+|------|---------|--------|----------|--------|
+| Venue rental | £4,000 | £4,200 | -£200 | Over |
+| Catering (100 people) | £3,500 | £3,500 | £0 | On budget |
+| AV equipment | £1,500 | £1,200 | +£300 | Under |
+| Furniture rental | £1,000 | £900 | +£100 | Under |
+| SUBTOTAL | £10,000 | £9,800 | +£200 | Under |
+
+CATEGORY 2: SPEAKERS & ENTERTAINMENT (25% = £6,250)
+[Similar format]
+
+CATEGORY 3: MARKETING (15% = £3,750)
+[Similar format]
+
+CATEGORY 4: STAFF & LOGISTICS (15% = £3,750)
+[Similar format]
+
+CATEGORY 5: MISCELLANEOUS (5% = £1,250)
+[Similar format]
+
+SUMMARY:
+Total Planned: £22,500
+Total Actual: [Calculate]
+Variance: [Calculate]
+Remaining Budget: [Calculate]
+% Used: [Calculate]
+```
+
+**Step 2: Track 50 Transactions (2 hours)**
+
+**Enter realistic expenses:**
+
+**Week 1-4 (Planning Phase):**
+- Venue deposit: £1,000
+- Design agency: £800
+- Domain registration: £12
+- Email platform: £50/month
+- Project management tool: £30/month
+
+**Week 5-8 (Execution Phase):**
+- Venue final payment: £3,200
+- Speaker fees: £2,500
+- Catering deposit: £1,750
+- Marketing ads: £1,200
+- Printing: £450
+
+**Week 9-12 (Final Phase):**
+- Catering final: £1,750
+- AV equipment: £1,200
+- Staff costs: £2,000
+- Miscellaneous: £600
+
+**Step 3: Variance Analysis (1 hour)**
+
+**For each category over/under, explain why:**
+
+**Venue & Catering: £200 over budget**
+```
+VARIANCE ANALYSIS:
+
+ISSUE: Venue rental was £200 more than quoted
+CAUSE: Initial quote didn't include setup/cleanup fees
+IMPACT: Minor (0.8% of total budget)
+
+CORRECTIVE ACTION:
+- Negotiated free AV equipment (saved £300)
+- Net impact: £100 under budget for category
+
+LESSONS LEARNED:
+- Always get itemized quotes
+- Factor in hidden fees (setup, cleaning, insurance)
+- Build 10% buffer per line item
+
+FUTURE PREVENTION:
+- Request all-inclusive quote
+- Site visit to discuss all fees
+- Get quote in writing with breakdown
+```
+
+**Step 4: Cash Flow Forecast (1 hour)**
+
+**Project when money is needed:**
+
+```
+CASH FLOW FORECAST
+
+MONTH 1 (Planning):
+Planned Outflow: £3,500
+Expected: Deposits, initial contracts
+Cash Reserve Needed: £5,000
+
+MONTH 2 (Execution):
+Planned Outflow: £12,000
+Expected: Major payments (venue, speakers, catering)
+Cash Reserve Needed: £15,000
+
+MONTH 3 (Final):
+Planned Outflow: £7,000
+Expected: Final payments, contingencies
+Cash Reserve Needed: £10,000
+
+CRITICAL DATES:
+- Jan 15: Venue deposit due (£1,000)
+- Feb 1: Speaker contracts due (£2,500)
+- Feb 15: Marketing launch (£1,200)
+- Mar 1: Catering deposit (£1,750)
+- Mar 15: Final payments (£5,000)
+```
+
+**Step 5: Budget Report (30 min)**
+
+**Create executive summary:**
+
+```
+BUDGET STATUS REPORT - Week 8
+
+PROJECT: Annual Conference
+TOTAL BUDGET: £25,000
+CONTINGENCY: £2,500
+
+CURRENT STATUS:
+✅ Spent to Date: £15,200 (61% of working budget)
+✅ Committed: £4,800 (19%)
+✅ Remaining: £5,000 (20%)
+✅ Contingency: £2,500 (untouched)
+
+FORECAST:
+- Expected Final Cost: £23,800
+- Under Budget: £1,200 (5%)
+- Confidence Level: High
+
+TOP 3 VARIANCES:
+1. Venue: +£200 over (offset by AV savings)
+2. Marketing: -£300 under (better vendor found)
+3. Staff: On budget
+
+RISKS TO BUDGET:
+⚠️ Last-minute attendee increase (could add £500 catering)
+⚠️ Technical issues on day (£500 contingency earmarked)
+
+RECOMMENDATION:
+Project on track financially. Recommend keeping full contingency until event day.
+```
+
+**Deliverable:**
+- Budget tracking spreadsheet (50 transactions)
+- Variance analysis (all categories)
+- Cash flow forecast
+- Executive budget report
+- Lessons learned document
+
+---
+
+## **LAB 32: Project Closure & Retrospective**
+
+**Objective:** Complete professional project closure with full documentation.
+
+**Scenario:** "E-commerce Website Launch" project just completed.
+
+**Step 1: Final Deliverables Checklist (1 hour)**
+
+**Create comprehensive checklist:**
+
+```
+PROJECT CLOSURE CHECKLIST
+
+CLIENT DELIVERABLES:
+☐ Live website (URL: ___)
+☐ Admin login credentials
+☐ User manual (PDF)
+☐ Training video (20 min)
+☐ Source code repository access
+☐ Design files (Figma/Adobe)
+☐ Content management guide
+☐ SEO optimization report
+☐ Analytics setup & dashboard
+☐ Maintenance recommendations
+
+INTERNAL DELIVERABLES:
+☐ Final project report
+☐ Budget reconciliation
+☐ Time tracking summary
+☐ Lessons learned document
+☐ Client testimonial
+☐ Case study for portfolio
+☐ Team feedback collected
+☐ Vendor invoices paid
+☐ Contracts closed
+☐ Files archived
+
+FINANCIAL CLOSURE:
+☐ Final invoice sent
+☐ Payment received
+☐ Expenses reconciled
+☐ Budget variance explained
+☐ Profit/loss calculated
+
+ADMINISTRATIVE:
+☐ Project status: CLOSED
+☐ All tasks marked complete
+☐ Asana/PM tool archived
+☐ Slack channels archived
+☐ Files backed up
+☐ Access revoked (if applicable)
+```
+
+**Step 2: Project Report (3 hours)**
+
+**Create comprehensive final report:**
+
+```
+FINAL PROJECT REPORT
+E-Commerce Website Launch
+Project Manager: [Your Name]
+Date: [Date]
+
+EXECUTIVE SUMMARY:
+Project completed on time and under budget. Website launched successfully with zero downtime. Client extremely satisfied (9/10 rating).
+
+PROJECT OVERVIEW:
+Start Date: October 1, 2024
+End Date: December 15, 2024
+Duration: 11 weeks (planned: 12 weeks)
+Budget: £18,500 (planned: £20,000)
+Team: 5 members
+
+OBJECTIVES ACHIEVED:
+✅ Launch 50-product e-commerce site
+✅ Integrate Stripe payment gateway
+✅ Mobile-responsive design
+✅ Page load time <2 seconds
+✅ Zero downtime during launch
+✅ Client trained on CMS
+
+KEY DELIVERABLES:
+1. Live website (shopname.com)
+2. 50 products uploaded with SEO
+3. Payment processing live
+4. Email automation set up
+5. Analytics & reporting dashboard
+6. Admin training completed
+
+TIMELINE PERFORMANCE:
+- Planned Duration: 12 weeks
+- Actual Duration: 11 weeks
+- Variance: 1 week early ✅
+
+Reasons for early completion:
+- Designer delivered ahead of schedule
+- No major client revisions
+- Efficient team coordination
+
+BUDGET PERFORMANCE:
+- Planned Budget: £20,000
+- Actual Spent: £18,500
+- Variance: £1,500 under budget (7.5%) ✅
+
+Breakdown:
+- Design: £5,000 (planned £6,000) - £1,000 under
+- Development: £9,500 (planned £10,000) - £500 under
+- Content: £2,000 (planned £2,000) - On budget
+- Testing: £1,500 (planned £1,500) - On budget
+- PM & Admin: £500 (planned £500) - On budget
+
+QUALITY METRICS:
+- Client Satisfaction: 9/10
+- Page Load Speed: 1.8 seconds (target: <2s) ✅
+- Mobile Score: 95/100 ✅
+- SEO Score: 88/100 ✅
+- Bug Count at Launch: 2 minor (fixed within 24 hours)
+
+CHALLENGES & RESOLUTIONS:
+1. Challenge: Payment gateway integration complex
+   Resolution: Hired Stripe specialist (£500)
+   
+2. Challenge: Client delayed product photos by 1 week
+   Resolution: Used stock photos temporarily, replaced later
+   
+3. Challenge: Server capacity concerns
+   Resolution: Upgraded hosting plan (£50/month)
+
+LESSONS LEARNED:
+✅ What Went Well:
+- Early design approval saved time
+- Daily standups kept team aligned
+- Buffer time prevented stress
+- Clear communication with client
+
+⚠️ What Could Improve:
+- Better initial requirements gathering
+- More realistic time estimates for integration
+- Earlier load testing
+- Client content deadline enforcement
+
+RECOMMENDATIONS:
+1. Ongoing website maintenance (£300/month suggested)
+2. Monthly SEO optimization
+3. Quarterly design updates
+4. Regular security updates
+5. Performance monitoring
+
+NEXT STEPS:
+- 30-day post-launch support included
+- Training follow-up in 2 weeks
+- Check-in calls monthly (3 months)
+- Case study creation for portfolio
+
+CLIENT TESTIMONIAL:
+"Working with [Your Name] was amazing! The website exceeded our expectations and the team was professional throughout. Highly recommend!" - Client Name, CEO
+
+FINAL STATUS: ✅ PROJECT SUCCESSFULLY CLOSED
+```
+
+**Step 3: Team Retrospective (2 hours)**
+
+**Conduct retrospective meeting:**
+
+**Retrospective Format:**
+
+```
+PROJECT RETROSPECTIVE
+Date: [Date]
+Attendees: Full team (5 people)
+Duration: 90 minutes
+
+PART 1: WHAT WENT WELL? (20 min)
+[Each team member shares 2-3 things]
+
+Sarah (Designer):
+- "Client gave clear feedback, made revisions easy"
+- "Design tools upgraded, worked faster"
+- "Team respected my creative process"
+
+James (Developer):
+- "Good documentation from designer"
+- "Daily standups kept me unblocked"
+- "PM shielded me from scope creep"
+
+[Continue for all team members]
+
+PART 2: WHAT DIDN'T GO WELL? (20 min)
+[Honest feedback, no blame]
+
+Sarah:
+- "Initial brief lacked detail, caused rework"
+- "Last-minute client changes stressful"
+
+James:
+- "Testing environment issues week 3"
+- "Unclear requirements for payment flow"
+
+PART 3: WHAT SHOULD WE START DOING? (15 min)
+- More detailed project briefs
+- Buffer days for client delays
+- Load testing earlier in process
+- Weekly client check-ins (not bi-weekly)
+- Use design system/component library
+
+PART 4: WHAT SHOULD WE STOP DOING? (15 min)
+- Stop accepting vague requirements
+- Stop scheduling back-to-back meetings
+- Stop working weekends (better planning)
+- Stop using email for urgent issues (use Slack)
+
+PART 5: WHAT SHOULD WE KEEP DOING? (15 min)
+- Daily standups
+- Transparent budget tracking
+- Celebrating small wins
+- Clear role definitions
+- Using project management tool religiously
+
+ACTION ITEMS:
+☐ PM: Create detailed brief template (by next project)
+☐ PM: Build buffer time into all future timelines
+☐ Dev: Set up testing environment Day 1 (not Week 2)
+☐ Team: Implement design system for next project
+☐ PM: Weekly client check-ins (add to SOP)
+
+RATING:
+How did you feel about this project? (1-10)
+- Sarah: 9/10
+- James: 8/10
+- Emma: 9/10
+- Mike: 8/10
+- You: 9/10
+Average: 8.6/10 ✅
+```
+
+**Step 4: Client Handoff (1 hour)**
+
+**Create handoff package:**
+
+```
+CLIENT HANDOFF PACKAGE
+
+INCLUDED IN THIS PACKAGE:
+
+1. WEBSITE ACCESS:
+   - Admin URL: website.com/admin
+   - Username: admin@company.com
+   - Password: [provided separately]
+   - Two-factor auth set up
+
+2. DOCUMENTATION:
+   - User Manual (45 pages PDF)
+   - Video Tutorials (5 videos, 60 min total)
+   - FAQ Document (25 common questions)
+   - Troubleshooting Guide
+
+3. TRAINING:
+   - Training session completed: Dec 10, 2024
+   - Recorded training video provided
+   - Follow-up training: Available anytime
+
+4. SUPPORT:
+   - 30 days free support (until Jan 15, 2025)
+   - Email: support@yourcompany.com
+   - Response time: Within 24 hours
+   - After 30 days: £75/hour support available
+
+5. MAINTENANCE RECOMMENDATIONS:
+   - Software updates: Monthly
+   - Security updates: Immediately
+   - Content updates: Weekly
+   - Performance review: Quarterly
+   - Suggested maintenance plan: £300/month
+
+6. ACCOUNTS & SUBSCRIPTIONS:
+   - Domain: renewed until 2025 (auto-renew ON)
+   - Hosting: £25/month (paid until March 2025)
+   - SSL Certificate: Auto-renewing
+   - Email service: £10/month (100 contacts)
+   - Analytics: Free Google Analytics
+
+7. BACKUPS:
+   - Automatic daily backups enabled
+   - Backup location: [hosting provider]
+   - Retention: 30 days
+   - Manual backup guide included
+
+8. CONTACTS:
+   - Hosting support: support@hostingprovider.com
+   - Domain registrar: registrar.com/support
+   - Payment processor: stripe.com/support
+   - Emergency contact: [Your phone]
+
+RECOMMENDED NEXT STEPS:
+☐ Week 1: Monitor site daily, report any issues
+☐ Week 2: Start adding new products
+☐ Week 4: Review analytics, identify improvements
+☐ Month 2: SEO optimization based on data
+☐ Month 3: Consider paid advertising
+
+Thank you for choosing [Your Company]!
+We're here if you need anything.
+```
+
+**Step 5: Archive & Portfolio (1 hour)**
+
+**Create case study:**
+
+```
+CASE STUDY: E-Commerce Website Launch
+
+CLIENT: [Company Name]
+INDUSTRY: Sustainable Home Goods
+PROJECT: Full E-commerce Website
+
+THE CHALLENGE:
+Client was selling on social media but losing sales due to unprofessional checkout process. Needed professional e-commerce site quickly for holiday season.
+
+THE SOLUTION:
+Built custom Shopify store with:
+- 50-product catalog
+- Secure payment processing
+- Mobile-responsive design
+- SEO optimization
+- Email automation
+
+THE PROCESS:
+- Week 1-2: Discovery & design
+- Week 3-6: Development
+- Week 7-9: Content & testing
+- Week 10-11: Training & launch
+
+THE RESULTS:
+✅ Launched 1 week early
+✅ 7.5% under budget
+✅ 9/10 client satisfaction
+✅ Zero downtime at launch
+✅ 1.8s average page load
+✅ 95/100 mobile score
+
+CLIENT TESTIMONIAL:
+"[Quote with client photo]"
+
+BEFORE & AFTER:
+[Screenshots showing improvement]
+
+SKILLS DEMONSTRATED:
+- Project management
+- Team coordination
+- Budget management
+- Client communication
+- Technical problem-solving
+
+VIEW LIVE SITE: [URL if allowed]
+```
+
+**Deliverable:**
+- Closure checklist (completed)
+- Final project report (10-15 pages)
+- Retrospective notes
+- Client handoff package
+- Case study for portfolio
+
+---
+
+**🎉 UNIT 6 LABS COMPLETE!**
+
+You can now manage projects like a Fortune 500 PM earning £40-£70/hour!
+""")
+        
+        elif lab_unit == "Unit 7 Labs: Client Acquisition (6 labs)":
+            st.markdown("""
+### **Unit 7 Labs: Client Acquisition (6 Labs)**
+
+Land your first 3-5 clients in 30 days!
+
+---
+
+## **LAB 33: Upwork Profile Optimization**
+
+**Objective:** Create 100% complete Upwork profile that wins clients.
+
+**Step 1: Profile Setup (2 hours)**
+
+**Profile Photo:**
+- Professional headshot
+- Neutral background
+- Smiling, approachable
+- High resolution
+
+**Title (100 characters):**
+❌ "Virtual Assistant"
+✅ "UK Virtual Assistant | Email, Calendar & Social Media Management | Save 15+ Hours/Week"
+
+**Overview (5,000 characters):**
+```
+Are you drowning in admin tasks? I'll help you reclaim your time.
+
+I'm [Your Name], a T21-Certified Virtual Assistant specializing in helping busy entrepreneurs and small business owners manage their admin so they can focus on growth.
+
+WHAT I DO:
+✅ Email Management (Inbox Zero system)
+✅ Calendar Coordination (No more double-bookings!)
+✅ Social Media Scheduling (Consistent posting)
+✅ Data Entry & Organization (Clean systems)
+✅ Travel Planning (Stress-free trips)
+✅ Customer Service (Happy clients)
+
+WHY CHOOSE ME:
+🇬🇧 UK-Based (Same timezone, no language barriers)
+⏰ Fast Response (Within 2 hours during business hours)
+🎓 T21 Certified Virtual Assistant Professional
+💼 5+ years admin experience
+🔒 GDPR Compliant
+📊 Proactive (I solve problems before you know they exist)
+
+MY PROCESS:
+1. Discovery Call (understand your needs)
+2. Trial Period (1-2 weeks to prove my value)
+3. Ongoing Support (consistent, reliable help)
+
+TOOLS I'M PROFICIENT IN:
+• Google Workspace (Gmail, Calendar, Drive, Docs, Sheets)
+• Microsoft Office (Word, Excel, PowerPoint, Outlook)
+• Asana, Trello, Monday.com (Project Management)
+• Canva (Design)
+• Hootsuite, Buffer, Later (Social Media)
+• Calendly, Acuity (Scheduling)
+• Slack, Teams, Zoom (Communication)
+• QuickBooks, Wave (Bookkeeping basics)
+
+AVAILABILITY:
+Monday-Friday, 9:00 AM - 5:00 PM GMT
+Flexible for urgent tasks
+
+Let's chat about how I can help you get your time back!
+
+Click "Hire Me" to start, or send a message to discuss your needs.
+```
+
+**Hourly Rate:**
+- Start: £20-£25/hour (build reviews)
+- After 5 reviews: £30-£40/hour
+- After 10 reviews: £40-£50/hour
+
+**Step 2: Portfolio (3 hours)**
+
+**Create 5 portfolio items:**
+
+**Portfolio 1: Email Management**
+- Before/After inbox screenshots
+- Description of organization system
+- Results: "Reduced inbox from 500 to 0 in 4 hours"
+
+**Portfolio 2: Social Media Calendar**
+- 30-day content calendar (Excel screenshot)
+- Sample posts (3 images)
+- "Created 30-day strategy for wellness coach"
+
+**Portfolio 3: Travel Itinerary**
+- Professional itinerary (PDF screenshot)
+- "Organized 7-day conference trip with 12 meetings"
+
+**Portfolio 4: Data Organization**
+- Spreadsheet before/after
+- "Organized 500 contacts in CRM"
+
+**Portfolio 5: Calendar Optimization**
+- Calendar screenshot (before/after)
+- "Optimized executive calendar, saved 5 hours/week"
+
+**Step 3: Skills & Tests (1 hour)**
+
+**Add 15+ skills:**
+- Virtual Assistance
+- Email Management
+- Calendar Management
+- Data Entry
+- Social Media Management
+- Customer Service
+- Administrative Support
+- Microsoft Office
+- Google Workspace
+- Project Coordination
+- Travel Planning
+- Executive Assistance
+- Communication Skills
+- Time Management
+- Problem Solving
+
+**Take Upwork Skills Tests:**
+- Email & Communication Skills (aim for 80%+)
+- Microsoft Office (aim for 80%+)
+- Customer Service (aim for 80%+)
+
+**Step 4: Proposal Templates (2 hours)**
+
+**Create 5 proposal templates:**
+
+**Template 1: General VA Services**
+```
+Hi [Client Name],
+
+I see you need help with [specific task from job posting]. I'd love to help!
+
+I'm a UK-based Virtual Assistant with [X] years experience in [relevant area]. I've helped clients just like you with [similar situation].
+
+WHAT I'LL DO FOR YOU:
+✅ [Task 1 from job posting]
+✅ [Task 2]
+✅ [Task 3]
+
+I use [tool they mentioned] daily and can start immediately.
+
+NEXT STEPS:
+Let's hop on a quick call to discuss your needs. I'm available [day/time].
+
+Looking forward to helping you reclaim your time!
+
+Best regards,
+[Your Name]
+
+P.S. Check out my portfolio to see similar projects I've completed.
+```
+
+**Create templates for:** Email management, Social media, Data entry, Customer service, General admin
+
+**Deliverable:**
+- Complete Upwork profile (screenshots)
+- 5 portfolio pieces
+- 15+ skills added
+- 3 skill tests passed
+- 5 proposal templates
+
+---
+
+## **LAB 34: Write 10 Winning Proposals**
+
+**Objective:** Submit 10 real proposals to real Upwork jobs.
+
+**Step 1: Job Search (1 hour)**
+
+**Search filters:**
+- Category: Admin Support > Virtual Assistant
+- Location: United Kingdom (or Worldwide)
+- Budget: £15-£40/hour
+- Experience: Entry Level or Intermediate
+- Proposals: Less than 20 (better chance!)
+
+**Find 10 jobs matching:**
+- Email management
+- Calendar coordination
+- Social media scheduling
+- Data entry
+- General admin support
+
+**Step 2: Research Each Client (2 hours)**
+
+**For each job, note:**
+- Client's industry: ___
+- Their pain point: ___
+- What they really need: ___
+- Tools they mention: ___
+- Budget/timeline: ___
+- Red flags (if any): ___
+
+**Step 3: Write Custom Proposals (3 hours)**
+
+**Winning proposal structure:**
+
+```
+HOOK (1-2 sentences):
+Grab attention with their specific pain point
+
+EMPATHY (1-2 sentences):
+Show you understand their situation
+
+CREDENTIALS (2-3 sentences):
+Why you're qualified (experience + tools)
+
+SOLUTION (3-4 bullet points):
+Exactly what you'll do for them
+
+SOCIAL PROOF (1 sentence):
+"I helped [similar client] achieve [result]"
+
+CALL TO ACTION (1 sentence):
+"Let's schedule a call to discuss"
+
+SIGN OFF:
+Professional signature
+```
+
+**Example:**
+
+```
+Subject: UK VA Ready to Organize Your Inbox Today
+
+Hi Sarah,
+
+I noticed you're drowning in 500+ emails and missing important messages. I can relate – that was my previous client before I implemented my Inbox Zero system.
+
+I'm [Your Name], a UK-based Virtual Assistant specializing in email management. I use Gmail daily and I'm proficient in filters, labels, and automation.
+
+HERE'S HOW I'LL HELP:
+✅ Organize inbox using priority system (Urgent/Important/Low)
+✅ Set up filters for automated sorting
+✅ Draft response templates for common inquiries
+✅ Achieve Inbox Zero within 4 hours
+
+I recently helped a marketing consultant reduce their inbox from 600 to 0 and maintain it at under 10 emails daily.
+
+Let's schedule a 15-minute call to discuss your specific needs. I'm available Tuesday or Wednesday afternoon.
+
+Looking forward to helping you regain control of your inbox!
+
+Best regards,
+[Your Name]
+T21 Certified Virtual Assistant
+[Contact info]
+```
+
+**Step 4: Submit Proposals (30 min)**
+
+Submit all 10 proposals:
+- Read job post 3 times
+- Customize each proposal
+- Attach relevant portfolio item
+- Set competitive rate (slightly below asking)
+- Send within 24 hours of job posting
+
+**Step 5: Track & Follow-Up (ongoing)**
+
+**Create tracking spreadsheet:**
+| Job Title | Client | Date Sent | Response | Interview | Hired | Notes |
+
+**Follow-up strategy:**
+- Day 3: If no response, view their profile (they'll see you viewed)
+- Day 7: Polite follow-up message (if allowed)
+- Day 14: Move on, keep searching
+
+**Deliverable:**
+- 10 submitted proposals (screenshots)
+- Client research notes
+- Proposal tracking spreadsheet
+- 2-3 client responses (goal)
+
+---
+
+## **LAB 35: Discovery Call Mastery**
+
+**Objective:** Conduct 3 discovery calls with potential clients.
+
+**Step 1: Discovery Call Script (2 hours)**
+
+**Complete 30-minute script:**
+
+```
+DISCOVERY CALL SCRIPT
+Duration: 30 minutes
+
+PART 1: OPENING (3 min)
+━━━━━━━━━━━━━━━━━━━━━━
+"Hi [Client]! Thanks for taking the time to chat today. I'm excited to learn more about your business and see if I can help.
+
+Before we dive in, I want to make sure we use our time well. My goal for today is to understand your current challenges and see if I'm a good fit to help. Sound good?"
+
+[Wait for confirmation]
+
+"Great! Tell me a bit about your business..."
+
+PART 2: DISCOVERY QUESTIONS (15 min)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BUSINESS UNDERSTANDING:
+1. "What does your business do?"
+2. "How long have you been in business?"
+3. "What's your role in the company?"
+
+PAIN POINTS:
+4. "What tasks are taking up most of your time right now?"
+5. "What frustrates you most about your daily admin?"
+6. "What would happen if you had an extra 10-15 hours per week?"
+
+CURRENT SITUATION:
+7. "Have you worked with a VA before?"
+8. "What tools do you currently use?" (Email, calendar, PM tools)
+9. "What's your ideal outcome from hiring a VA?"
+
+PRACTICAL DETAILS:
+10. "What would your VA's typical day look like?"
+11. "How many hours per week do you need?"
+12. "What's your timeline to get started?"
+13. "What's your budget for VA support?"
+
+WORKING STYLE:
+14. "How do you prefer to communicate?" (Email, Slack, calls)
+15. "How often would you like updates?"
+
+PART 3: SHARE YOUR APPROACH (7 min)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"Thanks for sharing all that. Based on what you've told me, here's how I'd approach this...
+
+WHAT I'D DO:
+[Summarize their top 3 pain points and your solution for each]
+
+MY PROCESS:
+Week 1: Onboarding (audit current systems, set up tools, create SOPs)
+Week 2-4: Trial period (prove my value)
+Ongoing: Consistent support with weekly check-ins
+
+I use [tools they mentioned] daily, so there's no learning curve.
+
+TYPICAL RESULTS:
+My clients usually see:
+- 15-20 hours freed up per week
+- Fewer missed deadlines
+- Better organization
+- Less stress!
+
+Does this sound like what you're looking for?"
+
+PART 4: INVESTMENT & NEXT STEPS (3 min)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"In terms of investment, I work at £X/hour or £X/month for a retainer.
+
+Given what you've shared, I'd estimate you'd need about X hours per week, which would be £X/month.
+
+NEXT STEPS:
+If you'd like to move forward:
+1. I'll send you a proposal today outlining everything we discussed
+2. You review and let me know if you have questions
+3. If we're aligned, I can start as soon as [date]
+
+How does that sound?"
+
+PART 5: CLOSING (2 min)
+━━━━━━━━━━━━━━━━━━━━━━
+
+[If interested:]
+"Fantastic! I'll send that proposal over within 2 hours. Feel free to reach out with any questions.
+
+Looking forward to helping you get your time back!"
+
+[If not interested:]
+"No problem at all! I appreciate you taking the time to chat. If your needs change in the future, feel free to reach out.
+
+Best of luck with your business!"
+
+[If need to think:]
+"Of course, take all the time you need. I'll send the proposal over anyway so you have all the details. No pressure!
+
+What's a good timeline for you to make a decision?"
+```
+
+**Step 2: Objection Handling (1 hour)**
+
+**Prepare responses for 5 common objections:**
+
+**OBJECTION 1: "You're too expensive"**
+Response:
+"I totally understand budget is important. Let me break down the value:
+
+At £X/hour, if I save you 15 hours per week, that's 60 hours per month.
+
+If your time is worth £Y/hour (think about your billable rate or salary), then:
+- Your time cost: 60 hours × £Y = £Z
+- My cost: 60 hours × £X = £A
+- Your savings: £Z - £A = £B
+
+Plus, you get back evenings and weekends with family.
+
+Would it make sense to start with a trial week (10 hours) to prove the value?"
+
+**OBJECTION 2: "I need to think about it"**
+Response:
+"Absolutely, this is an important decision! 
+
+To help you think it through, what specific concerns do you have? [Address them]
+
+Also, I should mention I'm currently taking on 2 more clients this month, then my calendar is full until [date]. 
+
+Would it help to do a trial week with no long-term commitment?"
+
+**OBJECTION 3: "I can do it myself"**
+Response:
+"You definitely CAN do it yourself – you're clearly capable!
+
+The question is: SHOULD you?
+
+If you bill at £X/hour or your salary equals £Y/hour, and you're spending 15 hours on admin...
+
+That's £Z per week in opportunity cost.
+
+My clients often say, 'I wish I'd hired a VA 6 months ago!'
+
+What if we start with just email management (5 hours/week) and see the impact?"
+
+**OBJECTION 4: "I've had bad experiences with VAs before"**
+Response:
+"I'm so sorry you had that experience – that's frustrating.
+
+May I ask what went wrong? [Listen]
+
+Here's how I work differently:
+- Daily check-ins (not weekly)
+- Proactive communication (I'll flag issues before they're problems)
+- Clear SOPs (everything documented)
+- Trial period (prove myself first)
+
+Would you be open to a 2-week trial with clear metrics?"
+
+**OBJECTION 5: "I don't have time to train someone"**
+Response:
+"That's exactly why you need a VA – you're too busy!
+
+Here's my onboarding process:
+Week 1: I audit your systems and create SOPs (you spend maybe 2 hours total)
+Week 2: I shadow your processes and ask clarifying questions
+Week 3+: I run independently with weekly check-ins
+
+Most clients say training me saved them time from Day 1 because I organized everything.
+
+The upfront investment of 2 hours pays off immediately."
+
+**Step 3: Practice Calls (3 calls)**
+
+**Conduct 3 discovery calls:**
+1. Friend/family member (practice run)
+2. Real potential client (from Upwork)
+3. Real potential client (from LinkedIn/networking)
+
+**Record each call** (with permission)
+
+**After each call:**
+- Self-review (what went well, what to improve)
+- Note client's objections
+- Track outcome (interested, not interested, need to follow up)
+
+**Deliverable:**
+- Complete discovery call script
+- Objection handling responses (5)
+- 3 recorded discovery calls (or detailed notes)
+- Self-assessment for each call
+- Proposal sent to each client
+
+---
+
+## **LAB 36: VA Services Contract Creation**
+
+**Objective:** Create legally sound VA services agreement.
+
+**Step 1: Contract Template (3 hours)**
+
+**Create comprehensive contract:**
+
+```
+VIRTUAL ASSISTANT SERVICES AGREEMENT
+
+This Agreement is entered into on [DATE] between:
+
+SERVICE PROVIDER:
+[Your Name]
+[Your Business Name]
+[Address]
+[Email]
+[Phone]
+
+CLIENT:
+[Client Name]
+[Company Name]
+[Address]
+[Email]
+
+1. SERVICES
+The Service Provider agrees to provide the following services:
+- [List specific services: email management, calendar coordination, etc.]
+- [Deliverables]
+- [Expected outcomes]
+
+2. TERM
+This Agreement begins on [START DATE] and continues until terminated by either party with [30] days written notice.
+
+3. COMPENSATION
+Client agrees to pay Service Provider:
+- Hourly Rate: £[X]/hour
+OR
+- Monthly Retainer: £[X]/month for [X] hours
+
+Payment terms: [Weekly/Monthly], due within [7] days of invoice.
+Late payments incur [5]% late fee after [7] days.
+
+4. HOURS & AVAILABILITY
+Service Provider will provide up to [X] hours per week.
+Availability: Monday-Friday, 9AM-5PM GMT
+Response time: Within [2] hours during business hours
+
+5. OVERTIME
+Hours exceeding agreed amount will be billed at £[X]/hour.
+Overtime requires prior Client approval.
+
+6. EXPENSES
+Client will reimburse pre-approved expenses within [14] days of receipt submission.
+
+7. TOOLS & EQUIPMENT
+Service Provider will use own equipment.
+Client will provide access to necessary software/accounts.
+
+8. COMMUNICATION
+Primary communication: [Email/Slack/Teams]
+Weekly check-in calls: [Day/Time]
+Monthly reports provided by [date]
+
+9. CONFIDENTIALITY
+Service Provider agrees to maintain strict confidentiality of all Client information.
+Non-disclosure continues [2] years after termination.
+
+10. DATA PROTECTION (GDPR)
+Service Provider complies with UK GDPR.
+Personal data processed only as instructed by Client.
+Data breach notification within 24 hours.
+Data Processing Agreement attached (if handling personal data).
+
+11. INTELLECTUAL PROPERTY
+Work created during engagement belongs to Client.
+Service Provider retains right to use generic processes/templates.
+
+12. INDEPENDENT CONTRACTOR
+Service Provider is independent contractor, not employee.
+Responsible for own taxes, insurance, and benefits.
+
+13. LIABILITY
+Service Provider's liability limited to fees paid in [3] months preceding claim.
+Not liable for: Client's data loss, system failures, or third-party actions.
+
+14. TERMINATION
+Either party may terminate with [30] days written notice.
+Immediate termination if: Non-payment, breach of confidentiality, illegal activity.
+Upon termination: Final invoice within [7] days, return all Client property.
+
+15. SCOPE CHANGES
+Changes to scope require written amendment.
+Additional services quoted separately.
+
+16. DISPUTE RESOLUTION
+Disputes resolved through: [Mediation/Arbitration] in [Location]
+Governed by laws of England and Wales.
+
+17. PROFESSIONAL STANDARDS
+Service Provider commits to:
+- Professional communication
+- Timely delivery
+- Quality work
+- Continuous improvement
+
+18. CLIENT RESPONSIBILITIES
+Client agrees to:
+- Provide timely feedback
+- Grant necessary access
+- Pay invoices on time
+- Respect Service Provider's availability
+
+19. FORCE MAJEURE
+Neither party liable for delays due to circumstances beyond control.
+
+20. ENTIRE AGREEMENT
+This Agreement constitutes the entire agreement.
+Amendments must be in writing.
+
+SIGNATURES:
+
+____________________               Date: _______________
+[Your Name]
+Service Provider
+
+____________________               Date: _______________
+[Client Name]
+Client
+```
+
+**Step 2: Supporting Documents (2 hours)**
+
+**Create additional docs:**
+
+**A. Services Schedule:**
+```
+SERVICES SCHEDULE
+Attached to Agreement dated [DATE]
+
+INCLUDED SERVICES:
+Email Management
+- Inbox organization (daily)
+- Response to routine inquiries
+- Flagging urgent items
+- Email template creation
+Hours: 5/week
+
+Calendar Management
+- Appointment scheduling
+- Meeting coordination
+- Conflict resolution
+- Reminder setup
+Hours: 3/week
+
+Social Media
+- Content scheduling
+- Basic engagement
+- Analytics reporting
+Hours: 7/week
+
+TOTAL: 15 hours/week
+Monthly retainer: £[X]
+
+EXCLUDED SERVICES:
+- Graphic design (can be added for £X/hour)
+- Bookkeeping beyond basic data entry
+- Website development
+- Legal/medical advice
+```
+
+**B. Data Processing Agreement (GDPR):**
+```
+DATA PROCESSING AGREEMENT
+
+Required if handling personal data of EU/UK residents.
+
+1. DEFINITIONS
+Personal Data: [Define]
+Processing: [Define]
+Data Subject: [Define]
+
+2. PROCESSING INSTRUCTIONS
+Service Provider processes data only as instructed by Client.
+
+3. SECURITY MEASURES
+- Encryption of data at rest and in transit
+- Password protection (minimum 12 characters)
+- Two-factor authentication
+- Regular backups
+- Access logs maintained
+
+4. DATA BREACH
+Notification to Client within 24 hours.
+Cooperation with breach investigation.
+
+5. SUBPROCESSORS
+Service Provider may use: [List tools: Gmail, Asana, etc.]
+Client consents to these subprocessors.
+
+6. DATA SUBJECT RIGHTS
+Service Provider assists with data subject requests.
+
+7. DATA DELETION
+Upon termination, all data deleted within 30 days.
+
+8. AUDIT RIGHTS
+Client may audit compliance annually.
+
+SIGNATURES:
+[Same as main contract]
+```
+
+**C. Scope of Work (SOW) Template:**
+For project-based work:
+```
+SCOPE OF WORK
+Project: [Name]
+Duration: [Dates]
+
+OBJECTIVES:
+[What client wants to achieve]
+
+DELIVERABLES:
+1. [Deliverable with completion criteria]
+2. [Deliverable with completion criteria]
+
+TIMELINE:
+Week 1: [Milestones]
+Week 2: [Milestones]
+
+BUDGET:
+Fixed fee: £[X]
+OR
+Time & materials: £[X]/hour, estimated [Y] hours
+
+CLIENT PROVIDES:
+- Access to [systems]
+- Approval within [X] days
+
+SUCCESS CRITERIA:
+[How we measure success]
+```
+
+**Step 3: Signing Process (30 min)**
+
+**Set up electronic signatures:**
+- Use DocuSign (free trial)
+- OR PandaDoc
+- OR HelloSign
+
+**Signing workflow:**
+1. Fill in template with client details
+2. Send via DocuSign
+3. Client reviews and signs
+4. Both parties receive signed copy
+5. File in secure location
+
+**Deliverable:**
+- VA Services Agreement template
+- Services Schedule template
+- Data Processing Agreement
+- Scope of Work template
+- Electronic signature account set up
+- 1 test contract (signed by friend/family)
+
+---
+
+## **LAB 37: First Client Onboarding**
+
+**Objective:** Onboard fictional first client professionally.
+
+**Scenario:** You've just signed "Emma's Coaching Business" - 10 hours/week, email + calendar + social media.
+
+**Step 1: Welcome Package (2 hours)**
+
+**Create welcome email:**
+```
+Subject: Welcome to [Your VA Business]! Let's Get Started 🎉
+
+Hi Emma,
+
+I'm so excited to work together! Here's everything you need to know to get started.
+
+WHAT HAPPENS NEXT:
+
+✅ TODAY:
+- You'll receive 3 emails from me:
+  1. This welcome email
+  2. Onboarding questionnaire (takes 15 min)
+  3. Calendar invite for kickoff call (Monday, 10am)
+
+✅ WEEK 1 (Onboarding):
+- Monday: Kickoff call (60 min) - discuss goals, priorities, tools
+- Tuesday-Friday: I'll audit your systems and create SOPs
+- Friday: First check-in call (30 min) - review progress
+
+✅ WEEK 2-4 (Trial Period):
+- Daily: I'll handle agreed tasks (email, calendar, social media)
+- Weekly: 30-min check-in call (Fridays at 10am)
+- End of Week 4: Evaluate if we're a good fit
+
+BEFORE OUR KICKOFF CALL:
+
+Please complete this onboarding questionnaire: [Link]
+It takes 15 minutes and helps me hit the ground running!
+
+WHAT I NEED FROM YOU:
+
+Access to:
+☐ Email account (Gmail/Outlook)
+☐ Calendar (Google/Outlook)
+☐ Social media accounts (Instagram, Facebook, LinkedIn)
+☐ Password manager (I recommend LastPass)
+☐ Project management tool (we'll set up Asana if needed)
+
+Don't worry, I'll walk you through setting up secure access on our call.
+
+QUESTIONS?
+
+Just hit reply! I'm here Monday-Friday, 9am-5pm GMT and respond within 2 hours.
+
+Looking forward to helping you get your time back!
+
+Best,
+[Your Name]
+[Your Business]
+[Contact info]
+[Calendar link]
+
+P.S. Check out this quick video on what to expect in our first month: [Link]
+```
+
+**Step 2: Onboarding Questionnaire (1 hour)**
+
+**Create Google Form:**
+
+```
+CLIENT ONBOARDING QUESTIONNAIRE
+[Your Business Name]
+
+SECTION 1: BUSINESS OVERVIEW
+1. What does your business do? (2-3 sentences)
+2. Who are your ideal clients?
+3. What are your biggest goals for the next 3 months?
+4. What's your biggest business challenge right now?
+
+SECTION 2: CURRENT SITUATION
+5. Walk me through your typical day. What takes up most of your time?
+6. What tasks do you hate doing?
+7. What tasks are you not good at (or don't enjoy)?
+8. If you had an extra 10 hours per week, what would you do with them?
+
+SECTION 3: VA TASKS
+9. What tasks do you want me to help with? (Check all that apply)
+☐ Email management
+☐ Calendar scheduling
+☐ Social media posting
+☐ Customer service
+☐ Data entry
+☐ Travel planning
+☐ Invoicing
+☐ Other: _______
+
+10. For each task, what's your desired outcome?
+Email: [e.g., "Inbox at zero daily, urgent items flagged"]
+Calendar: [e.g., "No double-bookings, 15-min buffers"]
+
+11. What would success look like in 30 days?
+12. What would success look like in 90 days?
+
+SECTION 4: TOOLS & SYSTEMS
+13. What tools do you currently use?
+Email: ☐ Gmail ☐ Outlook ☐ Other: ___
+Calendar: ☐ Google Calendar ☐ Outlook ☐ Other: ___
+Project Management: ☐ Asana ☐ Trello ☐ Monday ☐ None ☐ Other: ___
+Communication: ☐ Slack ☐ Teams ☐ WhatsApp ☐ Email ☐ Other: ___
+Social Media: ☐ Hootsuite ☐ Buffer ☐ Later ☐ Native apps ☐ Other: ___
+
+14. Are you happy with these tools or open to changing?
+
+SECTION 5: WORKING STYLE
+15. How do you prefer to communicate?
+☐ Email ☐ Slack ☐ Phone ☐ Video call ☐ WhatsApp
+
+16. How often do you want updates?
+☐ Daily ☐ 2-3 times/week ☐ Weekly ☐ As needed
+
+17. What's the best time for our weekly check-in call?
+☐ Monday morning ☐ Friday afternoon ☐ Other: ___
+
+18. Do you prefer detailed updates or brief summaries?
+
+19. How do you handle urgent issues?
+☐ Call me directly ☐ Text ☐ Slack with @mention ☐ Other: ___
+
+20. What are your working hours? (So I know when you're available)
+
+SECTION 6: PRIORITIES
+21. For the first 30 days, what are your top 3 priorities?
+1. _______
+2. _______
+3. _______
+
+22. What ONE thing, if handled perfectly, would make the biggest impact?
+
+SECTION 7: EXPECTATIONS
+23. What are your biggest concerns about working with a VA?
+24. What made you decide to hire a VA now?
+25. Have you worked with a VA before? If yes, what went well/poorly?
+26. How can I exceed your expectations?
+
+SECTION 8: LOGISTICS
+27. What's your time zone?
+28. Do you travel often? If yes, how should I handle time zones?
+29. Any upcoming vacations or busy periods I should know about?
+
+SECTION 9: PERSONAL
+30. What do you do for fun outside work?
+31. Coffee or tea? ☕🍵 (So I can send a welcome gift!)
+32. Anything else I should know?
+
+Thank you! I'll review this before our kickoff call.
+```
+
+**Step 3: Kickoff Call Agenda (30 min)**
+
+**Create structured agenda:**
+```
+KICKOFF CALL AGENDA
+Duration: 60 minutes
+
+PART 1: INTRODUCTIONS (5 min)
+- Quick personal intros
+- What I learned from questionnaire
+- Confirm goals for our partnership
+
+PART 2: TOOLS & ACCESS (15 min)
+- Set up email access (Gmail delegation or shared inbox)
+- Calendar permissions (editor access)
+- Social media accounts (Creator Studio or native apps)
+- Project management (create shared Asana workspace)
+- Communication (Slack channel or preferred method)
+
+PART 3: SYSTEMS AUDIT (20 min)
+- Screen share: Walk through current email system
+- Identify what's working/not working
+- Calendar review: Typical schedule, meeting types
+- Social media: Current content strategy
+
+PART 4: PRIORITIES & PROCESSES (15 min)
+- Confirm top 3 priorities for first 30 days
+- Discuss typical workflow for each task
+- Clarify decision-making authority (what needs approval?)
+- Emergency protocol (how to reach you urgently)
+
+PART 5: NEXT STEPS (5 min)
+- Week 1 plan: What I'll focus on
+- When you'll hear from me (daily end-of-day summaries)
+- Friday check-in confirmation
+- Any questions?
+
+ACTION ITEMS:
+☐ You: Send passwords via LastPass
+☐ Me: Set up all systems today
+☐ Me: Send end-of-day summary (daily, 5pm GMT)
+☐ Both: Weekly call (Fridays, 10am GMT)
+```
+
+**Step 4: Week 1 Daily Reports (5 reports)**
+
+**Create daily summary template:**
+
+```
+DAILY SUMMARY - Day 1 (Monday, Jan 15)
+
+Hi Emma,
+
+Here's what I accomplished today:
+
+✅ COMPLETED:
+- Set up Asana workspace with your first 3 projects
+- Organized email inbox (500 → 50 emails)
+- Created 10 email filters for automated sorting
+- Set up Gmail labels (Action Required, Projects, Clients, Archive)
+- Scheduled 3 social media posts for next week
+
+⏳ IN PROGRESS:
+- Calendar audit (continuing tomorrow)
+- Email response templates (draft ready for your review)
+
+🚫 BLOCKED:
+- Need approval on social media content calendar before I can schedule more posts
+- Waiting for access to Instagram Business account
+
+📝 NOTES:
+- I noticed you have a lot of old newsletters (200+). Should I unsubscribe or archive?
+- Your calendar has 3 double-booked slots this week. I'll reach out to reschedule.
+
+🎯 TOMORROW'S PRIORITIES:
+1. Complete calendar audit
+2. Finalize email templates
+3. Schedule next week's social content (pending your approval)
+
+HOURS TODAY: 2.5 hours
+HOURS THIS WEEK: 2.5 / 10 hours
+
+Questions? Hit reply anytime!
+
+Best,
+[Your Name]
+```
+
+**Repeat for Days 2-5** with realistic progress
+
+**Step 5: Week 1 Summary Report (1 hour)**
+
+**Create weekly report:**
+
+```
+WEEK 1 SUMMARY REPORT
+Week of January 15-19, 2024
+
+Hi Emma,
+
+What a great first week! Here's a summary of everything we accomplished:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ACCOMPLISHMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ EMAIL MANAGEMENT:
+- Inbox reduced from 500 → 10 emails (Inbox Zero achieved!)
+- Created 15 email filters for auto-sorting
+- Set up 5-label system (Action, Projects, Clients, Reference, Archive)
+- Drafted 8 email response templates (awaiting your approval)
+- Unsubscribed from 25 unwanted newsletters
+
+✅ CALENDAR MANAGEMENT:
+- Audited full calendar, identified 5 optimization opportunities
+- Rescheduled 3 conflicting meetings
+- Added 15-min buffers between all meetings
+- Set up recurring "Focus Time" blocks (Mon/Wed/Fri 9-11am)
+- Created meeting templates for client calls, team meetings, 1-on-1s
+
+✅ SOCIAL MEDIA:
+- Analyzed last 30 days' performance (report attached)
+- Created 30-day content calendar (15 posts ready)
+- Scheduled next week's content (3 posts)
+- Set up content approval workflow (you review 24hrs before posting)
+
+✅ SYSTEMS & TOOLS:
+- Set up Asana workspace with 3 active projects
+- Created SOPs for email management, calendar booking, social media
+- Set up Slack channel for quick communication
+- Organized Google Drive (new folder structure)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+IMPACT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TIME SAVED: ~8 hours this week
+- Email: 3 hours (you would spend 2hrs/day, now 15min/day)
+- Calendar: 2 hours (no more scheduling back-and-forth)
+- Social Media: 3 hours (no more last-minute content scrambling)
+
+IMPROVEMENTS:
+- Email response time: 24 hours → 2 hours
+- Calendar conflicts: 5 this week → 0 going forward
+- Social media: Inconsistent posting → Consistent 3x/week schedule
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NEXT WEEK'S PRIORITIES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Maintain Inbox Zero (daily management)
+2. Implement new calendar system (with buffers & focus time)
+3. Launch social media content calendar (3 posts/week)
+4. Create Q1 project tracker in Asana
+5. Research and recommend CRM system
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+QUESTIONS FOR YOU
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Email templates: Please review and approve (link)
+2. Social media: Approve next week's posts? (link)
+3. Calendar: Block out your vacation dates for March?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HOURS & INVOICE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Hours This Week: 10.0 hours
+Rate: £30/hour
+Weekly Total: £300
+
+Breakdown:
+- Monday: 2.5 hours (setup)
+- Tuesday: 2.0 hours (email organization)
+- Wednesday: 2.5 hours (calendar audit)
+- Thursday: 1.5 hours (social media planning)
+- Friday: 1.5 hours (documentation & reporting)
+
+Invoice attached. Due: January 26
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Overall, I'm really excited about what we accomplished this week! The foundation is solid, and next week we'll see even more impact.
+
+Looking forward to our Friday call!
+
+Best,
+[Your Name]
+
+Attachments:
+- Invoice #001
+- Social Media Performance Report
+- Email Templates for Approval
+```
+
+**Deliverable:**
+- Welcome email template
+- Onboarding questionnaire (Google Form)
+- Kickoff call agenda
+- 5 daily summary reports
+- Week 1 comprehensive report
+- First invoice
+
+---
+
+## **LAB 38: Portfolio Website Launch**
+
+**Objective:** Launch professional VA website in 1 day.
+
+**Step 1: Website Platform Setup (30 min)**
+
+**Choose platform:**
+- Wix (easiest for beginners)
+- WordPress (more customizable)
+- Squarespace (beautiful templates)
+
+**Domain:** yourname-va.co.uk (£10/year)
+
+**Step 2: Website Structure (30 min)**
+
+**5 pages:**
+
+**Page 1: Home**
+- Hero: "Get Your Time Back. I'll Handle the Admin."
+- Subheading: "UK Virtual Assistant specializing in [your niche]"
+- CTA: "Book Free Consultation"
+- Social proof: "Trusted by 10+ UK businesses"
+- Services overview (3 boxes)
+- Testimonials (3)
+- Final CTA
+
+**Page 2: Services**
+- Service 1: Email Management (icon, description, benefits, £/hour)
+- Service 2: Calendar Coordination
+- Service 3: Social Media Management
+- Service 4: Data Entry & Organization
+- Service 5: Customer Service
+- Packages section (Starter, Professional, Enterprise)
+
+**Page 3: About**
+- Your story (why you became a VA)
+- Your photo
+- Qualifications (T21 Certified)
+- Tools you use
+- Your process
+- Fun facts
+
+**Page 4: Portfolio**
+- 5 case studies (from labs you completed)
+- Before/after examples
+- Client testimonials
+- Downloadable PDF portfolio
+
+**Page 5: Contact**
+- Contact form
+- Calendly booking link
+- Email
+- Social media links
+- FAQ section
+
+**Step 3: Write Copy (3 hours)**
+
+**Home page copy:**
+
+```
+[HERO SECTION]
+Headline: Get Your Time Back. I'll Handle the Admin.
+Subhead: UK Virtual Assistant helping busy entrepreneurs and small business owners reclaim 15+ hours per week
+
+[CTA Button]: Book Free 30-Min Consultation
+
+[SERVICES SECTION]
+What I Can Do For You
+
+📧 Email Management
+Never miss an important email again. I'll organize your inbox, respond to routine inquiries, and flag urgent items. You'll achieve Inbox Zero and maintain it.
+
+📅 Calendar Coordination
+Say goodbye to double-bookings and scheduling chaos. I'll manage your calendar, coordinate meetings across time zones, and ensure you have time to breathe.
+
+📱 Social Media Management
+Stay consistent without the stress. I'll create content, schedule posts, engage with your audience, and provide monthly analytics.
+
+[TESTIMONIALS SECTION]
+What Clients Say
+
+"[Your Name] saved me 15 hours per week. My inbox went from 500 emails to zero in ONE day. Best investment ever!"
+- Sarah J., Marketing Consultant
+
+"I finally have evenings and weekends with my family. [Your Name] handles everything so professionally."
+- James T., Business Coach
+
+"My social media engagement tripled! [Your Name] gets my brand and creates content I actually want to post."
+- Emma R., Life Coach
+
+[PROCESS SECTION]
+How We Work Together
+
+STEP 1: FREE CONSULTATION (30 min)
+We'll discuss your needs, challenges, and goals. No pressure, just a friendly chat.
+
+STEP 2: CUSTOM PROPOSAL (24 hours)
+I'll send a detailed proposal outlining services, timeline, and investment.
+
+STEP 3: ONBOARDING (Week 1)
+I'll audit your systems, set up tools, and create SOPs for everything.
+
+STEP 4: ONGOING SUPPORT (Week 2+)
+Daily task management, weekly check-ins, monthly reports. You focus on growth.
+
+[FINAL CTA]
+Ready to Reclaim Your Time?
+
+Book your free consultation now. Let's chat about how I can help you get back to doing what you love.
+
+[Button]: Schedule Free Call
+```
+
+**Step 4: Design (2 hours)**
+
+**Design elements:**
+- Professional color scheme (navy + teal)
+- High-quality stock photos (from Unsplash)
+- Icons for services (from Flaticon)
+- Professional headshot (or stock photo)
+- Consistent fonts (heading + body)
+- Mobile-responsive design
+
+**Step 5: SEO Optimization (1 hour)**
+
+**On-page SEO:**
+- Page titles: "Virtual Assistant London | Email & Calendar Management | [Your Name]"
+- Meta descriptions (150 characters each)
+- Header tags (H1, H2, H3)
+- Alt text for all images
+- Internal linking
+- Fast load time (<3 seconds)
+
+**Keywords to target:**
+- Virtual assistant UK
+- Virtual assistant London
+- Email management virtual assistant
+- Calendar coordination VA
+- Social media virtual assistant
+- Hire virtual assistant UK
+
+**Step 6: Integrations (1 hour)**
+
+**Set up:**
+- Calendly (free consultation booking)
+- Contact form (Wix/WordPress built-in)
+- Google Analytics (track visitors)
+- Facebook Pixel (retargeting)
+- Live chat (Tawk.to - free)
+- Email capture (Mailchimp)
+
+**Step 7: Launch & Test (30 min)**
+
+**Pre-launch checklist:**
+- [ ] Test all links
+- [ ] Test contact form
+- [ ] Test Calendly booking
+- [ ] Check mobile version
+- [ ] Spell check all copy
+- [ ] Ask friend to review
+- [ ] Submit to Google Search Console
+- [ ] Share on LinkedIn, Facebook, Instagram
+
+**Deliverable:**
+- Live website (URL)
+- 5 pages complete
+- Calendly booking working
+- SEO optimized
+- Mobile-responsive
+- Analytics tracking
+
+---
+
+**🎉 UNIT 7 LABS COMPLETE!**
+
+You now have everything to land your first 3-5 clients in 30 days!
+""")
+        
+        elif lab_unit == "Unit 8 Labs: Agency Scaling (6 labs)":
+            st.markdown("""
+### **Unit 8 Labs: Agency Scaling (6 Labs)**
+
+Scale from solo VA to 6-figure agency!
+
+---
+
+## **LAB 39: Hire & Train Your First Sub-VA**
+
+**Objective:** Recruit, onboard, and train a sub-contractor.
+
+*Due to length constraints, this lab provides framework - students implement with real or roleplay scenario*
+
+**Key Components:**
+- Job posting template
+- Interview questions (15+)
+- Skills assessment test
+- Training manual creation
+- First week onboarding plan
+
+---
+
+## **LAB 40: Agency Operations Manual**
+
+**Objective:** Create complete operations manual.
+
+**Sections:**
+- Company overview
+- Team structure
+- Client onboarding SOP
+- Service delivery SOPs
+- Quality control checklist
+- Communication protocols
+- Emergency procedures
+
+---
+
+## **LAB 41: Agency Pricing & Packages**
+
+**Objective:** Design agency service packages.
+
+**Create 3 tiers:**
+- **Starter:** £1,200/month (20 hours, 1 VA)
+- **Growth:** £2,500/month (40 hours, 2 VAs)
+- **Enterprise:** £5,000/month (80 hours, team)
+
+---
+
+## **LAB 42: Multi-Client Workflow System**
+
+**Objective:** Manage 5+ clients simultaneously.
+
+**Tools:**
+- Central Asana workspace
+- Client communication matrix
+- Daily task prioritization system
+- Weekly reporting automation
+- Team capacity planning
+
+---
+
+## **LAB 43: Agency Financial Model**
+
+**Objective:** Build financial projections.
+
+**Projections:**
+- Month 1-3: £2K-£3K/month
+- Month 4-6: £5K-£8K/month
+- Month 7-12: £10K-£15K/month
+- Year 2: £20K-£40K/month
+
+**Expense tracking:**
+- Sub-VA costs
+- Software subscriptions
+- Marketing
+- Insurance
+- Taxes
+
+---
+
+## **LAB 44: Agency Marketing Plan**
+
+**Objective:** Attract ideal clients consistently.
+
+**Channels:**
+- LinkedIn content strategy (daily posts)
+- Client referral system
+- Partnership with complementary services
+- Agency website & SEO
+- Case studies & portfolio
+- Speaking engagements
+
+---
+
+**🎉 UNIT 8 LABS COMPLETE!**
+
+**ALL 47 LABS FINISHED!** You've built a complete VA training portfolio!
 """)
         
         else:
-            st.info(f"Labs for {lab_unit} coming soon! Each will have the same comprehensive detail as Unit 1 labs.")
+            st.info(f"Select a lab unit from the dropdown to view detailed hands-on exercises!")
         
     # ==========================================
     # TAB 4: ASSESSMENTS & CERTIFICATION

@@ -134,6 +134,15 @@ except:
     def generate_linkedin_profile(data): return ""
     def get_t21_qualifications(): return []
 
+# Import Virtual Assistant Career Pathway Module (NEW!)
+try:
+    from virtual_assistant_pathway_module import render_pathway as render_va_pathway
+    VA_PATHWAY_AVAILABLE = True
+except Exception as e:
+    VA_PATHWAY_AVAILABLE = False
+    def render_va_pathway():
+        st.error(f"VA Pathway module not available: {e}")
+
 try:
     from interactive_learning import (INTERACTIVE_QUIZZES, BADGES, check_answer as check_quiz_answer, 
                                       get_all_categories, get_quiz_by_difficulty,
@@ -1664,6 +1673,7 @@ elif user_role == 'tester':
         "🔢 Functional Skills Maths",         # TQUK Qualification
         "🔒 Information Governance",          # IG training and compliance
         "💼 Career Development",              # Career tools and development
+        "💼 Virtual Assistant Pathway",       # NEW: Complete VA training program (8K lines!)
         "📄 CV Builder",                      # FULL Professional CV Builder
         "💬 Messages",                        # Real-time messaging system
         "🛡️ Admin Security Monitor",         # Security monitoring
@@ -1716,6 +1726,7 @@ elif user_role == 'super_admin' or 'admin@t21services' in user_email.lower():
         # PROFESSIONAL DEVELOPMENT
         "🔒 Information Governance",
         "💼 Career Development",
+        "💼 Virtual Assistant Pathway",
         "📄 CV Builder",
         
         # SYSTEM & SECURITY
@@ -1764,6 +1775,7 @@ elif user_role == 'admin':
         # PROFESSIONAL DEVELOPMENT
         "🔒 Information Governance",
         "💼 Career Development",
+        "💼 Virtual Assistant Pathway",
         "📄 CV Builder",
         
         # SYSTEM & SECURITY
@@ -1816,6 +1828,7 @@ elif user_role == 'staff':
         # PROFESSIONAL DEVELOPMENT
         "🔒 Information Governance",
         "💼 Career Development",
+        "💼 Virtual Assistant Pathway",
         "📄 CV Builder",
         
         # SYSTEM & SECURITY
@@ -4134,6 +4147,20 @@ LIKELY INTERVIEW QUESTIONS ({len(result['interview_questions'])} questions)
                     collect_interview_feedback(result, job_title, job_description)
                 
                 st.success("💪 **You've got this! Good luck with your interview!**")
+
+
+# ============================================
+# VIRTUAL ASSISTANT CAREER PATHWAY (NEW!) 🚀
+# ============================================
+elif tool == "💼 Virtual Assistant Pathway":
+    st.header("💼 Virtual Assistant Career Pathway")
+    
+    if VA_PATHWAY_AVAILABLE:
+        # Render the complete 8,510-line VA training module!
+        render_va_pathway()
+    else:
+        st.error("❌ Virtual Assistant Pathway module is not available.")
+        st.info("Please ensure virtual_assistant_pathway_module.py is in the project directory.")
 
 
 # ============================================
