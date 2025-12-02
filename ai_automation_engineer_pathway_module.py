@@ -1658,22 +1658,1436 @@ IF payment overdue (+14 days):
 """)
         
         # ==========================================
-        # UNIT 3-8: COMING SOON PLACEHOLDERS
+        # UNIT 3: PYTHON AUTOMATION MASTERY
+        # ==========================================
+        elif selected_unit == 3:
+            st.markdown("#### 🐍 Python Automation Mastery")
+            st.markdown("""
+**Level up from no-code to code!** Python unlocks unlimited automation potential with maximum flexibility and power.
+
+---
+
+### **Why Python for Automation?**
+
+**Power & Flexibility:**
+- No limitations (unlike no-code tools)
+- Custom logic & algorithms
+- Complex data processing
+- Integration with ANY system
+
+**Cost:**
+- 100% FREE forever
+- No subscription fees
+- Unlimited executions
+- No vendor lock-in
+
+**Scalability:**
+- Handle millions of operations
+- Parallel processing
+- Optimize for speed
+- Deploy anywhere (servers, cloud, local)
+
+**Career Value:**
+- Python automation = £45-75K/year
+- No-code only = £25-35K/year
+- **70% higher earning potential!**
+
+---
+
+### **Python Basics for Automation**
+
+**Installing Python:**
+
+```bash
+# Windows (PowerShell)
+winget install Python.Python.3.11
+
+# Mac
+brew install python@3.11
+
+# Linux
+sudo apt install python3.11
+
+# Verify installation
+python --version
+```
+
+**Essential Python Concepts:**
+
+**1. Variables & Data Types**
+
+```python
+# Strings
+customer_name = "John Smith"
+email = "john@example.com"
+
+# Numbers
+order_amount = 149.99
+quantity = 5
+
+# Booleans
+is_paid = True
+is_shipped = False
+
+# Lists (arrays)
+products = ["Laptop", "Mouse", "Keyboard"]
+prices = [999.99, 29.99, 79.99]
+
+# Dictionaries (objects)
+customer = {
+    "name": "John Smith",
+    "email": "john@example.com",
+    "orders": 12,
+    "lifetime_value": 1499.99
+}
+```
+
+**2. Conditions (IF/THEN logic)**
+
+```python
+# Simple condition
+if order_amount > 100:
+    discount = 0.10  # 10% discount
+else:
+    discount = 0
+
+# Multiple conditions
+if customer_type == "VIP":
+    priority = "high"
+    discount = 0.20
+elif customer_type == "regular":
+    priority = "medium"
+    discount = 0.10
+else:
+    priority = "low"
+    discount = 0
+```
+
+**3. Loops (Repetition)**
+
+```python
+# For loop (iterate over list)
+customers = ["John", "Sarah", "Mike"]
+
+for customer in customers:
+    print(f"Sending email to {customer}")
+    # send_email(customer)
+
+# While loop (repeat until condition)
+retries = 0
+while retries < 3:
+    try:
+        result = make_api_request()
+        break  # Success, exit loop
+    except:
+        retries += 1
+        time.sleep(2)  # Wait 2 seconds
+```
+
+**4. Functions (Reusable code blocks)**
+
+```python
+def calculate_discount(order_amount):
+    """Calculate discount based on order amount"""
+    if order_amount >= 1000:
+        return order_amount * 0.20
+    elif order_amount >= 500:
+        return order_amount * 0.10
+    else:
+        return 0
+
+# Use the function
+discount = calculate_discount(750)
+print(f"Discount: £{discount}")  # Discount: £75.0
+```
+
+---
+
+### **Essential Python Libraries for Automation**
+
+**1. File & System Automation**
+
+**os - Operating system operations**
+
+```python
+import os
+
+# Get current directory
+current_dir = os.getcwd()
+
+# List files in directory
+files = os.listdir("./downloads")
+
+# Check if file exists
+if os.path.exists("report.pdf"):
+    print("File exists!")
+
+# Create directory
+os.makedirs("reports/2024", exist_ok=True)
+
+# Delete file
+os.remove("old_file.txt")
+
+# Rename file
+os.rename("old_name.txt", "new_name.txt")
+```
+
+**pathlib - Modern file path handling**
+
+```python
+from pathlib import Path
+
+# Get all PDF files
+pdf_files = Path("./documents").glob("*.pdf")
+
+for pdf in pdf_files:
+    print(f"Found: {pdf.name}")
+    
+# Create nested directories
+Path("reports/2024/Q1").mkdir(parents=True, exist_ok=True)
+
+# Read file
+content = Path("data.txt").read_text()
+
+# Write file
+Path("output.txt").write_text("Hello, World!")
+```
+
+**shutil - File operations**
+
+```python
+import shutil
+
+# Copy file
+shutil.copy("source.txt", "destination.txt")
+
+# Move file
+shutil.move("old_location.txt", "new_location.txt")
+
+# Copy entire directory
+shutil.copytree("source_folder", "destination_folder")
+
+# Delete directory and contents
+shutil.rmtree("folder_to_delete")
+
+# Archive files (ZIP)
+shutil.make_archive("backup", "zip", "folder_to_backup")
+```
+
+---
+
+**2. Web Scraping & Automation**
+
+**requests - HTTP requests**
+
+```python
+import requests
+
+# GET request
+response = requests.get("https://api.example.com/data")
+data = response.json()
+
+# POST request
+payload = {
+    "name": "John Smith",
+    "email": "john@example.com"
+}
+response = requests.post("https://api.example.com/users", json=payload)
+
+# Headers & authentication
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+response = requests.get("https://api.example.com/data", headers=headers)
+
+# Download file
+response = requests.get("https://example.com/file.pdf")
+with open("downloaded.pdf", "wb") as f:
+    f.write(response.content)
+```
+
+**BeautifulSoup - HTML parsing**
+
+```python
+from bs4 import BeautifulSoup
+import requests
+
+# Scrape website
+url = "https://example.com/products"
+response = requests.get(url)
+soup = BeautifulSoup(response.content, "html.parser")
+
+# Find elements
+product_names = soup.find_all("h2", class_="product-title")
+prices = soup.find_all("span", class_="price")
+
+# Extract data
+for name, price in zip(product_names, prices):
+    print(f"{name.text}: {price.text}")
+
+# Find by CSS selector
+products = soup.select(".product-card")
+
+# Get attributes
+links = soup.find_all("a")
+for link in links:
+    href = link.get("href")
+    print(href)
+```
+
+**Selenium - Browser automation**
+
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import time
+
+# Initialize browser
+driver = webdriver.Chrome()
+
+# Navigate to website
+driver.get("https://example.com")
+
+# Find element by ID and enter text
+search_box = driver.find_element(By.ID, "search")
+search_box.send_keys("automation")
+search_box.send_keys(Keys.RETURN)
+
+# Wait for page to load
+time.sleep(2)
+
+# Find multiple elements
+results = driver.find_elements(By.CLASS_NAME, "result")
+
+for result in results:
+    title = result.find_element(By.TAG_NAME, "h3").text
+    print(title)
+
+# Click button
+button = driver.find_element(By.ID, "submit")
+button.click()
+
+# Take screenshot
+driver.save_screenshot("screenshot.png")
+
+# Close browser
+driver.quit()
+```
+
+---
+
+**3. Data Processing**
+
+**pandas - Data manipulation**
+
+```python
+import pandas as pd
+
+# Read CSV
+df = pd.read_csv("sales_data.csv")
+
+# View first rows
+print(df.head())
+
+# Filter data
+high_value = df[df["amount"] > 1000]
+
+# Group by & aggregate
+monthly_sales = df.groupby("month")["amount"].sum()
+
+# Add calculated column
+df["discount"] = df["amount"] * 0.10
+
+# Sort data
+df_sorted = df.sort_values("amount", ascending=False)
+
+# Save to Excel
+df.to_excel("report.xlsx", index=False)
+
+# Merge dataframes
+merged = pd.merge(customers, orders, on="customer_id")
+```
+
+**openpyxl - Excel automation**
+
+```python
+from openpyxl import load_workbook, Workbook
+
+# Create new workbook
+wb = Workbook()
+ws = wb.active
+
+# Write data
+ws["A1"] = "Name"
+ws["B1"] = "Sales"
+ws["A2"] = "John"
+ws["B2"] = 15000
+
+# Write row
+ws.append(["Sarah", 20000])
+
+# Save workbook
+wb.save("sales_report.xlsx")
+
+# Read existing workbook
+wb = load_workbook("data.xlsx")
+ws = wb.active
+
+# Read cells
+name = ws["A2"].value
+sales = ws["B2"].value
+
+# Iterate rows
+for row in ws.iter_rows(min_row=2, values_only=True):
+    name, sales = row
+    print(f"{name}: £{sales}")
+```
+
+---
+
+**4. Email Automation**
+
+**smtplib - Send emails**
+
+```python
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+
+def send_email(to_email, subject, body, attachment_path=None):
+    """Send email with optional attachment"""
+    
+    # Email configuration
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 587
+    sender_email = "your_email@gmail.com"
+    sender_password = "your_app_password"
+    
+    # Create message
+    msg = MIMEMultipart()
+    msg["From"] = sender_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
+    
+    # Add body
+    msg.attach(MIMEText(body, "plain"))
+    
+    # Add attachment if provided
+    if attachment_path:
+        with open(attachment_path, "rb") as f:
+            part = MIMEBase("application", "octet-stream")
+            part.set_payload(f.read())
+        
+        encoders.encode_base64(part)
+        part.add_header(
+            "Content-Disposition",
+            f"attachment; filename= {os.path.basename(attachment_path)}"
+        )
+        msg.attach(part)
+    
+    # Send email
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.send_message(msg)
+    
+    print(f"Email sent to {to_email}")
+
+# Use the function
+send_email(
+    to_email="customer@example.com",
+    subject="Your Monthly Report",
+    body="Please find attached your monthly sales report.",
+    attachment_path="report.pdf"
+)
+```
+
+---
+
+**5. Scheduling & Task Management**
+
+**schedule - Simple task scheduling**
+
+```python
+import schedule
+import time
+
+def send_daily_report():
+    """Function to run daily"""
+    print("Generating and sending daily report...")
+    # Your automation code here
+
+def backup_database():
+    """Backup function"""
+    print("Backing up database...")
+    # Your backup code here
+
+# Schedule tasks
+schedule.every().day.at("09:00").do(send_daily_report)
+schedule.every().day.at("18:00").do(backup_database)
+schedule.every().monday.at("08:00").do(send_weekly_summary)
+
+# Run scheduler
+while True:
+    schedule.run_pending()
+    time.sleep(60)  # Check every minute
+```
+
+**APScheduler - Advanced scheduling**
+
+```python
+from apscheduler.schedulers.blocking import BlockingScheduler
+
+def my_task():
+    print("Task executed at", datetime.now())
+
+# Create scheduler
+scheduler = BlockingScheduler()
+
+# Add jobs
+scheduler.add_job(my_task, "interval", minutes=5)  # Every 5 minutes
+scheduler.add_job(my_task, "cron", day_of_week="mon-fri", hour=9)  # Weekdays 9am
+
+# Start scheduler
+scheduler.start()
+```
+
+---
+
+### **Real-World Python Automation Projects**
+
+**Project 1: Email to Spreadsheet Logger**
+
+```python
+import imaplib
+import email
+import pandas as pd
+from datetime import datetime
+
+def process_emails():
+    """Extract customer inquiries from email to spreadsheet"""
+    
+    # Connect to Gmail
+    mail = imaplib.IMAP4_SSL("imap.gmail.com")
+    mail.login("your_email@gmail.com", "your_password")
+    mail.select("inbox")
+    
+    # Search for emails
+    _, message_numbers = mail.search(None, 'SUBJECT "customer inquiry"')
+    
+    inquiries = []
+    
+    for num in message_numbers[0].split():
+        _, msg_data = mail.fetch(num, "(RFC822)")
+        email_body = msg_data[0][1]
+        message = email.message_from_bytes(email_body)
+        
+        # Extract data
+        from_email = message["from"]
+        subject = message["subject"]
+        date = message["date"]
+        
+        # Get body
+        if message.is_multipart():
+            for part in message.walk():
+                if part.get_content_type() == "text/plain":
+                    body = part.get_payload(decode=True).decode()
+                    break
+        else:
+            body = message.get_payload(decode=True).decode()
+        
+        inquiries.append({
+            "Date": date,
+            "From": from_email,
+            "Subject": subject,
+            "Body": body[:200]  # First 200 chars
+        })
+    
+    # Save to spreadsheet
+    df = pd.DataFrame(inquiries)
+    df.to_excel("customer_inquiries.xlsx", index=False)
+    
+    print(f"Processed {len(inquiries)} inquiries")
+    
+    mail.close()
+    mail.logout()
+
+# Run
+process_emails()
+```
+
+**Time saved: 15 min/day = 5 hours/month!**
+
+---
+
+**Project 2: Web Scraping Price Monitor**
+
+```python
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+from datetime import datetime
+import time
+
+def check_prices():
+    """Monitor competitor prices and alert on changes"""
+    
+    products = [
+        {"name": "Product A", "url": "https://competitor.com/product-a"},
+        {"name": "Product B", "url": "https://competitor.com/product-b"},
+    ]
+    
+    results = []
+    
+    for product in products:
+        try:
+            response = requests.get(product["url"])
+            soup = BeautifulSoup(response.content, "html.parser")
+            
+            # Extract price (adjust selector for your target)
+            price_element = soup.find("span", class_="price")
+            price = float(price_element.text.replace("£", "").replace(",", ""))
+            
+            results.append({
+                "Product": product["name"],
+                "Price": price,
+                "Date": datetime.now().strftime("%Y-%m-%d %H:%M"),
+                "URL": product["url"]
+            })
+            
+            print(f"{product['name']}: £{price}")
+            
+            time.sleep(2)  # Be polite, don't spam
+            
+        except Exception as e:
+            print(f"Error checking {product['name']}: {e}")
+    
+    # Load existing data
+    try:
+        df_existing = pd.read_csv("price_history.csv")
+        df_new = pd.DataFrame(results)
+        df_combined = pd.concat([df_existing, df_new], ignore_index=True)
+    except FileNotFoundError:
+        df_combined = pd.DataFrame(results)
+    
+    # Save updated data
+    df_combined.to_csv("price_history.csv", index=False)
+    
+    # Check for price drops
+    for result in results:
+        previous = df_existing[
+            (df_existing["Product"] == result["Product"])
+        ]["Price"].iloc[-1] if not df_existing.empty else None
+        
+        if previous and result["Price"] < previous:
+            print(f"🚨 PRICE DROP: {result['Product']} - £{previous} → £{result['Price']}")
+            # Send alert email here
+
+# Schedule to run daily
+import schedule
+schedule.every().day.at("10:00").do(check_prices)
+
+while True:
+    schedule.run_pending()
+    time.sleep(60)
+```
+
+**Value: Competitive intelligence + automatic alerts!**
+
+---
+
+**Project 3: Automated Report Generator**
+
+```python
+import pandas as pd
+from datetime import datetime, timedelta
+import matplotlib.pyplot as plt
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+import smtplib
+
+def generate_weekly_report():
+    """Generate and email weekly sales report"""
+    
+    # Load data
+    df = pd.read_csv("sales_data.csv")
+    df["date"] = pd.to_datetime(df["date"])
+    
+    # Get last 7 days
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=7)
+    df_week = df[(df["date"] >= start_date) & (df["date"] <= end_date)]
+    
+    # Calculate metrics
+    total_sales = df_week["amount"].sum()
+    total_orders = len(df_week)
+    avg_order = df_week["amount"].mean()
+    top_product = df_week.groupby("product")["amount"].sum().idxmax()
+    
+    # Create chart
+    daily_sales = df_week.groupby(df_week["date"].dt.date)["amount"].sum()
+    
+    plt.figure(figsize=(10, 6))
+    plt.plot(daily_sales.index, daily_sales.values, marker="o")
+    plt.title("Daily Sales - Last 7 Days")
+    plt.xlabel("Date")
+    plt.ylabel("Sales (£)")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig("sales_chart.png")
+    plt.close()
+    
+    # Create HTML email
+    html = f'''
+    <html>
+    <body>
+        <h2>Weekly Sales Report</h2>
+        <p><strong>Period:</strong> {start_date.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}</p>
+        
+        <h3>Key Metrics:</h3>
+        <ul>
+            <li><strong>Total Sales:</strong> GBP{total_sales:,.2f}</li>
+            <li><strong>Total Orders:</strong> {total_orders}</li>
+            <li><strong>Average Order Value:</strong> GBP{avg_order:,.2f}</li>
+            <li><strong>Top Product:</strong> {top_product}</li>
+        </ul>
+        
+        <h3>Sales Trend:</h3>
+        <img src="cid:chart" width="600">
+        
+        <p>Generated automatically by Python automation script.</p>
+    </body>
+    </html>
+    '''
+    
+    # Send email
+    msg = MIMEMultipart("related")
+    msg["Subject"] = f"Weekly Sales Report - {end_date.strftime('%Y-%m-%d')}"
+    msg["From"] = "reports@yourcompany.com"
+    msg["To"] = "manager@yourcompany.com"
+    
+    # Attach HTML
+    msg.attach(MIMEText(html, "html"))
+    
+    # Attach chart image
+    with open("sales_chart.png", "rb") as f:
+        img = MIMEImage(f.read())
+        img.add_header("Content-ID", "<chart>")
+        msg.attach(img)
+    
+    # Send
+    with smtplib.SMTP("smtp.gmail.com", 587) as server:
+        server.starttls()
+        server.login("your_email@gmail.com", "your_password")
+        server.send_message(msg)
+    
+    print("Weekly report sent!")
+
+# Schedule weekly
+import schedule
+schedule.every().monday.at("09:00").do(generate_weekly_report)
+```
+
+**Time saved: 2 hours/week = 104 hours/year = £3,120 at £30/hour!**
+
+---
+
+### **Python Automation Best Practices**
+
+**1. Error Handling**
+
+```python
+import logging
+
+# Set up logging
+logging.basicConfig(
+    filename="automation.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+def safe_automation():
+    try:
+        # Your automation code
+        result = process_data()
+        logging.info("Automation completed successfully")
+        return result
+        
+    except FileNotFoundError as e:
+        logging.error(f"File not found: {e}")
+        # Send error notification
+        
+    except ConnectionError as e:
+        logging.error(f"Connection failed: {e}")
+        # Retry logic
+        
+    except Exception as e:
+        logging.error(f"Unexpected error: {e}")
+        # General error handling
+```
+
+**2. Environment Variables (Security)**
+
+```python
+import os
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
+
+# Get sensitive data from environment
+API_KEY = os.getenv("API_KEY")
+DATABASE_PASSWORD = os.getenv("DB_PASSWORD")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+
+# Never hardcode credentials!
+# ❌ BAD: api_key = "sk-abc123..."
+# ✅ GOOD: api_key = os.getenv("API_KEY")
+```
+
+**3. Retry Logic**
+
+```python
+import time
+from functools import wraps
+
+def retry(max_attempts=3, delay=2):
+    """Decorator to retry function on failure"""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            attempts = 0
+            while attempts < max_attempts:
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    attempts += 1
+                    if attempts == max_attempts:
+                        raise e
+                    print(f"Attempt {attempts} failed. Retrying in {delay}s...")
+                    time.sleep(delay)
+        return wrapper
+    return decorator
+
+@retry(max_attempts=3, delay=5)
+def make_api_request():
+    # May fail due to network issues
+    response = requests.get("https://api.example.com/data")
+    return response.json()
+```
+
+**4. Progress Tracking**
+
+```python
+from tqdm import tqdm
+import time
+
+# For loops with progress bar
+customers = ["Customer1", "Customer2", "Customer3", ...]
+
+for customer in tqdm(customers, desc="Processing customers"):
+    # Process each customer
+    process_customer(customer)
+    time.sleep(0.1)
+
+# Manually update progress
+with tqdm(total=100) as pbar:
+    for i in range(10):
+        # Do work
+        process_batch(i)
+        pbar.update(10)  # Update by 10%
+```
+
+---
+
+**Ready to automate anything with Python? Let's move to the labs!** 🚀
+""")
+        
+        # ==========================================
+        # UNIT 4: AI-POWERED AUTOMATION
+        # ==========================================
+        elif selected_unit == 4:
+            st.markdown("#### 🤖 AI-Powered Automation with GPT-4")
+            st.markdown("""
+**Combine AI intelligence with automation power!** Build intelligent systems that think, learn, and act autonomously.
+
+---
+
+### **The AI Automation Revolution**
+
+**Traditional Automation:**
+```
+IF condition → THEN action (rigid rules)
+```
+
+**AI-Powered Automation:**
+```
+INPUT → AI DECISION → ADAPTIVE ACTION (intelligent)
+```
+
+**Game-Changing Capabilities:**
+- Natural language understanding
+- Sentiment analysis
+- Content generation
+- Smart categorization
+- Predictive decision-making
+- Contextual responses
+
+---
+
+### **OpenAI API Fundamentals**
+
+**Setup:**
+
+```python
+# Install OpenAI library
+pip install openai
+
+# Set API key
+import os
+os.environ["OPENAI_API_KEY"] = "your-api-key-here"
+
+# Or use .env file (recommended)
+from dotenv import load_dotenv
+load_dotenv()
+```
+
+**Basic API Call:**
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+def get_ai_response(prompt):
+    """Get response from GPT-4"""
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7,
+        max_tokens=500
+    )
+    
+    return response.choices[0].message.content
+
+# Example usage
+answer = get_ai_response("Explain quantum computing in simple terms")
+print(answer)
+```
+
+---
+
+### **AI Automation Use Cases**
+
+**1. Intelligent Email Categorization**
+
+```python
+def categorize_email(email_subject, email_body):
+    """Use AI to categorize incoming emails"""
+    
+    prompt = f"""
+    Categorize this email into one of these categories:
+    - URGENT (needs immediate attention)
+    - SUPPORT (customer support request)
+    - SALES (sales inquiry)
+    - BILLING (payment/invoice related)
+    - GENERAL (everything else)
+    
+    Subject: {email_subject}
+    Body: {email_body}
+    
+    Response format: Just the category name, nothing else.
+    """
+    
+    category = get_ai_response(prompt).strip()
+    
+    return category
+
+# Example
+subject = "Payment failed - need help!"
+body = "My credit card was declined when trying to renew my subscription."
+
+category = categorize_email(subject, body)
+print(f"Category: {category}")  # Output: BILLING
+
+# Now route to correct team
+if category == "URGENT":
+    notify_manager(subject, body)
+elif category == "SUPPORT":
+    create_support_ticket(subject, body)
+elif category == "BILLING":
+    forward_to_accounts(subject, body)
+```
+
+**Time saved: 30 seconds/email × 100 emails/day = 50 min/day!**
+
+---
+
+**2. Automated Content Generation**
+
+```python
+def generate_product_description(product_name, features):
+    """Generate marketing copy with AI"""
+    
+    prompt = f"""
+    Write a compelling product description for an e-commerce website.
+    
+    Product: {product_name}
+    Features: {', '.join(features)}
+    
+    Requirements:
+    - 2-3 paragraphs
+    - Highlight key benefits
+    - Include call-to-action
+    - SEO-friendly
+    - Professional tone
+    """
+    
+    description = get_ai_response(prompt)
+    
+    return description
+
+# Example
+product = "Wireless Noise-Cancelling Headphones"
+features = [
+    "40-hour battery life",
+    "Active noise cancellation",
+    "Premium sound quality",
+    "Comfortable design"
+]
+
+description = generate_product_description(product, features)
+print(description)
+
+# Save to product database
+save_to_database(product, description)
+```
+
+**Value: £20-50 per description × 100 products = £2,000-5,000 saved!**
+
+---
+
+**3. Smart Customer Support Bot**
+
+```python
+def handle_customer_query(customer_message, customer_history):
+    """AI-powered customer support with context"""
+    
+    # Build context from customer history
+    context = f"""
+    Customer History:
+    - Total orders: {customer_history['orders']}
+    - Account age: {customer_history['account_age']} months
+    - Last purchase: {customer_history['last_purchase']}
+    - Tier: {customer_history['tier']}
+    """
+    
+    prompt = f"""
+    You are a customer support agent. Help this customer with their query.
+    
+    {context}
+    
+    Customer Message: {customer_message}
+    
+    Provide a helpful, friendly response. If you need to escalate to human support, say "ESCALATE: [reason]".
+    """
+    
+    response = get_ai_response(prompt)
+    
+    # Check if escalation needed
+    if response.startswith("ESCALATE"):
+        notify_human_agent(customer_message, response)
+        return "I've escalated your query to our support team. They'll respond within 1 hour."
+    
+    return response
+
+# Example
+customer = {
+    "orders": 15,
+    "account_age": 24,
+    "last_purchase": "2024-11-15",
+    "tier": "Gold"
+}
+
+query = "I haven't received my order from 3 days ago. Order #12345"
+response = handle_customer_query(query, customer)
+print(response)
+
+# Send response
+send_email(customer["email"], "Re: Your Order", response)
+```
+
+**Impact: Handle 70% of queries automatically. Save 20+ hours/week!**
+
+---
+
+**4. Sentiment Analysis & Routing**
+
+```python
+def analyze_feedback(feedback_text):
+    """Analyze customer feedback sentiment"""
+    
+    prompt = f"""
+    Analyze the sentiment of this customer feedback:
+    
+    "{feedback_text}"
+    
+    Provide:
+    1. Sentiment: POSITIVE, NEUTRAL, or NEGATIVE
+    2. Urgency: HIGH, MEDIUM, or LOW
+    3. Key issues: List main concerns (if any)
+    4. Recommended action: What should we do?
+    
+    Format as JSON.
+    """
+    
+    response = get_ai_response(prompt)
+    
+    # Parse response (simplified)
+    import json
+    analysis = json.loads(response)
+    
+    return analysis
+
+# Example
+feedback = "The product is great but delivery took 2 weeks! Very disappointed with shipping."
+
+analysis = analyze_feedback(feedback)
+print(analysis)
+# {
+#   "sentiment": "NEGATIVE",
+#   "urgency": "MEDIUM",
+#   "key_issues": ["Slow delivery", "Unmet expectations"],
+#   "recommended_action": "Contact customer, offer shipping discount on next order"
+# }
+
+# Auto-route based on sentiment
+if analysis["sentiment"] == "NEGATIVE" and analysis["urgency"] == "HIGH":
+    create_urgent_ticket(feedback, analysis)
+elif analysis["sentiment"] == "NEGATIVE":
+    create_ticket(feedback, analysis)
+else:
+    log_positive_feedback(feedback)
+```
+
+---
+
+**5. Intelligent Data Extraction**
+
+```python
+def extract_invoice_data(invoice_text):
+    """Extract structured data from unstructured invoice"""
+    
+    prompt = f"""
+    Extract the following information from this invoice:
+    
+    {invoice_text}
+    
+    Required fields:
+    - Invoice number
+    - Date
+    - Total amount
+    - Currency
+    - Vendor name
+    - Items (list with description and price)
+    
+    Return as JSON. If a field is not found, use null.
+    """
+    
+    response = get_ai_response(prompt)
+    
+    import json
+    data = json.loads(response)
+    
+    return data
+
+# Example
+invoice_text = \"\"\"
+INVOICE #INV-2024-001
+Date: December 1, 2024
+
+Bill To: Acme Corp
+
+Items:
+- Web Development Services: GBP 2,500.00
+- Monthly Hosting: GBP 50.00
+- SSL Certificate: GBP 100.00
+
+Subtotal: GBP 2,650.00
+VAT (20%): GBP 530.00
+TOTAL: GBP 3,180.00
+\"\"\"
+
+data = extract_invoice_data(invoice_text)
+print(data)
+
+# Automatically add to accounting system
+add_to_quickbooks(data)
+```
+
+**Time saved: 10 min/invoice × 50 invoices/month = 8+ hours/month!**
+
+---
+
+### **LangChain for Complex AI Automation**
+
+**Why LangChain?**
+- Chain multiple AI calls
+- Memory & context management
+- Tool integration (search, calculator, APIs)
+- Agent-based automation
+
+**Installation:**
+
+```bash
+pip install langchain langchain-openai
+```
+
+**Basic Chain:**
+
+```python
+from langchain_openai import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate
+from langchain.chains import LLMChain
+
+# Create model
+llm = ChatOpenAI(model="gpt-4", temperature=0.7)
+
+# Create prompt template
+prompt = ChatPromptTemplate.from_template(
+    "Write a {tone} email about {topic} in {length} words."
+)
+
+# Create chain
+chain = prompt | llm
+
+# Run chain
+result = chain.invoke({
+    "tone": "professional",
+    "topic": "project delay",
+    "length": "100"
+})
+
+print(result.content)
+```
+
+**Sequential Chains:**
+
+```python
+from langchain.chains import SequentialChain
+
+# Chain 1: Generate email subject
+subject_chain = LLMChain(
+    llm=llm,
+    prompt=ChatPromptTemplate.from_template(
+        "Generate an email subject for: {topic}"
+    ),
+    output_key="subject"
+)
+
+# Chain 2: Generate email body
+body_chain = LLMChain(
+    llm=llm,
+    prompt=ChatPromptTemplate.from_template(
+        "Write an email body for subject: {subject} about {topic}"
+    ),
+    output_key="body"
+)
+
+# Combine chains
+overall_chain = SequentialChain(
+    chains=[subject_chain, body_chain],
+    input_variables=["topic"],
+    output_variables=["subject", "body"]
+)
+
+# Run
+result = overall_chain.invoke({"topic": "Q4 sales meeting"})
+print("Subject:", result["subject"])
+print("Body:", result["body"])
+```
+
+**AI Agents (Autonomous Decision-Making):**
+
+```python
+from langchain.agents import create_openai_functions_agent, AgentExecutor
+from langchain.tools import Tool
+from langchain_openai import ChatOpenAI
+
+# Define tools the agent can use
+def search_database(query):
+    """Search customer database"""
+    # Your database search code
+    return f"Found 5 customers matching '{query}'"
+
+def send_email_tool(recipient, subject, body):
+    """Send email"""
+    # Your email sending code
+    return f"Email sent to {recipient}"
+
+tools = [
+    Tool(
+        name="SearchDatabase",
+        func=search_database,
+        description="Search customer database by name or email"
+    ),
+    Tool(
+        name="SendEmail",
+        func=send_email_tool,
+        description="Send email to a customer"
+    )
+]
+
+# Create agent
+llm = ChatOpenAI(model="gpt-4")
+agent = create_openai_functions_agent(llm, tools)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+
+# Give agent a task
+task = "Find all customers named John and send them a thank you email"
+result = agent_executor.invoke({"input": task})
+
+print(result)
+```
+
+The agent will:
+1. Decide to use SearchDatabase tool
+2. Find customers
+3. Decide to use SendEmail tool
+4. Send emails to each customer
+
+**Autonomous automation!** 🤯
+
+---
+
+### **Cost Optimization for AI Automation**
+
+**Model Selection:**
+
+```python
+def smart_model_selection(task_complexity, budget):
+    """Choose the right model for the task"""
+    
+    if task_complexity == "simple" and budget == "low":
+        return "gpt-3.5-turbo"  # $0.001/1K tokens
+    elif task_complexity == "complex":
+        return "gpt-4"  # $0.03/1K tokens
+    else:
+        return "gpt-3.5-turbo-16k"  # $0.003/1K tokens
+
+# Use cheaper model for simple tasks
+model = smart_model_selection("simple", "low")
+response = client.chat.completions.create(model=model, ...)
+```
+
+**Token Management:**
+
+```python
+import tiktoken
+
+def count_tokens(text, model="gpt-4"):
+    """Count tokens before making API call"""
+    encoding = tiktoken.encoding_for_model(model)
+    tokens = encoding.encode(text)
+    return len(tokens)
+
+def truncate_to_token_limit(text, max_tokens=4000, model="gpt-4"):
+    """Ensure text fits within token limit"""
+    encoding = tiktoken.encoding_for_model(model)
+    tokens = encoding.encode(text)
+    
+    if len(tokens) <= max_tokens:
+        return text
+    
+    # Truncate
+    truncated_tokens = tokens[:max_tokens]
+    return encoding.decode(truncated_tokens)
+
+# Example
+long_text = "..." * 10000  # Very long text
+tokens = count_tokens(long_text)
+print(f"Tokens: {tokens}")
+
+if tokens > 4000:
+    truncated = truncate_to_token_limit(long_text, 4000)
+    # Now safe to send
+```
+
+**Caching:**
+
+```python
+import json
+import hashlib
+from functools import lru_cache
+
+@lru_cache(maxsize=1000)
+def cached_ai_call(prompt_hash):
+    """Cache AI responses for repeated prompts"""
+    # Load from cache file
+    try:
+        with open("ai_cache.json", "r") as f:
+            cache = json.load(f)
+            return cache.get(prompt_hash)
+    except:
+        return None
+
+def get_ai_response_cached(prompt):
+    """Check cache before making API call"""
+    
+    # Create hash of prompt
+    prompt_hash = hashlib.md5(prompt.encode()).hexdigest()
+    
+    # Check cache
+    cached = cached_ai_call(prompt_hash)
+    if cached:
+        print("Cache hit! Saved API call.")
+        return cached
+    
+    # Make API call
+    response = get_ai_response(prompt)
+    
+    # Save to cache
+    try:
+        with open("ai_cache.json", "r+") as f:
+            cache = json.load(f)
+            cache[prompt_hash] = response
+            f.seek(0)
+            json.dump(cache, f)
+    except:
+        with open("ai_cache.json", "w") as f:
+            json.dump({prompt_hash: response}, f)
+    
+    return response
+
+# Save $$$ on repeated queries!
+```
+
+---
+
+**Ready to build intelligent automation? Let's move to the labs!** 🚀
+""")
+        
+        # ==========================================
+        # UNIT 5-8: COMING SOON
         # ==========================================
         else:
             st.info(f"⚠️ Unit {selected_unit} learning materials coming in next update!")
             st.markdown("""
-**Currently building comprehensive content for:**
-- Unit 3: Python Automation (1,500+ lines)
-- Unit 4: AI-Powered Automation (1,200+ lines)
+**Currently building:**
 - Unit 5: RPA & Desktop Automation (1,000+ lines)
 - Unit 6: Workflow Orchestration (800+ lines)
 - Unit 7: Business Process Automation (900+ lines)
 - Unit 8: Portfolio & Capstone (500+ lines)
 
-**Total planned content: 10,000+ lines!**
-
-**Focus:** Building the most comprehensive automation course ever created!
+**Total planned: 10,000+ lines!**
 """)
     
     # ==========================================
